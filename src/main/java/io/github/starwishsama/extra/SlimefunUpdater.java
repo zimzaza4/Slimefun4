@@ -144,7 +144,6 @@ public class SlimefunUpdater {
     public void checkUpdate() {
         GithubBean bean = getCache();
 
-
         if (bean != null) {
             if (isOldVersion(SlimefunPlugin.getVersion(), bean.getTagName())) {
                 String updateInfo = "有更新了 | " + bean.getTagName() + " 现已发布\n正在自动下载更新中, 下载完成后重启服务器生效";
