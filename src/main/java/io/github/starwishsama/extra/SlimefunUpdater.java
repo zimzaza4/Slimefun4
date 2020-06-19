@@ -123,8 +123,16 @@ public class SlimefunUpdater {
         List<GithubBean> beans = getReleaseBean();
 
         if (!beans.isEmpty()) {
-            updateInfoCache = beans.get(0);
-            return beans.get(0);
+            if (branch == SlimefunBranch.DEVELOPMENT) {
+                updateInfoCache = beans.get(0);
+                return beans.get(0);
+            } else if (branch == SlimefunBranch.STABLE) {
+                for (GithubBean bean : beans) {
+                    if (!bean.isPreRelease()) {
+                        return bean;
+                    }
+                }
+            }
         }
 
         return null;
@@ -135,6 +143,7 @@ public class SlimefunUpdater {
      */
     public void checkUpdate() {
         GithubBean bean = getCache();
+
 
         if (bean != null) {
             if (isOldVersion(SlimefunPlugin.getVersion(), bean.getTagName())) {
