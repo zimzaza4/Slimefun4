@@ -129,6 +129,7 @@ public class SlimefunUpdater {
             } else if (branch == SlimefunBranch.STABLE) {
                 for (GithubBean bean : beans) {
                     if (!bean.isPreRelease()) {
+                        updateInfoCache = beans.get(0);
                         return bean;
                     }
                 }
