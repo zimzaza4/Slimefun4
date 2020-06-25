@@ -168,6 +168,9 @@ public class SlimefunUpdater {
             return currentVersion >= comparedVersion;
         } catch (NumberFormatException e) {
             return false;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Slimefun.getLogger().log(Level.SEVERE, "&c无法解析版本号, 报错信息: " + e.getLocalizedMessage());
+            return false;
         }
     }
 
@@ -178,7 +181,7 @@ public class SlimefunUpdater {
     public static void autoSelectBranch(JavaPlugin plugin) {
         String version = plugin.getDescription().getVersion();
 
-        if (version.contains("RC")) {
+        if (version.toLowerCase().contains("stable")) {
             branch = SlimefunBranch.STABLE;
             return;
         }
