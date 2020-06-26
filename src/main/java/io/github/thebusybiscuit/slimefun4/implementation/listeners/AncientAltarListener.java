@@ -329,7 +329,7 @@ public class AncientAltarListener implements Listener {
 
             ItemStack spawner = SlimefunItems.REPAIRED_SPAWNER.clone();
             ItemMeta im = spawner.getItemMeta();
-            im.setLore(Arrays.asList(wrapper.getItemMeta().getLore().get(0)));
+            im.setLore(Collections.singletonList(wrapper.getItemMeta().getLore().get(0)));
             spawner.setItemMeta(im);
             return Optional.of(spawner);
         }
