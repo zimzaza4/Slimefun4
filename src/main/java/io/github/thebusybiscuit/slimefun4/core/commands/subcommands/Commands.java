@@ -27,5 +27,6 @@ public final class Commands {
         commands.add(new SearchCommand(plugin, cmd));
         commands.add(new DebugFishCommand(plugin, cmd));
         commands.add(new BackpackCommand(plugin, cmd));
+        commands.add(new ItemIdCommand(plugin, cmd))
     }
 }
