@@ -30,7 +30,7 @@ public class ExplosiveShovel extends ExplosiveTool {
 
     @Override
     protected void breakBlock(Player p, ItemStack item, Block b, int fortune, List<ItemStack> drops) {
-        if (!isUnbreakable(b.getType().name())
+        if (!isUnbreakable(b)
                 && ProtectionChecker.canInteract(p, b, ProtectableAction.BREAK_BLOCK)
                 && MaterialTools.getBreakableByShovel().contains(b.getType())
                 && SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.BREAK_BLOCK)) {
