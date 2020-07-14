@@ -23,6 +23,7 @@ import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
@@ -111,7 +112,7 @@ class ExplosiveTool extends SimpleSlimefunItem<BlockBreakHandler> implements Not
     }
 
     protected void breakBlock(Player p, ItemStack item, Block b, int fortune, List<ItemStack> drops) {
-        if (!isUnbreakable(b.getType().name())
+        if (!isUnbreakable(b)
                 && ProtectionChecker.canInteract(p, b, ProtectableAction.BREAK_BLOCK)
                 && b.getType() != Material.AIR
                 && !b.isLiquid()
@@ -149,9 +150,16 @@ class ExplosiveTool extends SimpleSlimefunItem<BlockBreakHandler> implements Not
         }
     }
 
-    protected boolean isUnbreakable(String name) {
+    protected boolean isUnbreakable(Block b) {
         if (!unbreakableBlocks.getValue().isEmpty()) {
-            return unbreakableBlocks.getValue().contains(name);
+            for(String material : unbreakableBlocks.getValue()){
+                if(material.toUpperCase().equals("SIGN") && b.getState() instanceof Sign){
+                    return true;
+                }
+                if(b.getType().equals(Material.matchMaterial(material, true))){
+                    return true;
+                }
+            }
         }
         return false;
     }
