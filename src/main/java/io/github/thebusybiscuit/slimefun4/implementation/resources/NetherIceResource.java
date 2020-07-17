@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 class NetherIceResource implements GEOResource {
 
-    private final NamespacedKey key = new NamespacedKey(SlimefunPlugin.instance, "nether_ice");
+    private final NamespacedKey key = new NamespacedKey(SlimefunPlugin.instance(), "nether_ice");
 
     @Override
     public int getDefaultSupply(Environment environment, Biome biome) {

@@ -25,6 +25,6 @@ public final class Categories {
     }
 
     // 兼容科技复兴
-    public static final Category TECH_MISC = new Category(new NamespacedKey(SlimefunPlugin.instance, "tech_misc"), new CustomItem(SlimefunItems.HEATING_COIL, "&7Technical Components"), 2);
-    public static final Category RESOURCES = new Category(new NamespacedKey(SlimefunPlugin.instance, "resources"), new CustomItem(SlimefunItems.SYNTHETIC_SAPPHIRE, "&7Resources"), 1);
+    public static final Category TECH_MISC = new Category(new NamespacedKey(SlimefunPlugin.instance(), "tech_misc"), new CustomItem(SlimefunItems.HEATING_COIL, "&7Technical Components"), 2);
+    public static final Category RESOURCES = new Category(new NamespacedKey(SlimefunPlugin.instance(), "resources"), new CustomItem(SlimefunItems.SYNTHETIC_SAPPHIRE, "&7Resources"), 1);
 }

@@ -393,6 +393,10 @@ public class SlimefunItem implements Placeable {
                 state = ItemState.DISABLED;
             }
 
+            if (item instanceof SlimefunItemStack && isItemStackImmutable()) {
+                ((SlimefunItemStack) item).lock();
+            }
+
             postRegister();
 
             if (SlimefunPlugin.getRegistry().isAutoLoadingEnabled() && state == ItemState.ENABLED) {
@@ -422,6 +426,20 @@ public class SlimefunItem implements Placeable {
                 handlerset.add(handler);
             }
         }
+    }
+
+    /**
+     * This method returns whether the original {@link SlimefunItemStack} of this
+     * {@link SlimefunItem} is immutable.
+     * <p>
+     * If <code>true</code> is returned, then any changes to the original {@link SlimefunItemStack}
+     * will be rejected with a {@link WrongItemStackException}.
+     * This ensures integrity so developers don't accidentally damage the wrong {@link ItemStack}.
+     *
+     * @return Whether the original {@link SlimefunItemStack} is immutable.
+     */
+    protected boolean isItemStackImmutable() {
+        return true;
     }
 
     /**

@@ -45,10 +45,6 @@ public final class ChargableBlock {
         }
     }
 
-    public static void setCharge(Block b, int charge) {
-        setCharge(b.getLocation(), charge);
-    }
-
     public static void setCharge(Location l, int charge) {
         if (charge < 0) {
             charge = 0;
@@ -60,7 +56,9 @@ public final class ChargableBlock {
             }
         }
 
-        BlockStorage.addBlockInfo(l, KEY, String.valueOf(charge), false);
+        if (charge != getCharge(l)) {
+            BlockStorage.addBlockInfo(l, KEY, String.valueOf(charge), false);
+        }
     }
 
     public static void setUnsafeCharge(Location l, int charge, boolean updateTexture) {
@@ -94,13 +92,13 @@ public final class ChargableBlock {
         if (availableSpace > 0 && addedCharge > 0) {
             if (availableSpace > addedCharge) {
                 charge += addedCharge;
-                setCharge(l, charge);
                 rest = 0;
             } else {
                 rest = addedCharge - availableSpace;
                 charge = capacity;
-                setCharge(l, charge);
             }
+
+            setCharge(l, charge);
 
             if (SlimefunPlugin.getRegistry().getEnergyCapacitors().contains(id)) {
                 updateCapacitor(l, charge, capacity);

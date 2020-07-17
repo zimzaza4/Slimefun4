@@ -178,7 +178,7 @@ public abstract class Reactor extends AbstractEnergyProvider {
             preset.addItem(i, new CustomItem(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), " "), ChestMenuUtils.getEmptyClickHandler());
         }
 
-        preset.addItem(22, new CustomItem(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), " "), ChestMenuUtils.getEmptyClickHandler());
+        preset.addItem(22, new CustomItem(Material.BLACK_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
 
         preset.addItem(1, new CustomItem(getFuelIcon(), "&7燃料槽", "", "&r这个槽可以放置放射性质的燃料例如", "&2铀 &r或 &a镎"), ChestMenuUtils.getEmptyClickHandler());
 

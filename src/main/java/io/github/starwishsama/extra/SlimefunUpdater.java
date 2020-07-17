@@ -31,7 +31,7 @@ public class SlimefunUpdater {
 
     private GithubBean updateInfoCache;
     private final Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
-    private static final String downloadDir = SlimefunPlugin.instance.getServer().getUpdateFolder();
+    private static final String downloadDir = SlimefunPlugin.instance().getServer().getUpdateFolder();
     private static final String browserUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36";
     private static SlimefunBranch branch;
     private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyMMdd");
@@ -56,10 +56,10 @@ public class SlimefunUpdater {
 
             BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
             FileOutputStream fos = new FileOutputStream(file);
-            BufferedOutputStream bos = new BufferedOutputStream(fos, 1024);
-            byte[] data = new byte[1024];
+            BufferedOutputStream bos = new BufferedOutputStream(fos, 2048);
+            byte[] data = new byte[2048];
             int x;
-            while ((x = in.read(data, 0, 1024)) >= 0) {
+            while ((x = in.read(data, 0, 2048)) >= 0) {
                 bos.write(data, 0, x);
             }
 
@@ -67,7 +67,7 @@ public class SlimefunUpdater {
             in.close();
             fos.close();
 
-            SlimefunPlugin.instance.getFile().deleteOnExit();
+            SlimefunPlugin.instance().getFile().deleteOnExit();
             Slimefun.getLogger().info(ChatColors.color("&a自动更新已完成, 重启服务端后即可更新到最新版本"));
         } catch (Exception e) {
             if (!file.delete()) {

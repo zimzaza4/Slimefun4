@@ -15,12 +15,12 @@ class OptionFireworks implements SlimefunGuideOption<Boolean> {
 
     @Override
     public SlimefunAddon getAddon() {
-        return SlimefunPlugin.instance;
+        return SlimefunPlugin.instance();
     }
 
     @Override
     public NamespacedKey getKey() {
-        return new NamespacedKey(SlimefunPlugin.instance, "research_fireworks");
+        return new NamespacedKey(SlimefunPlugin.instance(), "research_fireworks");
     }
 
     @Override

@@ -17,16 +17,18 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
- * Provides a few convenience methods.
+ * Provides a few static convenience methods.
  *
- * @since 4.0
+ * @author TheBusyBiscuit
+ * @author Walshy
+ * @author Poslovitch
  */
 public final class Slimefun {
 
     private Slimefun() {}
 
     public static Logger getLogger() {
-        return SlimefunPlugin.instance.getLogger();
+        return SlimefunPlugin.instance().getLogger();
     }
 
     /**
@@ -49,13 +51,19 @@ public final class Slimefun {
     /**
      * Registers a research.
      *
-     * @param key   The key
-     * @param id    The id
-     * @param name  The name
-     * @param cost  The default cost
-     * @param items The items
      * @deprecated The Research class was moved, this method is no longer valid. Please use
-     * {@link io.github.thebusybiscuit.slimefun4.core.researching.Research#register()} instead.
+     *             {@link io.github.thebusybiscuit.slimefun4.core.researching.Research#register()} instead.
+     *
+     * @param key
+     *            The key
+     * @param id
+     *            The id
+     * @param name
+     *            The name
+     * @param cost
+     *            The default cost
+     * @param items
+     *            The items
      */
     @Deprecated
     public static void registerResearch(NamespacedKey key, int id, String name, int cost, ItemStack... items) {
@@ -214,7 +222,11 @@ public final class Slimefun {
             return null;
         }
 
-        return Bukkit.getScheduler().runTask(SlimefunPlugin.instance, r);
+        if (SlimefunPlugin.instance() == null || !SlimefunPlugin.instance().isEnabled()) {
+            return null;
+        }
+
+        return Bukkit.getScheduler().runTask(SlimefunPlugin.instance(), r);
     }
 
     public static BukkitTask runSync(Runnable r, long delay) {
@@ -223,6 +235,10 @@ public final class Slimefun {
             return null;
         }
 
-        return Bukkit.getScheduler().runTaskLater(SlimefunPlugin.instance, r, delay);
+        if (SlimefunPlugin.instance() == null || !SlimefunPlugin.instance().isEnabled()) {
+            return null;
+        }
+
+        return Bukkit.getScheduler().runTaskLater(SlimefunPlugin.instance(), r, delay);
     }
 }

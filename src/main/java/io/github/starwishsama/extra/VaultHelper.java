@@ -14,7 +14,7 @@ public class VaultHelper {
     private static Economy econ = null;
 
     public static void register() {
-        RegisteredServiceProvider<Economy> rsp = SlimefunPlugin.instance.getServer().getServicesManager().getRegistration(Economy.class);
+        RegisteredServiceProvider<Economy> rsp = SlimefunPlugin.instance().getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp != null) {
             Slimefun.getLogger().log(Level.INFO, "成功接入 Vault");
             econ = rsp.getProvider();

@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.core.services.github;
 
 import io.github.thebusybiscuit.cscorelib2.data.ComputedOptional;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
@@ -125,7 +126,8 @@ public class Contributor {
      */
     public String getTexture() {
         if (!headTexture.isComputed() || !headTexture.isPresent()) {
-            return HeadTexture.UNKNOWN.getTexture();
+            String cached = SlimefunPlugin.getGitHubService().getCachedTexture(githubUsername);
+            return cached != null ? cached : HeadTexture.UNKNOWN.getTexture();
         } else {
             return headTexture.get();
         }

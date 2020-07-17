@@ -9,10 +9,10 @@ import io.github.thebusybiscuit.slimefun4.core.attributes.DamageableItem;
 import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunBlockHandler;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SimpleSlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.UnregisterReason;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
@@ -63,20 +63,7 @@ class ExplosiveTool extends SimpleSlimefunItem<BlockBreakHandler> implements Not
                         b.getWorld().playSound(b.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 0.2F, 1F);
 
                         List<Block> blocks = findBlocks(b);
-                        if (callExplosionEvent.getValue()) {
-                            BlockExplodeEvent blockExplodeEvent = new BlockExplodeEvent(b, blocks, 0);
-                            Bukkit.getServer().getPluginManager().callEvent(blockExplodeEvent);
-
-                            if (!blockExplodeEvent.isCancelled()) {
-                                for (Block block : blockExplodeEvent.blockList()) {
-                                    breakBlock(p, item, block, fortune, drops);
-                                }
-                            }
-                        } else {
-                            for (Block block : blocks) {
-                                breakBlock(p, item, block, fortune, drops);
-                            }
-                        }
+                        breakBlocks(p, item, b, blocks, fortune, drops);
                     }
 
                     return true;
@@ -85,6 +72,23 @@ class ExplosiveTool extends SimpleSlimefunItem<BlockBreakHandler> implements Not
                 }
             }
         };
+    }
+
+    private void breakBlocks(Player p, ItemStack item, Block b, List<Block> blocks, int fortune, List<ItemStack> drops) {
+        if (callExplosionEvent.getValue()) {
+            BlockExplodeEvent blockExplodeEvent = new BlockExplodeEvent(b, blocks, 0);
+            Bukkit.getServer().getPluginManager().callEvent(blockExplodeEvent);
+
+            if (!blockExplodeEvent.isCancelled()) {
+                for (Block block : blockExplodeEvent.blockList()) {
+                    breakBlock(p, item, block, fortune, drops);
+                }
+            }
+        } else {
+            for (Block block : blocks) {
+                breakBlock(p, item, block, fortune, drops);
+            }
+        }
     }
 
     private List<Block> findBlocks(Block b) {
@@ -114,7 +118,7 @@ class ExplosiveTool extends SimpleSlimefunItem<BlockBreakHandler> implements Not
     protected void breakBlock(Player p, ItemStack item, Block b, int fortune, List<ItemStack> drops) {
         if (!isUnbreakable(b)
                 && ProtectionChecker.canInteract(p, b, ProtectableAction.BREAK_BLOCK)
-                && b.getType() != Material.AIR
+                && !b.isEmpty()
                 && !b.isLiquid()
                 && !MaterialCollections.getAllUnbreakableBlocks().contains(b.getType())
                 && SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.BREAK_BLOCK)) {
@@ -152,11 +156,12 @@ class ExplosiveTool extends SimpleSlimefunItem<BlockBreakHandler> implements Not
 
     protected boolean isUnbreakable(Block b) {
         if (!unbreakableBlocks.getValue().isEmpty()) {
-            for(String material : unbreakableBlocks.getValue()){
-                if(material.toUpperCase().equals("SIGN") && b.getState() instanceof Sign){
+            for (String material : unbreakableBlocks.getValue()) {
+                if (material.toUpperCase().equals("SIGN") && b.getState() instanceof Sign) {
                     return true;
                 }
-                if(b.getType().equals(Material.matchMaterial(material, true))){
+
+                if (b.getType().equals(Material.matchMaterial(material, true))) {
                     return true;
                 }
             }

@@ -24,10 +24,6 @@ class PerformanceSummary {
     private static final int MIN_ITEMS = 3;
     private static final int MAX_ITEMS = 10;
 
-    // A minecraft server tick is 50ms and Slimefun ticks are stretched across
-    // two ticks (sync and async blocks), so we use 100ms as a reference here
-    static final int MAX_TICK_DURATION = 100;
-
     private final SlimefunProfiler profiler;
     private final PerformanceRating rating;
     private final long totalElapsedTime;
@@ -91,9 +87,19 @@ class PerformanceSummary {
         String prefix = count + " " + name + (count != 1 ? 's' : "");
 
         if (sender instanceof Player) {
-            TextComponent component = new TextComponent(prefix);
-            component.setColor(ChatColor.YELLOW);
+            TextComponent component = summarizeAsTextComponent(count, prefix, results, formatter);
+            sender.spigot().sendMessage(component);
+        } else {
+            String text = summarizeAsString(count, prefix, results, formatter);
+            sender.sendMessage(text);
+        }
+    }
 
+    private TextComponent summarizeAsTextComponent(int count, String prefix, List<Map.Entry<String, Long>> results, Function<Entry<String, Long>, String> formatter) {
+        TextComponent component = new TextComponent(prefix);
+        component.setColor(ChatColor.YELLOW);
+
+        if (count > 0) {
             TextComponent hoverComponent = new TextComponent("  (Hover for details)");
             hoverComponent.setColor(ChatColor.GRAY);
             StringBuilder builder = new StringBuilder();
@@ -110,18 +116,27 @@ class PerformanceSummary {
                 }
             }
 
-            builder.append("\n\n&c+ &6").append(hidden).append(" more");
+            if (hidden > 0) {
+                builder.append("\n\n&c+ &6").append(hidden).append(" more");
+            }
+
             hoverComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(ChatColors.color(builder.toString()))));
 
             component.addExtra(hoverComponent);
-            sender.spigot().sendMessage(component);
-        } else {
-            int displayed = 0;
-            int hidden = 0;
+        }
 
-            StringBuilder builder = new StringBuilder();
-            builder.append(ChatColor.GOLD);
-            builder.append(prefix);
+        return component;
+    }
+
+    private String summarizeAsString(int count, String prefix, List<Entry<String, Long>> results, Function<Entry<String, Long>, String> formatter) {
+        int displayed = 0;
+        int hidden = 0;
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(ChatColor.GOLD);
+        builder.append(prefix);
+
+        if (count > 0) {
             builder.append(ChatColor.YELLOW);
 
             for (Map.Entry<String, Long> entry : results) {
@@ -134,11 +149,14 @@ class PerformanceSummary {
                 }
             }
 
-            builder.append("\n+ ");
-            builder.append(hidden);
-            builder.append(" more...");
-            sender.sendMessage(builder.toString());
+            if (hidden > 0) {
+                builder.append("\n+ ");
+                builder.append(hidden);
+                builder.append(" more...");
+            }
         }
+
+        return builder.toString();
     }
 
     private String getPerformanceRating() {

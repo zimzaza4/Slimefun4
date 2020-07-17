@@ -24,7 +24,7 @@ public class AncientPedestal extends SlimefunItem {
                     return false;
                 }
 
-                stack.removeMetadata("item_placed", SlimefunPlugin.instance);
+                stack.removeMetadata("item_placed", SlimefunPlugin.instance());
                 b.getWorld().dropItem(b.getLocation(), listener.fixItemStack(stack.getItemStack(), stack.getCustomName()));
                 stack.remove();
             }

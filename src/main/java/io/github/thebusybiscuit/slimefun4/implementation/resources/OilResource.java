@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 class OilResource implements GEOResource {
 
-    private final NamespacedKey key = new NamespacedKey(SlimefunPlugin.instance, "oil");
+    private final NamespacedKey key = new NamespacedKey(SlimefunPlugin.instance(), "oil");
 
     @Override
     public int getDefaultSupply(Environment environment, Biome biome) {
