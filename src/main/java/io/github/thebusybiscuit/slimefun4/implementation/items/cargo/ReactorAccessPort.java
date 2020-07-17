@@ -3,13 +3,13 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.cargo;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.reactors.Reactor;
+import io.github.thebusybiscuit.slimefun4.implementation.items.misc.CoolantCell;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AReactor;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
@@ -73,20 +73,24 @@ public class ReactorAccessPort extends SlimefunItem {
 
             @Override
             public int[] getSlotsAccessedByItemTransport(ItemTransportFlow flow) {
-                if (flow == ItemTransportFlow.INSERT) return getInputSlots();
-                else return getOutputSlots();
+                if (flow == ItemTransportFlow.INSERT) {
+                    return getInputSlots();
+                } else {
+                    return getOutputSlots();
+                }
             }
 
             @Override
             public int[] getSlotsAccessedByItemTransport(DirtyChestMenu menu, ItemTransportFlow flow, ItemStack item) {
                 if (flow == ItemTransportFlow.INSERT) {
-                    if (SlimefunUtils.isItemSimilar(item, SlimefunItems.REACTOR_COOLANT_CELL, true))
+                    if (SlimefunItem.getByItem(item) instanceof CoolantCell) {
                         return getCoolantSlots();
-                    else if (SlimefunUtils.isItemSimilar(item, SlimefunItems.NETHER_ICE_COOLANT_CELL, true))
-                        return getCoolantSlots();
-                    else return getFuelSlots();
+                    } else {
+                        return getFuelSlots();
+                    }
+                } else {
+                    return getOutputSlots();
                 }
-                else return getOutputSlots();
             }
         };
 
@@ -138,7 +142,7 @@ public class ReactorAccessPort extends SlimefunItem {
 
         preset.addItem(1, new CustomItem(SlimefunItems.URANIUM, "&7燃料槽", "", "&r这里可以放入放射性燃料, 例如:", "&2铀 &r或 &a镎"), ChestMenuUtils.getEmptyClickHandler());
         preset.addItem(22, new CustomItem(SlimefunItems.PLUTONIUM, "&7副产品槽", "", "&r这里可以获取反应堆在运行中产生的副产物", "&r例如 &a镎 &r或 &7钚"), ChestMenuUtils.getEmptyClickHandler());
-        preset.addItem(7, new CustomItem(SlimefunItems.REACTOR_COOLANT_CELL, "&冷却剂", "", "&r这里可以放入冷却剂", "&4如果没有冷却剂, 你的反应堆", "&4将会爆炸"), ChestMenuUtils.getEmptyClickHandler());
+        preset.addItem(7, new CustomItem(SlimefunItems.REACTOR_COOLANT_CELL, "&b冷却剂", "", "&r这里可以放入冷却剂", "&4如果没有冷却剂, 你的反应堆", "&4将会爆炸"), ChestMenuUtils.getEmptyClickHandler());
     }
 
     public int[] getInputSlots() {
@@ -158,10 +162,12 @@ public class ReactorAccessPort extends SlimefunItem {
     }
 
     private BlockMenu getReactor(Location l) {
-        Location reactorL = new Location(l.getWorld(), l.getX(), l.getY() - 3, l.getZ());
+        Location location = new Location(l.getWorld(), l.getX(), l.getY() - 3, l.getZ());
+        SlimefunItem item = BlockStorage.check(location.getBlock());
 
-        SlimefunItem item = BlockStorage.check(reactorL.getBlock());
-        if (item instanceof AReactor) return BlockStorage.getInventory(reactorL);
+        if (item instanceof Reactor) {
+            return BlockStorage.getInventory(location);
+        }
 
         return null;
     }

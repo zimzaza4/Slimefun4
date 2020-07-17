@@ -1,8 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.androids;
 
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Effect;
@@ -43,10 +43,7 @@ public abstract class AdvancedFarmerAndroid extends FarmerAndroid {
             if (result.isPresent()) {
                 ItemStack drop = result.get();
                 menu.pushItem(drop, getOutputSlots());
-
-                if (menu.fits(drop, getOutputSlots())) {
-                    block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, block.getType());
-                }
+                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, block.getType());
             }
         }
     }

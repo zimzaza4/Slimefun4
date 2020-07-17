@@ -2,7 +2,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.resources;
 
 import io.github.thebusybiscuit.slimefun4.api.geo.GEOResource;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Biome;
@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 class NetherIceResource implements GEOResource {
 
-    private final NamespacedKey key = new NamespacedKey(SlimefunPlugin.instance, "nether_ice");
+    private final NamespacedKey key = new NamespacedKey(SlimefunPlugin.instance(), "nether_ice");
 
     @Override
     public int getDefaultSupply(Environment environment, Biome biome) {

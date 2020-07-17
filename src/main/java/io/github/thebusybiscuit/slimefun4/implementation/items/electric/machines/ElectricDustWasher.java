@@ -2,6 +2,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machine
 
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.OreWasher;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
@@ -9,7 +10,6 @@ import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.energy.ChargableBlock;
@@ -58,17 +58,13 @@ public abstract class ElectricDustWasher extends AContainer {
             if (timeleft > 0 && getSpeed() < 10) {
                 ChestMenuUtils.updateProgressbar(menu, 22, timeleft, processing.get(b).getTicks(), getProgressBar());
 
-                if (ChargableBlock.isChargable(b)) {
-                    if (ChargableBlock.getCharge(b) < getEnergyConsumption()) {
-                        return;
-                    }
-                    ChargableBlock.addCharge(b, -getEnergyConsumption());
-                    progress.put(b, timeleft - 1);
-                } else {
-                    progress.put(b, timeleft - 1);
+                if (ChargableBlock.getCharge(b) < getEnergyConsumption()) {
+                    return;
                 }
-            }
-            else if (ChargableBlock.isChargable(b)) {
+
+                ChargableBlock.addCharge(b, -getEnergyConsumption());
+                progress.put(b, timeleft - 1);
+            } else {
                 if (ChargableBlock.getCharge(b) < getEnergyConsumption()) {
                     return;
                 }

@@ -6,18 +6,22 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunBranch;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.apache.commons.lang.Validate;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import javax.net.ssl.SSLException;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 
 /**
@@ -27,9 +31,10 @@ public class SlimefunUpdater {
 
     private GithubBean updateInfoCache;
     private final Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
-    private static final String downloadDir = SlimefunPlugin.instance.getServer().getUpdateFolder();
+    private static final String downloadDir = SlimefunPlugin.instance().getServer().getUpdateFolder();
     private static final String browserUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36";
     private static SlimefunBranch branch;
+    private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyMMdd");
 
     /**
      * 下载文件
@@ -51,10 +56,10 @@ public class SlimefunUpdater {
 
             BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
             FileOutputStream fos = new FileOutputStream(file);
-            BufferedOutputStream bos = new BufferedOutputStream(fos, 1024);
-            byte[] data = new byte[1024];
+            BufferedOutputStream bos = new BufferedOutputStream(fos, 2048);
+            byte[] data = new byte[2048];
             int x;
-            while ((x = in.read(data, 0, 1024)) >= 0) {
+            while ((x = in.read(data, 0, 2048)) >= 0) {
                 bos.write(data, 0, x);
             }
 
@@ -62,12 +67,14 @@ public class SlimefunUpdater {
             in.close();
             fos.close();
 
-            SlimefunPlugin.instance.getFile().deleteOnExit();
+            SlimefunPlugin.instance().getFile().deleteOnExit();
             Slimefun.getLogger().info(ChatColors.color("&a自动更新已完成, 重启服务端后即可更新到最新版本"));
         } catch (Exception e) {
-            file.delete();
+            if (!file.delete()) {
+                Slimefun.getLogger().log(Level.SEVERE, e, () -> "无法删除损坏文件: " + fileName);
+            }
 
-            if (e.getCause() instanceof SSLException) {
+            if (e.getCause() instanceof SocketTimeoutException) {
                 Slimefun.getLogger().log(Level.SEVERE, e, () -> "在下载时发生了错误: 连接超时");
                 return;
             }
@@ -86,29 +93,33 @@ public class SlimefunUpdater {
             URL url = new URL("https://api.github.com/repos/StarWishsama/Slimefun4/releases");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(5_000);
-            conn.addRequestProperty("Accept-Charset", "UTF-8");
-            conn.addRequestProperty("User-Agent", "Slimefun 4 Update Checker by StarWishsama");
+            conn.setRequestProperty("Accept-Charset", "utf-8");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("User-Agent", "Slimefun 4 Update Checker by StarWishsama");
             conn.setDoOutput(true);
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String cache;
-            StringBuilder result = new StringBuilder();
-            while ((cache = br.readLine()) != null) {
-                result.append(cache);
-            }
+            int code = conn.getResponseCode();
 
-            conn.disconnect();
+            if (code == HttpURLConnection.HTTP_OK) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+                String cache;
+                StringBuilder result = new StringBuilder();
+                while ((cache = br.readLine()) != null) {
+                    result.append(cache);
+                }
 
-            return gson.fromJson(result.toString().trim(), new TypeToken<List<GithubBean>>() {
-            }.getType());
-        } catch (IOException e) {
-            if (e instanceof SocketException) {
-                Slimefun.getLogger().log(Level.WARNING, "连接至 Github 服务器出错");
+                conn.disconnect();
+
+                return gson.fromJson(result.toString().trim(), new TypeToken<List<GithubBean>>() {
+                }.getType());
             } else {
-                Slimefun.getLogger().log(Level.WARNING, "在获取更新时发生了异常");
+                conn.disconnect();
+                Slimefun.getLogger().log(Level.WARNING, "连接至 Github 服务器出错, 状态码: " + code);
             }
+        } catch (IOException e) {
+            Slimefun.getLogger().log(Level.WARNING, "连接至 Github 服务器出错, 错误信息: " + e.getMessage());
         } catch (JsonSyntaxException e) {
-            Slimefun.getLogger().log(Level.WARNING, "从服务器获取到的 json 文本不正确");
+            Slimefun.getLogger().log(Level.WARNING, "无法解析获取的数据, 错误信息: " + e.getMessage());
         }
 
         return new ArrayList<>();
@@ -129,7 +140,7 @@ public class SlimefunUpdater {
             } else if (branch == SlimefunBranch.STABLE) {
                 for (GithubBean bean : beans) {
                     if (!bean.isPreRelease()) {
-                        updateInfoCache = beans.get(0);
+                        updateInfoCache = bean;
                         return bean;
                     }
                 }
@@ -155,7 +166,7 @@ public class SlimefunUpdater {
                     Slimefun.getLogger().info(ChatColors.color("&a你正在使用最新版本 " + SlimefunPlugin.getVersion()));
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
-                Slimefun.getLogger().log(Level.SEVERE, "&c无法解析版本号, 报错信息: " + e.getLocalizedMessage());
+                Slimefun.getLogger().log(Level.SEVERE, ChatColors.color("&c无法解析版本号, 报错信息: " + e.getLocalizedMessage()));
             }
         } else {
             Slimefun.getLogger().info("无法获取到更新信息");
@@ -167,10 +178,10 @@ public class SlimefunUpdater {
         Validate.notEmpty(versionToCompare, "Compare version code can't be empty!");
 
         try {
-            int currentVersion = Integer.parseInt(current.split(" ")[2]);
-            int comparedVersion = Integer.parseInt(versionToCompare.split(" ")[2]);
-            return currentVersion >= comparedVersion;
-        } catch (NumberFormatException e) {
+            LocalDateTime currentVersion = LocalDateTime.parse(current.split("-")[2], dateFormat);
+            LocalDateTime comparedVersion = LocalDateTime.parse(versionToCompare.split("-")[2], dateFormat);
+            return currentVersion.isBefore(comparedVersion);
+        } catch (NumberFormatException | DateTimeParseException e) {
             return false;
         }
     }
@@ -180,13 +191,18 @@ public class SlimefunUpdater {
     }
 
     public static void autoSelectBranch(JavaPlugin plugin) {
-        String version = plugin.getDescription().getVersion();
+        String version = plugin.getDescription().getVersion().toLowerCase(Locale.ROOT);
 
-        if (version.toLowerCase().contains("stable")) {
+        if (version.contains("stable")) {
             branch = SlimefunBranch.STABLE;
-            return;
+        } else if (version.contains("dev")) {
+            branch = SlimefunBranch.DEVELOPMENT;
+        } else {
+            branch = SlimefunBranch.NIGHTLY;
         }
+    }
 
-        branch = SlimefunBranch.DEVELOPMENT;
+    public static SlimefunBranch getBranch() {
+        return branch;
     }
 }

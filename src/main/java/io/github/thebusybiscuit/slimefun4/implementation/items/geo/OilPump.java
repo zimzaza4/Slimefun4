@@ -5,13 +5,13 @@ import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.geo.GEOResource;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.energy.ChargableBlock;
@@ -35,7 +35,7 @@ public abstract class OilPump extends AContainer implements RecipeDisplayItem {
     public OilPump(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
-        oil = SlimefunPlugin.getRegistry().getGEOResources().get(new NamespacedKey(SlimefunPlugin.instance, "oil")).orElse(null);
+        oil = SlimefunPlugin.getRegistry().getGEOResources().get(new NamespacedKey(SlimefunPlugin.instance(), "oil")).orElse(null);
 
         new BlockMenuPreset(getID(), getInventoryTitle()) {
 
@@ -51,7 +51,7 @@ public abstract class OilPump extends AContainer implements RecipeDisplayItem {
                 }
 
                 if (!SlimefunPlugin.getGPSNetwork().getResourceManager().getSupplies(oil, b.getWorld(), b.getX() >> 4, b.getZ() >> 4).isPresent()) {
-                    SlimefunPlugin.getLocal().sendMessage(p, "gps.geo.scan-required", true);
+                    SlimefunPlugin.getLocalization().sendMessage(p, "gps.geo.scan-required", true);
                     return false;
                 }
 
@@ -109,7 +109,7 @@ public abstract class OilPump extends AContainer implements RecipeDisplayItem {
             }
         } else if (inv.fits(SlimefunItems.OIL_BUCKET, getOutputSlots())) {
             for (int slot : getInputSlots()) {
-                if (SlimefunUtils.isItemSimilar(inv.getItemInSlot(slot), new ItemStack(Material.BUCKET), true)) {
+                if (SlimefunUtils.isItemSimilar(inv.getItemInSlot(slot), new ItemStack(Material.BUCKET), true, false)) {
                     OptionalInt supplies = SlimefunPlugin.getGPSNetwork().getResourceManager().getSupplies(oil, b.getWorld(), b.getX() >> 4, b.getZ() >> 4);
 
                     if (supplies.isPresent() && supplies.getAsInt() > 0) {

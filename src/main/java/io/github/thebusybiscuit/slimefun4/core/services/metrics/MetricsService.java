@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.core.services.metrics;
 
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.Plugin;
 
@@ -42,6 +42,8 @@ public class MetricsService {
         metrics.addCustomChart(new AddonsChart());
         metrics.addCustomChart(new CommandChart());
         metrics.addCustomChart(new ServerSizeChart());
+        metrics.addCustomChart(new AutoUpdaterChart());
+        metrics.addCustomChart(new CompatibilityModeChart());
     }
 
 }

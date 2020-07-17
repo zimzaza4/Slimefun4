@@ -2,8 +2,8 @@ package io.github.thebusybiscuit.slimefun4.core.services.localization;
 
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.services.LocalizationService;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -16,7 +16,9 @@ import java.util.Locale;
  * This Class represents a {@link Language} that Slimefun can recognize and use.
  *
  * @author TheBusyBiscuit
+ *
  * @see LocalizationService
+ *
  */
 public final class Language {
 
@@ -57,43 +59,53 @@ public final class Language {
         return id;
     }
 
-    public FileConfiguration getMessages() {
+    FileConfiguration getMessagesFile() {
         return messages;
     }
 
-    public FileConfiguration getResearches() {
+    FileConfiguration getResearchesFile() {
         return researches;
     }
 
-    public FileConfiguration getResources() {
+    FileConfiguration getResourcesFile() {
         return resources;
     }
 
-    public FileConfiguration getCategories() {
+    FileConfiguration getCategoriesFile() {
         return categories;
     }
 
-    public FileConfiguration getRecipeTypes() {
+    FileConfiguration getRecipeTypesFile() {
         return recipeTypes;
     }
 
-    public void setMessages(FileConfiguration config) {
+    public void setMessagesFile(FileConfiguration config) {
+        Validate.notNull(config);
+
         this.messages = config;
     }
 
-    public void setResearches(FileConfiguration config) {
+    public void setResearchesFile(FileConfiguration config) {
+        Validate.notNull(config);
+
         this.researches = config;
     }
 
-    public void setResources(FileConfiguration config) {
+    public void setResourcesFile(FileConfiguration config) {
+        Validate.notNull(config);
+
         this.resources = config;
     }
 
-    public void setCategories(FileConfiguration config) {
+    public void setCategoriesFile(FileConfiguration config) {
+        Validate.notNull(config);
+
         this.categories = config;
     }
 
-    public void setRecipeTypes(FileConfiguration config) {
+    public void setRecipeTypesFile(FileConfiguration config) {
+        Validate.notNull(config);
+
         this.recipeTypes = config;
     }
 
@@ -116,7 +128,8 @@ public final class Language {
      * @return The localized name of this {@link Language}
      */
     public String getName(Player p) {
-        return SlimefunPlugin.getLocal().getMessage(p, "languages." + id);
+        String name = SlimefunPlugin.getLocalization().getMessage(p, "languages." + id);
+        return name != null ? name : toString();
     }
 
     /**
@@ -126,7 +139,16 @@ public final class Language {
      * @return Whether this is the default {@link Language} of this {@link Server}
      */
     public boolean isDefault() {
-        return this == SlimefunPlugin.getLocal().getDefaultLanguage();
+        return this == SlimefunPlugin.getLocalization().getDefaultLanguage();
+    }
+
+    @Override
+    public String toString() {
+        return "Language [ id= " + id + " | default=" + isDefault() + " ]";
+    }
+
+    public FileConfiguration[] getFiles() {
+        return new FileConfiguration[]{getMessagesFile(), getCategoriesFile(), getResearchesFile(), getResourcesFile()};
     }
 
 }

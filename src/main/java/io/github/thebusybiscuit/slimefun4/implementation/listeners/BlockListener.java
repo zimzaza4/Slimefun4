@@ -1,13 +1,13 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
 import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunBlockHandler;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.UnregisterReason;
-import me.mrCookieSlime.Slimefun.Objects.handlers.BlockBreakHandler;
-import me.mrCookieSlime.Slimefun.Objects.handlers.BlockPlaceHandler;
 import me.mrCookieSlime.Slimefun.Objects.handlers.ItemHandler;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Material;
@@ -15,6 +15,7 @@ import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -66,14 +67,7 @@ public class BlockListener implements Listener {
                 if (blockHandler != null) {
                     blockHandler.onPlace(e.getPlayer(), e.getBlock(), sfItem);
                 } else {
-                    sfItem.callItemHandler(BlockPlaceHandler.class, handler -> handler.onBlockPlace(e, item));
-                }
-            }
-        }
-        else {
-            for (ItemHandler handler : SlimefunItem.getPublicItemHandlers(BlockPlaceHandler.class)) {
-                if (((BlockPlaceHandler) handler).onBlockPlace(e, item)) {
-                    break;
+                    sfItem.callItemHandler(BlockPlaceHandler.class, handler -> handler.onBlockPlace(e.getPlayer(), e, item));
                 }
             }
         }
@@ -81,24 +75,9 @@ public class BlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockUnregister(BlockBreakEvent e) {
-        Block blockAbove = e.getBlock().getRelative(BlockFace.UP);
-
-        if (sensitiveMaterials.contains(blockAbove.getType())) {
-            SlimefunItem sfItem = BlockStorage.check(blockAbove);
-
-            if (sfItem != null && !sfItem.useVanillaBlockBreaking()) {
-                SlimefunBlockHandler blockHandler = SlimefunPlugin.getRegistry().getBlockHandlers().get(sfItem.getID());
-
-                if (blockHandler != null) {
-                    if (blockHandler.onBreak(e.getPlayer(), blockAbove, sfItem, UnregisterReason.PLAYER_BREAK)) {
-                        blockAbove.getWorld().dropItemNaturally(blockAbove.getLocation(), BlockStorage.retrieve(blockAbove));
-                        blockAbove.setType(Material.AIR);
-                    } else {
-                        e.setCancelled(true);
-                        return;
-                    }
-                }
-            }
+        if (hasSensitiveBlockAbove(e.getPlayer(), e.getBlock())) {
+            e.setCancelled(true);
+            return;
         }
 
         SlimefunItem sfItem = BlockStorage.check(e.getBlock());
@@ -138,6 +117,10 @@ public class BlockListener implements Listener {
             }
         }
 
+        dropItems(e, drops);
+    }
+
+    private void dropItems(BlockBreakEvent e, List<ItemStack> drops) {
         if (!drops.isEmpty()) {
             e.getBlock().setType(Material.AIR);
 
@@ -149,6 +132,29 @@ public class BlockListener implements Listener {
                 }
             }
         }
+    }
+
+    private boolean hasSensitiveBlockAbove(Player p, Block b) {
+        Block blockAbove = b.getRelative(BlockFace.UP);
+
+        if (sensitiveMaterials.contains(blockAbove.getType())) {
+            SlimefunItem sfItem = BlockStorage.check(blockAbove);
+
+            if (sfItem != null && !sfItem.useVanillaBlockBreaking()) {
+                SlimefunBlockHandler blockHandler = SlimefunPlugin.getRegistry().getBlockHandlers().get(sfItem.getID());
+
+                if (blockHandler != null) {
+                    if (blockHandler.onBreak(p, blockAbove, sfItem, UnregisterReason.PLAYER_BREAK)) {
+                        blockAbove.getWorld().dropItemNaturally(blockAbove.getLocation(), BlockStorage.retrieve(blockAbove));
+                        blockAbove.setType(Material.AIR);
+                    } else {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     private int getBonusDropsWithFortune(ItemStack item, Block b) {

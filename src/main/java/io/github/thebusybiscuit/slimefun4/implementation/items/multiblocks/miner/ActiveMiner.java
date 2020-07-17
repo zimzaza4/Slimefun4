@@ -5,8 +5,8 @@ import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.cscorelib2.scheduling.TaskQueue;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -25,8 +25,10 @@ import java.util.logging.Level;
  * This represents a running instance of an {@link IndustrialMiner}.
  *
  * @author TheBusyBiscuit
+ *
  * @see IndustrialMiner
  * @see AdvancedIndustrialMiner
+ *
  */
 class ActiveMiner implements Runnable {
 
@@ -86,13 +88,14 @@ class ActiveMiner implements Runnable {
      * This method stops the {@link IndustrialMiner} with an error message.
      * The error message is a path to the location in Slimefun's localization files.
      *
-     * @param error The error message to send
+     * @param error
+     *            The error message to send
      */
     public void stop(String error) {
         Player p = Bukkit.getPlayer(owner);
 
         if (p != null) {
-            SlimefunPlugin.getLocal().sendMessage(p, error);
+            SlimefunPlugin.getLocalization().sendMessage(p, error);
         }
 
         stop();
@@ -139,7 +142,7 @@ class ActiveMiner implements Runnable {
         queue.thenRun(2, () -> setPistonState(pistons[1], false));
 
         queue.thenRun(1, this);
-        queue.execute(SlimefunPlugin.instance);
+        queue.execute(SlimefunPlugin.instance());
     }
 
     @Override
@@ -191,7 +194,7 @@ class ActiveMiner implements Runnable {
             }
         });
 
-        queue.execute(SlimefunPlugin.instance);
+        queue.execute(SlimefunPlugin.instance());
     }
 
     /**
@@ -211,7 +214,7 @@ class ActiveMiner implements Runnable {
 
             if (p != null) {
                 p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 0.4F, 1F);
-                SlimefunPlugin.getLocal().sendMessage(p, "machines.INDUSTRIAL_MINER.finished", msg -> msg.replace("%ores%", String.valueOf(ores)));
+                SlimefunPlugin.getLocalization().sendMessage(p, "machines.INDUSTRIAL_MINER.finished", msg -> msg.replace("%ores%", String.valueOf(ores)));
             }
 
             return;
@@ -224,7 +227,9 @@ class ActiveMiner implements Runnable {
      * This refuels the {@link IndustrialMiner} and pushes the given {@link ItemStack} to
      * its {@link Chest}.
      *
-     * @param item The {@link ItemStack} to push to the {@link Chest}.
+     * @param item
+     *            The {@link ItemStack} to push to the {@link Chest}.
+     *
      * @return Whether the operation was successful
      */
     private boolean push(ItemStack item) {
@@ -300,24 +305,13 @@ class ActiveMiner implements Runnable {
             } else if (block.getType() == Material.PISTON) {
                 Block above = block.getRelative(BlockFace.UP);
 
+                // Check if the above block is valid
                 if (above.isEmpty() || above.getType() == Material.PISTON_HEAD) {
                     Piston piston = (Piston) block.getBlockData();
 
+                    // Check if the piston is actually facing upwards
                     if (piston.getFacing() == BlockFace.UP) {
-                        piston.setExtended(extended);
-                        block.setBlockData(piston, false);
-
-                        // Updating the Piston Head
-                        if (extended) {
-                            PistonHead head = (PistonHead) Material.PISTON_HEAD.createBlockData();
-                            head.setFacing(BlockFace.UP);
-
-                            block.getRelative(BlockFace.UP).setBlockData(head, false);
-                        } else {
-                            block.getRelative(BlockFace.UP).setType(Material.AIR);
-                        }
-
-                        block.getWorld().playSound(block.getLocation(), extended ? Sound.BLOCK_PISTON_EXTEND : Sound.BLOCK_PISTON_CONTRACT, 0.1F, 1F);
+                        setExtended(block, piston, extended);
                     } else {
                         // The pistons must be facing upwards
                         stop("machines.INDUSTRIAL_MINER.piston-facing");
@@ -334,6 +328,23 @@ class ActiveMiner implements Runnable {
             Slimefun.getLogger().log(Level.SEVERE, e, () -> "An Error occured while moving a Piston for an Industrial Miner at " + new BlockPosition(block));
             stop();
         }
+    }
+
+    private void setExtended(Block block, Piston piston, boolean extended) {
+        piston.setExtended(extended);
+        block.setBlockData(piston, false);
+
+        // Updating the Piston Head
+        if (extended) {
+            PistonHead head = (PistonHead) Material.PISTON_HEAD.createBlockData();
+            head.setFacing(BlockFace.UP);
+
+            block.getRelative(BlockFace.UP).setBlockData(head, false);
+        } else {
+            block.getRelative(BlockFace.UP).setType(Material.AIR);
+        }
+
+        block.getWorld().playSound(block.getLocation(), extended ? Sound.BLOCK_PISTON_EXTEND : Sound.BLOCK_PISTON_CONTRACT, 0.1F, 1F);
     }
 
 }

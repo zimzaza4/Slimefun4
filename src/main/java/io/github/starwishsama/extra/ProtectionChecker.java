@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.events.AndroidMineEvent;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
@@ -35,7 +35,7 @@ public class ProtectionChecker implements Listener {
 
             if (!canInteract(p, e.getBlock(), ProtectableAction.BREAK_BLOCK)) {
                 e.setCancelled(true);
-                SlimefunPlugin.getLocal().sendMessage(p, "android.no-permission");
+                SlimefunPlugin.getLocalization().sendMessage(p, "android.no-permission");
             }
         }
     }
@@ -62,35 +62,41 @@ public class ProtectionChecker implements Listener {
      * @return 是否可以破坏
      */
     public static boolean canInteract(Player p, Block block, ProtectableAction action) {
-        if (p != null && block != null && resInstalled) {
-            if (p.isOp()) {
+        if (!resInstalled) {
+            return true;
+        }
+
+        if (p == null || block == null) {
+            return true;
+        }
+
+        if (p.isOp()) {
+            return true;
+        }
+
+        ClaimedResidence res = Residence.getInstance().getResidenceManager().getByLoc(block.getLocation());
+
+        if (res != null) {
+            if (res.getOwnerUUID() == p.getUniqueId()) {
                 return true;
             }
 
-            ClaimedResidence res = Residence.getInstance().getResidenceManager().getByLoc(block.getLocation());
+            ResidencePermissions perms = res.getPermissions();
 
-            if (res != null) {
-                if (res.getOwnerUUID() == p.getUniqueId()) {
-                    return true;
-                }
+            if (perms.playerHas(p, Flags.admin, true)) {
+                return true;
+            }
 
-                ResidencePermissions perms = res.getPermissions();
-
-                if (perms.playerHas(p, Flags.admin, true)) {
-                    return true;
-                }
-
-                switch (action) {
-                    case BREAK_BLOCK:
-                        return perms.playerHas(p, Flags.destroy, true) || perms.playerHas(p, Flags.build, true);
-                    case PLACE_BLOCK:
-                        return perms.playerHas(p, Flags.place, true) || perms.playerHas(p, Flags.build, true) || !perms.playerHas(p, Flags.move, true);
-                    case ACCESS_INVENTORIES:
-                        if (!perms.playerHas(p, Flags.use, true)) {
-                            SlimefunPlugin.getLocal().sendMessage(p, "inventory.no-access");
-                            return false;
-                        }
-                }
+            switch (action) {
+                case BREAK_BLOCK:
+                    return perms.playerHas(p, Flags.destroy, true) || perms.playerHas(p, Flags.build, true);
+                case PLACE_BLOCK:
+                    return perms.playerHas(p, Flags.place, true) || perms.playerHas(p, Flags.build, true) || !perms.playerHas(p, Flags.move, true);
+                case ACCESS_INVENTORIES:
+                    if (!perms.playerHas(p, Flags.use, true)) {
+                        SlimefunPlugin.getLocalization().sendMessage(p, "inventory.no-access");
+                        return false;
+                    }
             }
         }
         return true;

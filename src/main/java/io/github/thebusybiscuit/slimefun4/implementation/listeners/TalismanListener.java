@@ -5,10 +5,12 @@ import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.materials.MaterialCollections;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans.MagicianTalisman;
 import io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans.Talisman;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans.TalismanEnchantment;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -59,14 +61,37 @@ public class TalismanListener implements Listener {
                 Projectile projectile = (Projectile) ((EntityDamageByEntityEvent) e).getDamager();
 
                 if (Talisman.checkFor(e, SlimefunItems.TALISMAN_WHIRLWIND)) {
-                    Vector direction = ((Player) e.getEntity()).getEyeLocation().getDirection().multiply(2.0);
-                    Projectile clone = (Projectile) e.getEntity().getWorld().spawnEntity(((LivingEntity) e.getEntity()).getEyeLocation().add(direction.getX(), direction.getY(), direction.getZ()), projectile.getType());
-                    clone.setShooter(projectile.getShooter());
-                    clone.setVelocity(direction);
-                    projectile.remove();
+                    returnProjectile((Player) e.getEntity(), projectile);
                 }
             }
         }
+    }
+
+    /**
+     * This method is used for the {@link Talisman} of the whirlwind, it returns a copy
+     * of a {@link Projectile} that was fired at a {@link Player}.
+     *
+     * @param p          The {@link Player} who was hit
+     * @param projectile The {@link Projectile} that hit this {@link Player}
+     */
+    private void returnProjectile(Player p, Projectile projectile) {
+        Vector direction = p.getEyeLocation().getDirection().multiply(2.0);
+        Location loc = p.getEyeLocation().add(direction.getX(), direction.getY(), direction.getZ());
+
+        Projectile returnedProjectile = (Projectile) p.getWorld().spawnEntity(loc, projectile.getType());
+        returnedProjectile.setShooter(projectile.getShooter());
+        returnedProjectile.setVelocity(direction);
+
+        if (projectile instanceof AbstractArrow) {
+            AbstractArrow firedArrow = (AbstractArrow) projectile;
+            AbstractArrow returnedArrow = (AbstractArrow) returnedProjectile;
+
+            returnedArrow.setDamage(firedArrow.getDamage());
+            returnedArrow.setPickupStatus(firedArrow.getPickupStatus());
+            returnedArrow.setPierceLevel(firedArrow.getPierceLevel());
+        }
+
+        projectile.remove();
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -162,7 +187,7 @@ public class TalismanListener implements Listener {
 
         if (Talisman.checkFor(e, SlimefunItems.TALISMAN_MAGICIAN)) {
             MagicianTalisman talisman = (MagicianTalisman) SlimefunItems.TALISMAN_MAGICIAN.getItem();
-            MagicianTalisman.TalismanEnchantment enchantment = talisman.getRandomEnchantment(e.getItem());
+            TalismanEnchantment enchantment = talisman.getRandomEnchantment(e.getItem());
             if (enchantment != null) {
                 e.getEnchantsToAdd().put(enchantment.getEnchantment(), enchantment.getLevel());
             }

@@ -1,9 +1,9 @@
 package io.github.thebusybiscuit.slimefun4.implementation.tasks;
 
 import io.github.thebusybiscuit.slimefun4.api.events.AncientAltarCraftEvent;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAltar;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.AncientAltarListener;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -55,7 +55,7 @@ public class AncientAltarTask implements Runnable {
         this.running = true;
         this.stage = 0;
 
-        for (Block pedestal : this.pedestals) {
+        for (Block pedestal : pedestals) {
             Item item = listener.findItem(pedestal);
             this.itemLock.put(item, item.getLocation().clone());
         }
@@ -119,13 +119,16 @@ public class AncientAltarTask implements Runnable {
             itemLock.remove(item);
             item.remove();
 
-            pedestal.removeMetadata("item_placed", SlimefunPlugin.instance);
+            pedestal.removeMetadata("item_placed", SlimefunPlugin.instance());
         }
     }
 
     private void abort() {
         running = false;
-        pedestals.forEach(b -> listener.getAltarsInUse().remove(b.getLocation()));
+
+        for (Block b : pedestals) {
+            listener.getAltarsInUse().remove(b.getLocation());
+        }
 
         // This should re-enable altar blocks on craft failure.
         listener.getAltarsInUse().remove(altar.getLocation());
@@ -146,7 +149,9 @@ public class AncientAltarTask implements Runnable {
                 dropLocation.getWorld().dropItemNaturally(dropLocation.add(0, -0.5, 0), event.getItem());
             }
 
-            pedestals.forEach(b -> listener.getAltarsInUse().remove(b.getLocation()));
+            for (Block b : pedestals) {
+                listener.getAltarsInUse().remove(b.getLocation());
+            }
 
             // This should re-enable altar blocks on craft completion.
             listener.getAltarsInUse().remove(altar.getLocation());

@@ -1,10 +1,14 @@
 package me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems;
 
+import io.github.starwishsama.extra.ProtectionChecker;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.AbstractEnergyProvider;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu.AdvancedMenuClickHandler;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
@@ -12,7 +16,6 @@ import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.handlers.GeneratorTicker;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.energy.ChargableBlock;
@@ -29,7 +32,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AGenerator extends AbstractEnergyGenerator {
+public abstract class AGenerator extends AbstractEnergyProvider {
 
     public static Map<Location, MachineFuel> processing = new HashMap<>();
     public static Map<Location, Integer> progress = new HashMap<>();
@@ -50,7 +53,9 @@ public abstract class AGenerator extends AbstractEnergyGenerator {
 
             @Override
             public boolean canOpen(Block b, Player p) {
-                return p.hasPermission("slimefun.inventory.bypass") || SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.ACCESS_INVENTORIES);
+                return p.hasPermission("slimefun.inventory.bypass")
+                        || SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.ACCESS_INVENTORIES)
+                        || ProtectionChecker.canInteract(p, b, ProtectableAction.ACCESS_INVENTORIES);
             }
 
             @Override
@@ -113,7 +118,7 @@ public abstract class AGenerator extends AbstractEnergyGenerator {
             });
         }
 
-        preset.addItem(22, new CustomItem(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), " "), ChestMenuUtils.getEmptyClickHandler());
+        preset.addItem(22, new CustomItem(Material.BLACK_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
     }
 
     @Override
@@ -141,7 +146,7 @@ public abstract class AGenerator extends AbstractEnergyGenerator {
             @Override
             public double generateEnergy(Location l, SlimefunItem sf, Config data) {
                 BlockMenu inv = BlockStorage.getInventory(l);
-                boolean chargeable = ChargableBlock.isChargable(l);
+                boolean chargeable = getCapacity() > 0;
                 int charge = chargeable ? ChargableBlock.getCharge(l) : 0;
 
                 if (isProcessing(l)) {
@@ -151,11 +156,12 @@ public abstract class AGenerator extends AbstractEnergyGenerator {
                         ChestMenuUtils.updateProgressbar(inv, 22, timeleft, processing.get(l).getTicks(), getProgressBar());
 
                         if (chargeable) {
-                            if (ChargableBlock.getMaxCharge(l) - charge >= getEnergyProduction()) {
+                            if (getCapacity() - charge >= getEnergyProduction()) {
                                 ChargableBlock.addCharge(l, getEnergyProduction());
                                 progress.put(l, timeleft - 1);
                                 return (double) (charge + getEnergyProduction());
                             }
+
                             return charge;
                         } else {
                             progress.put(l, timeleft - 1);
@@ -165,11 +171,11 @@ public abstract class AGenerator extends AbstractEnergyGenerator {
                     else {
                         ItemStack fuel = processing.get(l).getInput();
 
-                        if (SlimefunUtils.isItemSimilar(fuel, new ItemStack(Material.LAVA_BUCKET), true) || SlimefunUtils.isItemSimilar(fuel, SlimefunItems.FUEL_BUCKET, true) || SlimefunUtils.isItemSimilar(fuel, SlimefunItems.OIL_BUCKET, true)) {
+                        if (isBucket(fuel)) {
                             inv.pushItem(new ItemStack(Material.BUCKET), getOutputSlots());
                         }
 
-                        inv.replaceExistingItem(22, new CustomItem(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), " "));
+                        inv.replaceExistingItem(22, new CustomItem(Material.BLACK_STAINED_GLASS_PANE, " "));
 
                         progress.remove(l);
                         processing.remove(l);
@@ -188,6 +194,7 @@ public abstract class AGenerator extends AbstractEnergyGenerator {
                         processing.put(l, fuel);
                         progress.put(l, fuel.getTicks());
                     }
+
                     return charge;
                 }
             }
@@ -197,6 +204,15 @@ public abstract class AGenerator extends AbstractEnergyGenerator {
                 return false;
             }
         };
+    }
+
+    private boolean isBucket(ItemStack item) {
+        if (item == null) {
+            return false;
+        }
+
+        ItemStackWrapper wrapper = new ItemStackWrapper(item);
+        return SlimefunUtils.isItemSimilar(wrapper, new ItemStack(Material.LAVA_BUCKET), true) || SlimefunUtils.isItemSimilar(wrapper, SlimefunItems.FUEL_BUCKET, true) || SlimefunUtils.isItemSimilar(wrapper, SlimefunItems.OIL_BUCKET, true);
     }
 
     private MachineFuel findRecipe(BlockMenu menu, Map<Integer, Integer> found) {

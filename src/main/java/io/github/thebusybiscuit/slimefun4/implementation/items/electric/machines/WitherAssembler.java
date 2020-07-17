@@ -1,21 +1,22 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines;
 
+import io.github.starwishsama.extra.ProtectionChecker;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.math.DoubleHandler;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunBlockHandler;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SimpleSlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.UnregisterReason;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
@@ -60,27 +61,27 @@ public class WitherAssembler extends SimpleSlimefunItem<BlockTicker> implements 
 
             @Override
             public void newInstance(BlockMenu menu, Block b) {
-                if (!BlockStorage.hasBlockInfo(b) || BlockStorage.getLocationInfo(b.getLocation(), "enabled") == null || BlockStorage.getLocationInfo(b.getLocation(), "enabled").equals("false")) {
-                    menu.replaceExistingItem(22, new CustomItem(new ItemStack(Material.GUNPOWDER), "&7机器状态: &4\u2718", "", "&e> 单击开机"));
+                if (!BlockStorage.hasBlockInfo(b) || BlockStorage.getLocationInfo(b.getLocation(), "enabled") == null || BlockStorage.getLocationInfo(b.getLocation(), "enabled").equals(String.valueOf(false))) {
+                    menu.replaceExistingItem(22, new CustomItem(Material.GUNPOWDER, "&7机器状态: &4\u2718", "", "&e> 单击开机"));
                     menu.addMenuClickHandler(22, (p, slot, item, action) -> {
-                        BlockStorage.addBlockInfo(b, "enabled", "true");
+                        BlockStorage.addBlockInfo(b, "enabled", String.valueOf(true));
                         newInstance(menu, b);
                         return false;
                     });
                 } else {
-                    menu.replaceExistingItem(22, new CustomItem(new ItemStack(Material.REDSTONE), "&7机器状态: &2\u2714", "", "&e> 单击关机"));
+                    menu.replaceExistingItem(22, new CustomItem(Material.REDSTONE, "&7机器状态: &2\u2714", "", "&e> 单击关机"));
                     menu.addMenuClickHandler(22, (p, slot, item, action) -> {
-                        BlockStorage.addBlockInfo(b, "enabled", "false");
+                        BlockStorage.addBlockInfo(b, "enabled", String.valueOf(false));
                         newInstance(menu, b);
                         return false;
                     });
                 }
 
-                double offset = (!BlockStorage.hasBlockInfo(b) || BlockStorage.getLocationInfo(b.getLocation(), "offset") == null) ? 3.0F : Double.valueOf(BlockStorage.getLocationInfo(b.getLocation(), "offset"));
+                double offset = (!BlockStorage.hasBlockInfo(b) || BlockStorage.getLocationInfo(b.getLocation(), "offset") == null) ? 3.0F : Double.parseDouble(BlockStorage.getLocationInfo(b.getLocation(), "offset"));
 
-                menu.replaceExistingItem(31, new CustomItem(new ItemStack(Material.PISTON), "&7生成高度: &3" + offset + " 格方块", "", "&r左键: &7+0.1", "&r右键: &7-0.1"));
+                menu.replaceExistingItem(31, new CustomItem(Material.PISTON, "&7生成高度: &3" + offset + " 格方块", "", "&r左键: &7+0.1", "&r右键: &7-0.1"));
                 menu.addMenuClickHandler(31, (p, slot, item, action) -> {
-                    double offsetv = DoubleHandler.fixDouble(Double.valueOf(BlockStorage.getLocationInfo(b.getLocation(), "offset")) + (action.isRightClicked() ? -0.1F : 0.1F));
+                    double offsetv = DoubleHandler.fixDouble(Double.parseDouble(BlockStorage.getLocationInfo(b.getLocation(), "offset")) + (action.isRightClicked() ? -0.1F : 0.1F));
                     BlockStorage.addBlockInfo(b, "offset", String.valueOf(offsetv));
                     newInstance(menu, b);
                     return false;
@@ -89,22 +90,33 @@ public class WitherAssembler extends SimpleSlimefunItem<BlockTicker> implements 
 
             @Override
             public boolean canOpen(Block b, Player p) {
-                return p.hasPermission("slimefun.inventory.bypass") || SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.ACCESS_INVENTORIES);
+                return p.hasPermission("slimefun.inventory.bypass")
+                        || SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.ACCESS_INVENTORIES)
+                        || ProtectionChecker.canInteract(p, b, ProtectableAction.ACCESS_INVENTORIES);
             }
 
             @Override
             public int[] getSlotsAccessedByItemTransport(ItemTransportFlow flow) {
-                if (flow == ItemTransportFlow.INSERT) return getInputSlots();
-                else return new int[0];
+                if (flow == ItemTransportFlow.INSERT) {
+                    return getInputSlots();
+                } else {
+                    return new int[0];
+                }
             }
 
             @Override
             public int[] getSlotsAccessedByItemTransport(DirtyChestMenu menu, ItemTransportFlow flow, ItemStack item) {
-                if (flow == ItemTransportFlow.INSERT) {
-                    if (SlimefunUtils.isItemSimilar(item, new ItemStack(Material.SOUL_SAND), true))
+                if (flow == ItemTransportFlow.INSERT && item != null) {
+                    if (item.getType() == Material.SOUL_SAND) {
                         return getSoulSandSlots();
-                    else return getWitherSkullSlots();
-                } else return new int[0];
+                    }
+
+                    if (item.getType() == Material.WITHER_SKELETON_SKULL) {
+                        return getWitherSkullSlots();
+                    }
+                }
+
+                return new int[0];
             }
         };
 
@@ -113,7 +125,7 @@ public class WitherAssembler extends SimpleSlimefunItem<BlockTicker> implements 
             @Override
             public void onPlace(Player p, Block b, SlimefunItem item) {
                 BlockStorage.addBlockInfo(b, "offset", "3.0");
-                BlockStorage.addBlockInfo(b, "enabled", "false");
+                BlockStorage.addBlockInfo(b, "enabled", String.valueOf(false));
             }
 
             @Override
@@ -187,7 +199,7 @@ public class WitherAssembler extends SimpleSlimefunItem<BlockTicker> implements 
 
             @Override
             public void tick(Block b, SlimefunItem sf, Config data) {
-                if ("false".equals(BlockStorage.getLocationInfo(b.getLocation(), "enabled"))) {
+                if (String.valueOf(false).equals(BlockStorage.getLocationInfo(b.getLocation(), "enabled"))) {
                     return;
                 }
 

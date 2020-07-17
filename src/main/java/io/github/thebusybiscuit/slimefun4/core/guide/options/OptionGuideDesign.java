@@ -3,9 +3,9 @@ package io.github.thebusybiscuit.slimefun4.core.guide.options;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideLayout;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -21,12 +21,12 @@ class OptionGuideDesign implements SlimefunGuideOption<SlimefunGuideLayout> {
 
     @Override
     public SlimefunAddon getAddon() {
-        return SlimefunPlugin.instance;
+        return SlimefunPlugin.instance();
     }
 
     @Override
     public NamespacedKey getKey() {
-        return new NamespacedKey(SlimefunPlugin.instance, "guide_layout");
+        return new NamespacedKey(SlimefunPlugin.instance(), "guide_layout");
     }
 
     @Override

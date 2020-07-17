@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.api;
 
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 
 /**
  * This enum holds all versions of Minecraft that we currently support.
@@ -29,6 +29,12 @@ public enum MinecraftVersion {
      * (The "Buzzy Bees" Update)
      */
     MINECRAFT_1_15("1.15.x"),
+
+    /**
+     * This constant represents Minecraft (Java Edition) Version 1.16
+     * (The "Nether Update")
+     */
+    MINECRAFT_1_16("1.16.x"),
 
     /**
      * This constant represents an exceptional state in which we were unable

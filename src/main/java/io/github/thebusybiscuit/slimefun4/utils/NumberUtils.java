@@ -2,12 +2,15 @@ package io.github.thebusybiscuit.slimefun4.utils;
 
 import org.bukkit.ChatColor;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Locale;
 
 public final class NumberUtils {
+
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
 
     private NumberUtils() {
     }
@@ -55,10 +58,38 @@ public final class NumberUtils {
         return timeleft + seconds + "秒";
     }
 
-    public static int getInt(String str, int defaultVal) {
-        if (PatternUtils.NUMERIC.matcher(str).matches())
+    public static int getInt(String str, int defaultValue) {
+        if (PatternUtils.NUMERIC.matcher(str).matches()) {
             return Integer.parseInt(str);
+        }
 
-        return defaultVal;
+        return defaultValue;
+    }
+
+    public static String getAsMillis(long nanoseconds) {
+        if (nanoseconds == 0) {
+            return "0ms";
+        }
+
+        String number = roundDecimalNumber(nanoseconds / 1000000.0);
+        String[] parts = PatternUtils.NUMBER_SEPERATOR.split(number);
+
+        if (parts.length == 1) {
+            return parts[0] + "毫秒";
+        } else {
+            return parts[0] + '.' + parts[1] + "毫秒";
+        }
+    }
+
+    public static String roundDecimalNumber(double number) {
+        return DECIMAL_FORMAT.format(number);
+    }
+
+    public static long getLong(Long value, long defaultValue) {
+        return value == null ? defaultValue : value;
+    }
+
+    public static int getInt(Integer value, int defaultValue) {
+        return value == null ? defaultValue : value;
     }
 }

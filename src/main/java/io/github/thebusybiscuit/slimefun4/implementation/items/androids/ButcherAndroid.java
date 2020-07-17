@@ -1,8 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.androids;
 
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.block.Block;
@@ -56,10 +56,10 @@ public abstract class ButcherAndroid extends ProgrammableAndroid {
 
             if (attack) {
                 if (n.hasMetadata(METADATA_KEY)) {
-                    n.removeMetadata(METADATA_KEY, SlimefunPlugin.instance);
+                    n.removeMetadata(METADATA_KEY, SlimefunPlugin.instance());
                 }
 
-                n.setMetadata(METADATA_KEY, new FixedMetadataValue(SlimefunPlugin.instance, new AndroidInstance(this, b)));
+                n.setMetadata(METADATA_KEY, new FixedMetadataValue(SlimefunPlugin.instance(), new AndroidInstance(this, b)));
 
                 ((LivingEntity) n).damage(damage);
                 break;

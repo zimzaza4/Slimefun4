@@ -4,10 +4,10 @@ import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.cscorelib2.scheduling.TaskQueue;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.tools.GoldPan;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
@@ -64,20 +64,19 @@ public class AutomatedPanningMachine extends MultiBlockMachine {
 					if (outputChest != null) {
 						outputChest.addItem(output.clone());
 					} else {
-						b.getWorld().dropItemNaturally(b.getLocation(), output.clone());
-					}
+                        b.getWorld().dropItemNaturally(b.getLocation(), output.clone());
+                    }
 
-					p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
-				}
-				else {
-					p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ARMOR_STAND_BREAK, 1F, 1F);
-				}
-			});
+                    p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
+                } else {
+                    p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ARMOR_STAND_BREAK, 1F, 1F);
+                }
+            });
 
-			queue.execute(SlimefunPlugin.instance);
-		}
+            queue.execute(SlimefunPlugin.instance());
+        }
 		else {
-			SlimefunPlugin.getLocal().sendMessage(p, "machines.wrong-item", true);
+			SlimefunPlugin.getLocalization().sendMessage(p, "machines.wrong-item", true);
 		}
 	}
 

@@ -1,10 +1,10 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.altar;
 
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.AncientAltarListener;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
@@ -17,15 +17,14 @@ public class AncientPedestal extends SlimefunItem {
         SlimefunItem.registerBlockHandler(getID(), (p, b, tool, reason) -> {
             AncientAltarListener listener = SlimefunPlugin.getAncientAltarListener();
 
-
             Item stack = listener.findItem(b);
             if (stack != null) {
                 if (listener.isUsing(b, stack.getLocation())) {
-                    SlimefunPlugin.getLocal().sendMessage(p, "machines.ANCIENT_PEDESTAL.in-use");
+                    SlimefunPlugin.getLocalization().sendMessage(p, "machines.ANCIENT_PEDESTAL.in-use");
                     return false;
                 }
 
-                stack.removeMetadata("item_placed", SlimefunPlugin.instance);
+                stack.removeMetadata("item_placed", SlimefunPlugin.instance());
                 b.getWorld().dropItem(b.getLocation(), listener.fixItemStack(stack.getItemStack(), stack.getCustomName()));
                 stack.remove();
             }

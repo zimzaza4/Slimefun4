@@ -3,9 +3,9 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.tools;
 import io.github.starwishsama.extra.ProtectionChecker;
 import io.github.thebusybiscuit.cscorelib2.materials.MaterialTools;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -30,7 +30,7 @@ public class ExplosiveShovel extends ExplosiveTool {
 
     @Override
     protected void breakBlock(Player p, ItemStack item, Block b, int fortune, List<ItemStack> drops) {
-        if (!isUnbreakable(b.getType().name())
+        if (!isUnbreakable(b)
                 && ProtectionChecker.canInteract(p, b, ProtectableAction.BREAK_BLOCK)
                 && MaterialTools.getBreakableByShovel().contains(b.getType())
                 && SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.BREAK_BLOCK)) {
@@ -38,11 +38,7 @@ public class ExplosiveShovel extends ExplosiveTool {
 
             b.getWorld().playEffect(b.getLocation(), Effect.STEP_SOUND, b.getType());
 
-            for (ItemStack drop : b.getDrops(getItem())) {
-                if (drop != null) {
-                    b.getWorld().dropItemNaturally(b.getLocation(), drop);
-                }
-            }
+            b.breakNaturally(item);
 
             b.setType(Material.AIR);
             damageItem(p, item);

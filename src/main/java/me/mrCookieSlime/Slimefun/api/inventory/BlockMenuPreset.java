@@ -1,8 +1,8 @@
 package me.mrCookieSlime.Slimefun.api.inventory;
 
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 import org.apache.commons.lang.Validate;
@@ -190,7 +190,7 @@ public abstract class BlockMenuPreset extends ChestMenu {
 
             try {
                 newInstance(menu, l.getBlock());
-            } catch (Throwable x) {
+            } catch (Exception | LinkageError x) {
                 getSlimefunItem().error("An eror occured while trying to create a BlockMenu", x);
             }
         });

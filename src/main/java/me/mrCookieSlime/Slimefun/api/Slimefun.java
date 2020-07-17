@@ -3,10 +3,10 @@ package me.mrCookieSlime.Slimefun.api;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemState;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.VanillaItem;
 import me.mrCookieSlime.Slimefun.Objects.Research;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -17,16 +17,18 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
- * Provides a few convenience methods.
+ * Provides a few static convenience methods.
  *
- * @since 4.0
+ * @author TheBusyBiscuit
+ * @author Walshy
+ * @author Poslovitch
  */
 public final class Slimefun {
 
     private Slimefun() {}
 
     public static Logger getLogger() {
-        return SlimefunPlugin.instance.getLogger();
+        return SlimefunPlugin.instance().getLogger();
     }
 
     /**
@@ -49,13 +51,19 @@ public final class Slimefun {
     /**
      * Registers a research.
      *
-     * @param key   The key
-     * @param id    The id
-     * @param name  The name
-     * @param cost  The default cost
-     * @param items The items
      * @deprecated The Research class was moved, this method is no longer valid. Please use
-     * {@link io.github.thebusybiscuit.slimefun4.core.researching.Research#register()} instead.
+     *             {@link io.github.thebusybiscuit.slimefun4.core.researching.Research#register()} instead.
+     *
+     * @param key
+     *            The key
+     * @param id
+     *            The id
+     * @param name
+     *            The name
+     * @param cost
+     *            The default cost
+     * @param items
+     *            The items
      */
     @Deprecated
     public static void registerResearch(NamespacedKey key, int id, String name, int cost, ItemStack... items) {
@@ -120,7 +128,7 @@ public final class Slimefun {
                     return true;
                 } else {
                     if (message && !(sfItem instanceof VanillaItem)) {
-                        SlimefunPlugin.getLocal().sendMessage(p, "messages.not-researched", true);
+                        SlimefunPlugin.getLocalization().sendMessage(p, "messages.not-researched", true);
                     }
 
                     return false;
@@ -152,7 +160,7 @@ public final class Slimefun {
             return true;
         } else {
             if (message) {
-                SlimefunPlugin.getLocal().sendMessage(p, "messages.no-permission", true);
+                SlimefunPlugin.getLocalization().sendMessage(p, "messages.no-permission", true);
             }
 
             return false;
@@ -194,13 +202,13 @@ public final class Slimefun {
     public static boolean isEnabled(Player p, SlimefunItem sfItem, boolean message) {
         if (sfItem.isDisabled()) {
             if (message) {
-                SlimefunPlugin.getLocal().sendMessage(p, "messages.disabled-item", true);
+                SlimefunPlugin.getLocalization().sendMessage(p, "messages.disabled-item", true);
             }
 
             return false;
         } else if (!SlimefunPlugin.getWorldSettingsService().isEnabled(p.getWorld(), sfItem)) {
             if (message) {
-                SlimefunPlugin.getLocal().sendMessage(p, "messages.disabled-in-world", true);
+                SlimefunPlugin.getLocalization().sendMessage(p, "messages.disabled-in-world", true);
             }
 
             return false;
@@ -214,7 +222,11 @@ public final class Slimefun {
             return null;
         }
 
-        return Bukkit.getScheduler().runTask(SlimefunPlugin.instance, r);
+        if (SlimefunPlugin.instance() == null || !SlimefunPlugin.instance().isEnabled()) {
+            return null;
+        }
+
+        return Bukkit.getScheduler().runTask(SlimefunPlugin.instance(), r);
     }
 
     public static BukkitTask runSync(Runnable r, long delay) {
@@ -223,6 +235,10 @@ public final class Slimefun {
             return null;
         }
 
-        return Bukkit.getScheduler().runTaskLater(SlimefunPlugin.instance, r, delay);
+        if (SlimefunPlugin.instance() == null || !SlimefunPlugin.instance().isEnabled()) {
+            return null;
+        }
+
+        return Bukkit.getScheduler().runTaskLater(SlimefunPlugin.instance(), r, delay);
     }
 }

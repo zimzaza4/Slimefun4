@@ -2,15 +2,15 @@ package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.skull.SkullBlock;
+import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNet;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.tasks.TickerTask;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.energy.ChargableBlock;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
@@ -25,14 +25,14 @@ import org.bukkit.inventory.EquipmentSlot;
 
 public class DebugFishListener implements Listener {
 
-    private final String enabledTooltip;
-    private final String disabledTooltip;
+    private final String greenCheckmark;
+    private final String redCross;
 
     public DebugFishListener(SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
-        enabledTooltip = "&2\u2714";
-        disabledTooltip = "&4\u2718";
+        greenCheckmark = "&2\u2714";
+        redCross = "&4\u2718";
     }
 
     @EventHandler
@@ -58,7 +58,7 @@ public class DebugFishListener implements Listener {
                 if (p.isSneaking()) {
                     Block b = e.getClickedBlock().getRelative(e.getBlockFace());
                     b.setType(Material.PLAYER_HEAD);
-                    SkullBlock.setFromBase64(b, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTllYjlkYTI2Y2YyZDMzNDEzOTdhN2Y0OTEzYmEzZDM3ZDFhZDEwZWFlMzBhYjI1ZmEzOWNlYjg0YmMifX19");
+                    SkullBlock.setFromHash(b, HeadTexture.MISSING_TEXTURE.getTexture());
                 } else if (BlockStorage.hasBlockInfo(e.getClickedBlock())) {
                     sendInfo(p, e.getClickedBlock());
                 }
@@ -75,7 +75,7 @@ public class DebugFishListener implements Listener {
         p.sendMessage(ChatColors.color("&dPlugin: " + "&e" + item.getAddon().getName()));
 
         if (b.getState() instanceof Skull) {
-            p.sendMessage(ChatColors.color("&dSkull: " + enabledTooltip));
+            p.sendMessage(ChatColors.color("&dSkull: " + greenCheckmark));
 
             // Check if the skull is a wall skull, and if so use Directional instead of Rotatable.
             if (b.getType() == Material.PLAYER_WALL_HEAD) {
@@ -86,36 +86,36 @@ public class DebugFishListener implements Listener {
         }
 
         if (BlockStorage.getStorage(b.getWorld()).hasInventory(b.getLocation())) {
-            p.sendMessage(ChatColors.color("&dInventory: " + enabledTooltip));
+            p.sendMessage(ChatColors.color("&dInventory: " + greenCheckmark));
         } else {
-            p.sendMessage(ChatColors.color("&dInventory: " + disabledTooltip));
+            p.sendMessage(ChatColors.color("&dInventory: " + redCross));
         }
 
-        TickerTask ticker = SlimefunPlugin.getTicker();
-
         if (item.isTicking()) {
-            p.sendMessage(ChatColors.color("&dTicker: " + enabledTooltip));
-            p.sendMessage(ChatColors.color("  &dAsync: &e" + (BlockStorage.check(b).getBlockTicker().isSynchronized() ? disabledTooltip : enabledTooltip)));
-            p.sendMessage(ChatColors.color("  &dTimings: &e" + ticker.toMillis(ticker.getTimings(b), true)));
-            p.sendMessage(ChatColors.color("  &dTotal Timings: &e" + ticker.toMillis(ticker.getTimings(BlockStorage.checkID(b)), true)));
-            p.sendMessage(ChatColors.color("  &dChunk Timings: &e" + ticker.toMillis(ticker.getTimings(b.getChunk()), true)));
+            p.sendMessage(ChatColors.color("&dTicking: " + greenCheckmark));
+            p.sendMessage(ChatColors.color("  &dAsync: &e" + (item.getBlockTicker().isSynchronized() ? redCross : greenCheckmark)));
         } else if (item.getEnergyTicker() != null) {
-            p.sendMessage(ChatColors.color("&dTicking: " + "&3Indirect"));
-            p.sendMessage(ChatColors.color("  &dTimings: &e" + ticker.toMillis(ticker.getTimings(b), true)));
-            p.sendMessage(ChatColors.color("  &dChunk Timings: &e" + ticker.toMillis(ticker.getTimings(b.getChunk()), true)));
+            p.sendMessage(ChatColors.color("&dTicking: &3Indirect"));
         } else {
-            p.sendMessage(ChatColors.color("&dTicker: " + disabledTooltip));
-            p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&dTicking: " + disabledTooltip));
+            p.sendMessage(ChatColors.color("&dTicking: " + redCross));
+        }
+
+        if (SlimefunPlugin.getProfiler().hasTimings(b)) {
+            p.sendMessage(ChatColors.color("  &dTimings: &e" + SlimefunPlugin.getProfiler().getTime(b)));
+            p.sendMessage(ChatColors.color("  &dTotal Timings: &e" + SlimefunPlugin.getProfiler().getTime(item)));
+            p.sendMessage(ChatColors.color("  &dChunk Timings: &e" + SlimefunPlugin.getProfiler().getTime(b.getChunk())));
         }
 
         if (ChargableBlock.isChargable(b)) {
-            p.sendMessage(ChatColors.color("&dChargeable: " + enabledTooltip));
+            p.sendMessage(ChatColors.color("&dChargeable: " + greenCheckmark));
             p.sendMessage(ChatColors.color("  &dEnergy: &e" + ChargableBlock.getCharge(b) + " / " + ChargableBlock.getMaxCharge(b)));
         } else {
-            p.sendMessage(ChatColors.color("&dChargeable: " + disabledTooltip));
+            p.sendMessage(ChatColors.color("&dChargeable: " + redCross));
         }
 
-        p.sendMessage(ChatColors.color("  &dEnergyNet Type: &e" + EnergyNet.getComponent(b.getLocation())));
+        if (item instanceof EnergyNetComponent) {
+            p.sendMessage(ChatColors.color("  &dEnergyNet Type: &e" + EnergyNet.getComponent(b.getLocation())));
+        }
 
         p.sendMessage(ChatColors.color("&6" + BlockStorage.getBlockInfoAsJson(b)));
         p.sendMessage(" ");

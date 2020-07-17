@@ -2,7 +2,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
 import io.github.thebusybiscuit.slimefun4.api.network.Network;
 import io.github.thebusybiscuit.slimefun4.core.networks.NetworkManager;
-import me.mrCookieSlime.Slimefun.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -27,11 +27,11 @@ public class NetworkListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent e) {
-        manager.handleAllNetworkLocationUpdate(e.getBlock().getLocation());
+        manager.updateAllNetworks(e.getBlock().getLocation());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent e) {
-        manager.handleAllNetworkLocationUpdate(e.getBlock().getLocation());
+        manager.updateAllNetworks(e.getBlock().getLocation());
     }
 }
