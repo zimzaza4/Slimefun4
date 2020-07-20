@@ -6,10 +6,7 @@ import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunBranch;
-import io.github.thebusybiscuit.slimefun4.api.exceptions.IdConflictException;
-import io.github.thebusybiscuit.slimefun4.api.exceptions.IncompatibleItemHandlerException;
-import io.github.thebusybiscuit.slimefun4.api.exceptions.MissingDependencyException;
-import io.github.thebusybiscuit.slimefun4.api.exceptions.UnregisteredItemException;
+import io.github.thebusybiscuit.slimefun4.api.exceptions.*;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemState;
 import io.github.thebusybiscuit.slimefun4.core.attributes.*;
@@ -431,7 +428,7 @@ public class SlimefunItem implements Placeable {
     /**
      * This method returns whether the original {@link SlimefunItemStack} of this
      * {@link SlimefunItem} is immutable.
-     * <p>
+     *
      * If <code>true</code> is returned, then any changes to the original {@link SlimefunItemStack}
      * will be rejected with a {@link WrongItemStackException}.
      * This ensures integrity so developers don't accidentally damage the wrong {@link ItemStack}.
@@ -445,10 +442,11 @@ public class SlimefunItem implements Placeable {
     /**
      * This method checks recursively for all {@link Class} parents to look for any {@link Deprecated}
      * elements.
-     * <p>
+     *
      * If a {@link Deprecated} element was found, a warning message will be printed.
      *
-     * @param c The {@link Class} from which to start this operation.
+     * @param c
+     *            The {@link Class} from which to start this operation.
      */
     private void checkForDeprecations(Class<?> c) {
         if (SlimefunUpdater.getBranch() == SlimefunBranch.DEVELOPMENT) {
@@ -474,6 +472,7 @@ public class SlimefunItem implements Placeable {
                 }
             }
 
+            // Recursively lookup the super class
             checkForDeprecations(c.getSuperclass());
         }
     }
@@ -483,7 +482,8 @@ public class SlimefunItem implements Placeable {
      * You don't have to call this method if your {@link SlimefunItem} was linked to your {@link Research}
      * using {@link Research#addItems(SlimefunItem...)}
      *
-     * @param research The new {@link Research} for this {@link SlimefunItem}
+     * @param research
+     *            The new {@link Research} for this {@link SlimefunItem}
      */
     public void setResearch(Research research) {
         if (this.research != null) {
@@ -807,7 +807,7 @@ public class SlimefunItem implements Placeable {
 
         if (addon.getBugTrackerURL() != null) {
             // We can prompt the server operator to report it to the addon's bug tracker
-            addon.getLogger().log(Level.WARNING, "你可以在此反馈这个问题: {0}", addon.getBugTrackerURL());
+            addon.getLogger().log(Level.WARNING, "You can report this warning here: {0}", addon.getBugTrackerURL());
         }
     }
 
