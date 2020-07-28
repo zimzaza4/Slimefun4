@@ -7,9 +7,11 @@ import io.github.thebusybiscuit.slimefun4.api.network.Network;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.UniversalBlockMenu;
@@ -26,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
+import java.util.logging.Level;
 
 /**
  * An abstract super class of {@link CargoNet} that handles interactions with ChestTerminal.
@@ -38,7 +41,7 @@ abstract class ChestTerminalNetwork extends Network {
     private static final int[] TERMINAL_SLOTS = {0, 1, 2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 22, 23, 24, 27, 28, 29, 30, 31, 32, 33, 36, 37, 38, 39, 40, 41, 42};
     private static final int TERMINAL_OUT_SLOT = 17;
 
-    private final ItemStack terminalPlaceholderItem = new CustomItem(Material.BARRIER, "&4No Item cached");
+    private final ItemStack terminalPlaceholderItem = new CustomItem(Material.BARRIER, "&4没有物品缓存");
 
     protected final Set<Location> terminals = new HashSet<>();
     protected final Set<Location> imports = new HashSet<>();
@@ -83,10 +86,9 @@ abstract class ChestTerminalNetwork extends Network {
         Iterator<ItemRequest> iterator = itemRequests.iterator();
         while (iterator.hasNext()) {
             ItemRequest request = iterator.next();
+            BlockMenu menu = BlockStorage.getInventory(request.getTerminal());
 
-            if (terminals.contains(request.getTerminal()) || imports.contains(request.getTerminal()) || exports.contains(request.getTerminal())) {
-                BlockMenu menu = BlockStorage.getInventory(request.getTerminal());
-
+            if (menu != null) {
                 switch (request.getDirection()) {
                     case INSERT:
                         distributeInsertionRequest(inventories, request, menu, iterator, destinations);
@@ -242,18 +244,13 @@ abstract class ChestTerminalNetwork extends Network {
     }
 
     private void collectTerminalRequests() {
-        SlimefunItem item = SlimefunItem.getByID("CHEST_TERMINAL");
-
         for (Location terminal : terminals) {
-            long timestamp = SlimefunPlugin.getProfiler().newEntry();
             BlockMenu menu = BlockStorage.getInventory(terminal);
             ItemStack sendingItem = menu.getItemInSlot(TERMINAL_OUT_SLOT);
 
             if (sendingItem != null) {
                 itemRequests.add(new ItemRequest(terminal, TERMINAL_OUT_SLOT, sendingItem, ItemTransportFlow.INSERT));
             }
-
-            SlimefunPlugin.getProfiler().closeEntry(terminal, item, timestamp);
         }
     }
 
@@ -265,6 +262,16 @@ abstract class ChestTerminalNetwork extends Network {
      *            A {@link Set} of providers to this {@link ChestTerminalNetwork}
      */
     protected void updateTerminals(Set<Location> providers) {
+        if (terminals.isEmpty()) {
+            // Performance improvement - We don't need to compute items for
+            // Cargo networks without any Chest Terminals
+            return;
+        }
+
+        // Timings will be slightly inaccurate here but most often people are gonna
+        // use no more than one terminal anyway, so this might be fine
+        long timestamp = SlimefunPlugin.getProfiler().newEntry();
+        SlimefunItem item = SlimefunItem.getByID("CHEST_TERMINAL");
         List<ItemStackAndInteger> items = findAvailableItems(providers);
 
         for (Location l : terminals) {
@@ -281,6 +288,8 @@ abstract class ChestTerminalNetwork extends Network {
                 int index = i + (TERMINAL_SLOTS.length * (page - 1));
                 updateTerminal(l, terminal, slot, index, items);
             }
+
+            SlimefunPlugin.getProfiler().closeEntry(l, item, timestamp);
         }
     }
 
@@ -293,13 +302,13 @@ abstract class ChestTerminalNetwork extends Network {
             ItemMeta im = stack.getItemMeta();
             List<String> lore = new ArrayList<>();
             lore.add("");
-            lore.add(ChatColors.color("&7Stored Items: &r" + DoubleHandler.getFancyDouble(item.getInt())));
+            lore.add(ChatColors.color("&7储存的物品数: &r" + DoubleHandler.getFancyDouble(item.getInt())));
 
             if (stack.getMaxStackSize() > 1) {
-                int amount = item.getInt() > stack.getMaxStackSize() ? stack.getMaxStackSize() : item.getInt();
-                lore.add(ChatColors.color("&7<Left Click: Request 1 | Right Click: Request " + amount + ">"));
+                int amount = Math.min(item.getInt(), stack.getMaxStackSize());
+                lore.add(ChatColors.color("&7<左键: 拿取一个 | 右键: 拿取" + amount + "个>"));
             } else {
-                lore.add(ChatColors.color("&7<Left Click: Request 1>"));
+                lore.add(ChatColors.color("&7<左键: 拿取一个>"));
             }
 
             lore.add("");
@@ -312,8 +321,9 @@ abstract class ChestTerminalNetwork extends Network {
             stack.setItemMeta(im);
             terminal.replaceExistingItem(slot, stack);
             terminal.addMenuClickHandler(slot, (p, sl, is, action) -> {
-                int amount = item.getInt() > item.getItem().getMaxStackSize() ? item.getItem().getMaxStackSize() : item.getInt();
-                itemRequests.add(new ItemRequest(l, 44, new CustomItem(item.getItem(), action.isRightClicked() ? amount : 1), ItemTransportFlow.WITHDRAW));
+                int amount = Math.min(item.getInt(), item.getItem().getMaxStackSize());
+                ItemStack requestedItem = new CustomItem(item.getItem(), action.isRightClicked() ? amount : 1);
+                itemRequests.add(new ItemRequest(l, 44, requestedItem, ItemTransportFlow.WITHDRAW));
                 return false;
             });
 
@@ -340,15 +350,19 @@ abstract class ChestTerminalNetwork extends Network {
                     }
                 } else if (BlockStorage.hasInventory(target)) {
                     BlockMenu blockMenu = BlockStorage.getInventory(target);
-                    Config cfg = BlockStorage.getLocationInfo(target.getLocation());
 
-                    if (cfg.getString("id").startsWith("BARREL_") && cfg.getString("storedItems") != null) {
-                        gatherItemsFromBarrel(l, cfg, blockMenu, items);
+                    if (blockMenu.getPreset().getID().startsWith("BARREL_")) {
+                        Config cfg = BlockStorage.getLocationInfo(target.getLocation());
+                        String data = cfg.getString("storedItems");
+
+                        if (data != null) {
+                            gatherItemsFromBarrel(l, data, blockMenu, items);
+                        }
                     } else {
                         handleWithdraw(blockMenu, items, l);
                     }
                 } else if (CargoUtils.hasInventory(target)) {
-                    BlockState state = target.getState();
+                    BlockState state = PaperLib.getBlockState(target, false).getState();
 
                     if (state instanceof InventoryHolder) {
                         Inventory inv = ((InventoryHolder) state).getInventory();
@@ -365,26 +379,30 @@ abstract class ChestTerminalNetwork extends Network {
         return items;
     }
 
-    private void gatherItemsFromBarrel(Location l, Config cfg, BlockMenu blockMenu, List<ItemStackAndInteger> items) {
-        int stored = Integer.parseInt(cfg.getString("storedItems"));
+    private void gatherItemsFromBarrel(Location l, String data, BlockMenu blockMenu, List<ItemStackAndInteger> items) {
+        try {
+            int stored = Integer.parseInt(data);
 
-        for (int slot : blockMenu.getPreset().getSlotsAccessedByItemTransport((DirtyChestMenu) blockMenu, ItemTransportFlow.WITHDRAW, null)) {
-            ItemStack is = blockMenu.getItemInSlot(slot);
+            for (int slot : blockMenu.getPreset().getSlotsAccessedByItemTransport((DirtyChestMenu) blockMenu, ItemTransportFlow.WITHDRAW, null)) {
+                ItemStack is = blockMenu.getItemInSlot(slot);
 
-            if (is != null && CargoUtils.matchesFilter(l.getBlock(), is)) {
-                boolean add = true;
+                if (is != null && CargoUtils.matchesFilter(l.getBlock(), is)) {
+                    boolean add = true;
 
-                for (ItemStackAndInteger item : items) {
-                    if (SlimefunUtils.isItemSimilar(is, item.getItem(), true)) {
-                        add = false;
-                        item.add(is.getAmount() + stored);
+                    for (ItemStackAndInteger item : items) {
+                        if (SlimefunUtils.isItemSimilar(is, item.getItemStackWrapper(), true, false)) {
+                            add = false;
+                            item.add(is.getAmount() + stored);
+                        }
+                    }
+
+                    if (add) {
+                        items.add(new ItemStackAndInteger(is, is.getAmount() + stored));
                     }
                 }
-
-                if (add) {
-                    items.add(new ItemStackAndInteger(is, is.getAmount() + stored));
-                }
             }
+        } catch (Exception x) {
+            Slimefun.getLogger().log(Level.SEVERE, "An Exception occured while trying to read data from a Barrel", x);
         }
     }
 
@@ -399,7 +417,7 @@ abstract class ChestTerminalNetwork extends Network {
             boolean add = true;
 
             for (ItemStackAndInteger item : items) {
-                if (SlimefunUtils.isItemSimilar(stack, item.getItem(), true)) {
+                if (SlimefunUtils.isItemSimilar(stack, item.getItemStackWrapper(), true)) {
                     add = false;
                     item.add(stack.getAmount());
                 }

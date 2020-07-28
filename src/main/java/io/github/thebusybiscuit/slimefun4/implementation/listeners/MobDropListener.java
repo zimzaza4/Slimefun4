@@ -28,7 +28,7 @@ public class MobDropListener implements Listener {
             Player p = e.getEntity().getKiller();
             ItemStack item = p.getInventory().getItemInMainHand();
 
-            Set<ItemStack> customDrops = SlimefunPlugin.getRegistry().getMobDrops(e.getEntityType());
+            Set<ItemStack> customDrops = SlimefunPlugin.getRegistry().getMobDrops().get(e.getEntityType());
 
             if (customDrops != null && !customDrops.isEmpty()) {
                 for (ItemStack drop : customDrops) {

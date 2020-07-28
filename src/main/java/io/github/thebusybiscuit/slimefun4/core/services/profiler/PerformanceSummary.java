@@ -22,15 +22,16 @@ import java.util.stream.Stream;
 class PerformanceSummary {
 
     // The threshold at which a Block or Chunk is significant enough to appear in /sf timings
-    private static final int VISIBILITY_THRESHOLD = 280_000;
-    private static final int MIN_ITEMS = 3;
-    private static final int MAX_ITEMS = 10;
+    private static final int VISIBILITY_THRESHOLD = 300_000;
+    private static final int MIN_ITEMS = 4;
+    private static final int MAX_ITEMS = 12;
 
     private final SlimefunProfiler profiler;
     private final PerformanceRating rating;
     private final long totalElapsedTime;
     private final int totalTickedBlocks;
     private final float percentage;
+    private final int tickRate;
 
     private final Map<String, Long> chunks;
     private final Map<String, Long> plugins;
@@ -42,6 +43,7 @@ class PerformanceSummary {
         this.percentage = profiler.getPercentageOfTick();
         this.totalElapsedTime = totalElapsedTime;
         this.totalTickedBlocks = totalTickedBlocks;
+        this.tickRate = profiler.getTickRate();
 
         chunks = profiler.getByChunk();
         plugins = profiler.getByPlugin();
@@ -51,7 +53,8 @@ class PerformanceSummary {
     public void send(CommandSender sender) {
         sender.sendMessage("");
         sender.sendMessage(ChatColor.GREEN + "===== Slimefun Lag Profiler =====");
-        sender.sendMessage(ChatColor.GOLD + "Total: " + ChatColor.YELLOW + NumberUtils.getAsMillis(totalElapsedTime));
+        sender.sendMessage(ChatColor.GOLD + "Total time: " + ChatColor.YELLOW + NumberUtils.getAsMillis(totalElapsedTime));
+        sender.sendMessage(ChatColor.GOLD + "Running every: " + ChatColor.YELLOW + NumberUtils.roundDecimalNumber(tickRate / 20.0) + "s (" + tickRate + " ticks)");
         sender.sendMessage(ChatColor.GOLD + "Performance: " + getPerformanceRating());
         sender.sendMessage("");
 
@@ -123,7 +126,6 @@ class PerformanceSummary {
             }
 
             Content content = new Text(TextComponent.fromLegacyText(ChatColors.color(builder.toString())));
-
             hoverComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, content));
 
             component.addExtra(hoverComponent);

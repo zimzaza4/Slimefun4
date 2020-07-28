@@ -7,6 +7,7 @@ import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
@@ -15,6 +16,7 @@ import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -29,11 +31,24 @@ public class OreCrusher extends MultiBlockMachine {
 	private final DoubleOreSetting doubleOres = new DoubleOreSetting();
 
 	public OreCrusher(Category category, SlimefunItemStack item) {
-		super(category, item, new ItemStack[]{
-						null, null, null, null, new ItemStack(Material.NETHER_BRICK_FENCE), null, new ItemStack(Material.IRON_BARS), new CustomItem(Material.DISPENSER, "发射器 (朝上)"), new ItemStack(Material.IRON_BARS)}
-				, new ItemStack[]{SlimefunItems.GOLD_4K, SlimefunItems.GOLD_DUST, new ItemStack(Material.GRAVEL), new ItemStack(Material.SAND), new ItemStack(Material.MAGMA_BLOCK, 4), SlimefunItems.SULFATE}, BlockFace.SELF);
+		super(category, item, new ItemStack[]{null, null, null, null, new ItemStack(Material.NETHER_BRICK_FENCE), null, new ItemStack(Material.IRON_BARS), new CustomItem(Material.DISPENSER, "Dispenser (Facing up)"), new ItemStack(Material.IRON_BARS)}, BlockFace.SELF);
 
 		addItemSetting(doubleOres);
+	}
+
+	@Override
+	protected void registerDefaultRecipes(List<ItemStack> recipes) {
+		recipes.add(new ItemStack(Material.COBBLESTONE, 8));
+		recipes.add(new ItemStack(Material.SAND, 1));
+
+		recipes.add(SlimefunItems.GOLD_4K);
+		recipes.add(SlimefunItems.GOLD_DUST);
+
+		recipes.add(new ItemStack(Material.GRAVEL));
+		recipes.add(new ItemStack(Material.SAND));
+
+		recipes.add(new ItemStack(Material.MAGMA_BLOCK, 4));
+		recipes.add(SlimefunItems.SULFATE);
 	}
 
 	public boolean isOreDoublingEnabled() {
@@ -47,12 +62,12 @@ public class OreCrusher extends MultiBlockMachine {
 		displayRecipes.addAll(Arrays.asList(new ItemStack(Material.COAL_ORE), doubleOres.getCoal(), new ItemStack(Material.LAPIS_ORE), doubleOres.getLapisLazuli(), new ItemStack(Material.REDSTONE_ORE), doubleOres.getRedstone(), new ItemStack(Material.DIAMOND_ORE), doubleOres.getDiamond(), new ItemStack(Material.EMERALD_ORE), doubleOres.getEmerald(), new ItemStack(Material.NETHER_QUARTZ_ORE), doubleOres.getNetherQuartz()));
 
 		if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_16)) {
-            displayRecipes.add(new ItemStack(Material.NETHER_GOLD_ORE));
-            displayRecipes.add(doubleOres.getGoldNuggets());
+			displayRecipes.add(new ItemStack(Material.NETHER_GOLD_ORE));
+			displayRecipes.add(doubleOres.getGoldNuggets());
 
-            displayRecipes.add(new ItemStack(Material.GILDED_BLACKSTONE));
-            displayRecipes.add(doubleOres.getGoldNuggets());
-        }
+			displayRecipes.add(new ItemStack(Material.GILDED_BLACKSTONE));
+			displayRecipes.add(doubleOres.getGoldNuggets());
+		}
 	}
 
 	@Override
@@ -63,31 +78,37 @@ public class OreCrusher extends MultiBlockMachine {
 	@Override
 	public void onInteract(Player p, Block b) {
 		Block dispBlock = b.getRelative(BlockFace.DOWN);
-		Dispenser disp = (Dispenser) dispBlock.getState();
-		Inventory inv = disp.getInventory();
+		BlockState state = PaperLib.getBlockState(dispBlock, false).getState();
 
-		for (ItemStack current : inv.getContents()) {
-			for (ItemStack convert : RecipeType.getRecipeInputs(this)) {
-				if (convert != null && SlimefunUtils.isItemSimilar(current, convert, true)) {
-					ItemStack adding = RecipeType.getRecipeOutput(this, convert);
-					Inventory outputInv = findOutputInventory(adding, dispBlock, inv);
-					if (outputInv != null) {
-						ItemStack removing = current.clone();
-						removing.setAmount(convert.getAmount());
-						inv.removeItem(removing);
-						outputInv.addItem(adding);
-						p.getWorld().playEffect(b.getLocation(), Effect.STEP_SOUND, 1);
-					} else SlimefunPlugin.getLocalization().sendMessage(p, "machines.full-inventory", true);
+		if (state instanceof Dispenser) {
+			Dispenser disp = (Dispenser) state;
+			Inventory inv = disp.getInventory();
 
-					return;
+			for (ItemStack current : inv.getContents()) {
+				for (ItemStack convert : RecipeType.getRecipeInputs(this)) {
+					if (convert != null && SlimefunUtils.isItemSimilar(current, convert, true)) {
+						ItemStack adding = RecipeType.getRecipeOutput(this, convert);
+						Inventory outputInv = findOutputInventory(adding, dispBlock, inv);
+						if (outputInv != null) {
+							ItemStack removing = current.clone();
+							removing.setAmount(convert.getAmount());
+							inv.removeItem(removing);
+							outputInv.addItem(adding);
+							p.getWorld().playEffect(b.getLocation(), Effect.STEP_SOUND, 1);
+						} else {
+							SlimefunPlugin.getLocalization().sendMessage(p, "machines.full-inventory", true);
+						}
+
+						return;
+					}
 				}
 			}
-		}
 
-		SlimefunPlugin.getLocalization().sendMessage(p, "machines.unknown-material", true);
+			SlimefunPlugin.getLocalization().sendMessage(p, "machines.unknown-material", true);
+		}
 	}
 
-	private static class DoubleOreSetting extends ItemSetting<Boolean> {
+	private class DoubleOreSetting extends ItemSetting<Boolean> {
 
 		private final ItemStack coal = new ItemStack(Material.COAL, 1);
 		private final ItemStack lapis = new ItemStack(Material.LAPIS_LAZULI, 7);

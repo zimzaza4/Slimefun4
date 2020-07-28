@@ -2,6 +2,7 @@ package io.github.thebusybiscuit.slimefun4.implementation;
 
 import io.github.starwishsama.extra.ProtectionChecker;
 import io.github.starwishsama.extra.SlimefunUpdater;
+import io.github.starwishsama.extra.StarWishUtil;
 import io.github.thebusybiscuit.cscorelib2.config.Config;
 import io.github.thebusybiscuit.cscorelib2.math.DoubleHandler;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectionManager;
@@ -121,6 +122,8 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         } else if (getServer().getPluginManager().isPluginEnabled("CS-CoreLib")) {
             long timestamp = System.nanoTime();
 
+            StarWishUtil.suggestPaper(this);
+
             // We wanna ensure that the Server uses a compatible version of Minecraft
             if (isVersionUnsupported()) {
                 getServer().getPluginManager().disablePlugin(this);
@@ -142,7 +145,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
             int networkSize = config.getInt("networks.max-size");
 
             if (networkSize < 1) {
-                getLogger().log(Level.WARNING, "你的 'networks.max-size' 设置选项设置错误! 它必须大于 1, 你设置为了: {0}", networkSize);
+                getLogger().log(Level.WARNING, "'networks.max-size' 大小设置错误! 它必须大于1, 而你设置的是: {0}", networkSize);
                 networkSize = 1;
             }
 

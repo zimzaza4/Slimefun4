@@ -25,8 +25,8 @@ import java.util.UUID;
 
 abstract class BackpackCrafter extends MultiBlockMachine {
 
-    public BackpackCrafter(Category category, SlimefunItemStack item, ItemStack[] recipe, ItemStack[] machineRecipes, BlockFace trigger) {
-        super(category, item, recipe, machineRecipes, trigger);
+    public BackpackCrafter(Category category, SlimefunItemStack item, ItemStack[] recipe, BlockFace trigger) {
+        super(category, item, recipe, trigger);
     }
 
     protected Inventory createVirtualInventory(Inventory inv) {

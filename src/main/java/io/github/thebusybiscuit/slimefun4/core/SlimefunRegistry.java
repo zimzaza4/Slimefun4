@@ -193,10 +193,6 @@ public class SlimefunRegistry {
         return mobDrops;
     }
 
-    public Set<ItemStack> getMobDrops(EntityType entity) {
-        return mobDrops.get(entity);
-    }
-
     public Set<SlimefunItem> getRadioactiveItems() {
         return radioactive;
     }
