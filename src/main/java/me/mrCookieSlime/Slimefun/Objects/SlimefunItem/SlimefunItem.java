@@ -9,7 +9,10 @@ import io.github.thebusybiscuit.slimefun4.api.SlimefunBranch;
 import io.github.thebusybiscuit.slimefun4.api.exceptions.*;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemState;
-import io.github.thebusybiscuit.slimefun4.core.attributes.*;
+import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
+import io.github.thebusybiscuit.slimefun4.core.attributes.Placeable;
+import io.github.thebusybiscuit.slimefun4.core.attributes.Radioactive;
+import io.github.thebusybiscuit.slimefun4.core.attributes.Rechargeable;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.researching.Research;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
@@ -61,7 +64,7 @@ public class SlimefunItem implements Placeable {
 
     private boolean ticking = false;
     private BlockTicker blockTicker;
-    private GeneratorTicker generatorTicker;
+    protected GeneratorTicker generatorTicker;
 
     /**
      * This creates a new {@link SlimefunItem} from the given arguments.
@@ -360,17 +363,17 @@ public class SlimefunItem implements Placeable {
                 SlimefunPlugin.getRegistry().getRadioactiveItems().add(this);
             }
 
-            if (this instanceof WitherProof) {
-                SlimefunPlugin.getRegistry().getWitherProofBlocks().put(id, (WitherProof) this);
-            }
-
             if (this instanceof EnergyNetComponent && !SlimefunPlugin.getRegistry().getEnergyCapacities().containsKey(getID())) {
-                ((EnergyNetComponent) this).registerComponent(id);
+                int capacity = ((EnergyNetComponent) this).getCapacity();
+
+                if (capacity > 0) {
+                    SlimefunPlugin.getRegistry().getEnergyCapacities().put(id, capacity);
+                }
             }
 
             if (SlimefunPlugin.getItemCfg().getBoolean(id + ".enabled")) {
 
-                if (!SlimefunPlugin.getRegistry().getCategories().contains(category)) {
+                if (!category.isRegistered()) {
                     category.register();
                 }
 

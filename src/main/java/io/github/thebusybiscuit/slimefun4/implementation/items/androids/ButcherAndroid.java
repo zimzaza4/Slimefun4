@@ -3,7 +3,6 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.androids;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -30,14 +29,14 @@ public abstract class ButcherAndroid extends ProgrammableAndroid {
     }
 
     @Override
-    protected void attack(Block b, Predicate<LivingEntity> predicate) {
+    protected void attack(Block b, BlockFace face, Predicate<LivingEntity> predicate) {
         double damage = getTier() >= 3 ? 20D : 4D * getTier();
         double radius = 4.0 + getTier();
 
         for (Entity n : b.getWorld().getNearbyEntities(b.getLocation(), radius, radius, radius, n -> n instanceof LivingEntity && !(n instanceof ArmorStand) && !(n instanceof Player) && n.isValid() && predicate.test((LivingEntity) n))) {
             boolean attack = false;
 
-            switch (BlockFace.valueOf(BlockStorage.getLocationInfo(b.getLocation(), "rotation"))) {
+            switch (face) {
                 case NORTH:
                     attack = n.getLocation().getZ() < b.getZ();
                     break;

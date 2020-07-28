@@ -3,6 +3,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.skull.SkullBlock;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
+import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNet;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
@@ -94,8 +95,8 @@ public class DebugFishListener implements Listener {
         if (item.isTicking()) {
             p.sendMessage(ChatColors.color("&dTicking: " + greenCheckmark));
             p.sendMessage(ChatColors.color("  &dAsync: &e" + (item.getBlockTicker().isSynchronized() ? redCross : greenCheckmark)));
-        } else if (item.getEnergyTicker() != null) {
-            p.sendMessage(ChatColors.color("&dTicking: &3Indirect"));
+        } else if (item instanceof EnergyNetProvider) {
+            p.sendMessage(ChatColors.color("&dTicking: &3Indirect (Generator)"));
         } else {
             p.sendMessage(ChatColors.color("&dTicking: " + redCross));
         }

@@ -19,12 +19,6 @@
         <spigot.version>1.16.1</spigot.version>
         <spigot.javadocs>https://hub.spigotmc.org/javadocs/bukkit/</spigot.javadocs>
 
-        <!-- Default settings for sonarcloud.io -->
-        <sonar.projectKey>TheBusyBiscuit_Slimefun4</sonar.projectKey>
-        <sonar.organization>thebusybiscuit-github</sonar.organization>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.log.level>DEBUG</sonar.log.level>
-        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <repositories>
@@ -130,51 +124,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.2.0</version>
-
-                <configuration>
-                    <reportOutputDirectory>${project.basedir}</reportOutputDirectory>
-                    <destDir>docs</destDir>
-
-                    <doctitle>Slimefun4 - Javadocs</doctitle>
-                    <windowtitle>Slimefun4 - Javadocs</windowtitle>
-                    <detectOfflineLinks>false</detectOfflineLinks>
-                    <additionalJOption>-html5</additionalJOption>
-
-                    <!-- We can reference Bukkit's API in our Javadocs -->
-                    <links>
-                        <link>https://hub.spigotmc.org/javadocs/bukkit/</link>
-                    </links>
-
-                    <!-- We can group pakages together in our Javadocs -->
-                    <groups>
-                        <group>
-                            <title>Slimefun4 - API</title>
-                            <packages>io.github.thebusybiscuit.slimefun4.api*</packages>
-                        </group>
-                        <group>
-                            <title>Slimefun4 - Core packages</title>
-                            <packages>io.github.thebusybiscuit.slimefun4.core*</packages>
-                        </group>
-                        <group>
-                            <title>Slimefun4 - Implementations</title>
-                            <packages>io.github.thebusybiscuit.slimefun4.implementation*</packages>
-                        </group>
-                        <group>
-                            <title>Slimefun4 - Item Implementations</title>
-                            <packages>io.github.thebusybiscuit.slimefun4.implementation.items*</packages>
-                        </group>
-                        <group>
-                            <title>Slimefun4 - Old packages</title>
-                            <packages>me.mrCookieSlime.Slimefun*</packages>
-                        </group>
-                    </groups>
-                </configuration>
-            </plugin>
         </plugins>
 
         <resources>
@@ -212,7 +161,7 @@
         <dependency>
             <groupId>com.github.TheBusyBiscuit</groupId>
             <artifactId>CS-CoreLib</artifactId>
-            <version>9dd4a1cf8d</version>
+            <version>31390302cf</version>
             <scope>provided</scope>
         </dependency>
 
@@ -229,12 +178,29 @@
             <version>1.7</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>3.8.06</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.code.gson</groupId>
+                    <artifactId>gson</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.papermc</groupId>
+            <artifactId>paperlib</artifactId>
+            <version>1.0.4</version>
+            <scope>compile</scope>
+        </dependency>
 
         <!-- Third party plugin integrations -->
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
-            <version>7.1.0</version>
+            <version>7.2.0-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <!-- This one is ignored because it pops up everytime -->
@@ -243,12 +209,33 @@
                     <groupId>de.schlichtherle</groupId>
                     <artifactId>truezip</artifactId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>paperlib</artifactId>
+                    <groupId>io.papermc</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>httpclient</artifactId>
+                    <groupId>org.apache.httpcomponents</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>snakeyaml</artifactId>
+                    <groupId>org.yaml</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>annotations</artifactId>
+                    <groupId>com.google.code.findbugs</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.10.5</version>
+            <version>2.10.6</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -258,18 +245,22 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- System dependency, this project has no maven repository -->
-        <dependency>
             <groupId>me.minebuilders</groupId>
             <artifactId>clearlag-core</artifactId>
             <version>3.1.6</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>snakeyaml</artifactId>
+                    <groupId>org.yaml</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.bekvon.bukkit</groupId>

@@ -1,8 +1,9 @@
 package io.github.thebusybiscuit.slimefun4.core.commands;
 
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
-import io.github.thebusybiscuit.slimefun4.core.commands.subcommands.Commands;
+import io.github.thebusybiscuit.slimefun4.core.commands.subcommands.SlimefunSubCommands;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import org.apache.commons.lang.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 public class SlimefunCommand implements CommandExecutor, Listener {
 
+    private boolean registered = false;
     private final SlimefunPlugin plugin;
     private final List<SubCommand> commands = new LinkedList<>();
     private final Map<SubCommand, Integer> commandUsage = new HashMap<>();
@@ -27,12 +29,15 @@ public class SlimefunCommand implements CommandExecutor, Listener {
     }
 
     public void register() {
+        Validate.isTrue(!registered, "Slimefun's subcommands have already been registered!");
+
+        registered = true;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
         plugin.getCommand("slimefun").setExecutor(this);
         plugin.getCommand("slimefun").setTabCompleter(new SlimefunTabCompleter(this));
 
-        Commands.addCommands(this, commands);
+        commands.addAll(SlimefunSubCommands.getAllCommands(this));
     }
 
     public SlimefunPlugin getPlugin() {

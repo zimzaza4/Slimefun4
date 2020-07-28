@@ -236,7 +236,7 @@ final class CargoUtils {
 
         ItemStackWrapper wrapper = new ItemStackWrapper(stack);
 
-        for (int slot : menu.getPreset().getSlotsAccessedByItemTransport(menu, ItemTransportFlow.INSERT, stack)) {
+        for (int slot : menu.getPreset().getSlotsAccessedByItemTransport(menu, ItemTransportFlow.INSERT, wrapper)) {
             ItemStack itemInSlot = menu.getItemInSlot(slot);
             if (itemInSlot == null) {
                 menu.replaceExistingItem(slot, stack);
@@ -319,8 +319,6 @@ final class CargoUtils {
                     }
 
                     itemInSlot.setAmount(Math.min(amount, maxStackSize));
-                    // Setting item in inventory will clone the ItemStack
-                    inv.setItem(slot, itemInSlot);
 
                     return stack;
                 }

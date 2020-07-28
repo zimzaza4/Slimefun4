@@ -5,6 +5,7 @@ import io.github.thebusybiscuit.slimefun4.api.ErrorReport;
 import io.github.thebusybiscuit.slimefun4.api.network.Network;
 import io.github.thebusybiscuit.slimefun4.api.network.NetworkComponent;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
+import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.reactors.Reactor;
@@ -19,9 +20,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.LongConsumer;
 
@@ -48,16 +47,10 @@ public class EnergyNet extends Network {
             return EnergyNetComponentType.NONE;
         }
 
-        if (SlimefunPlugin.getRegistry().getEnergyGenerators().contains(id)) {
-            return EnergyNetComponentType.GENERATOR;
-        }
+        SlimefunItem item = SlimefunItem.getByID(id);
 
-        if (SlimefunPlugin.getRegistry().getEnergyCapacitors().contains(id)) {
-            return EnergyNetComponentType.CAPACITOR;
-        }
-
-        if (SlimefunPlugin.getRegistry().getEnergyConsumers().contains(id)) {
-            return EnergyNetComponentType.CONSUMER;
+        if (item instanceof EnergyNetComponent) {
+            return ((EnergyNetComponent) item).getEnergyComponentType();
         }
 
         return EnergyNetComponentType.NONE;
@@ -131,19 +124,19 @@ public class EnergyNet extends Network {
         AtomicLong timestamp = new AtomicLong(SlimefunPlugin.getProfiler().newEntry());
 
         if (!regulator.equals(b.getLocation())) {
-            SimpleHologram.update(b, "&4检测到附近有能源调节器");
+            SimpleHologram.update(b, "&4检测到有多个能源调节器");
             return;
         }
 
         super.tick();
 
         if (connectorNodes.isEmpty() && terminusNodes.isEmpty()) {
-            SimpleHologram.update(b, "&4附近没有能源网络");
+            SimpleHologram.update(b, "&4找不到能源网络");
         } else {
-            double supply = DoubleHandler.fixDouble(tickAllGenerators(timestamp::getAndAdd) + tickAllCapacitors());
-            double demand = 0;
-
-            int availableEnergy = (int) supply;
+            Map<Location, Integer> generatorsWithCapacity = new HashMap<>();
+            int supply = tickAllGenerators(generatorsWithCapacity, timestamp::getAndAdd) + tickAllCapacitors();
+            int remainingEnergy = supply;
+            int demand = 0;
 
             for (Location machine : consumers) {
                 int capacity = ChargableBlock.getMaxCharge(machine);
@@ -153,19 +146,19 @@ public class EnergyNet extends Network {
                     int availableSpace = capacity - charge;
                     demand += availableSpace;
 
-                    if (availableEnergy > 0) {
-                        if (availableEnergy > availableSpace) {
+                    if (remainingEnergy > 0) {
+                        if (remainingEnergy > availableSpace) {
                             ChargableBlock.setUnsafeCharge(machine, capacity, false);
-                            availableEnergy -= availableSpace;
+                            remainingEnergy -= availableSpace;
                         } else {
-                            ChargableBlock.setUnsafeCharge(machine, charge + availableEnergy, false);
-                            availableEnergy = 0;
+                            ChargableBlock.setUnsafeCharge(machine, charge + remainingEnergy, false);
+                            remainingEnergy = 0;
                         }
                     }
                 }
             }
 
-            storeExcessEnergy(availableEnergy);
+            storeExcessEnergy(generatorsWithCapacity, remainingEnergy);
             updateHologram(b, supply, demand);
         }
 
@@ -173,7 +166,7 @@ public class EnergyNet extends Network {
         SlimefunPlugin.getProfiler().closeEntry(b.getLocation(), SlimefunItems.ENERGY_REGULATOR.getItem(), timestamp.get());
     }
 
-    private void storeExcessEnergy(int available) {
+    private void storeExcessEnergy(Map<Location, Integer> generators, int available) {
         for (Location capacitor : storage) {
             if (available > 0) {
                 int capacity = ChargableBlock.getMaxCharge(capacitor);
@@ -190,27 +183,26 @@ public class EnergyNet extends Network {
             }
         }
 
-        for (Location generator : generators) {
-            int capacity = ChargableBlock.getMaxCharge(generator);
+        for (Map.Entry<Location, Integer> entry : generators.entrySet()) {
+            Location generator = entry.getKey();
+            int capacity = entry.getValue();
 
-            if (capacity > 0) {
-                if (available > 0) {
-                    if (available > capacity) {
-                        ChargableBlock.setUnsafeCharge(generator, capacity, false);
-                        available = available - capacity;
-                    } else {
-                        ChargableBlock.setUnsafeCharge(generator, available, false);
-                        available = 0;
-                    }
+            if (available > 0) {
+                if (available > capacity) {
+                    ChargableBlock.setUnsafeCharge(generator, capacity, false);
+                    available -= capacity;
                 } else {
-                    ChargableBlock.setUnsafeCharge(generator, 0, false);
+                    ChargableBlock.setUnsafeCharge(generator, available, false);
+                    available = 0;
                 }
+            } else {
+                ChargableBlock.setUnsafeCharge(generator, 0, false);
             }
         }
     }
 
-    private double tickAllGenerators(LongConsumer timeCallback) {
-        double supply = 0;
+    private int tickAllGenerators(Map<Location, Integer> generatorsWithCapacity, LongConsumer timeCallback) {
+        int supply = 0;
         Set<Location> exploded = new HashSet<>();
 
         for (Location source : generators) {
@@ -218,9 +210,51 @@ public class EnergyNet extends Network {
             Config config = BlockStorage.getLocationInfo(source);
             SlimefunItem item = SlimefunItem.getByID(config.getString("id"));
 
-            if (item != null) {
+            if (item instanceof EnergyNetProvider) {
                 try {
+                    EnergyNetProvider provider = (EnergyNetProvider) item;
+                    int energy = provider.getGeneratedOutput(source, config);
+
+                    if (provider.getCapacity() > 0) {
+                        generatorsWithCapacity.put(source, provider.getCapacity());
+                        String charge = config.getString("energy-charge");
+
+                        if (charge != null) {
+                            energy += Integer.parseInt(charge);
+                        }
+                    }
+
+                    if (provider.willExplode(source, config)) {
+                        exploded.add(source);
+                        BlockStorage.clearBlockInfo(source);
+                        Reactor.processing.remove(source);
+                        Reactor.progress.remove(source);
+
+                        Slimefun.runSync(() -> {
+                            source.getBlock().setType(Material.LAVA);
+                            source.getWorld().createExplosion(source, 0F, false);
+                        });
+                    } else {
+                        supply += energy;
+                    }
+                } catch (Exception | LinkageError t) {
+                    exploded.add(source);
+                    new ErrorReport(t, source, item);
+                }
+
+                long time = SlimefunPlugin.getProfiler().closeEntry(source, item, timestamp);
+                timeCallback.accept(time);
+            } else if (item != null) {
+                try {
+                    // This will be removed very very soon
+                    // It is only here for temporary backwards compatibility
                     GeneratorTicker generator = item.getEnergyTicker();
+
+                    Integer capacity = SlimefunPlugin.getRegistry().getEnergyCapacities().get(item.getID());
+
+                    if (capacity != null && capacity > 0) {
+                        generatorsWithCapacity.put(source, capacity);
+                    }
 
                     if (generator != null) {
                         double energy = generator.generateEnergy(source, item, config);
@@ -255,12 +289,11 @@ public class EnergyNet extends Network {
         }
 
         generators.removeAll(exploded);
-
         return supply;
     }
 
-    private double tickAllCapacitors() {
-        double supply = 0;
+    private int tickAllCapacitors() {
+        int supply = 0;
 
         for (Location capacitor : storage) {
             supply += ChargableBlock.getCharge(capacitor);

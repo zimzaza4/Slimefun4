@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.api;
 
+import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
@@ -112,7 +113,7 @@ public class ErrorReport {
                 stream.println();
             }
 
-            if (item.getEnergyTicker() != null) {
+            if (item instanceof EnergyNetProvider) {
                 stream.println("Ticker-Info:");
                 stream.println("  Type: Indirect (Energy Network)");
                 stream.println();
