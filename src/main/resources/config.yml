@@ -15,6 +15,7 @@
 #    enable-translations - 多语言功能
 #    backwards-compatibility - 物品向后兼容模式, 关闭后物品会使用新版物品系统
 #                             将会提升服务器性能, 并且关闭对 1.13 的向后兼容
+#    log-duplicate-block-entries - 是否输出发现重复方块的警告
 options:
   auto-update: true
   armor-update-interval: 10
@@ -30,6 +31,7 @@ options:
   language: zh-CN
   enable-translations: true
   backwards-compatibility: true
+  log-duplicate-block-entries: true
 guide:
   # 是否默认使用书与笔进行GUI的展示
   default-view-book: false
