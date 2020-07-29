@@ -167,7 +167,7 @@ public class MetricsService {
 
             return node.getObject().getInt("tag_name");
         } catch (UnirestException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to fetch latest builds for SFMetrics");
+            plugin.getLogger().log(Level.SEVERE, "无法获取最新的 SFMetrics 构建");
             return -1;
         }
     }
@@ -181,7 +181,7 @@ public class MetricsService {
         File f = new File(parentFolder, "Metrics-" + version + ".jar");
 
         try {
-            plugin.getLogger().log(Level.INFO, "# Starting download of MetricsModule build: #{0}", version);
+            plugin.getLogger().log(Level.INFO, "# 开始下载 Metrics 组件 构建版本: #{0}", version);
 
             AtomicInteger lastPercentPosted = new AtomicInteger();
             GetRequest request = Unirest.get(GH_RELEASES + "/" + version + "/" + REPO_NAME + ".jar");
@@ -196,7 +196,7 @@ public class MetricsService {
             }).asFile(f.getPath());
 
             if (response.isSuccess()) {
-                plugin.getLogger().log(Level.INFO, "Successfully downloaded {0} build: #{1}", new Object[]{REPO_NAME, version});
+                plugin.getLogger().log(Level.INFO, "成功下载 {0} build: #{1}", new Object[]{REPO_NAME, version});
 
                 // Replace the metric file with the new one
                 Files.move(f.toPath(), metricsModuleFile.toPath(), StandardCopyOption.REPLACE_EXISTING);

@@ -1,7 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation;
 
+import io.github.starwishsama.extra.NUpdater;
 import io.github.starwishsama.extra.ProtectionChecker;
-import io.github.starwishsama.extra.SlimefunUpdater;
 import io.github.starwishsama.extra.StarWishUtil;
 import io.github.thebusybiscuit.cscorelib2.config.Config;
 import io.github.thebusybiscuit.cscorelib2.math.DoubleHandler;
@@ -77,6 +77,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     private final BlockDataService blockDataService = new BlockDataService(this, "slimefun_block");
     private final CustomTextureService textureService = new CustomTextureService(new Config(this, "item-models.yml"));
     private final GitHubService gitHubService = new GitHubService("TheBusyBiscuit/Slimefun4");
+    private final UpdaterService updaterService = new UpdaterService(this, getDescription().getVersion(), getFile());
     private final MetricsService metricsService = new MetricsService(this);
     private final AutoSavingService autoSavingService = new AutoSavingService();
     private final BackupService backupService = new BackupService();
@@ -86,7 +87,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     private final MinecraftRecipeService recipeService = new MinecraftRecipeService(this);
     private final SlimefunProfiler profiler = new SlimefunProfiler();
     private LocalizationService local;
-    private SlimefunUpdater updater;
+    private NUpdater updater;
 
     private GPSNetwork gpsNetwork;
     private NetworkManager networkManager;
@@ -165,7 +166,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
             // 魔改的自动更新服务
             // 自动选择分支
-            SlimefunUpdater.autoSelectBranch(this);
+            NUpdater.autoSelectBranch(this);
 
             // Registering all GEO Resources
             getLogger().log(Level.INFO, "加载矿物资源...");
@@ -215,8 +216,8 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
             getLogger().log(Level.INFO, "Slimefun 完成加载, 耗时 {0}", getStartupTime(timestamp));
 
             if (config.getBoolean("options.auto-update") || config.getBoolean("options.update-check")) {
-                if (SlimefunUpdater.getBranch() == SlimefunBranch.DEVELOPMENT || SlimefunUpdater.getBranch() == SlimefunBranch.STABLE) {
-                    updater = new SlimefunUpdater();
+                if (NUpdater.getBranch() == SlimefunBranch.DEVELOPMENT || NUpdater.getBranch() == SlimefunBranch.STABLE) {
+                    updater = new NUpdater();
                     Bukkit.getServer().getScheduler().runTaskAsynchronously(instance, updater::checkUpdate);
                 }
             }
@@ -518,6 +519,20 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
     public static PerWorldSettingsService getWorldSettingsService() {
         return instance.worldSettingsService;
+    }
+
+    /**
+     * SFMetrics 反射到的只有这个方法
+     * 所以只能加回来了, 但是它并没有实际作用
+     * 替代品请见 {@link NUpdater}
+     * <p>
+     * This method returns the {@link UpdaterService} of Slimefun.
+     * It is used to handle automatic updates.
+     *
+     * @return The {@link UpdaterService} for Slimefun
+     */
+    public static UpdaterService getUpdater() {
+        return instance.updaterService;
     }
 
     /**

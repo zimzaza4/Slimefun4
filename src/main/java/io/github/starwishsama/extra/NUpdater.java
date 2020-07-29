@@ -27,7 +27,7 @@ import java.util.logging.Level;
 /**
  * @author Nameless
  */
-public class SlimefunUpdater {
+public class NUpdater {
 
     private GithubBean updateInfoCache;
     private final Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();

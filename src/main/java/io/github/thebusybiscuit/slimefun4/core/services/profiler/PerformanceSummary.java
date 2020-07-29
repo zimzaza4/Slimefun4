@@ -6,8 +6,6 @@ import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Content;
-import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -125,8 +123,8 @@ class PerformanceSummary {
                 builder.append("\n\n&c+ &6").append(hidden).append(" more");
             }
 
-            Content content = new Text(TextComponent.fromLegacyText(ChatColors.color(builder.toString())));
-            hoverComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, content));
+            // 旧版本似乎并没有 net.md_5.bungee.api.chat.hover.content.Content
+            hoverComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(ChatColors.color(builder.toString()))));
 
             component.addExtra(hoverComponent);
         }
@@ -183,7 +181,7 @@ class PerformanceSummary {
 
         builder.append(" - ");
 
-        builder.append(rating.getColor() + ChatUtils.humanize(rating.name()));
+        builder.append(rating.getColor()).append(ChatUtils.humanize(rating.name()));
 
         builder.append(ChatColor.GRAY);
         builder.append(" (");

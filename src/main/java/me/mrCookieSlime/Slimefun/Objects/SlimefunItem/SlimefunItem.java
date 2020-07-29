@@ -1,6 +1,6 @@
 package me.mrCookieSlime.Slimefun.Objects.SlimefunItem;
 
-import io.github.starwishsama.extra.SlimefunUpdater;
+import io.github.starwishsama.extra.NUpdater;
 import io.github.thebusybiscuit.cscorelib2.collections.OptionalMap;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
@@ -452,7 +452,7 @@ public class SlimefunItem implements Placeable {
      *            The {@link Class} from which to start this operation.
      */
     private void checkForDeprecations(Class<?> c) {
-        if (SlimefunUpdater.getBranch() == SlimefunBranch.DEVELOPMENT) {
+        if (NUpdater.getBranch() == SlimefunBranch.DEVELOPMENT) {
             // This method is currently way too spammy with all the restructuring going on...
             // Since DEV builds are anyway under "development", things may be relocated.
             // So we fire these only for stable versions, since devs should update then, so

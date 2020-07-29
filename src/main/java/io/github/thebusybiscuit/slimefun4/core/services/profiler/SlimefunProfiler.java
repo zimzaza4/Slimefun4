@@ -299,7 +299,9 @@ public class SlimefunProfiler {
      * This method checks whether the {@link SlimefunProfiler} has collected timings on
      * the given {@link Block}
      *
-     * @param b The {@link Block}
+     * @param b
+     *            The {@link Block}
+     *
      * @return Whether timings of this {@link Block} have been collected
      */
     public boolean hasTimings(Block b) {
