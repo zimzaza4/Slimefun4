@@ -13,6 +13,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.BookSlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.CheatSheetSlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.ChestSlimefunGuide;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.AutomatedCraftingChamber;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunBlockHandler;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
@@ -54,11 +55,12 @@ public class SlimefunRegistry {
     private boolean enableResearches;
     private boolean freeCreativeResearches;
     private boolean researchFireworks;
+    private boolean logDuplicateBlockEntries;
     private boolean useMoneyUnlock;
 
     private final Set<String> tickers = new HashSet<>();
     private final Set<SlimefunItem> radioactive = new HashSet<>();
-    private final Set<String> activeChunks = new HashSet<>();
+    private final Set<String> activeChunks = ConcurrentHashMap.newKeySet();
 
     private final KeyMap<GEOResource> geoResources = new KeyMap<>();
 
@@ -73,7 +75,7 @@ public class SlimefunRegistry {
     private final Map<Class<? extends ItemHandler>, Set<ItemHandler>> globalItemHandlers = new HashMap<>();
     private final Map<String, SlimefunBlockHandler> blockHandlers = new HashMap<>();
 
-    private final Map<String, Set<Location>> activeTickers = new HashMap<>();
+    private final Map<String, Set<Location>> activeTickers = new ConcurrentHashMap<>();
 
     private final Map<String, ItemStack> automatedCraftingChamberRecipes = new HashMap<>();
 
@@ -89,6 +91,7 @@ public class SlimefunRegistry {
         backwardsCompatibility = cfg.getBoolean("options.backwards-compatibility") || SlimefunPlugin.getMinecraftVersion().isBefore(MinecraftVersion.MINECRAFT_1_14);
         freeCreativeResearches = cfg.getBoolean("researches.free-in-creative-mode");
         researchFireworks = cfg.getBoolean("researches.enable-fireworks");
+        logDuplicateBlockEntries = cfg.getBoolean("options.log-duplicate-block-entries");
         useMoneyUnlock = cfg.getBoolean("researches.use-money-unlock");
     }
 
@@ -177,10 +180,6 @@ public class SlimefunRegistry {
         return researchFireworks;
     }
 
-    public boolean isUseMoneyUnlock() {
-        return useMoneyUnlock;
-    }
-
     public List<MultiBlock> getMultiBlocks() {
         return multiblocks;
     }
@@ -249,9 +248,22 @@ public class SlimefunRegistry {
         return geoResources;
     }
 
+    /**
+     * This method returns a list of recipes for the {@link AutomatedCraftingChamber}
+     *
+     * @return A list of recipes for the {@link AutomatedCraftingChamber}
+     * @deprecated This just a really bad way to do this. Someone needs to rewrite this.
+     */
     @Deprecated
     public Map<String, ItemStack> getAutomatedCraftingChamberRecipes() {
         return automatedCraftingChamberRecipes;
     }
 
+    public boolean logDuplicateBlockEntries() {
+        return logDuplicateBlockEntries;
+    }
+
+    public boolean isUseMoneyUnlock() {
+        return useMoneyUnlock;
+    }
 }
