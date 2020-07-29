@@ -20,7 +20,7 @@ options:
   auto-update: true
   armor-update-interval: 10
   enable-armor-effects: true
-  chat-prefix: '&a&lSlimefun 4&7> '
+  chat-prefix: '&a&lSlimefun 4 &7> '
   auto-save-delay-in-minutes: 10
   emerald-enchantment-limit: 2
   research-give-fireworks: true

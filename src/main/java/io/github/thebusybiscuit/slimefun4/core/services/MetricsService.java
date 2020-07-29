@@ -41,12 +41,7 @@ public class MetricsService {
     private boolean hasDownloadedUpdate = false;
 
     static {
-        Unirest.config()
-                .concurrency(2, 1)
-                .setDefaultHeader("User-Agent", "MetricsModule Auto-Updater")
-                .setDefaultHeader("Accept", "application/vnd.github.v3+json")
-                .enableCookieManagement(false)
-                .cookieSpec("ignoreCookies");
+        Unirest.config().concurrency(2, 1).setDefaultHeader("User-Agent", "MetricsModule Auto-Updater").setDefaultHeader("Accept", "application/vnd.github.v3+json").enableCookieManagement(false).cookieSpec("ignoreCookies");
     }
 
     public MetricsService(SlimefunPlugin plugin) {
@@ -65,10 +60,10 @@ public class MetricsService {
      */
     public void start() {
         if (!metricsModuleFile.exists()) {
-            plugin.getLogger().info(REPO_NAME + " does not exist, downloading...");
+            plugin.getLogger().info(REPO_NAME + " 不存在, 正在下载...");
 
             if (!download(getLatestVersion())) {
-                plugin.getLogger().warning("Failed to start metrics as the file could not be downloaded.");
+                plugin.getLogger().warning("无法启动统计系统, 因为文件未能被下载.");
                 return;
             }
         }
@@ -84,8 +79,7 @@ public class MetricsService {
             // If it has not been newly downloaded, auto-updates are on AND there's a new version
             // then cleanup, download and start
             if (!hasDownloadedUpdate && hasAutoUpdates() && checkForUpdate(metricVersion)) {
-                plugin.getLogger().info("Cleaning up and re-loading Metrics.");
-                cleanUp();
+                plugin.getLogger().info("Cleaned up, now re-loading Metrics-Module!");
                 start();
                 return;
             }
@@ -114,8 +108,8 @@ public class MetricsService {
      */
     public void cleanUp() {
         try {
-            if (this.moduleClassLoader != null) {
-                this.moduleClassLoader.close();
+            if (moduleClassLoader != null) {
+                moduleClassLoader.close();
             }
         } catch (IOException e) {
             plugin.getLogger().log(Level.WARNING, "Could not clean up module class loader. Some memory may have been leaked.");
@@ -137,6 +131,7 @@ public class MetricsService {
         int latest = getLatestVersion();
 
         if (latest > Integer.parseInt(currentVersion)) {
+            cleanUp();
             return download(latest);
         }
 
@@ -167,7 +162,7 @@ public class MetricsService {
 
             return node.getObject().getInt("tag_name");
         } catch (UnirestException e) {
-            plugin.getLogger().log(Level.SEVERE, "无法获取最新的 SFMetrics 构建");
+            plugin.getLogger().log(Level.SEVERE, "Failed to fetch latest builds for SFMetrics");
             return -1;
         }
     }
@@ -175,13 +170,14 @@ public class MetricsService {
     /**
      * Downloads the version specified to Slimefun's data folder.
      *
-     * @param version The version to download.
+     * @param version
+     *            The version to download.
      */
     private boolean download(int version) {
         File f = new File(parentFolder, "Metrics-" + version + ".jar");
 
         try {
-            plugin.getLogger().log(Level.INFO, "# 开始下载 Metrics 组件 构建版本: #{0}", version);
+            plugin.getLogger().log(Level.INFO, "# 开始下载 MetricsModule 版本: #{0}", version);
 
             AtomicInteger lastPercentPosted = new AtomicInteger();
             GetRequest request = Unirest.get(GH_RELEASES + "/" + version + "/" + REPO_NAME + ".jar");
@@ -190,13 +186,13 @@ public class MetricsService {
                 int percent = (int) (20 * (Math.round((((double) bytesWritten / totalBytes) * 100) / 20)));
 
                 if (percent != 0 && percent != lastPercentPosted.get()) {
-                    plugin.getLogger().info("# Downloading... " + percent + "% " + "(" + bytesWritten + "/" + totalBytes + " bytes)");
+                    plugin.getLogger().info("# 正在下载... " + percent + "% " + "(" + bytesWritten + "/" + totalBytes + " bytes)");
                     lastPercentPosted.set(percent);
                 }
             }).asFile(f.getPath());
 
             if (response.isSuccess()) {
-                plugin.getLogger().log(Level.INFO, "成功下载 {0} build: #{1}", new Object[]{REPO_NAME, version});
+                plugin.getLogger().log(Level.INFO, "成功下载 {0} 构建号 #{1}", new Object[]{REPO_NAME, version});
 
                 // Replace the metric file with the new one
                 Files.move(f.toPath(), metricsModuleFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -206,10 +202,11 @@ public class MetricsService {
                 return true;
             }
         } catch (UnirestException e) {
-            plugin.getLogger().log(Level.WARNING, "Failed to fetch the latest jar file from the" + " builds page. Perhaps GitHub is down.");
+            plugin.getLogger().log(Level.WARNING, "无法从构建页面获取最新版本文件");
         } catch (IOException e) {
-            plugin.getLogger().log(Level.WARNING, "Failed to replace the old metric file with the " + "new one. Please do this manually! Error: {0}", e.getMessage());
+            plugin.getLogger().log(Level.WARNING, "无法将旧版本的 SFMetric 替换为新版本, 请手动替换! 错误信息: {0}", e.getMessage());
         }
+
         return false;
     }
 

@@ -4,6 +4,7 @@ import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 class TransformCommand extends SubCommand {
     TransformCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
@@ -44,21 +46,27 @@ class TransformCommand extends SubCommand {
 
                 SlimefunPlugin.getLocalization().sendMessage(sender, "messages.transform.in-progress", true);
 
-                p.getInventory().forEach(is -> {
-                    if (is != null && is.getType() != Material.AIR) {
-                        ItemMeta meta = is.getItemMeta();
-                        if (meta != null) {
-                            List<String> lore = meta.getLore();
-                            if (lore != null) {
-                                for (int i = 0; i < lore.size(); i++) {
-                                    if (lore.get(i).contains("§r")) {
-                                        lore.set(i, lore.get(i).replace("§r", "§f"));
+                try {
+                    p.getInventory().forEach(is -> {
+                        if (is != null && is.getType() != Material.AIR) {
+                            ItemMeta meta = is.getItemMeta();
+                            if (meta != null) {
+                                List<String> lore = meta.getLore();
+                                if (lore != null && !lore.isEmpty()) {
+                                    for (int i = 0; i < lore.size(); i++) {
+                                        String oldColor = ChatColors.color("&r");
+                                        String newColor = ChatColors.color("&f");
+                                        if (lore.get(i).contains(oldColor)) {
+                                            lore.set(i, lore.get(i).replace(oldColor, newColor));
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                });
+                    });
+                } catch (Exception e) {
+                    Slimefun.getLogger().log(Level.WARNING, "在转换物品时发生了错误", e);
+                }
 
                 noticedPlayer.remove(p);
                 SlimefunPlugin.getLocalization().sendMessage(sender, "messages.transform.success", true);
