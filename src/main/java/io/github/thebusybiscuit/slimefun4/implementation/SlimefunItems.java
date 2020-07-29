@@ -10,6 +10,7 @@ import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import io.github.thebusybiscuit.slimefun4.utils.LoreBuilder;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ColoredFireworkStar;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -18,7 +19,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class SlimefunItems {
@@ -34,6 +37,7 @@ public final class SlimefunItems {
     public static final SlimefunItemStack BROKEN_SPAWNER = new SlimefunItemStack("BROKEN_SPAWNER", Material.SPAWNER, "&c已损坏的刷怪笼", "&7类型: &b<类型>", "", "&c已损坏, 需要在古代祭坛中修复");
     public static final SlimefunItemStack REPAIRED_SPAWNER = new SlimefunItemStack("REINFORCED_SPAWNER", Material.SPAWNER, "&b已修复的刷怪笼", "&7类型: &b<类型>");
     public static final SlimefunItemStack INFERNAL_BONEMEAL = new SlimefunItemStack("INFERNAL_BONEMEAL", Material.BONE_MEAL, "&4地狱骨粉", "", "&c加速地狱疣的生长速度");
+    public static final SlimefunItemStack TAPE_MEASURE = new SlimefunItemStack("TAPE_MEASURE", "180d5c43a6cf5bb7769fd0c8240e1e70d2ae38ef9d78a1db401aca6a2cb36f65", "&6卷尺", "", "&eShift + 右键 &7设置测量起点", "&e右键 &7测量距离");
 
     /*		 Gadgets 		*/
     public static final SlimefunItemStack GOLD_PAN = new SlimefunItemStack("GOLD_PAN", Material.BOWL, "&6淘金盘", "&a&o可以获得各种各样的矿物", "", "&7&e右键&7 从沙砾中淘金");
@@ -42,6 +46,7 @@ public final class SlimefunItems {
     public static final SlimefunItemStack GRAPPLING_HOOK = new SlimefunItemStack("GRAPPLING_HOOK", Material.LEAD, "&6抓钩", "", LoreBuilder.RIGHT_CLICK_TO_USE);
     public static final SlimefunItemStack SOLAR_HELMET = new SlimefunItemStack("SOLAR_HELMET", Material.IRON_HELMET, "&b太阳能头盔", "", "&a&o为你拿着的物品和装备充电");
     public static final SlimefunItemStack CLOTH = new SlimefunItemStack("CLOTH", Material.PAPER, "&b布");
+    public static final SlimefunItemStack REINFORCED_CLOTH = new SlimefunItemStack("REINFORCED_CLOTH", Material.PAPER, "&bReinforced Cloth", "", "&fThis cloth has been reinforced", "&fwith &bLead &fto protect against", "&fradioactive substances");
     public static final SlimefunItemStack TIN_CAN = new SlimefunItemStack("CAN", HeadTexture.TIN_CAN, "&r锡罐");
     public static final SlimefunItemStack NIGHT_VISION_GOGGLES = new SlimefunItemStack("NIGHT_VISION_GOGGLES", Material.LEATHER_HELMET, Color.BLACK, "&a夜视眼镜", "", "&9+ 夜视效果");
     public static final SlimefunItemStack FARMER_SHOES = new SlimefunItemStack("FARMER_SHOES", Material.LEATHER_BOOTS, Color.YELLOW, "&e农夫的靴子", "", "&6&o能够防止你踩坏农田");
@@ -235,10 +240,36 @@ public final class SlimefunItems {
     public static final SlimefunItemStack REINFORCED_ALLOY_LEGGINGS = new SlimefunItemStack("REINFORCED_ALLOY_LEGGINGS", Material.IRON_LEGGINGS, "&b强化合金护腿");
     public static final SlimefunItemStack REINFORCED_ALLOY_BOOTS = new SlimefunItemStack("REINFORCED_ALLOY_BOOTS", Material.IRON_BOOTS, "&b强化合金靴子");
 
-    public static final SlimefunItemStack SCUBA_HELMET = new SlimefunItemStack("SCUBA_HELMET", Material.LEATHER_HELMET, Color.ORANGE, "&c潜水头盔", "", "&b让你能够在水下呼吸", "&4&o防化套装的一部分");
-    public static final SlimefunItemStack HAZMAT_CHESTPLATE = new SlimefunItemStack("HAZMAT_CHESTPLATE", Material.LEATHER_CHESTPLATE, Color.ORANGE, "&c防化服", "", "&b让你能在火焰中行走", "&4&o防化套装的一部分");
-    public static final SlimefunItemStack HAZMAT_LEGGINGS = new SlimefunItemStack("HAZMAT_LEGGINGS", Material.LEATHER_LEGGINGS, Color.ORANGE, "&c防化护腿", "", "&4&o防化套装的一部分");
-    public static final SlimefunItemStack RUBBER_BOOTS = new SlimefunItemStack("RUBBER_BOOTS", Material.LEATHER_BOOTS, Color.BLACK, "&c橡胶靴", "", "&4&o防化套装的一部分");
+    private static final List<String> hazmatLore = new ArrayList<>();
+
+    static {
+        hazmatLore.add("");
+        hazmatLore.add(ChatColor.GOLD + "装备全套效果:");
+        hazmatLore.add(ChatColor.YELLOW + "- 免疫辐射伤害");
+
+        if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_15)) {
+            hazmatLore.add(ChatColor.YELLOW + "- Bee Sting protection");
+        }
+    }
+
+    public static final SlimefunItemStack SCUBA_HELMET = new SlimefunItemStack("SCUBA_HELMET", Material.LEATHER_HELMET, Color.ORANGE, "&c潜水头盔", "", "&7让你能够在水下呼吸");
+    public static final SlimefunItemStack HAZMAT_CHESTPLATE = new SlimefunItemStack("HAZMAT_CHESTPLATE", Material.LEATHER_CHESTPLATE, Color.ORANGE, "&c防化服", "", "&7让你能在火焰和岩浆里行走");
+    public static final SlimefunItemStack HAZMAT_LEGGINGS = new SlimefunItemStack("HAZMAT_LEGGINGS", Material.LEATHER_LEGGINGS, Color.ORANGE, "&c防化护腿", hazmatLore.toArray(new String[0]));
+    public static final SlimefunItemStack HAZMAT_BOOTS = new SlimefunItemStack("RUBBER_BOOTS", Material.LEATHER_BOOTS, Color.BLACK, "&c防化靴", hazmatLore.toArray(new String[0]));
+
+    static {
+        ItemMeta helmetMeta = SCUBA_HELMET.getItemMeta();
+        List<String> helmetLore = helmetMeta.getLore();
+        helmetLore.addAll(hazmatLore);
+        helmetMeta.setLore(helmetLore);
+        SCUBA_HELMET.setItemMeta(helmetMeta);
+
+        ItemMeta chestplateMeta = HAZMAT_CHESTPLATE.getItemMeta();
+        List<String> chestplateLore = chestplateMeta.getLore();
+        chestplateLore.addAll(hazmatLore);
+        chestplateMeta.setLore(chestplateLore);
+        HAZMAT_CHESTPLATE.setItemMeta(chestplateMeta);
+    }
 
     public static final SlimefunItemStack GILDED_IRON_HELMET = new SlimefunItemStack("GILDED_IRON_HELMET", Material.GOLDEN_HELMET, "&6镀金铁头盔");
     public static final SlimefunItemStack GILDED_IRON_CHESTPLATE = new SlimefunItemStack("GILDED_IRON_CHESTPLATE", Material.GOLDEN_CHESTPLATE, "&6镀金铁胸甲");
@@ -317,7 +348,8 @@ public final class SlimefunItems {
     public static final SlimefunItemStack ENDER_LUMP_2 = new SlimefunItemStack("ENDER_LUMP_2", Material.GOLD_NUGGET, "&5末影因子 &7- &eII", "", "&c&o等级: II");
     public static final SlimefunItemStack ENDER_LUMP_3 = new SlimefunItemStack("ENDER_LUMP_3", Material.GOLD_NUGGET, "&5末影因子 &7- &eIII", "", "&c&o等级: III");
     public static final SlimefunItemStack MAGICAL_BOOK_COVER = new SlimefunItemStack("MAGICAL_BOOK_COVER", Material.PAPER, "&6魔法书皮", "", "&a&o用于各种魔法书");
-    public static final SlimefunItemStack MAGICAL_ZOMBIE_PILLS = new SlimefunItemStack("MAGICAL_ZOMBIE_PILLS", Material.NETHER_WART, "&6魔法僵尸药丸", "", "&e右键 &7将僵尸村民", "&7立即被治愈回村民");
+    public static final SlimefunItemStack MAGICAL_ZOMBIE_PILLS = new SlimefunItemStack("MAGICAL_ZOMBIE_PILLS", Material.NETHER_WART, "&6还魂丹", "", "&e右键 &7将僵尸村民", "&7立即治愈为村民");
+    public static final SlimefunItemStack MAGICAL_GLASS = new SlimefunItemStack("MAGICAL_GLASS", Material.GLASS_PANE, "&6魔法玻璃", "", "&a&o被多种魔法道具使用");
     public static final SlimefunItemStack BASIC_CIRCUIT_BOARD = new SlimefunItemStack("BASIC_CIRCUIT_BOARD", Material.ACTIVATOR_RAIL, "&b基础电路板");
     public static final SlimefunItemStack ADVANCED_CIRCUIT_BOARD = new SlimefunItemStack("ADVANCED_CIRCUIT_BOARD", Material.POWERED_RAIL, "&b高级电路板");
     public static final SlimefunItemStack WHEAT_FLOUR = new SlimefunItemStack("WHEAT_FLOUR", Material.SUGAR, "&r小麦粉");
@@ -591,6 +623,7 @@ public final class SlimefunItems {
     public static final SlimefunItemStack RAINBOW_RUNE = new SlimefunItemStack("ANCIENT_RUNE_RAINBOW", new ColoredFireworkStar(Color.FUCHSIA, "&7古代符文 &8&l[&d&l虹&8&l]"));
     public static final SlimefunItemStack LIGHTNING_RUNE = new SlimefunItemStack("ANCIENT_RUNE_LIGHTNING", new ColoredFireworkStar(Color.fromRGB(255, 255, 95), "&7古代符文 &8&l[&e&l雷&8&l]"));
     public static final SlimefunItemStack SOULBOUND_RUNE = new SlimefunItemStack("ANCIENT_RUNE_SOULBOUND", new ColoredFireworkStar(Color.fromRGB(47, 0, 117), "&7古代符文 &8&l[&5&l灵魂绑定&8&l]", "&e先把你要绑定的物品丢到地上", "&e然后把这个符文丢向那个物品", "&5就能灵魂绑定 &e那个物品.", " ", "&e建议你在 &6重要 &e物品上使用.", " ", "&e绑定后的物品死亡后不会掉落."));
+    public static final SlimefunItemStack ENCHANTMENT_RUNE = new SlimefunItemStack("ANCIENT_RUNE_ENCHANTMENT", new ColoredFireworkStar(Color.fromRGB(255, 217, 25), "&7古代符文 &8&l[&6&l附魔&8&l]", "&e把符文丢向你已经丢出的", "&e需要被 &6附魔 &e的物品", "&e该物品会获得一个随机的附魔属性."));
 
     /*		Electricity			*/
     public static final SlimefunItemStack SOLAR_GENERATOR = new SlimefunItemStack("SOLAR_GENERATOR", Material.DAYLIGHT_DETECTOR, "&b太阳能发电机", "", LoreBuilder.machine(MachineTier.BASIC, MachineType.GENERATOR), LoreBuilder.powerBuffer(0), LoreBuilder.powerPerSecond(4));
@@ -777,7 +810,8 @@ public final class SlimefunItems {
     public static final SlimefunItemStack FLUID_PUMP = new SlimefunItemStack("FLUID_PUMP", Material.BLUE_TERRACOTTA, "&9流体泵", "", LoreBuilder.machine(MachineTier.ADVANCED, MachineType.MACHINE), "&8\u21E8 &e\u26A1 &732 J/个方块");
     public static final SlimefunItemStack CHARGING_BENCH = new SlimefunItemStack("CHARGING_BENCH", Material.CRAFTING_TABLE, "&6充电台", "", "&r能够给物品充电, 比如喷气背包", "", LoreBuilder.machine(MachineTier.BASIC, MachineType.MACHINE), "&8\u21E8 &e\u26A1 &7128 J 可储存", "&8\u21E8 &e\u26A1 &7能源损失率: &c50%");
 
-    public static final SlimefunItemStack WITHER_ASSEMBLER = new SlimefunItemStack("WITHER_ASSEMBLER", Material.OBSIDIAN, "&5凋零汇编器", "", LoreBuilder.machine(MachineTier.END_GAME, MachineType.MACHINE), "&8\u21E8 &7冷却时间: &b30 秒", "&8\u21E8 &e\u26A1 &74096 J 可储存", "&8\u21E8 &e\u26A1 &74096 J/个凋灵");
+    public static final SlimefunItemStack IRON_GOLEM_ASSEMBLER = new SlimefunItemStack("IRON_GOLEM_ASSEMBLER", Material.IRON_BLOCK, "&6铁傀儡装配机", "", LoreBuilder.machine(MachineTier.END_GAME, MachineType.MACHINE), "&8\u21E8 &7冷却时间: &b30 秒", LoreBuilder.powerBuffer(4096), "&8\u21E8 &e\u26A1 &72048 J/个铁傀儡");
+    public static final SlimefunItemStack WITHER_ASSEMBLER = new SlimefunItemStack("WITHER_ASSEMBLER", Material.OBSIDIAN, "&5凋零装配机", "", LoreBuilder.machine(MachineTier.END_GAME, MachineType.MACHINE), "&8\u21E8 &7冷却时间: &b30 秒", "&8\u21E8 &e\u26A1 &74096 J 可储存", "&8\u21E8 &e\u26A1 &74096 J/个凋灵");
 
     public static final SlimefunItemStack TRASH_CAN = new SlimefunItemStack("TRASH_CAN_BLOCK", HeadTexture.TRASH_CAN, "&3垃圾箱", "", "&r将不需要的物品放入可以消除");
 

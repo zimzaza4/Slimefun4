@@ -1,7 +1,10 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items;
 
+import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
+import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
 import io.github.thebusybiscuit.slimefun4.core.attributes.Radioactive;
 import io.github.thebusybiscuit.slimefun4.core.attributes.Radioactivity;
+import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
@@ -11,14 +14,16 @@ import org.bukkit.inventory.ItemStack;
 /**
  * A quick and easy implementation of {@link SlimefunItem} that also implements the
  * interface {@link Radioactive}.
- * <p>
+ *
  * Simply specify a level of {@link Radioactivity} in the constructor.
  *
  * @author TheBusyBiscuit
+ *
  * @see Radioactive
  * @see Radioactivity
+ *
  */
-public class RadioactiveItem extends SlimefunItem implements Radioactive {
+public class RadioactiveItem extends SlimefunItem implements Radioactive, NotPlaceable {
 
     private final Radioactivity radioactivity;
 
@@ -40,6 +45,12 @@ public class RadioactiveItem extends SlimefunItem implements Radioactive {
         super(category, item, recipeType, recipe);
 
         this.radioactivity = radioactivity;
+
+        addItemHandler(onRightClick());
+    }
+
+    private ItemUseHandler onRightClick() {
+        return PlayerRightClickEvent::cancel;
     }
 
     @Override

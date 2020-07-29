@@ -129,6 +129,12 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
                 return;
             }
 
+            // Disabling backwards-compatibility for fresh Slimefun installs
+            if (!new File("data-storage/Slimefun").exists()) {
+                config.setValue("options.backwards-compatibility", false);
+                config.save();
+            }
+
             // Creating all necessary Folders
             getLogger().log(Level.INFO, "正在创建文件夹...");
             createDirectories();
@@ -376,6 +382,10 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new WitherListener(this);
         new IronGolemListener(this);
         new PlayerInteractEntityListener(this);
+
+        if (minecraftVersion.isAtLeast(MinecraftVersion.MINECRAFT_1_15)) {
+            new BeeListener(this);
+        }
 
         if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_16)) {
             new PiglinListener(this);

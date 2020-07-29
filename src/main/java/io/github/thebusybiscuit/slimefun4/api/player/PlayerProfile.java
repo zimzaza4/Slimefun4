@@ -6,17 +6,17 @@ import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.config.Config;
 import io.github.thebusybiscuit.slimefun4.api.gps.Waypoint;
 import io.github.thebusybiscuit.slimefun4.api.items.HashedArmorpiece;
+import io.github.thebusybiscuit.slimefun4.core.attributes.ProtectionType;
+import io.github.thebusybiscuit.slimefun4.core.attributes.ProtectiveArmor;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
 import io.github.thebusybiscuit.slimefun4.core.researching.Research;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.items.armor.SlimefunArmorPiece;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -32,11 +32,10 @@ import java.util.stream.IntStream;
  * It also holds the backpacks of a {@link Player}.
  *
  * @author TheBusyBiscuit
- *
  * @see Research
  * @see Waypoint
  * @see PlayerBackpack
- *
+ * @see HashedArmorpiece
  */
 public final class PlayerProfile {
 
@@ -147,8 +146,10 @@ public final class PlayerProfile {
      * This method sets the Player's "researched" status for this Research.
      * Use the boolean to unlock or lock the {@link Research}
      *
-     * @param research The {@link Research} that should be unlocked or locked
-     * @param unlock   Whether the {@link Research} should be unlocked or locked
+     * @param research
+     *            The {@link Research} that should be unlocked or locked
+     * @param unlock
+     *            Whether the {@link Research} should be unlocked or locked
      */
     public void setResearched(Research research, boolean unlock) {
         Validate.notNull(research, "Research must not be null!");
@@ -428,6 +429,40 @@ public final class PlayerProfile {
                 backpack.ifPresent(callback);
             });
         }
+    }
+
+    public boolean hasFullProtectionAgainst(ProtectionType type) {
+        int armorCount = 0;
+
+        NamespacedKey setId = null;
+        for (HashedArmorpiece armorpiece : armor) {
+            Optional<SlimefunArmorPiece> armorPiece = armorpiece.getItem();
+
+            if (!armorPiece.isPresent()) {
+                return false;
+            }
+
+            if (armorPiece.get() instanceof ProtectiveArmor) {
+                ProtectiveArmor protectedArmor = (ProtectiveArmor) armorPiece.get();
+
+                if (setId == null && protectedArmor.isFullSetRequired()) {
+                    setId = protectedArmor.getArmorSetId();
+                }
+
+                for (ProtectionType protectionType : protectedArmor.getProtectionTypes()) {
+                    if (protectionType == type) {
+                        if (setId == null) {
+                            return true;
+                        } else if (setId.equals(protectedArmor.getArmorSetId())) {
+                            armorCount++;
+                        }
+                    }
+                }
+
+            }
+        }
+
+        return armorCount == 4;
     }
 
     @Override
