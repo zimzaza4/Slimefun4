@@ -49,12 +49,11 @@ public class CargoManager extends SlimefunItem {
                 Player p = e.getPlayer();
                 Block b = block.get();
 
-                String visualizerKey = "visualizer";
-                if (BlockStorage.getLocationInfo(b.getLocation(), visualizerKey) == null) {
-                    BlockStorage.addBlockInfo(b, visualizerKey, "disabled");
+                if (BlockStorage.getLocationInfo(b.getLocation(), "visualizer") == null) {
+                    BlockStorage.addBlockInfo(b, "visualizer", "disabled");
                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c货运网络可视化: " + "&4\u2718"));
                 } else {
-                    BlockStorage.addBlockInfo(b, visualizerKey, null);
+                    BlockStorage.addBlockInfo(b, "visualizer", null);
                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c货运网络可视化: " + "&2\u2714"));
                 }
             }

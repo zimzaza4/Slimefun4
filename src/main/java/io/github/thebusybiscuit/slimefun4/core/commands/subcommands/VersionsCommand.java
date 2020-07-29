@@ -41,6 +41,10 @@ class VersionsCommand extends SubCommand {
             sender.sendMessage(ChatColors.color("&aCS-CoreLib &2v" + SlimefunPlugin.getCSCoreLibVersion()));
             sender.sendMessage(ChatColors.color("&aSlimefun &2v" + SlimefunPlugin.getVersion()));
 
+            if (SlimefunPlugin.getMetricsService().getVersion() != null) {
+                sender.sendMessage(ChatColors.color("&aMetrics 构建版本: &2#" + SlimefunPlugin.getMetricsService().getVersion()));
+            }
+
             if (SlimefunPlugin.getRegistry().isBackwardsCompatible()) {
                 sender.sendMessage(ChatColor.YELLOW + "向后兼容已启用!");
             }

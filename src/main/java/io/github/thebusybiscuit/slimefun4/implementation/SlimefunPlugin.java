@@ -17,7 +17,6 @@ import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.networks.NetworkManager;
 import io.github.thebusybiscuit.slimefun4.core.services.*;
 import io.github.thebusybiscuit.slimefun4.core.services.github.GitHubService;
-import io.github.thebusybiscuit.slimefun4.core.services.metrics.MetricsService;
 import io.github.thebusybiscuit.slimefun4.core.services.plugins.ThirdPartyPluginService;
 import io.github.thebusybiscuit.slimefun4.core.services.profiler.SlimefunProfiler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAltar;
@@ -152,7 +151,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
             networkManager = new NetworkManager(networkSize);
 
             // Setting up bStats
-            metricsService.start();
+            new Thread(metricsService::start).start();
 
             // 魔改的自动更新服务
             // 自动选择分支
@@ -315,6 +314,8 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         // Create a new backup zip
         backupService.run();
 
+        metricsService.cleanUp();
+
         // Prevent Memory Leaks
         // These static Maps should be removed at some point...
         AContainer.processing = null;
@@ -375,6 +376,10 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new WitherListener(this);
         new IronGolemListener(this);
         new PlayerInteractEntityListener(this);
+
+        if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_16)) {
+            new PiglinListener(this);
+        }
 
         // 领地权限检查器
         new ProtectionChecker(this);
@@ -586,6 +591,16 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     @Override
     public File getFile() {
         return super.getFile();
+    }
+
+    /**
+     * This method returns the {@link MetricsService} of Slimefun.
+     * It is used to handle sending metric information to bStats.
+     *
+     * @return The {@link MetricsService} for Slimefun
+     */
+    public static MetricsService getMetricsService() {
+        return instance.metricsService;
     }
 
 }
