@@ -368,7 +368,7 @@ public class AncientAltarListener implements Listener {
     }
 
     public boolean isUsing(Block pedestal, Location loc) {
-        if (loc == null || pedestal == null) {
+        if (loc == null) {
             return false;
         }
 
