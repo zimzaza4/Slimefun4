@@ -12,17 +12,7 @@ import org.bukkit.entity.Player;
 class TeleporterCommand extends SubCommand {
 
     TeleporterCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
-        super(plugin, cmd);
-    }
-
-    @Override
-    public String getName() {
-        return "teleporter";
-    }
-
-    @Override
-    public boolean isHidden() {
-        return false;
+        super(plugin, cmd, "teleporter", false);
     }
 
     @Override

@@ -242,6 +242,16 @@ public class SlimefunItemStack extends CustomItem {
         return Optional.ofNullable(texture);
     }
 
+    public String getDisplayName() {
+        if (immutableMeta == null) {
+            // Just to be extra safe
+            return null;
+        }
+
+        return immutableMeta.getDisplayName().orElse(null);
+    }
+
+
     private static ItemStack getSkull(String id, String texture) {
         if (SlimefunPlugin.getMinecraftVersion() == MinecraftVersion.UNIT_TEST) {
             return new ItemStack(Material.PLAYER_HEAD);

@@ -39,6 +39,7 @@ public final class SlimefunSubCommands {
         commands.add(new ReloadCommand(plugin, cmd));
         commands.add(new TransformCommand(plugin, cmd));
         commands.add(new BackpackCommand(plugin, cmd));
+        commands.add(new ItemIdCommand(plugin, cmd));
 
         return commands;
     }

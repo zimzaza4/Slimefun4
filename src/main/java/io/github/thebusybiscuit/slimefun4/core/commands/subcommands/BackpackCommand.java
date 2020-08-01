@@ -16,22 +16,12 @@ import org.bukkit.inventory.ItemStack;
 class BackpackCommand extends SubCommand {
 
     BackpackCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
-        super(plugin, cmd);
-    }
-
-    @Override
-    public String getName() {
-        return "backpack";
+        super(plugin, cmd, "backpack", false);
     }
 
     @Override
     protected String getDescription() {
         return "commands.backpack.description";
-    }
-
-    @Override
-    public boolean isHidden() {
-        return false;
     }
 
     @Override

@@ -17,17 +17,7 @@ import java.util.Collection;
 class VersionsCommand extends SubCommand {
 
     VersionsCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
-        super(plugin, cmd);
-    }
-
-    @Override
-    public String getName() {
-        return "versions";
-    }
-
-    @Override
-    public boolean isHidden() {
-        return false;
+        super(plugin, cmd, "versions", false);
     }
 
     @Override

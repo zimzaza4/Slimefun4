@@ -8,17 +8,7 @@ import org.bukkit.command.CommandSender;
 class HelpCommand extends SubCommand {
 
     HelpCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
-        super(plugin, cmd);
-    }
-
-    @Override
-    public String getName() {
-        return "help";
-    }
-
-    @Override
-    public boolean isHidden() {
-        return false;
+        super(plugin, cmd, "help", false);
     }
 
     @Override

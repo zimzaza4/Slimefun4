@@ -18,20 +18,10 @@ import java.util.logging.Level;
 
 class TransformCommand extends SubCommand {
     TransformCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
-        super(plugin, cmd);
+        super(plugin, cmd, "transform", false);
     }
 
     private final Set<Player> noticedPlayer = new HashSet<>();
-
-    @Override
-    public String getName() {
-        return "transform";
-    }
-
-    @Override
-    public boolean isHidden() {
-        return false;
-    }
 
     @Override
     public void onExecute(CommandSender sender, String[] args) {

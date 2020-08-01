@@ -28,8 +28,10 @@ import java.util.Optional;
  * @author Linox
  * @author Walshy
  * @author TheBusyBiscuit
+ *
  * @see ItemDropHandler
  * @see Soulbound
+ *
  */
 public class SoulboundRune extends SimpleSlimefunItem<ItemDropHandler> {
 
@@ -56,23 +58,22 @@ public class SoulboundRune extends SimpleSlimefunItem<ItemDropHandler> {
         };
     }
 
-    private void activate(Player p, PlayerDropItemEvent e, Item item) {
+    private void activate(Player p, PlayerDropItemEvent e, Item rune) {
         // Being sure the entity is still valid and not picked up or whatsoever.
-        if (!item.isValid()) {
+        if (!rune.isValid()) {
             return;
         }
 
-        Location l = item.getLocation();
+        Location l = rune.getLocation();
         Collection<Entity> entites = l.getWorld().getNearbyEntities(l, RANGE, RANGE, RANGE, this::findCompatibleItem);
         Optional<Entity> optional = entites.stream().findFirst();
 
         if (optional.isPresent()) {
-            Item entity = (Item) optional.get();
-            ItemStack target = entity.getItemStack();
+            Item item = (Item) optional.get();
+            ItemStack itemStack = item.getItemStack();
 
-            SlimefunUtils.setSoulbound(target, true);
-
-            if (target.getAmount() == 1) {
+            if (itemStack.getAmount() == 1) {
+                // Prevent other plugins from processing this Item as we will remove it soon
                 e.setCancelled(true);
 
                 // This lightning is just an effect, it deals no damage.
@@ -80,16 +81,20 @@ public class SoulboundRune extends SimpleSlimefunItem<ItemDropHandler> {
 
                 Slimefun.runSync(() -> {
                     // Being sure entities are still valid and not picked up or whatsoever.
-                    if (item.isValid() && entity.isValid() && target.getAmount() == 1) {
+                    if (rune.isValid() && item.isValid() && itemStack.getAmount() == 1) {
 
                         l.getWorld().createExplosion(l, 0);
                         l.getWorld().playSound(l, Sound.ENTITY_GENERIC_EXPLODE, 0.3F, 1);
 
-                        entity.remove();
                         item.remove();
-                        l.getWorld().dropItemNaturally(l, target);
+                        rune.remove();
+
+                        SlimefunUtils.setSoulbound(itemStack, true);
+                        l.getWorld().dropItemNaturally(l, itemStack);
 
                         SlimefunPlugin.getLocalization().sendMessage(p, "messages.soulbound-rune.success", true);
+                    } else {
+                        SlimefunPlugin.getLocalization().sendMessage(p, "messages.soulbound-rune.fail", true);
                     }
                 }, 10L);
             } else {
@@ -98,9 +103,17 @@ public class SoulboundRune extends SimpleSlimefunItem<ItemDropHandler> {
         }
     }
 
-    private boolean findCompatibleItem(Entity n) {
-        if (n instanceof Item) {
-            Item item = (Item) n;
+    /**
+     * This method checks whether a given {@link Entity} is an {@link Item} which can
+     * be bound to a soul. We exclude the {@link SoulboundRune} itself and any already
+     * {@link Soulbound} {@link Item}.
+     *
+     * @param entity The {@link Entity} to check
+     * @return Whether this {@link Entity} is compatible
+     */
+    private boolean findCompatibleItem(Entity entity) {
+        if (entity instanceof Item) {
+            Item item = (Item) entity;
 
             return !SlimefunUtils.isSoulbound(item.getItemStack()) && !isItem(item.getItemStack());
         }
