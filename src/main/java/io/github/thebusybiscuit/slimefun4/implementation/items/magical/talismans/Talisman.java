@@ -1,9 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans;
 
+import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.slimefun4.core.researching.Research;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
@@ -148,9 +150,9 @@ public class Talisman extends SlimefunItem {
 
         ItemStack talismanItem = talisman.getItem();
 
-        if (p.getInventory().containsAtLeast(talismanItem, 1)) {
-            if (Slimefun.hasUnlocked(p, talismanItem, true)) {
-                activateTalisman(e, p, p.getInventory(), talisman, talismanItem);
+        if (SlimefunUtils.containsSimilarItem(p.getInventory(), talismanItem, true)) {
+            if (Slimefun.hasUnlocked(p, talisman, true)) {
+                activateTalisman(e, p, p.getInventory(), talisman);
                 return true;
             } else {
                 return false;
@@ -158,9 +160,9 @@ public class Talisman extends SlimefunItem {
         } else {
             ItemStack enderTalisman = talisman.getEnderVariant();
 
-            if (p.getEnderChest().containsAtLeast(enderTalisman, 1)) {
-                if (Slimefun.hasUnlocked(p, enderTalisman, true)) {
-                    activateTalisman(e, p, p.getEnderChest(), talisman, enderTalisman);
+            if (SlimefunUtils.containsSimilarItem(p.getEnderChest(), enderTalisman, true)) {
+                if (Slimefun.hasUnlocked(p, talisman, true)) {
+                    activateTalisman(e, p, p.getEnderChest(), talisman);
                     return true;
                 } else {
                     return false;
@@ -171,8 +173,8 @@ public class Talisman extends SlimefunItem {
         }
     }
 
-    private static void activateTalisman(Event e, Player p, Inventory inv, Talisman talisman, ItemStack talismanItem) {
-        consumeItem(inv, talisman, talismanItem);
+    private static void activateTalisman(Event e, Player p, Inventory inv, Talisman talisman) {
+        consumeItem(inv, talisman);
         applyTalismanEffects(p, talisman);
         cancelEvent(e, talisman);
         sendMessage(p, talisman);
@@ -196,9 +198,15 @@ public class Talisman extends SlimefunItem {
         }
     }
 
-    private static void consumeItem(Inventory inv, Talisman talisman, ItemStack talismanItem) {
+    private static void consumeItem(Inventory inv, Talisman talisman) {
         if (talisman.isConsumable()) {
-            inv.removeItem(talismanItem);
+            ItemStack[] contents = inv.getContents();
+            for (ItemStack item : contents) {
+                if (SlimefunUtils.isItemSimilar(item, talisman.getItem(), true, false)) {
+                    ItemUtils.consumeItem(item, false);
+                    return;
+                }
+            }
         }
     }
 
