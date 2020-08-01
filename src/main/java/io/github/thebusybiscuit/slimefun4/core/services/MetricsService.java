@@ -179,10 +179,15 @@ public class MetricsService {
      *            The version to download.
      */
     private boolean download(int version) {
-        File f = new File(parentFolder, "Metrics-" + version + ".jar");
+        File file = new File(parentFolder, "Metrics-" + version + ".jar");
 
         try {
             plugin.getLogger().log(Level.INFO, "# 开始下载 MetricsModule 版本: #{0}", version);
+
+            if (file.exists()) {
+                // Delete the file in case we accidentally downloaded it before
+                Files.delete(file.toPath());
+            }
 
             AtomicInteger lastPercentPosted = new AtomicInteger();
             GetRequest request = Unirest.get(GH_RELEASES + "/" + version + "/" + REPO_NAME + ".jar");
@@ -194,14 +199,14 @@ public class MetricsService {
                     plugin.getLogger().info("# 正在下载... " + percent + "% " + "(" + bytesWritten + "/" + totalBytes + " bytes)");
                     lastPercentPosted.set(percent);
                 }
-            }).asFile(f.getPath());
+            }).asFile(file.getPath());
 
             if (response.isSuccess()) {
                 plugin.getLogger().log(Level.INFO, "成功下载 {0} 构建号 #{1}", new Object[]{REPO_NAME, version});
 
                 // Replace the metric file with the new one
                 cleanUp();
-                Files.move(f.toPath(), metricsModuleFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                Files.move(file.toPath(), metricsModuleFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
                 metricVersion = String.valueOf(version);
                 hasDownloadedUpdate = true;
