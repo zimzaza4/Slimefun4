@@ -17,8 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
@@ -85,25 +85,48 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
 
     public String getMessage(Player p, String key) {
         Language language = getLanguage(p);
-        if (language == null) return "未找到语言";
-        return language.getMessagesFile().getString(key);
+        if (language == null) {
+            return "未找到语言";
+        }
+
+        String message = language.getMessagesFile().getString(key);
+
+        if (message == null) {
+            Language fallback = getLanguage(SupportedLanguage.ENGLISH.getLanguageId());
+            return fallback.getMessagesFile().getString(key);
+        }
+
+        return message;
     }
 
     public List<String> getMessages(Player p, String key) {
         Language language = getLanguage(p);
-        if (language == null) return Arrays.asList("未找到语言");
-        return language.getMessagesFile().getStringList(key);
+        if (language == null) {
+            return Collections.singletonList("未找到语言");
+        }
+        List<String> messages = language.getMessagesFile().getStringList(key);
+
+        if (messages.isEmpty()) {
+            Language fallback = getLanguage(SupportedLanguage.ENGLISH.getLanguageId());
+            return fallback.getMessagesFile().getStringList(key);
+        }
+
+        return messages;
     }
 
     public String getResearchName(Player p, NamespacedKey key) {
         Language language = getLanguage(p);
-        if (language.getResearchesFile() == null) return null;
+        if (language.getResearchesFile() == null) {
+            return null;
+        }
         return language.getResearchesFile().getString(key.getNamespace() + "." + key.getKey());
     }
 
     public String getCategoryName(Player p, NamespacedKey key) {
         Language language = getLanguage(p);
-        if (language.getCategoriesFile() == null) return null;
+        if (language.getCategoriesFile() == null) {
+            return null;
+        }
         return language.getCategoriesFile().getString(key.getNamespace() + "." + key.getKey());
     }
 
@@ -115,7 +138,8 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
         if (value != null) {
             return value;
         } else {
-            return getLanguage("en").getResourcesFile().getString(key);
+            Language fallback = getLanguage(SupportedLanguage.ENGLISH.getLanguageId());
+            return fallback.getResourcesFile().getString(key);
         }
     }
 

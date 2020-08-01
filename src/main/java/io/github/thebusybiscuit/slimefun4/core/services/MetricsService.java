@@ -41,7 +41,12 @@ public class MetricsService {
     private boolean hasDownloadedUpdate = false;
 
     static {
-        Unirest.config().concurrency(2, 1).setDefaultHeader("User-Agent", "MetricsModule Auto-Updater").setDefaultHeader("Accept", "application/vnd.github.v3+json").enableCookieManagement(false).cookieSpec("ignoreCookies");
+        Unirest.config()
+                .concurrency(2, 1)
+                .setDefaultHeader("User-Agent", "MetricsModule Auto-Updater")
+                .setDefaultHeader("Accept", "application/vnd.github.v3+json")
+                .enableCookieManagement(false)
+                .cookieSpec("ignoreCookies");
     }
 
     public MetricsService(SlimefunPlugin plugin) {
@@ -195,6 +200,7 @@ public class MetricsService {
                 plugin.getLogger().log(Level.INFO, "成功下载 {0} 构建号 #{1}", new Object[]{REPO_NAME, version});
 
                 // Replace the metric file with the new one
+                cleanUp();
                 Files.move(f.toPath(), metricsModuleFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
                 metricVersion = String.valueOf(version);
@@ -202,7 +208,7 @@ public class MetricsService {
                 return true;
             }
         } catch (UnirestException e) {
-            plugin.getLogger().log(Level.WARNING, "无法从构建页面获取最新版本文件");
+            plugin.getLogger().log(Level.WARNING, "无法从构建页面获取最新版本文件, 因为国内连接 Github 服务器质量不太好, 所以你可以忽略");
         } catch (IOException e) {
             plugin.getLogger().log(Level.WARNING, "无法将旧版本的 SFMetric 替换为新版本, 请手动替换! 错误信息: {0}", e.getMessage());
         }
