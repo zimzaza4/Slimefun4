@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.reactors;
 
+import io.github.starwishsama.extra.ProtectionChecker;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.events.ReactorExplodeEvent;
@@ -14,14 +15,11 @@ import io.github.thebusybiscuit.slimefun4.utils.holograms.SimpleHologram;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AGenerator;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
-import me.mrCookieSlime.Slimefun.Objects.handlers.GeneratorTicker;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import me.mrCookieSlime.Slimefun.api.energy.ChargableBlock;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
@@ -45,6 +43,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * exclusively used for Reactors.
  *
  * @author John000708
+ * @author AlexLander123
+ * @author TheBusyBiscuit
  * @see AGenerator
  * @see NuclearReactor
  * @see NetherStarReactor
@@ -67,6 +67,8 @@ public abstract class Reactor extends AbstractEnergyProvider {
     // No coolant border
     private static final int[] border_4 = {25, 34, 43};
 
+    private final Set<Location> explosionsQueue = new HashSet<>();
+
     public Reactor(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
@@ -83,45 +85,12 @@ public abstract class Reactor extends AbstractEnergyProvider {
                     BlockStorage.addBlockInfo(b, MODE, ReactorMode.GENERATOR.toString());
                 }
 
-                if (!BlockStorage.hasBlockInfo(b) || BlockStorage.getLocationInfo(b.getLocation(), MODE).equals(ReactorMode.GENERATOR.toString())) {
-                    menu.replaceExistingItem(4, new CustomItem(SlimefunItems.NUCLEAR_REACTOR, "&7模式: &e发电", "", "&6你的反应堆将专注于发电", "&6如果你的能量网络不需要更多电力", "&6它将停止发电", "", "&7\u21E8 点击更改到 &e生产 &7模式"));
-                    menu.addMenuClickHandler(4, (p, slot, item, action) -> {
-                        BlockStorage.addBlockInfo(b, MODE, ReactorMode.PRODUCTION.toString());
-                        newInstance(menu, b);
-                        return false;
-                    });
-                } else {
-                    menu.replaceExistingItem(4, new CustomItem(SlimefunItems.PLUTONIUM, "&7模式: &e生产", "", "&6你的反应堆将专注于生产衰变后的产物", "&6如果你的能量网络不需要电力", "&6它将继续运行并生产", "&6同时也不会产生电力", "", "&7\u21E8 点击更改到 &e发电 &7模式"));
-                    menu.addMenuClickHandler(4, (p, slot, item, action) -> {
-                        BlockStorage.addBlockInfo(b, MODE, ReactorMode.GENERATOR.toString());
-                        newInstance(menu, b);
-                        return false;
-                    });
-                }
-
-                BlockMenu port = getAccessPort(b.getLocation());
-                if (port != null) {
-                    menu.replaceExistingItem(INFO_SLOT, new CustomItem(new ItemStack(Material.GREEN_WOOL), "&7反应堆访问接口", "", "&6已检测到", "", "&7\u21E8 点击打开访问接口界面"));
-                    menu.addMenuClickHandler(INFO_SLOT, (p, slot, item, action) -> {
-                        port.open(p);
-                        newInstance(menu, b);
-
-                        return false;
-                    });
-                }
-                else {
-                    menu.replaceExistingItem(INFO_SLOT, new CustomItem(new ItemStack(Material.RED_WOOL), "&7反应堆访问接口", "", "&c未检测到", "", "&7访问接口必须", "&7放置比反应堆", "&7高出三个方块的位置"));
-                    menu.addMenuClickHandler(INFO_SLOT, (p, slot, item, action) -> {
-                        newInstance(menu, b);
-                        menu.open(p);
-                        return false;
-                    });
-                }
+                updateInventory(menu, b);
             }
 
             @Override
             public boolean canOpen(Block b, Player p) {
-                return p.hasPermission("slimefun.inventory.bypass") || SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.ACCESS_INVENTORIES);
+                return p.hasPermission("slimefun.inventory.bypass") || SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.ACCESS_INVENTORIES) || ProtectionChecker.canInteract(p, b, ProtectableAction.ACCESS_INVENTORIES);
             }
 
             @Override
@@ -165,6 +134,50 @@ public abstract class Reactor extends AbstractEnergyProvider {
         registerDefaultFuelTypes();
     }
 
+    protected void updateInventory(BlockMenu menu, Block b) {
+        ReactorMode mode = getReactorMode(b.getLocation());
+
+        switch (mode) {
+            case GENERATOR:
+                menu.replaceExistingItem(4, new CustomItem(SlimefunItems.NUCLEAR_REACTOR, "&7模式: &e发电", "", "&6反应堆将会专注于发电", "&6如果能源网络中没有机器需要电力", "&6它会停止工作", "", "&7\u21E8 单击修改模式为 &e生产"));
+                menu.addMenuClickHandler(4, (p, slot, item, action) -> {
+                    BlockStorage.addBlockInfo(b, MODE, ReactorMode.PRODUCTION.toString());
+                    updateInventory(menu, b);
+                    return false;
+                });
+                break;
+            case PRODUCTION:
+                menu.replaceExistingItem(4, new CustomItem(SlimefunItems.PLUTONIUM, "&7模式: &e生产", "", "&6反应堆将会专注于生产副产物", "&6如果能源网络中没有机器需要电力", "&6它会继续工作并且不发电", "", "&7\u21E8 单击修改模式为 &e发电"));
+                menu.addMenuClickHandler(4, (p, slot, item, action) -> {
+                    BlockStorage.addBlockInfo(b, MODE, ReactorMode.GENERATOR.toString());
+                    updateInventory(menu, b);
+                    return false;
+                });
+                break;
+            default:
+                break;
+        }
+
+        BlockMenu port = getAccessPort(b.getLocation());
+
+        if (port != null) {
+            menu.replaceExistingItem(INFO_SLOT, new CustomItem(Material.GREEN_WOOL, "&7访问接口", "", "&6已连接", "", "&7> 单击查看访问接口"));
+            menu.addMenuClickHandler(INFO_SLOT, (p, slot, item, action) -> {
+                port.open(p);
+                updateInventory(menu, b);
+
+                return false;
+            });
+        } else {
+            menu.replaceExistingItem(INFO_SLOT, new CustomItem(Material.RED_WOOL, "&7访问接口", "", "&c未连接", "", "&7接口必须要放置在", "&7反应堆上面的第三格!"));
+            menu.addMenuClickHandler(INFO_SLOT, (p, slot, item, action) -> {
+                updateInventory(menu, b);
+                menu.open(p);
+                return false;
+            });
+        }
+    }
+
     private void constructMenu(BlockMenuPreset preset) {
         for (int i : border) {
             preset.addItem(i, new CustomItem(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), " "), ChestMenuUtils.getEmptyClickHandler());
@@ -178,23 +191,33 @@ public abstract class Reactor extends AbstractEnergyProvider {
             preset.addItem(i, new CustomItem(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), " "), ChestMenuUtils.getEmptyClickHandler());
         }
 
-        preset.addItem(22, new CustomItem(Material.BLACK_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
+        preset.addItem(22, new CustomItem(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), " "), ChestMenuUtils.getEmptyClickHandler());
 
-        preset.addItem(1, new CustomItem(getFuelIcon(), "&7燃料槽", "", "&r这个槽可以放置放射性质的燃料例如", "&2铀 &r或 &a镎"), ChestMenuUtils.getEmptyClickHandler());
+        preset.addItem(1, new CustomItem(getFuelIcon(), "&7燃料", "", "&r这里可以放入放射性燃料:", "&2铀 &r或 &a镎"), ChestMenuUtils.getEmptyClickHandler());
 
         for (int i : border_2) {
             preset.addItem(i, new CustomItem(new ItemStack(Material.CYAN_STAINED_GLASS_PANE), " "), ChestMenuUtils.getEmptyClickHandler());
         }
 
         if (needsCooling()) {
-            preset.addItem(7, new CustomItem(getCoolant(), "&b冷却剂槽", "", "&r这个槽可以放置反应堆冷却剂", "&4如果没有任何冷却剂", "&4你的反应堆将爆炸"));
+            preset.addItem(7, new CustomItem(getCoolant(), "&b冷却剂", "", "&r在此处放入冷却剂", "&4没有了冷却剂, 你的反应堆", "&4将会瞬间爆炸"));
         } else {
-            preset.addItem(7, new CustomItem(new ItemStack(Material.BARRIER), "&b冷却剂槽", "", "&r这个槽可以放置反应堆冷却剂"));
+            preset.addItem(7, new CustomItem(new ItemStack(Material.BARRIER), "&b冷却剂", "", "&r在此处放入冷却剂"));
 
             for (int i : border_4) {
                 preset.addItem(i, new CustomItem(new ItemStack(Material.BARRIER), "&c无需冷却剂"), ChestMenuUtils.getEmptyClickHandler());
             }
         }
+    }
+
+    protected ReactorMode getReactorMode(Location l) {
+        ReactorMode mode = ReactorMode.GENERATOR;
+
+        if (BlockStorage.hasBlockInfo(l) && BlockStorage.getLocationInfo(l, MODE).equals(ReactorMode.PRODUCTION.toString())) {
+            mode = ReactorMode.PRODUCTION;
+        }
+
+        return mode;
     }
 
     public abstract void extraTick(Location l);
@@ -254,92 +277,87 @@ public abstract class Reactor extends AbstractEnergyProvider {
     }
 
     @Override
-    protected GeneratorTicker onTick() {
-        return new GeneratorTicker() {
+    public int getGeneratedOutput(Location l, Config data) {
+        BlockMenu inv = BlockStorage.getInventory(l);
+        BlockMenu accessPort = getAccessPort(l);
 
-            private final Set<Location> explosionsQueue = new HashSet<>();
+        if (isProcessing(l)) {
+            extraTick(l);
+            int timeleft = progress.get(l);
 
-            @Override
-            public double generateEnergy(Location l, SlimefunItem sf, Config data) {
-                BlockMenu inv = BlockStorage.getInventory(l);
-                BlockMenu accessPort = getAccessPort(l);
-                int charge = ChargableBlock.getCharge(l);
+            if (timeleft > 0) {
+                int produced = getEnergyProduction();
+                int charge = 0;
 
-                if (isProcessing(l)) {
-                    extraTick(l);
-                    int timeleft = progress.get(l);
-
-                    if (timeleft > 0) {
-                        int produced = getEnergyProduction();
-                        int space = getCapacity() - charge;
-
-                        if (space >= produced || !ReactorMode.GENERATOR.toString().equals(BlockStorage.getLocationInfo(l, MODE))) {
-                            progress.put(l, timeleft - 1);
-                            checkForWaterBlocks(l);
-
-                            ChestMenuUtils.updateProgressbar(inv, 22, timeleft, processing.get(l).getTicks(), getProgressBar());
-
-                            if (needsCooling() && !hasEnoughCoolant(l, inv, accessPort, timeleft)) {
-                                explosionsQueue.add(l);
-                                return 0;
-                            }
-                        }
-
-                        if (space >= produced) {
-                            ChargableBlock.addCharge(l, getEnergyProduction());
-                            return (double) (charge + getEnergyProduction());
-                        } else {
-                            return charge;
-                        }
-                    }
-                    else {
-                        createByproduct(l, inv, accessPort);
-                        return charge;
-                    }
-                }
-                else {
-                    burnNextFuel(l, inv, accessPort);
-                    return charge;
-                }
-            }
-
-            @Override
-            public boolean explode(Location l) {
-                boolean explosion = explosionsQueue.contains(l);
-
-                if (explosion) {
-                    Slimefun.runSync(() -> {
-                        ReactorExplodeEvent event = new ReactorExplodeEvent(l, Reactor.this);
-                        Bukkit.getPluginManager().callEvent(event);
-
-                        BlockStorage.getInventory(l).close();
-                        SimpleHologram.remove(l.getBlock());
-                    });
-
-                    explosionsQueue.remove(l);
-                    processing.remove(l);
-                    progress.remove(l);
+                if (data.contains("energy-charge")) {
+                    charge = Integer.parseInt(data.getString("energy-charge"));
                 }
 
-                return explosion;
-            }
+                int space = getCapacity() - charge;
 
-            private void checkForWaterBlocks(Location l) {
-                Slimefun.runSync(() -> {
-                    // We will pick a surrounding block at random and see if this is water.
-                    // If it isn't, then we will make it explode.
-                    BlockFace randomNeighbour = WATER_BLOCKS[ThreadLocalRandom.current().nextInt(WATER_BLOCKS.length)];
+                if (space >= produced || getReactorMode(l) != ReactorMode.GENERATOR) {
+                    progress.put(l, timeleft - 1);
+                    checkForWaterBlocks(l);
 
-                    if (l.getBlock().getRelative(randomNeighbour).getType() != Material.WATER) {
+                    ChestMenuUtils.updateProgressbar(inv, 22, timeleft, processing.get(l).getTicks(), getProgressBar());
+
+                    if (needsCooling() && !hasEnoughCoolant(l, inv, accessPort, timeleft)) {
                         explosionsQueue.add(l);
+                        return 0;
                     }
-                });
+                }
+
+                if (space >= produced) {
+                    return getEnergyProduction();
+                } else {
+                    return 0;
+                }
+            } else {
+                createByproduct(l, inv, accessPort);
+                return 0;
             }
-        };
+        } else {
+            burnNextFuel(l, inv, accessPort);
+            return 0;
+        }
+    }
+
+    @Override
+    public boolean willExplode(Location l, Config data) {
+        boolean explosion = explosionsQueue.contains(l);
+
+        if (explosion) {
+            Slimefun.runSync(() -> {
+                ReactorExplodeEvent event = new ReactorExplodeEvent(l, Reactor.this);
+                Bukkit.getPluginManager().callEvent(event);
+
+                BlockStorage.getInventory(l).close();
+                SimpleHologram.remove(l.getBlock());
+            });
+
+            explosionsQueue.remove(l);
+            processing.remove(l);
+            progress.remove(l);
+        }
+
+        return explosion;
+    }
+
+    private void checkForWaterBlocks(Location l) {
+        Slimefun.runSync(() -> {
+            // We will pick a surrounding block at random and see if this is water.
+            // If it isn't, then we will make it explode.
+            int index = ThreadLocalRandom.current().nextInt(WATER_BLOCKS.length);
+            BlockFace randomNeighbour = WATER_BLOCKS[index];
+
+            if (l.getBlock().getRelative(randomNeighbour).getType() != Material.WATER) {
+                explosionsQueue.add(l);
+            }
+        });
     }
 
     private void createByproduct(Location l, BlockMenu inv, BlockMenu accessPort) {
-        inv.replaceExistingItem(22, new CustomItem(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), " "));
+        inv.replaceExistingItem(22, new CustomItem(Material.BLACK_STAINED_GLASS_PANE, " "));
 
         if (processing.get(l).getOutput() != null) {
             inv.pushItem(processing.get(l).getOutput(), getOutputSlots());
@@ -378,10 +396,15 @@ public abstract class Reactor extends AbstractEnergyProvider {
     /**
      * This method cools the given {@link Reactor}.
      *
-     * @param reactor    The {@link Location} of this {@link Reactor}
-     * @param menu       The {@link Inventory} of this {@link Reactor}
-     * @param accessPort The {@link ReactorAccessPort}, if available
-     * @param timeleft   The time left
+     * @param reactor
+     *            The {@link Location} of this {@link Reactor}
+     * @param menu
+     *            The {@link Inventory} of this {@link Reactor}
+     * @param accessPort
+     *            The {@link ReactorAccessPort}, if available
+     * @param timeleft
+     *            The time left
+     *
      * @return Whether the {@link Reactor} was successfully cooled, if not it should explode
      */
     private boolean hasEnoughCoolant(Location reactor, BlockMenu menu, BlockMenu accessPort, int timeleft) {
@@ -391,7 +414,8 @@ public abstract class Reactor extends AbstractEnergyProvider {
             if (accessPort != null) {
                 for (int slot : getCoolantSlots()) {
                     if (SlimefunUtils.isItemSimilar(accessPort.getItemInSlot(slot), getCoolant(), true)) {
-                        accessPort.replaceExistingItem(slot, menu.pushItem(accessPort.getItemInSlot(slot), getCoolantSlots()));
+                        ItemStack remainingItem = menu.pushItem(accessPort.getItemInSlot(slot), getCoolantSlots());
+                        accessPort.replaceExistingItem(slot, remainingItem);
                     }
                 }
             }
@@ -442,10 +466,10 @@ public abstract class Reactor extends AbstractEnergyProvider {
     }
 
     protected BlockMenu getAccessPort(Location l) {
-        Location portL = new Location(l.getWorld(), l.getX(), l.getY() + 3, l.getZ());
+        Location port = new Location(l.getWorld(), l.getX(), l.getY() + 3, l.getZ());
 
-        if (BlockStorage.check(portL, SlimefunItems.REACTOR_ACCESS_PORT.getItemId())) {
-            return BlockStorage.getInventory(portL);
+        if (BlockStorage.check(port, SlimefunItems.REACTOR_ACCESS_PORT.getItemId())) {
+            return BlockStorage.getInventory(port);
         } else {
             return null;
         }

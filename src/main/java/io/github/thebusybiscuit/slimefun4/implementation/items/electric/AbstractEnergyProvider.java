@@ -1,11 +1,13 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric;
 
+import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.math.DoubleHandler;
-import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
+import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.reactors.Reactor;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
+import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
@@ -14,7 +16,7 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.interfaces.InventoryBlock;
 import me.mrCookieSlime.Slimefun.Objects.handlers.GeneratorTicker;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -31,7 +33,7 @@ import java.util.Set;
  * @see AGenerator
  * @see Reactor
  */
-public abstract class AbstractEnergyProvider extends SlimefunItem implements InventoryBlock, RecipeDisplayItem, EnergyNetComponent {
+public abstract class AbstractEnergyProvider extends SlimefunItem implements InventoryBlock, RecipeDisplayItem, EnergyNetProvider {
 
     protected final Set<MachineFuel> fuelTypes = new HashSet<>();
 
@@ -42,7 +44,7 @@ public abstract class AbstractEnergyProvider extends SlimefunItem implements Inv
     /**
      * This method returns the title that is used for the {@link Inventory} of an
      * {@link AGenerator} that has been opened by a Player.
-     * <p>
+     *
      * Override this method to set the title.
      *
      * @return The title of the {@link Inventory} of this {@link AGenerator}
@@ -52,7 +54,7 @@ public abstract class AbstractEnergyProvider extends SlimefunItem implements Inv
     /**
      * This method returns the {@link ItemStack} that this {@link AGenerator} will
      * use as a progress bar.
-     * <p>
+     *
      * Override this method to set the progress bar.
      *
      * @return The {@link ItemStack} to use as the progress bar
@@ -76,13 +78,45 @@ public abstract class AbstractEnergyProvider extends SlimefunItem implements Inv
         return EnergyNetComponentType.GENERATOR;
     }
 
-    protected abstract GeneratorTicker onTick();
+    /**
+     * @return A {@link GeneratorTicker}
+     * @deprecated Please implement the methods
+     * {@link #getGeneratedOutput(org.bukkit.Location, me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config)}
+     * and {@link #willExplode(org.bukkit.Location, me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config)}
+     * instead
+     */
+    @Deprecated
+    protected GeneratorTicker onTick() {
+        return null;
+    }
+
+    @Override
+    public int getGeneratedOutput(Location l, Config data) {
+        if (generatorTicker != null) {
+            return (int) generatorTicker.generateEnergy(l, this, data);
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public boolean willExplode(Location l, Config data) {
+        if (generatorTicker != null) {
+            return generatorTicker.explode(l);
+        } else {
+            return false;
+        }
+    }
 
     @Override
     public void preRegister() {
         super.preRegister();
 
-        addItemHandler(onTick());
+        GeneratorTicker ticker = onTick();
+
+        if (ticker != null) {
+            addItemHandler(ticker);
+        }
     }
 
     public void registerFuel(MachineFuel fuel) {
@@ -106,9 +140,9 @@ public abstract class AbstractEnergyProvider extends SlimefunItem implements Inv
             ItemStack item = fuel.getInput().clone();
             ItemMeta im = item.getItemMeta();
             List<String> lore = new ArrayList<>();
-            lore.add(ChatColor.translateAlternateColorCodes('&', "&8\u21E8 &7Lasts " + NumberUtils.getTimeLeft(fuel.getTicks() / 2)));
-            lore.add(ChatColor.translateAlternateColorCodes('&', "&8\u21E8 &e\u26A1 &7" + getEnergyProduction() * 2) + " J/s");
-            lore.add(ChatColor.translateAlternateColorCodes('&', "&8\u21E8 &e\u26A1 &7" + DoubleHandler.getFancyDouble((double) fuel.getTicks() * getEnergyProduction()) + " J in total"));
+            lore.add(ChatColors.color("&8\u21E8 &7持续时间 " + NumberUtils.getTimeLeft(fuel.getTicks() / 2)));
+            lore.add(ChatColors.color("&8\u21E8 &e\u26A1 &7" + getEnergyProduction() * 2) + " J/s");
+            lore.add(ChatColors.color("&8\u21E8 &e\u26A1 &7最大储存量: " + DoubleHandler.getFancyDouble((double) fuel.getTicks() * getEnergyProduction()) + " J"));
             im.setLore(lore);
             item.setItemMeta(im);
             list.add(item);

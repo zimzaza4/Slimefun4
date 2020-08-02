@@ -1,34 +1,37 @@
+# options:
+#   auto-update - Github 新版本自动检查并更新
+#    armor-update-interval - 粘液科技护甲效果更新周期
+#    enable-armor-effects - 护甲效果的开关
+#    chat-prefix - 粘液科技所有消息的前缀
+#    auto-save-delay-in-minutes - 自动保存数据的周期, 单位为分钟
+#    emerald-enchantment-limit - 粘液科技物品可附魔的绿宝石附魔数量上限 (EmeraldEnchantment 扩展插件的附魔)
+#    research-give-fireworks - 是否在解锁时给玩家烟花让玩家自己放
+#    legacy-ore-washer - 是否使用旧版的洗矿机机制
+#    legacy-dust-washer - 是否使用旧版的除尘机机制
+#    legacy-ore-grinder - 是否使用旧版的碎矿机机制
+#    enchanter-level-limit - 限制附魔机/祛魔机可承载的附魔等级上限
+#                            设置为 0 关闭限制
+#    language - 粘液科技文本语言 (不包括物品)
+#    enable-translations - 多语言功能
+#    backwards-compatibility - 物品向后兼容模式, 关闭后物品会使用新版物品系统
+#                             将会提升服务器性能, 并且关闭对 1.13 的向后兼容
+#    log-duplicate-block-entries - 是否输出发现重复方块的警告
 options:
-  # Github 新版本自动更新
   auto-update: true
-  # 装备状态更新周期
   armor-update-interval: 10
-  # 是否启用粘液科技护甲效果
   enable-armor-effects: true
-  # 插件前缀
-  chat-prefix: '&a&lSlimefun &7> '
-  # 自动保存周期, 单位为分钟
+  chat-prefix: '&a&lSlimefun 4 &7> '
   auto-save-delay-in-minutes: 10
-  # 绿宝石附魔上限 (扩展选项)
   emerald-enchantment-limit: 2
-  # 是否在解锁时给玩家烟花让玩家自己放
   research-give-fireworks: true
-  # 是否使用洗矿机旧的工作方式
   legacy-ore-washer: false
-  # 是否使用除尘机旧的工作方式
   legacy-dust-washer: false
-  # 是否使用碎矿机旧的工作方式
   legacy-ore-grinder: true
-  # 限制附魔机/祛魔机可承载的附魔等级上限
-  # 设置为 0 关闭限制
   enchanter-level-limit: 0
-  # 文本语言
   language: zh-CN
-  # 启用多语言功能
   enable-translations: true
-  # 物品向后兼容模式, 关闭后将会提升服务器性能
-  # 并且关闭对 1.13 的向后兼容
   backwards-compatibility: true
+  log-duplicate-block-entries: true
 guide:
   # 是否默认使用书与笔进行GUI的展示
   default-view-book: false
@@ -61,6 +64,9 @@ items:
   talismans: true
   backpacks: true
   soulbound: true
+
+metrics:
+  auto-update: true
 
 # 研究等级，可自行更改
 research-ranks:

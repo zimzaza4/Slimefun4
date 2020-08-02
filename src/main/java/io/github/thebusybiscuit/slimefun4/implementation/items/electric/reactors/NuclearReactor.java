@@ -15,7 +15,9 @@ import org.bukkit.inventory.ItemStack;
  * It needs water coolant as well as a steady supply of Reactor Coolant Cells
  *
  * @author TheBusyBiscuit
+ *
  * @see NetherStarReactor
+ *
  */
 public abstract class NuclearReactor extends Reactor {
 
@@ -25,7 +27,7 @@ public abstract class NuclearReactor extends Reactor {
 
     @Override
     public String getInventoryTitle() {
-        return SlimefunItems.NUCLEAR_REACTOR.getItemMeta().getDisplayName();
+        return "&2核反应堆";
     }
 
     @Override
@@ -36,11 +38,6 @@ public abstract class NuclearReactor extends Reactor {
     }
 
     @Override
-    public ItemStack getFuelIcon() {
-        return SlimefunItems.URANIUM;
-    }
-
-    @Override
     public ItemStack getProgressBar() {
         return SlimefunItems.LAVA_CRYSTAL;
     }
@@ -48,6 +45,11 @@ public abstract class NuclearReactor extends Reactor {
     @Override
     public ItemStack getCoolant() {
         return SlimefunItems.REACTOR_COOLANT_CELL;
+    }
+
+    @Override
+    public ItemStack getFuelIcon() {
+        return SlimefunItems.URANIUM;
     }
 
     @Override

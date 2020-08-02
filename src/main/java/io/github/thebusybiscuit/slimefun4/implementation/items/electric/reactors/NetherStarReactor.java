@@ -20,7 +20,9 @@ import org.bukkit.potion.PotionEffectType;
  * Nether Stars and adds Withering to any nearby {@link LivingEntity}
  *
  * @author John000708
+ *
  * @see NuclearReactor
+ *
  */
 public abstract class NetherStarReactor extends Reactor {
 
@@ -30,7 +32,7 @@ public abstract class NetherStarReactor extends Reactor {
 
     @Override
     public String getInventoryTitle() {
-        return SlimefunItems.NETHER_STAR_REACTOR.getItemMeta().getDisplayName();
+        return "下界之星反应堆";
     }
 
     @Override
@@ -50,13 +52,13 @@ public abstract class NetherStarReactor extends Reactor {
     }
 
     @Override
-    public ItemStack getFuelIcon() {
-        return new ItemStack(Material.NETHER_STAR);
+    public ItemStack getCoolant() {
+        return SlimefunItems.NETHER_ICE_COOLANT_CELL;
     }
 
     @Override
-    public ItemStack getCoolant() {
-        return SlimefunItems.NETHER_ICE_COOLANT_CELL;
+    public ItemStack getFuelIcon() {
+        return new ItemStack(Material.NETHER_STAR);
     }
 
     @Override

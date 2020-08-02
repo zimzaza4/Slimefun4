@@ -26,7 +26,7 @@ public class WrongItemStackException extends RuntimeException {
      * @param message An error message to display
      */
     public WrongItemStackException(String message) {
-        super("You probably wanted alter a different ItemStack: " + message);
+        super("You probably wanted to alter a different ItemStack: " + message);
     }
 
 }

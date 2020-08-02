@@ -3,6 +3,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.skull.SkullBlock;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
+import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNet;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
@@ -10,6 +11,7 @@ import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.energy.ChargableBlock;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -23,6 +25,14 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
+import java.util.logging.Level;
+
+/**
+ * This {@link Listener} is responsible for handling our debugging tool, the debug fish.
+ * This is where the functionality of this item is implemented.
+ *
+ * @author TheBusyBiscuit
+ */
 public class DebugFishListener implements Listener {
 
     private final String greenCheckmark;
@@ -43,25 +53,33 @@ public class DebugFishListener implements Listener {
 
         Player p = e.getPlayer();
 
-        if (p.isOp() && SlimefunUtils.isItemSimilar(e.getItem(), SlimefunItems.DEBUG_FISH, true)) {
+        if (SlimefunUtils.isItemSimilar(e.getItem(), SlimefunItems.DEBUG_FISH, true, false)) {
             e.setCancelled(true);
 
-            if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
-                if (p.isSneaking()) {
-                    if (BlockStorage.hasBlockInfo(e.getClickedBlock())) {
-                        BlockStorage.clearBlockInfo(e.getClickedBlock());
+            if (p.hasPermission("slimefun.debugging")) {
+                if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
+                    if (p.isSneaking()) {
+                        if (BlockStorage.hasBlockInfo(e.getClickedBlock())) {
+                            BlockStorage.clearBlockInfo(e.getClickedBlock());
+                        }
+                    } else {
+                        e.setCancelled(false);
                     }
-                } else {
-                    e.setCancelled(false);
+                } else if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    if (p.isSneaking()) {
+                        Block b = e.getClickedBlock().getRelative(e.getBlockFace());
+                        b.setType(Material.PLAYER_HEAD);
+                        SkullBlock.setFromHash(b, HeadTexture.MISSING_TEXTURE.getTexture());
+                    } else if (BlockStorage.hasBlockInfo(e.getClickedBlock())) {
+                        try {
+                            sendInfo(p, e.getClickedBlock());
+                        } catch (Exception x) {
+                            Slimefun.getLogger().log(Level.SEVERE, "An Exception occured while using a Debug-Fish", x);
+                        }
+                    }
                 }
-            } else if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                if (p.isSneaking()) {
-                    Block b = e.getClickedBlock().getRelative(e.getBlockFace());
-                    b.setType(Material.PLAYER_HEAD);
-                    SkullBlock.setFromHash(b, HeadTexture.MISSING_TEXTURE.getTexture());
-                } else if (BlockStorage.hasBlockInfo(e.getClickedBlock())) {
-                    sendInfo(p, e.getClickedBlock());
-                }
+            } else {
+                SlimefunPlugin.getLocalization().sendMessage(p, "messages.no-permission", true);
             }
         }
     }
@@ -94,8 +112,8 @@ public class DebugFishListener implements Listener {
         if (item.isTicking()) {
             p.sendMessage(ChatColors.color("&dTicking: " + greenCheckmark));
             p.sendMessage(ChatColors.color("  &dAsync: &e" + (item.getBlockTicker().isSynchronized() ? redCross : greenCheckmark)));
-        } else if (item.getEnergyTicker() != null) {
-            p.sendMessage(ChatColors.color("&dTicking: &3Indirect"));
+        } else if (item instanceof EnergyNetProvider) {
+            p.sendMessage(ChatColors.color("&dTicking: &3Indirect (Generator)"));
         } else {
             p.sendMessage(ChatColors.color("&dTicking: " + redCross));
         }

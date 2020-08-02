@@ -202,4 +202,14 @@ public class Category implements Keyed {
         return true;
     }
 
+    /**
+     * This method returns whether this {@link Category} has been registered yet.
+     * More specifically: Whether {@link #register()} was called or not.
+     *
+     * @return Whether this {@link Category} has been registered
+     */
+    public boolean isRegistered() {
+        return SlimefunPlugin.getRegistry().getCategories().contains(this);
+    }
+
 }

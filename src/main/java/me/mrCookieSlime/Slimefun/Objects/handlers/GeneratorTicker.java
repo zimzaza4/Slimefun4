@@ -2,6 +2,7 @@ package me.mrCookieSlime.Slimefun.Objects.handlers;
 
 import io.github.thebusybiscuit.slimefun4.api.exceptions.IncompatibleItemHandlerException;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
+import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
 import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
@@ -10,6 +11,10 @@ import org.bukkit.Location;
 
 import java.util.Optional;
 
+/**
+ * @deprecated Please implement the {@link EnergyNetProvider} interface instead.
+ */
+@Deprecated
 public abstract class GeneratorTicker implements ItemHandler {
 
     public abstract double generateEnergy(Location l, SlimefunItem item, Config data);

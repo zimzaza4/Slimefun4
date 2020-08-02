@@ -12,17 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 class ItemIdCommand extends SubCommand {
     protected ItemIdCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
-        super(plugin, cmd);
-    }
-
-    @Override
-    public String getName() {
-        return "id";
-    }
-
-    @Override
-    public boolean isHidden() {
-        return false;
+        super(plugin, cmd, "id", false);
     }
 
     @Override

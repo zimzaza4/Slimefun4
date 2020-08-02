@@ -3,6 +3,8 @@ Looking for English Version? [**Click here**](https://github.com/TheBusyBiscuit/
 
 想要直接下载吗? [**单击此处**](https://github.com/StarWishsama/Slimefun4/blob/master/README.md#%e4%b8%8b%e8%bd%bd-Slimefun4)
 
+MCBBS 链接: https://www.mcbbs.net/thread-827594-1-1.html
+
 ![目前版本](https://img.shields.io/github/v/release/StarWishSama/Slimefun4?include_prereleases)
 ![编译状态](https://github.com/StarWishsama/Slimefun4/workflows/Java%20CI/badge.svg)
 [![Issues](https://img.shields.io/github/issues/StarWishsama/Slimefun4.svg?style=popout)](https://github.com/StarWishsama/Slimefun4/issues)
@@ -57,7 +59,7 @@ Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 | **有无更新日志** | :x: | :memo: **[更新日志(英文)](https://github.com/TheBusyBiscuit/Slimefun4/blob/master/CHANGELOG.md)** |
 | **下载链接** | :package: **[下载 最新版](https://github.com/StarWishsama/Slimefun4/releases)** | :package: **[下载 "稳定版"](https://github.com/StarWishsama/Slimefun4/releases/latest)** |
 
-**! 建议你使用最新版本的开发版, 可以收到最新版本的更新 !**
+**! 建议你使用最新版本的开发版, 可以获得最新的内容更新和 Bug 修复 !**
 
 ## Discord
 你可以在 Discord 上与 **超过 1800** 个在 Slimefun 社区中来自全世界的用户.<br>

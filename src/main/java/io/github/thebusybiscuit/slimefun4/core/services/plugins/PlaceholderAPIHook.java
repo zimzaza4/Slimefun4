@@ -13,9 +13,12 @@ import java.util.stream.Stream;
 
 class PlaceholderAPIHook extends PlaceholderExpansion {
 
-    @Override
-    public String getAuthor() {
-        return SlimefunPlugin.instance().getDescription().getAuthors().toString();
+    private final String version;
+    private final String author;
+
+    public PlaceholderAPIHook(SlimefunPlugin plugin) {
+        this.version = plugin.getDescription().getVersion();
+        this.author = plugin.getDescription().getAuthors().toString();
     }
 
     @Override
@@ -25,7 +28,12 @@ class PlaceholderAPIHook extends PlaceholderExpansion {
 
     @Override
     public String getVersion() {
-        return SlimefunPlugin.instance().getDescription().getVersion();
+        return version;
+    }
+
+    @Override
+    public String getAuthor() {
+        return author;
     }
 
     @Override

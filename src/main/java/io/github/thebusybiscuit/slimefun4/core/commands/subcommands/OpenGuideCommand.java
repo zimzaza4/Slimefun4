@@ -11,17 +11,7 @@ import org.bukkit.entity.Player;
 class OpenGuideCommand extends SubCommand {
 
     OpenGuideCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
-        super(plugin, cmd);
-    }
-
-    @Override
-    public String getName() {
-        return "open_guide";
-    }
-
-    @Override
-    public boolean isHidden() {
-        return false;
+        super(plugin, cmd, "open_guide", false);
     }
 
     @Override

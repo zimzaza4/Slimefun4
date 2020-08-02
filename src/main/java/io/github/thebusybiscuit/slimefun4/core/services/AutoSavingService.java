@@ -19,11 +19,18 @@ import java.util.logging.Level;
  * data.
  *
  * @author TheBusyBiscuit
+ *
  */
 public class AutoSavingService {
 
     private int interval;
 
+    /**
+     * This method starts the {@link AutoSavingService} with the given interval.
+     *
+     * @param plugin   The current instance of Slimefun
+     * @param interval The interval in which to run this task
+     */
     public void start(SlimefunPlugin plugin, int interval) {
         this.interval = interval;
 
@@ -32,6 +39,10 @@ public class AutoSavingService {
 
     }
 
+    /**
+     * This method saves every {@link PlayerProfile} in memory and removes profiles
+     * that were markes for deletion.
+     */
     private void saveAllPlayers() {
         Iterator<PlayerProfile> iterator = PlayerProfile.iterator();
         int players = 0;
@@ -44,14 +55,19 @@ public class AutoSavingService {
                 profile.save();
             }
 
-            if (profile.isMarkedForDeletion()) iterator.remove();
+            if (profile.isMarkedForDeletion()) {
+                iterator.remove();
+            }
         }
 
         if (players > 0) {
-            Slimefun.getLogger().log(Level.INFO, "自动保存了 {0} 个玩家的数据!", players);
+            Slimefun.getLogger().log(Level.INFO, "Auto-saved all player data for {0} player(s)!", players);
         }
     }
 
+    /**
+     * This method saves the data of every {@link Block} marked dirty by {@link BlockStorage}.
+     */
     private void saveAllBlocks() {
         Set<BlockStorage> worlds = new HashSet<>();
 
@@ -67,12 +83,14 @@ public class AutoSavingService {
         }
 
         if (!worlds.isEmpty()) {
-            Slimefun.getLogger().log(Level.INFO, "正在保存方块数据... (下一次在 {0} 分钟后)", interval);
+            Slimefun.getLogger().log(Level.INFO, "Auto-saving block data... (Next auto-save: {0}m)", interval);
 
             for (BlockStorage storage : worlds) {
                 storage.save(false);
             }
         }
+
+        BlockStorage.saveChunks();
     }
 
 }

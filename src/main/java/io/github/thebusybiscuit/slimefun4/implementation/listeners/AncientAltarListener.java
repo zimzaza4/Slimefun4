@@ -1,7 +1,9 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
+import io.github.starwishsama.extra.ProtectionChecker;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
@@ -112,6 +114,12 @@ public class AncientAltarListener implements Listener {
     }
 
     private void usePedestal(Block pedestal, Player p) {
+        if (!SlimefunPlugin.getProtectionManager().hasPermission(p, pedestal, ProtectableAction.ACCESS_INVENTORIES)
+                || !ProtectionChecker.canInteract(p, pedestal, ProtectableAction.ACCESS_INVENTORIES)) {
+            SlimefunPlugin.getLocalization().sendMessage(p, "inventory.no-access", true);
+            return;
+        }
+
         if (altarsInUse.contains(pedestal.getLocation())) {
             return;
         }
@@ -144,6 +152,12 @@ public class AncientAltarListener implements Listener {
     }
 
     private void useAltar(Block altar, Player p) {
+        if (!SlimefunPlugin.getProtectionManager().hasPermission(p, altar, ProtectableAction.ACCESS_INVENTORIES)
+                || !ProtectionChecker.canInteract(p, altar, ProtectableAction.ACCESS_INVENTORIES)) {
+            SlimefunPlugin.getLocalization().sendMessage(p, "inventory.no-access", true);
+            return;
+        }
+
         ItemStack catalyst = new CustomItem(p.getInventory().getItemInMainHand(), 1);
         List<Block> pedestals = getPedestals(altar);
 
@@ -368,7 +382,7 @@ public class AncientAltarListener implements Listener {
     }
 
     public boolean isUsing(Block pedestal, Location loc) {
-        if (loc == null || pedestal == null) {
+        if (loc == null) {
             return false;
         }
 

@@ -1,8 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.core.services.github;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import kong.unirest.JsonNode;
+import kong.unirest.json.JSONArray;
+import kong.unirest.json.JSONObject;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 
 import java.util.logging.Level;
@@ -24,15 +24,15 @@ class GitHubIssuesTracker extends GitHubConnector {
     }
 
     @Override
-    public void onSuccess(JsonElement element) {
-        if (element.isJsonArray()) {
-            JsonArray array = element.getAsJsonArray();
+    public void onSuccess(JsonNode element) {
+        if (element.isArray()) {
+            JSONArray array = element.getArray();
 
             int issues = 0;
             int pullRequests = 0;
 
-            for (JsonElement elem : array) {
-                JsonObject obj = elem.getAsJsonObject();
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject obj = array.getJSONObject(i);
 
                 if (obj.has("pull_request")) {
                     pullRequests++;

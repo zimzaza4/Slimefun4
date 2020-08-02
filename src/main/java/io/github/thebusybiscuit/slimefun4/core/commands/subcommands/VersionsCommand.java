@@ -5,6 +5,7 @@ import io.github.thebusybiscuit.cscorelib2.reflection.ReflectionUtils;
 import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -16,26 +17,23 @@ import java.util.Collection;
 class VersionsCommand extends SubCommand {
 
     VersionsCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
-        super(plugin, cmd);
-    }
-
-    @Override
-    public String getName() {
-        return "versions";
-    }
-
-    @Override
-    public boolean isHidden() {
-        return false;
+        super(plugin, cmd, "versions", false);
     }
 
     @Override
     public void onExecute(CommandSender sender, String[] args) {
         if (sender.hasPermission("slimefun.command.versions") || sender instanceof ConsoleCommandSender) {
-            sender.sendMessage(ChatColors.color("&a" + Bukkit.getName() + " &2" + ReflectionUtils.getVersion()));
+            // After all these years... Spigot still displays as "CraftBukkit"
+            // so we will just fix this inconsistency for them :)
+            String serverSoftware = PaperLib.isSpigot() && !PaperLib.isPaper() ? "Spigot" : Bukkit.getName();
+            sender.sendMessage(ChatColors.color("&a" + serverSoftware + " &2" + ReflectionUtils.getVersion()));
             sender.sendMessage("");
             sender.sendMessage(ChatColors.color("&aCS-CoreLib &2v" + SlimefunPlugin.getCSCoreLibVersion()));
             sender.sendMessage(ChatColors.color("&aSlimefun &2v" + SlimefunPlugin.getVersion()));
+
+            if (SlimefunPlugin.getMetricsService().getVersion() != null) {
+                sender.sendMessage(ChatColors.color("&aMetrics 构建版本: &2#" + SlimefunPlugin.getMetricsService().getVersion()));
+            }
 
             if (SlimefunPlugin.getRegistry().isBackwardsCompatible()) {
                 sender.sendMessage(ChatColor.YELLOW + "向后兼容已启用!");

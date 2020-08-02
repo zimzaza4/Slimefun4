@@ -5,7 +5,6 @@ import io.github.thebusybiscuit.cscorelib2.config.Config;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.geo.GEOResource;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.core.attributes.WitherProof;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideLayout;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlock;
@@ -14,6 +13,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.BookSlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.CheatSheetSlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.ChestSlimefunGuide;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.AutomatedCraftingChamber;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunBlockHandler;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
@@ -23,6 +23,7 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.inventory.UniversalBlockMenu;
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
@@ -54,32 +55,27 @@ public class SlimefunRegistry {
     private boolean enableResearches;
     private boolean freeCreativeResearches;
     private boolean researchFireworks;
+    private boolean logDuplicateBlockEntries;
     private boolean useMoneyUnlock;
 
     private final Set<String> tickers = new HashSet<>();
     private final Set<SlimefunItem> radioactive = new HashSet<>();
-    private final Set<String> activeChunks = new HashSet<>();
+    private final Set<String> activeChunks = ConcurrentHashMap.newKeySet();
 
     private final KeyMap<GEOResource> geoResources = new KeyMap<>();
-
-    private final Set<String> energyGenerators = new HashSet<>();
-    private final Set<String> energyCapacitors = new HashSet<>();
-    private final Set<String> energyConsumers = new HashSet<>();
-    private final Set<String> chargeableBlocks = new HashSet<>();
-    private final Map<String, WitherProof> witherProofBlocks = new HashMap<>();
 
     private final Map<UUID, PlayerProfile> profiles = new ConcurrentHashMap<>();
     private final Map<String, BlockStorage> worlds = new ConcurrentHashMap<>();
     private final Map<String, BlockInfoConfig> chunks = new HashMap<>();
     private final Map<SlimefunGuideLayout, SlimefunGuideImplementation> layouts = new EnumMap<>(SlimefunGuideLayout.class);
-    private final Map<EntityType, Set<ItemStack>> drops = new EnumMap<>(EntityType.class);
+    private final Map<EntityType, Set<ItemStack>> mobDrops = new EnumMap<>(EntityType.class);
     private final Map<String, Integer> capacities = new HashMap<>();
     private final Map<String, BlockMenuPreset> blockMenuPresets = new HashMap<>();
     private final Map<String, UniversalBlockMenu> universalInventories = new HashMap<>();
-    private final Map<Class<? extends ItemHandler>, Set<ItemHandler>> itemHandlers = new HashMap<>();
+    private final Map<Class<? extends ItemHandler>, Set<ItemHandler>> globalItemHandlers = new HashMap<>();
     private final Map<String, SlimefunBlockHandler> blockHandlers = new HashMap<>();
 
-    private final Map<String, Set<Location>> activeTickers = new HashMap<>();
+    private final Map<String, Set<Location>> activeTickers = new ConcurrentHashMap<>();
 
     private final Map<String, ItemStack> automatedCraftingChamberRecipes = new HashMap<>();
 
@@ -95,10 +91,18 @@ public class SlimefunRegistry {
         backwardsCompatibility = cfg.getBoolean("options.backwards-compatibility") || SlimefunPlugin.getMinecraftVersion().isBefore(MinecraftVersion.MINECRAFT_1_14);
         freeCreativeResearches = cfg.getBoolean("researches.free-in-creative-mode");
         researchFireworks = cfg.getBoolean("researches.enable-fireworks");
-
+        logDuplicateBlockEntries = cfg.getBoolean("options.log-duplicate-block-entries");
         useMoneyUnlock = cfg.getBoolean("researches.use-money-unlock");
     }
 
+    /**
+     * This returns whether auto-loading is enabled.
+     * Auto-Loading will automatically call {@link SlimefunItem#load()} when the item is registered.
+     * Normally that method is called after the {@link Server} finished starting up.
+     * But in the unusual scenario if a {@link SlimefunItem} is registered after that, this is gonna cover that.
+     *
+     * @return Whether auto-loading is enabled
+     */
     public boolean isAutoLoadingEnabled() {
         return automaticallyLoadItems;
     }
@@ -126,10 +130,20 @@ public class SlimefunRegistry {
         return categories;
     }
 
+    /**
+     * This {@link List} contains every {@link SlimefunItem}, even disabled items.
+     *
+     * @return A {@link List} containing every {@link SlimefunItem}
+     */
     public List<SlimefunItem> getAllSlimefunItems() {
         return slimefunItems;
     }
 
+    /**
+     * This {@link List} contains every <strong>enabled</strong> {@link SlimefunItem}.
+     *
+     * @return A {@link List} containing every enabled {@link SlimefunItem}
+     */
     public List<SlimefunItem> getEnabledSlimefunItems() {
         return enabledItems;
     }
@@ -175,11 +189,7 @@ public class SlimefunRegistry {
     }
 
     public Map<EntityType, Set<ItemStack>> getMobDrops() {
-        return drops;
-    }
-
-    public Set<ItemStack> getMobDrops(EntityType entity) {
-        return drops.get(entity);
+        return mobDrops;
     }
 
     public Set<SlimefunItem> getRadioactiveItems() {
@@ -215,7 +225,7 @@ public class SlimefunRegistry {
     }
 
     public Map<Class<? extends ItemHandler>, Set<ItemHandler>> getPublicItemHandlers() {
-        return itemHandlers;
+        return globalItemHandlers;
     }
 
     public Map<String, SlimefunBlockHandler> getBlockHandlers() {
@@ -238,29 +248,19 @@ public class SlimefunRegistry {
         return geoResources;
     }
 
+    /**
+     * This method returns a list of recipes for the {@link AutomatedCraftingChamber}
+     *
+     * @return A list of recipes for the {@link AutomatedCraftingChamber}
+     * @deprecated This just a really bad way to do this. Someone needs to rewrite this.
+     */
     @Deprecated
     public Map<String, ItemStack> getAutomatedCraftingChamberRecipes() {
         return automatedCraftingChamberRecipes;
     }
 
-    public Set<String> getEnergyGenerators() {
-        return energyGenerators;
-    }
-
-    public Set<String> getEnergyCapacitors() {
-        return energyCapacitors;
-    }
-
-    public Set<String> getEnergyConsumers() {
-        return energyConsumers;
-    }
-
-    public Set<String> getChargeableBlocks() {
-        return chargeableBlocks;
-    }
-
-    public Map<String, WitherProof> getWitherProofBlocks() {
-        return witherProofBlocks;
+    public boolean logDuplicateBlockEntries() {
+        return logDuplicateBlockEntries;
     }
 
     public boolean isUseMoneyUnlock() {

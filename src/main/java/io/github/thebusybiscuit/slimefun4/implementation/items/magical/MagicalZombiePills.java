@@ -9,6 +9,7 @@ import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
@@ -36,7 +37,10 @@ public class MagicalZombiePills extends SimpleSlimefunItem<EntityInteractHandler
         return (p, entity, item, offhand) -> {
             if (entity.getType() == EntityType.ZOMBIE_VILLAGER) {
 
-                ItemUtils.consumeItem(item, false);
+                if (p.getGameMode() != GameMode.CREATIVE) {
+                    ItemUtils.consumeItem(item, false);
+                }
+
                 p.playSound(p.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED, 1, 1);
 
                 ZombieVillager zombieVillager = (ZombieVillager) entity;

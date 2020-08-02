@@ -1,15 +1,13 @@
 package io.github.thebusybiscuit.slimefun4.core.services.github;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import kong.unirest.HttpResponse;
+import kong.unirest.JsonNode;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
+import kong.unirest.json.JSONException;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 
 import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 
@@ -28,7 +26,7 @@ abstract class GitHubConnector {
 
     public abstract String getURLSuffix();
 
-    public abstract void onSuccess(JsonElement element);
+    public abstract void onSuccess(JsonNode element);
 
     public void onFailure() {
         // Don't do anything by default
@@ -42,55 +40,61 @@ abstract class GitHubConnector {
         }
 
         try {
-            URL website = new URL("https://api.github.com/repos/" + repository + getURLSuffix());
+            HttpResponse<JsonNode> resp = Unirest.get("https://api.github.com/repos/" + repository + getURLSuffix())
+                    .header("User-Agent", "Slimefun4 (https://github.com/Slimefun)")
+                    .asJson();
 
-            URLConnection connection = website.openConnection();
-            connection.setConnectTimeout(8000);
-            connection.addRequestProperty("Accept-Charset", "UTF-8");
-            connection.addRequestProperty("User-Agent", "Slimefun 4 GitHub Agent (by TheBusyBiscuit)");
-            connection.setDoOutput(true);
+            if (resp.isSuccess()) {
+                onSuccess(resp.getBody());
+                writeCacheFile(resp.getBody());
+            } else {
+                if (github.isLoggingEnabled()) {
+                    Slimefun.getLogger().log(Level.WARNING, "Failed to fetch {0}: {1} - {2}", new Object[]{repository + getURLSuffix(), resp.getStatus(), resp.getBody()});
+                }
 
-            try (ReadableByteChannel channel = Channels.newChannel(connection.getInputStream())) {
-                try (FileOutputStream stream = new FileOutputStream(file)) {
-                    stream.getChannel().transferFrom(channel, 0, Long.MAX_VALUE);
-                    parseData();
+                // It has the cached file, let's just read that then
+                if (file.exists()) {
+                    JsonNode cache = readCacheFile();
+
+                    if (cache != null) {
+                        onSuccess(cache);
+                    }
                 }
             }
-        } catch (IOException e) {
+        } catch (UnirestException e) {
             if (github.isLoggingEnabled()) {
                 Slimefun.getLogger().log(Level.WARNING, "Could not connect to GitHub in time.");
             }
 
-            if (hasData()) {
-                parseData();
-            } else {
-                onFailure();
+            // It has the cached file, let's just read that then
+            if (file.exists()) {
+                JsonNode cache = readCacheFile();
+
+                if (cache != null) {
+                    onSuccess(cache);
+                    return;
+                }
             }
+
+            // If the request failed and it failed to read the cache then call onFailure.
+            onFailure();
         }
     }
 
-    public boolean hasData() {
-        return getFile().exists();
+    private JsonNode readCacheFile() {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
+            return new JsonNode(br.readLine());
+        } catch (IOException | JSONException e) {
+            Slimefun.getLogger().log(Level.WARNING, "Failed to read Github cache file: {0}", file.getName());
+            return null;
+        }
     }
 
-    public File getFile() {
-        return file;
-    }
-
-    public void parseData() {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(getFile()), StandardCharsets.UTF_8))) {
-            StringBuilder builder = new StringBuilder();
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                builder.append(line);
-            }
-
-            JsonElement element = new JsonParser().parse(builder.toString());
-            onSuccess(element);
-        } catch (IOException x) {
-            Slimefun.getLogger().log(Level.SEVERE, x, () -> "An Error occured while parsing GitHub-Data for Slimefun " + SlimefunPlugin.getVersion());
-            onFailure();
+    private void writeCacheFile(JsonNode node) {
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(node.toString().getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            Slimefun.getLogger().log(Level.WARNING, "Failed to populate GitHub cache");
         }
     }
 }

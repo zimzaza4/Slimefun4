@@ -1,18 +1,18 @@
 package me.mrCookieSlime.Slimefun.Objects.SlimefunItem;
 
-import io.github.starwishsama.extra.SlimefunUpdater;
+import io.github.starwishsama.extra.NUpdater;
 import io.github.thebusybiscuit.cscorelib2.collections.OptionalMap;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunBranch;
-import io.github.thebusybiscuit.slimefun4.api.exceptions.IdConflictException;
-import io.github.thebusybiscuit.slimefun4.api.exceptions.IncompatibleItemHandlerException;
-import io.github.thebusybiscuit.slimefun4.api.exceptions.MissingDependencyException;
-import io.github.thebusybiscuit.slimefun4.api.exceptions.UnregisteredItemException;
+import io.github.thebusybiscuit.slimefun4.api.exceptions.*;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemState;
-import io.github.thebusybiscuit.slimefun4.core.attributes.*;
+import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
+import io.github.thebusybiscuit.slimefun4.core.attributes.Placeable;
+import io.github.thebusybiscuit.slimefun4.core.attributes.Radioactive;
+import io.github.thebusybiscuit.slimefun4.core.attributes.Rechargeable;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.researching.Research;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
@@ -64,7 +64,7 @@ public class SlimefunItem implements Placeable {
 
     private boolean ticking = false;
     private BlockTicker blockTicker;
-    private GeneratorTicker generatorTicker;
+    protected GeneratorTicker generatorTicker;
 
     /**
      * This creates a new {@link SlimefunItem} from the given arguments.
@@ -363,17 +363,17 @@ public class SlimefunItem implements Placeable {
                 SlimefunPlugin.getRegistry().getRadioactiveItems().add(this);
             }
 
-            if (this instanceof WitherProof) {
-                SlimefunPlugin.getRegistry().getWitherProofBlocks().put(id, (WitherProof) this);
-            }
-
             if (this instanceof EnergyNetComponent && !SlimefunPlugin.getRegistry().getEnergyCapacities().containsKey(getID())) {
-                ((EnergyNetComponent) this).registerComponent(id);
+                int capacity = ((EnergyNetComponent) this).getCapacity();
+
+                if (capacity > 0) {
+                    SlimefunPlugin.getRegistry().getEnergyCapacities().put(id, capacity);
+                }
             }
 
             if (SlimefunPlugin.getItemCfg().getBoolean(id + ".enabled")) {
 
-                if (!SlimefunPlugin.getRegistry().getCategories().contains(category)) {
+                if (!category.isRegistered()) {
                     category.register();
                 }
 
@@ -431,7 +431,7 @@ public class SlimefunItem implements Placeable {
     /**
      * This method returns whether the original {@link SlimefunItemStack} of this
      * {@link SlimefunItem} is immutable.
-     * <p>
+     *
      * If <code>true</code> is returned, then any changes to the original {@link SlimefunItemStack}
      * will be rejected with a {@link WrongItemStackException}.
      * This ensures integrity so developers don't accidentally damage the wrong {@link ItemStack}.
@@ -445,13 +445,14 @@ public class SlimefunItem implements Placeable {
     /**
      * This method checks recursively for all {@link Class} parents to look for any {@link Deprecated}
      * elements.
-     * <p>
+     *
      * If a {@link Deprecated} element was found, a warning message will be printed.
      *
-     * @param c The {@link Class} from which to start this operation.
+     * @param c
+     *            The {@link Class} from which to start this operation.
      */
     private void checkForDeprecations(Class<?> c) {
-        if (SlimefunUpdater.getBranch() == SlimefunBranch.DEVELOPMENT) {
+        if (NUpdater.getBranch() == SlimefunBranch.DEVELOPMENT) {
             // This method is currently way too spammy with all the restructuring going on...
             // Since DEV builds are anyway under "development", things may be relocated.
             // So we fire these only for stable versions, since devs should update then, so
@@ -474,6 +475,7 @@ public class SlimefunItem implements Placeable {
                 }
             }
 
+            // Recursively lookup the super class
             checkForDeprecations(c.getSuperclass());
         }
     }
@@ -483,7 +485,8 @@ public class SlimefunItem implements Placeable {
      * You don't have to call this method if your {@link SlimefunItem} was linked to your {@link Research}
      * using {@link Research#addItems(SlimefunItem...)}
      *
-     * @param research The new {@link Research} for this {@link SlimefunItem}
+     * @param research
+     *            The new {@link Research} for this {@link SlimefunItem}
      */
     public void setResearch(Research research) {
         if (this.research != null) {
@@ -807,7 +810,7 @@ public class SlimefunItem implements Placeable {
 
         if (addon.getBugTrackerURL() != null) {
             // We can prompt the server operator to report it to the addon's bug tracker
-            addon.getLogger().log(Level.WARNING, "你可以在此反馈这个问题: {0}", addon.getBugTrackerURL());
+            addon.getLogger().log(Level.WARNING, "You can report this warning here: {0}", addon.getBugTrackerURL());
         }
     }
 

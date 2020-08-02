@@ -1,7 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation;
 
+import io.github.starwishsama.extra.NUpdater;
 import io.github.starwishsama.extra.ProtectionChecker;
-import io.github.starwishsama.extra.SlimefunUpdater;
+import io.github.starwishsama.extra.StarWishUtil;
 import io.github.thebusybiscuit.cscorelib2.config.Config;
 import io.github.thebusybiscuit.cscorelib2.math.DoubleHandler;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectionManager;
@@ -16,7 +17,6 @@ import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.networks.NetworkManager;
 import io.github.thebusybiscuit.slimefun4.core.services.*;
 import io.github.thebusybiscuit.slimefun4.core.services.github.GitHubService;
-import io.github.thebusybiscuit.slimefun4.core.services.metrics.MetricsService;
 import io.github.thebusybiscuit.slimefun4.core.services.plugins.ThirdPartyPluginService;
 import io.github.thebusybiscuit.slimefun4.core.services.profiler.SlimefunProfiler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAltar;
@@ -40,6 +40,7 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.inventory.UniversalBlockMenu;
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -65,6 +66,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     private static SlimefunPlugin instance;
 
     private MinecraftVersion minecraftVersion = MinecraftVersion.UNKNOWN;
+    private boolean isNewlyInstalled = false;
 
     private final SlimefunRegistry registry = new SlimefunRegistry();
     private final TickerTask ticker = new TickerTask();
@@ -75,6 +77,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     private final BlockDataService blockDataService = new BlockDataService(this, "slimefun_block");
     private final CustomTextureService textureService = new CustomTextureService(new Config(this, "item-models.yml"));
     private final GitHubService gitHubService = new GitHubService("TheBusyBiscuit/Slimefun4");
+    private final UpdaterService updaterService = new UpdaterService(this, getDescription().getVersion(), getFile());
     private final MetricsService metricsService = new MetricsService(this);
     private final AutoSavingService autoSavingService = new AutoSavingService();
     private final BackupService backupService = new BackupService();
@@ -84,7 +87,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     private final MinecraftRecipeService recipeService = new MinecraftRecipeService(this);
     private final SlimefunProfiler profiler = new SlimefunProfiler();
     private LocalizationService local;
-    private SlimefunUpdater updater;
+    private NUpdater updater;
 
     private GPSNetwork gpsNetwork;
     private NetworkManager networkManager;
@@ -121,10 +124,20 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         } else if (getServer().getPluginManager().isPluginEnabled("CS-CoreLib")) {
             long timestamp = System.nanoTime();
 
+            StarWishUtil.suggestPaper(this);
+
             // We wanna ensure that the Server uses a compatible version of Minecraft
             if (isVersionUnsupported()) {
                 getServer().getPluginManager().disablePlugin(this);
                 return;
+            }
+
+            // Disabling backwards-compatibility for fresh Slimefun installs
+            if (!new File("data-storage/Slimefun").exists()) {
+                config.setValue("options.backwards-compatibility", false);
+                config.save();
+
+                isNewlyInstalled = true;
             }
 
             // Creating all necessary Folders
@@ -142,18 +155,18 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
             int networkSize = config.getInt("networks.max-size");
 
             if (networkSize < 1) {
-                getLogger().log(Level.WARNING, "你的 'networks.max-size' 设置选项设置错误! 它必须大于 1, 你设置为了: {0}", networkSize);
+                getLogger().log(Level.WARNING, "'networks.max-size' 大小设置错误! 它必须大于1, 而你设置的是: {0}", networkSize);
                 networkSize = 1;
             }
 
             networkManager = new NetworkManager(networkSize);
 
             // Setting up bStats
-            metricsService.start();
+            new Thread(metricsService::start).start();
 
             // 魔改的自动更新服务
             // 自动选择分支
-            SlimefunUpdater.autoSelectBranch(this);
+            NUpdater.autoSelectBranch(this);
 
             // Registering all GEO Resources
             getLogger().log(Level.INFO, "加载矿物资源...");
@@ -203,8 +216,8 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
             getLogger().log(Level.INFO, "Slimefun 完成加载, 耗时 {0}", getStartupTime(timestamp));
 
             if (config.getBoolean("options.auto-update") || config.getBoolean("options.update-check")) {
-                if (SlimefunUpdater.getBranch() == SlimefunBranch.DEVELOPMENT || SlimefunUpdater.getBranch() == SlimefunBranch.STABLE) {
-                    updater = new SlimefunUpdater();
+                if (NUpdater.getBranch() == SlimefunBranch.DEVELOPMENT || NUpdater.getBranch() == SlimefunBranch.STABLE) {
+                    updater = new NUpdater();
                     Bukkit.getServer().getScheduler().runTaskAsynchronously(instance, updater::checkUpdate);
                 }
             }
@@ -312,6 +325,8 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         // Create a new backup zip
         backupService.run();
 
+        metricsService.cleanUp();
+
         // Prevent Memory Leaks
         // These static Maps should be removed at some point...
         AContainer.processing = null;
@@ -372,6 +387,14 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new WitherListener(this);
         new IronGolemListener(this);
         new PlayerInteractEntityListener(this);
+
+        if (minecraftVersion.isAtLeast(MinecraftVersion.MINECRAFT_1_15)) {
+            new BeeListener(this);
+        }
+
+        if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_16)) {
+            new PiglinListener(this);
+        }
 
         // 领地权限检查器
         new ProtectionChecker(this);
@@ -499,6 +522,20 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     }
 
     /**
+     * SFMetrics 反射到的只有这个方法
+     * 所以只能加回来了, 但是它并没有实际作用
+     * 替代品请见 {@link NUpdater}
+     * <p>
+     * This method returns the {@link UpdaterService} of Slimefun.
+     * It is used to handle automatic updates.
+     *
+     * @return The {@link UpdaterService} for Slimefun
+     */
+    public static UpdaterService getUpdater() {
+        return instance.updaterService;
+    }
+
+    /**
      * This method returns the {@link GitHubService} of Slimefun.
      * It is used to retrieve data from GitHub repositories.
      *
@@ -566,6 +603,16 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         return instance.minecraftVersion;
     }
 
+    /**
+     * This method returns whether this version of Slimefun was newly installed.
+     * It will return true if this {@link Server} uses Slimefun for the very first time.
+     *
+     * @return Whether this is a new installation of Slimefun
+     */
+    public static boolean isNewlyInstalled() {
+        return instance.isNewlyInstalled;
+    }
+
     public static String getCSCoreLibVersion() {
         return CSCoreLib.getLib().getDescription().getVersion();
     }
@@ -583,6 +630,16 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     @Override
     public File getFile() {
         return super.getFile();
+    }
+
+    /**
+     * This method returns the {@link MetricsService} of Slimefun.
+     * It is used to handle sending metric information to bStats.
+     *
+     * @return The {@link MetricsService} for Slimefun
+     */
+    public static MetricsService getMetricsService() {
+        return instance.metricsService;
     }
 
 }
