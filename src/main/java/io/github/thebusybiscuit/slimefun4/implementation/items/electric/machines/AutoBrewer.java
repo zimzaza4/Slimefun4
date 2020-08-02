@@ -181,7 +181,7 @@ public abstract class AutoBrewer extends AContainer {
 
     @Override
     public String getInventoryTitle() {
-        return "&6Auto-Brewer";
+        return "&6自动酿造机";
     }
 
     @Override
