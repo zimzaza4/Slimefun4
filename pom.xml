@@ -173,7 +173,7 @@
         <dependency>
             <groupId>com.github.TheBusyBiscuit</groupId>
             <artifactId>CS-CoreLib2</artifactId>
-            <version>0.24</version>
+            <version>0.25</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -185,7 +185,7 @@
         <dependency>
             <groupId>com.konghq</groupId>
             <artifactId>unirest-java</artifactId>
-            <version>3.8.06</version>
+            <version>3.9.00</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.google.code.gson</groupId>

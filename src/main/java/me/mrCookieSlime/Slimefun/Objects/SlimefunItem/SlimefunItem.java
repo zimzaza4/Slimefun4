@@ -26,7 +26,6 @@ import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunBlockHandler;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
-import me.mrCookieSlime.Slimefun.Objects.handlers.GeneratorTicker;
 import me.mrCookieSlime.Slimefun.Objects.handlers.ItemHandler;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.apache.commons.lang.Validate;
@@ -64,7 +63,6 @@ public class SlimefunItem implements Placeable {
 
     private boolean ticking = false;
     private BlockTicker blockTicker;
-    protected GeneratorTicker generatorTicker;
 
     /**
      * This creates a new {@link SlimefunItem} from the given arguments.
@@ -303,11 +301,6 @@ public class SlimefunItem implements Placeable {
 
     public BlockTicker getBlockTicker() {
         return blockTicker;
-    }
-
-    // We should maybe refactor this and move it to a subclass
-    public GeneratorTicker getEnergyTicker() {
-        return generatorTicker;
     }
 
     /**
@@ -635,8 +628,6 @@ public class SlimefunItem implements Placeable {
                 ticking = true;
                 SlimefunPlugin.getRegistry().getTickerBlocks().add(getID());
                 blockTicker = (BlockTicker) handler;
-            } else if (handler instanceof GeneratorTicker) {
-                generatorTicker = (GeneratorTicker) handler;
             }
         }
     }

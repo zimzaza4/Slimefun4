@@ -78,7 +78,7 @@ public final class SlimefunItemSetup {
     private static final Material BLACK_DYE;
     private static final Material GREEN_DYE;
 
-    private static boolean alreadyRan = false;
+    private static boolean registeredItems = false;
 
     static {
         if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_14)) {
@@ -98,11 +98,11 @@ public final class SlimefunItemSetup {
     }
 
     public static void setup(SlimefunPlugin plugin) {
-        if (alreadyRan) {
+        if (registeredItems) {
             throw new UnsupportedOperationException("Slimefun Items can only be registered once!");
         }
 
-        alreadyRan = true;
+        registeredItems = true;
         DefaultCategories categories = new DefaultCategories();
 
         new SlimefunItem(categories.weapons, SlimefunItems.GRANDMAS_WALKING_STICK, RecipeType.ENHANCED_CRAFTING_TABLE,
@@ -1965,7 +1965,8 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new SlimefunItem(categories.technicalComponents, SlimefunItems.PLASTIC_SHEET, RecipeType.HEATED_PRESSURE_CHAMBER,
-                new ItemStack[]{null, null, null, null, SlimefunItems.OIL_BUCKET, null, null, null, null})
+                new ItemStack[]{null, null, null, null, SlimefunItems.OIL_BUCKET, null, null, null, null},
+                new SlimefunItemStack(SlimefunItems.PLASTIC_SHEET, 8))
                 .register(plugin);
 
         new UnplaceableBlock(categories.technicalComponents, SlimefunItems.ANDROID_MEMORY_CORE, RecipeType.ENHANCED_CRAFTING_TABLE,
