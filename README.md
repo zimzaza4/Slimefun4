@@ -61,6 +61,16 @@ Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 
 **! 建议你使用最新版本的开发版, 可以获得最新的内容更新和 Bug 修复 !**
 
+## 截图
+那么, Slimefun 看起来是怎样的呢?<br>
+我们让 [Discord 服务器](#discord) 中的一些人发给了我们一些截图:
+|                 反应堆和电力                  |            了不起的自动化工厂             |          魔法实验室           |
+| :-------------------------------------------: | :--------------------------------------: | :----------------------------------------: |
+| ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase1.png) | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase6.png) | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase5.png) |
+| *截图由 HamtaBot#0001 提供* | *截图由 Piͭxͪeͤl (mnb)#5049 提供* | *截图由 Kilaruna#4981 提供* |
+| ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase4.png) | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase3.png) | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase2.png) |
+| *截图由 GalaxyKat11#3816 提供* | *截图由 TamThan#7987 提供* | *截图由 Kilaruna#4981 提供* |
+
 ## Discord
 你可以在 Discord 上与 **超过 1800** 个在 Slimefun 社区中来自全世界的用户.<br>
 单击下面的徽标加入 Discord 服务器反馈问题和提出意见, 或者讨论关于此插件的内容.<br>
