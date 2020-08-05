@@ -79,6 +79,12 @@ public class BlockPlacer extends SimpleSlimefunItem<BlockDispenseHandler> {
     }
 
     private void placeSlimefunBlock(SlimefunItem sfItem, ItemStack item, Block block, Dispenser dispenser) {
+        if (dispenser.getInventory().containsAtLeast(item, 2)) {
+            dispenser.getInventory().removeItem(new CustomItem(item, 1));
+        } else {
+            return;
+        }
+        
         block.setType(item.getType());
         BlockStorage.store(block, sfItem.getID());
         block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, item.getType());
@@ -93,14 +99,15 @@ public class BlockPlacer extends SimpleSlimefunItem<BlockDispenseHandler> {
             }
         }
 
-        if (dispenser.getInventory().containsAtLeast(item, 2)) {
-            dispenser.getInventory().removeItem(new CustomItem(item, 1));
-        } else {
-            Slimefun.runSync(() -> dispenser.getInventory().removeItem(item), 2L);
-        }
     }
 
     private void placeBlock(ItemStack item, Block facedBlock, Dispenser dispenser) {
+        if (dispenser.getInventory().containsAtLeast(item, 2)) {
+            dispenser.getInventory().removeItem(new CustomItem(item, 1));
+        } else {
+            return;
+        }
+        
         facedBlock.setType(item.getType());
 
         if (item.hasItemMeta()) {
@@ -121,10 +128,5 @@ public class BlockPlacer extends SimpleSlimefunItem<BlockDispenseHandler> {
 
         facedBlock.getWorld().playEffect(facedBlock.getLocation(), Effect.STEP_SOUND, item.getType());
 
-        if (dispenser.getInventory().containsAtLeast(item, 2)) {
-            dispenser.getInventory().removeItem(new CustomItem(item, 1));
-        } else {
-            Slimefun.runSync(() -> dispenser.getInventory().removeItem(item), 2L);
-        }
     }
 }
