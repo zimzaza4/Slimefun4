@@ -6,6 +6,12 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+/**
+ * This {@link Event} is called whenever a {@link Player} unlocks a {@link Research}.
+ *
+ * @author TheBusyBiscuit
+ * @see Research
+ */
 public class ResearchUnlockEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
@@ -13,14 +19,6 @@ public class ResearchUnlockEvent extends Event implements Cancellable {
     private final Player player;
     private final Research research;
     private boolean cancelled;
-
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
 
     public ResearchUnlockEvent(Player p, Research research) {
         this.player = p;
@@ -42,7 +40,16 @@ public class ResearchUnlockEvent extends Event implements Cancellable {
 
     @Override
     public void setCancelled(boolean cancel) {
-        cancelled = cancel;
+        this.cancelled = cancel;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return getHandlerList();
     }
 
 }

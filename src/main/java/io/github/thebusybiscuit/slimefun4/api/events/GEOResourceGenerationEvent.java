@@ -15,13 +15,15 @@ import org.bukkit.event.HandlerList;
  * This {@link Event} is fired whenever a {@link GEOResource} is being freshly generated.
  * This only ocurs when a {@link GEOScanner} queries the {@link Chunk} for a {@link GEOResource}
  * but cannot find it.
- * <p>
+ *
  * You can modify this {@link Event} by listening to it.
  *
  * @author TheBusyBiscuit
+ *
  * @see ResourceManager
  * @see GEOResource
  * @see GEOScanner
+ *
  */
 public class GEOResourceGenerationEvent extends Event {
 
@@ -125,12 +127,13 @@ public class GEOResourceGenerationEvent extends Event {
         return biome;
     }
 
-    public HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
-        return handlers;
+    @Override
+    public HandlerList getHandlers() {
+        return getHandlerList();
     }
 
 }

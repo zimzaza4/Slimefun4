@@ -24,7 +24,9 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.inventory.UniversalBlockMenu;
 import org.bukkit.Location;
 import org.bukkit.Server;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Piglin;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -61,6 +63,7 @@ public class SlimefunRegistry {
     private final Set<String> tickers = new HashSet<>();
     private final Set<SlimefunItem> radioactive = new HashSet<>();
     private final Set<String> activeChunks = ConcurrentHashMap.newKeySet();
+    private final Set<ItemStack> barterDrops = new HashSet<>();
 
     private final KeyMap<GEOResource> geoResources = new KeyMap<>();
 
@@ -188,8 +191,24 @@ public class SlimefunRegistry {
         return layouts.get(layout);
     }
 
+    /**
+     * This returns a {@link Map} connecting the {@link EntityType} with a {@link Set}
+     * of {@link ItemStack ItemStacks} which would be dropped when an {@link Entity} of that type was killed.
+     *
+     * @return The {@link Map} of custom mob drops
+     */
     public Map<EntityType, Set<ItemStack>> getMobDrops() {
         return mobDrops;
+    }
+
+    /**
+     * This returns a {@link Set} of {@link ItemStack ItemStacks} which can be obtained by bartering
+     * with {@link Piglin Piglins}.
+     *
+     * @return A {@link Set} of bartering drops
+     */
+    public Set<ItemStack> getBarteringDrops() {
+        return barterDrops;
     }
 
     public Set<SlimefunItem> getRadioactiveItems() {

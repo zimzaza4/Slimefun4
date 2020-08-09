@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
  * disenchanted an {@link ItemStack}.
  *
  * @author poma123
+ *
  */
 public class AutoDisenchantEvent extends Event implements Cancellable {
 
@@ -25,14 +26,11 @@ public class AutoDisenchantEvent extends Event implements Cancellable {
         this.item = item;
     }
 
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
+    /**
+     * This returns the {@link ItemStack} that is being disenchanted.
+     *
+     * @return The {@link ItemStack} that is being disenchanted
+     */
     public ItemStack getItem() {
         return this.item;
     }
@@ -45,6 +43,15 @@ public class AutoDisenchantEvent extends Event implements Cancellable {
     @Override
     public void setCancelled(boolean cancel) {
         this.cancelled = cancel;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return getHandlerList();
     }
 
 }

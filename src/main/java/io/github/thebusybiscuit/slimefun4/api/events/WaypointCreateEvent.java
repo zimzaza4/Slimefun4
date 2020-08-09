@@ -2,6 +2,7 @@ package io.github.thebusybiscuit.slimefun4.api.events;
 
 import io.github.thebusybiscuit.slimefun4.api.gps.GPSNetwork;
 import io.github.thebusybiscuit.slimefun4.api.gps.TeleportationManager;
+import io.github.thebusybiscuit.slimefun4.api.gps.Waypoint;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -16,6 +17,7 @@ import org.bukkit.event.player.PlayerEvent;
  * @author TheBusyBiscuit
  * @see GPSNetwork
  * @see TeleportationManager
+ * @see Waypoint
  */
 public class WaypointCreateEvent extends PlayerEvent implements Cancellable {
 
@@ -26,14 +28,6 @@ public class WaypointCreateEvent extends PlayerEvent implements Cancellable {
 
     private final boolean deathpoint;
     private boolean cancelled;
-
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
 
     public WaypointCreateEvent(Player player, String name, Location location) {
         super(player);
@@ -59,7 +53,8 @@ public class WaypointCreateEvent extends PlayerEvent implements Cancellable {
      * This sets the {@link Location} of the waypoint.
      * The {@link Location} may never be null!
      *
-     * @param loc The {@link Location} to set
+     * @param loc
+     *            The {@link Location} to set
      */
     public void setLocation(Location loc) {
         Validate.notNull(loc, "Cannot set the Location to null!");
@@ -78,7 +73,8 @@ public class WaypointCreateEvent extends PlayerEvent implements Cancellable {
     /**
      * This sets the name of the waypoint to the given argument.
      *
-     * @param name The name for this waypoint
+     * @param name
+     *            The name for this waypoint
      */
     public void setName(String name) {
         Validate.notEmpty(name, "The name of a waypoint must not be empty!");
@@ -103,6 +99,15 @@ public class WaypointCreateEvent extends PlayerEvent implements Cancellable {
     @Override
     public void setCancelled(boolean cancel) {
         this.cancelled = cancel;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return getHandlerList();
     }
 
 }
