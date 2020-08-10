@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
 import io.github.starwishsama.extra.ProtectionChecker;
+import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
@@ -42,6 +43,7 @@ import java.util.*;
  *
  */
 public class AncientAltarListener implements Listener {
+    public static final String ITEM_PREFIX = ChatColors.color("&dALTAR &3Probe - &e");
 
     private AncientAltar altar;
 
@@ -288,7 +290,7 @@ public class AncientAltarListener implements Listener {
         }
 
         String nametag = ItemUtils.getItemName(stack);
-        Item entity = b.getWorld().dropItem(b.getLocation().add(0.5, 1.2, 0.5), new CustomItem(stack, "&5&dALTAR &3Probe - &e" + System.nanoTime()));
+        Item entity = b.getWorld().dropItem(b.getLocation().add(0.5, 1.2, 0.5), new CustomItem(stack, ITEM_PREFIX + System.nanoTime()));
         entity.setVelocity(new Vector(0, 0.1, 0));
         SlimefunUtils.markAsNoPickup(entity, "altar_item");
         entity.setCustomNameVisible(true);

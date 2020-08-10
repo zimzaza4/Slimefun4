@@ -37,6 +37,7 @@ import java.util.Optional;
  *
  * @author TheBusyBiscuit
  * @author Walshy
+ *
  */
 public final class SlimefunUtils {
 
@@ -44,7 +45,7 @@ public final class SlimefunUtils {
     private static final String NO_PICKUP_METADATA = "no_pickup";
 
     private static final NamespacedKey SOULBOUND_KEY = new NamespacedKey(SlimefunPlugin.instance(), "soulbound");
-    private static final String SOULBOUND_LORE = ChatColor.GRAY + "灵魂绑定";
+    private static final String SOULBOUND_LORE = ChatColor.GRAY + "Soulbound";
 
     private SlimefunUtils() {
     }
@@ -264,64 +265,34 @@ public final class SlimefunUtils {
     private static boolean equalsItemMeta(ItemMeta itemMeta, ImmutableItemMeta meta, boolean checkLore) {
         Optional<String> displayName = meta.getDisplayName();
 
-        if (itemMeta.hasDisplayName() && displayName.isPresent()) {
-            if (itemMeta.getDisplayName().equals(displayName.get())) {
-                Optional<List<String>> itemLore = meta.getLore();
-
-                if (checkLore) {
-                    if (itemMeta.hasLore() && itemLore.isPresent()) {
-                        return equalsLore(itemMeta.getLore(), itemLore.get());
-                    } else {
-                        return !itemMeta.hasLore() && !itemLore.isPresent();
-                    }
-                } else {
-                    return true;
-                }
-            } else {
-                return false;
-            }
-        } else if (!itemMeta.hasDisplayName() && !displayName.isPresent()) {
+        if (itemMeta.hasDisplayName() != displayName.isPresent()) {
+            return false;
+        } else if (itemMeta.hasDisplayName() && displayName.isPresent() && !itemMeta.getDisplayName().equals(displayName.get())) {
+            return false;
+        } else if (!checkLore) {
+            return true;
+        } else {
             Optional<List<String>> itemLore = meta.getLore();
 
-            if (checkLore) {
-                if (itemMeta.hasLore() && itemLore.isPresent()) {
-                    return equalsLore(itemMeta.getLore(), itemLore.get());
-                } else {
-                    return !itemMeta.hasLore() && !itemLore.isPresent();
-                }
+            if (itemMeta.hasLore() && itemLore.isPresent()) {
+                return equalsLore(itemMeta.getLore(), itemLore.get());
             } else {
-                return true;
+                return !itemMeta.hasLore() && !itemLore.isPresent();
             }
-        } else return false;
+        }
     }
 
     private static boolean equalsItemMeta(ItemMeta itemMeta, ItemMeta sfitemMeta, boolean checkLore) {
-        if (itemMeta.hasDisplayName() && sfitemMeta.hasDisplayName()) {
-            if (itemMeta.getDisplayName().equals(sfitemMeta.getDisplayName())) {
-                if (checkLore) {
-                    if (itemMeta.hasLore() && sfitemMeta.hasLore()) {
-                        return equalsLore(itemMeta.getLore(), sfitemMeta.getLore());
-                    } else {
-                        return !itemMeta.hasLore() && !sfitemMeta.hasLore();
-                    }
-                } else {
-                    return true;
-                }
-            } else {
-                return false;
-            }
-        } else if (!itemMeta.hasDisplayName() && !sfitemMeta.hasDisplayName()) {
-            if (checkLore) {
-                if (itemMeta.hasLore() && sfitemMeta.hasLore()) {
-                    return equalsLore(itemMeta.getLore(), sfitemMeta.getLore());
-                } else {
-                    return !itemMeta.hasLore() && !sfitemMeta.hasLore();
-                }
-            } else {
-                return true;
-            }
-        } else {
+        if (itemMeta.hasDisplayName() != sfitemMeta.hasDisplayName()) {
             return false;
+        } else if (itemMeta.hasDisplayName() && sfitemMeta.hasDisplayName() && !itemMeta.getDisplayName().equals(sfitemMeta.getDisplayName())) {
+            return false;
+        } else if (!checkLore) {
+            return true;
+        } else if (itemMeta.hasLore() && sfitemMeta.hasLore()) {
+            return equalsLore(itemMeta.getLore(), sfitemMeta.getLore());
+        } else {
+            return !itemMeta.hasLore() && !sfitemMeta.hasLore();
         }
     }
 

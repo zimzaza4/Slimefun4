@@ -26,6 +26,15 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * The {@link BlockListener} is responsible for listening to the {@link BlockPlaceEvent}
+ * and {@link BlockBreakEvent}.
+ *
+ * @author TheBusyBiscuit
+ * @see BlockPlaceHandler
+ * @see BlockBreakHandler
+ * @see ToolUseHandler
+ */
 public class BlockListener implements Listener {
 
     // Materials that require a Block under it, e.g. Pressure Plates
@@ -43,7 +52,7 @@ public class BlockListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onBlockRegister(BlockPlaceEvent e) {
+    public void onBlockPlace(BlockPlaceEvent e) {
         if (BlockStorage.hasBlockInfo(e.getBlock())) {
             e.setCancelled(true);
             return;
@@ -55,8 +64,7 @@ public class BlockListener implements Listener {
         if (sfItem != null && Slimefun.isEnabled(e.getPlayer(), sfItem, true) && !(sfItem instanceof NotPlaceable)) {
             if (!Slimefun.hasUnlocked(e.getPlayer(), sfItem, true)) {
                 e.setCancelled(true);
-            }
-            else {
+            } else {
                 if (SlimefunPlugin.getBlockDataService().isTileEntity(e.getBlock().getType())) {
                     SlimefunPlugin.getBlockDataService().setBlockData(e.getBlock(), sfItem.getID());
                 }
@@ -75,7 +83,7 @@ public class BlockListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onBlockUnregister(BlockBreakEvent e) {
+    public void onBlockBreak(BlockBreakEvent e) {
         checkForSensitiveBlockAbove(e.getPlayer(), e.getBlock());
 
         ItemStack item = e.getPlayer().getInventory().getItemInMainHand();
@@ -83,46 +91,54 @@ public class BlockListener implements Listener {
         List<ItemStack> drops = new ArrayList<>();
 
         if (item.getType() != Material.AIR) {
-            SlimefunItem tool = SlimefunItem.getByItem(item);
-
-            if (tool != null) {
-                if (Slimefun.hasUnlocked(e.getPlayer(), tool, true)) {
-                    tool.callItemHandler(ToolUseHandler.class, handler -> handler.onToolUse(e, item, fortune, drops));
-                } else {
-                    e.setCancelled(true);
-                }
-            }
+            callToolHandler(e, item, fortune, drops);
         }
 
         if (!e.isCancelled()) {
-            SlimefunItem sfItem = BlockStorage.check(e.getBlock());
-
-            if (sfItem == null && SlimefunPlugin.getBlockDataService().isTileEntity(e.getBlock().getType())) {
-                Optional<String> blockData = SlimefunPlugin.getBlockDataService().getBlockData(e.getBlock());
-
-                if (blockData.isPresent()) {
-                    sfItem = SlimefunItem.getByID(blockData.get());
-                }
-            }
-
-            if (sfItem != null && !sfItem.useVanillaBlockBreaking()) {
-                SlimefunBlockHandler blockHandler = SlimefunPlugin.getRegistry().getBlockHandlers().get(sfItem.getID());
-
-                if (blockHandler != null) {
-                    if (!blockHandler.onBreak(e.getPlayer(), e.getBlock(), sfItem, UnregisterReason.PLAYER_BREAK)) {
-                        e.setCancelled(true);
-                        return;
-                    }
-                } else {
-                    sfItem.callItemHandler(BlockBreakHandler.class, handler -> handler.onBlockBreak(e, item, fortune, drops));
-                }
-
-                drops.addAll(sfItem.getDrops());
-                BlockStorage.clearBlockInfo(e.getBlock());
-            }
+            callBlockHandler(e, item, fortune, drops);
         }
 
         dropItems(e, drops);
+    }
+
+    private void callToolHandler(BlockBreakEvent e, ItemStack item, int fortune, List<ItemStack> drops) {
+        SlimefunItem tool = SlimefunItem.getByItem(item);
+
+        if (tool != null) {
+            if (Slimefun.hasUnlocked(e.getPlayer(), tool, true)) {
+                tool.callItemHandler(ToolUseHandler.class, handler -> handler.onToolUse(e, item, fortune, drops));
+            } else {
+                e.setCancelled(true);
+            }
+        }
+    }
+
+    private void callBlockHandler(BlockBreakEvent e, ItemStack item, int fortune, List<ItemStack> drops) {
+        SlimefunItem sfItem = BlockStorage.check(e.getBlock());
+
+        if (sfItem == null && SlimefunPlugin.getBlockDataService().isTileEntity(e.getBlock().getType())) {
+            Optional<String> blockData = SlimefunPlugin.getBlockDataService().getBlockData(e.getBlock());
+
+            if (blockData.isPresent()) {
+                sfItem = SlimefunItem.getByID(blockData.get());
+            }
+        }
+
+        if (sfItem != null && !sfItem.useVanillaBlockBreaking()) {
+            SlimefunBlockHandler blockHandler = SlimefunPlugin.getRegistry().getBlockHandlers().get(sfItem.getID());
+
+            if (blockHandler != null) {
+                if (!blockHandler.onBreak(e.getPlayer(), e.getBlock(), sfItem, UnregisterReason.PLAYER_BREAK)) {
+                    e.setCancelled(true);
+                    return;
+                }
+            } else {
+                sfItem.callItemHandler(BlockBreakHandler.class, handler -> handler.onBlockBreak(e, item, fortune, drops));
+            }
+
+            drops.addAll(sfItem.getDrops());
+            BlockStorage.clearBlockInfo(e.getBlock());
+        }
     }
 
     private void dropItems(BlockBreakEvent e, List<ItemStack> drops) {
@@ -144,8 +160,10 @@ public class BlockListener implements Listener {
      * Sensitive {@link Block Blocks} are pressure plates or saplings, which should be broken
      * when the block beneath is broken as well.
      *
-     * @param p The {@link Player} who broke this {@link Block}
-     * @param b The {@link Block} that was broken
+     * @param p
+     *            The {@link Player} who broke this {@link Block}
+     * @param b
+     *            The {@link Block} that was broken
      */
     private void checkForSensitiveBlockAbove(Player p, Block b) {
         Block blockAbove = b.getRelative(BlockFace.UP);
