@@ -20,6 +20,7 @@ public class AncientPedestal extends SlimefunItem {
             Item stack = listener.findItem(b);
             if (stack != null) {
                 if (listener.isUsing(b, stack.getLocation())) {
+                    SlimefunPlugin.getLocalization().sendMessage(p, "machines.ANCIENT_PEDESTAL.in-use");
                     return false;
                 }
 

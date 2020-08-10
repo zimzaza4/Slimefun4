@@ -175,6 +175,7 @@ machines:
     unknown-recipe: "&4未知合成表! &c请使用正确的合成配方!"
   ANCIENT_PEDESTAL:
     obstructed: "&4基座被挡住了! &c把基座上面的东西移开!"
+    in-use: "&4基座上还有东西没拿下来!"
   HOLOGRAM_PROJECTOR:
     enter-text: "&7请写下想显示在全息文本上的话. &r(支持颜色代码)"
     inventory-title: 全息图像编辑器
@@ -222,6 +223,7 @@ gps:
     new: "&e给你的路径点起个名字吧 &7(支持彩色代码!)"
     added: "&a成功添加了新的传送点"
     max: "&4你已到达设置传送点个数的最大上限"
+    duplicate: "&4你已经创建了一个相同名字的传送点了: &f%waypoint%"
   insufficient-complexity:
     - "&4GPS网络复杂度不足: &c%complexity%"
     - "&4a) 你还没有设置一个 GPS 网络"
@@ -314,5 +316,9 @@ languages:
   sr: 塞尔维亚语
   be: 白俄罗斯语
   tl: 他加禄语
+brewing_stand:
+  not-working: "&4你不能在酿造台中使用 Slimefun 物品!"
+villagers:
+  no-trading: "&4你不能用 Slimefun 的物品和村民交易!"
 miner:
   no-ores: "&e抱歉, 周围找不到矿石了!"
