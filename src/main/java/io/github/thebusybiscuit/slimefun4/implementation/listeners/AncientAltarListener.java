@@ -388,6 +388,6 @@ public class AncientAltarListener implements Listener {
             return false;
         }
 
-        return pedestal.getLocation().add(0.5, 0.8, 0.5).distanceSquared(loc) >= 0.3D;
+        return pedestal.getLocation().add(0.5, 0.8, 0.5).distanceSquared(loc) >= 0.05D;
     }
 }
