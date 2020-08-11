@@ -21,6 +21,7 @@ import org.bukkit.Nameable;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Dispenser;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -33,7 +34,15 @@ public class BlockPlacer extends SimpleSlimefunItem<BlockDispenseHandler> {
 
     public BlockPlacer(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
-
+        
+        SlimefunItem.registerBlockHandler(getID(), (p, b, tool, reason) -> {
+        	if(b.isBlockIndirectlyPowered() || b.isBlockPowered()) {
+        		return false;
+        	}
+        	
+            return true;
+        });
+        
         addItemSetting(blacklist);
     }
 
@@ -76,11 +85,15 @@ public class BlockPlacer extends SimpleSlimefunItem<BlockDispenseHandler> {
 
         return false;
     }
-
+    
     private void placeSlimefunBlock(SlimefunItem sfItem, ItemStack item, Block block, Dispenser dispenser) {
         BlockPlacerPlaceEvent e = new BlockPlacerPlaceEvent(dispenser.getBlock(), item, block);
-        Bukkit.getPluginManager().callEvent(e);
-
+        Bukkit.getPluginManager().callEvent(e);   
+        
+        if(!dispenser.getInventory().getViewers().isEmpty()){
+        	e.setCancelled(true);
+        }
+        
         if (!e.isCancelled()) {
             boolean hasItemHandler = sfItem.callItemHandler(BlockPlaceHandler.class, handler -> {
                 if (handler.isBlockPlacerAllowed()) {
@@ -112,11 +125,15 @@ public class BlockPlacer extends SimpleSlimefunItem<BlockDispenseHandler> {
             }
         }
     }
-
+    
     private void placeBlock(ItemStack item, Block facedBlock, Dispenser dispenser) {
         BlockPlacerPlaceEvent e = new BlockPlacerPlaceEvent(dispenser.getBlock(), item, facedBlock);
         Bukkit.getPluginManager().callEvent(e);
-
+        
+        if(!dispenser.getInventory().getViewers().isEmpty()){
+        	e.setCancelled(true);
+        }
+        
         if (!e.isCancelled()) {
             facedBlock.setType(item.getType());
 
