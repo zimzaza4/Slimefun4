@@ -4,6 +4,7 @@ import io.github.thebusybiscuit.cscorelib2.config.Config;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,18 +73,35 @@ public class BlockMenu extends DirtyChestMenu {
     }
 
     /**
-     * Reload this BlockMenu based on the preset.
+     * Reload this {@link BlockMenu} based on its {@link BlockMenuPreset}.
      */
     public void reload() {
         this.preset.clone(this);
     }
 
     public Block getBlock() {
-        return this.location.getBlock();
+        return location.getBlock();
     }
 
     public Location getLocation() {
         return location;
+    }
+
+    /**
+     * This method drops the contents of this {@link BlockMenu} on the ground at the given
+     * {@link Location}.
+     *
+     * @param l     Where to drop these items
+     * @param slots The slots of items that should be dropped
+     */
+    public void dropItems(Location l, int... slots) {
+        for (int slot : slots) {
+            ItemStack item = getItemInSlot(slot);
+            if (item != null) {
+                l.getWorld().dropItemNaturally(l, item);
+                replaceExistingItem(slot, null);
+            }
+        }
     }
 
     public void delete(Location l) {

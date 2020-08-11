@@ -11,6 +11,7 @@ import org.bukkit.event.HandlerList;
  * The {@link ReactorExplodeEvent} is called whenever a reactor explodes.
  *
  * @author TheBusyBiscuit
+ *
  */
 public class ReactorExplodeEvent extends Event {
 
@@ -45,12 +46,13 @@ public class ReactorExplodeEvent extends Event {
         return reactor;
     }
 
-    public HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
-        return handlers;
+    @Override
+    public HandlerList getHandlers() {
+        return getHandlerList();
     }
 
 }

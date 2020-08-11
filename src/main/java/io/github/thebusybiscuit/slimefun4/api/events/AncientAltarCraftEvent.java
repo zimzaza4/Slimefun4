@@ -41,14 +41,6 @@ public class AncientAltarCraftEvent extends PlayerEvent implements Cancellable {
         this.output = output;
     }
 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
     /**
      * This method returns the main altar's block {@link Block}
      *
@@ -89,6 +81,15 @@ public class AncientAltarCraftEvent extends PlayerEvent implements Cancellable {
     @Override
     public void setCancelled(boolean cancel) {
         cancelled = cancel;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return getHandlerList();
     }
 
 }

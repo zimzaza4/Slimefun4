@@ -11,6 +11,7 @@ import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -26,6 +27,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The {@link OreCrusher} is a {@link MultiBlockMachine} which allows you to double ores
+ * and crush some other {@link Material Materials} into various resources.
+ *
+ * @author TheBusyBiscuit
+ */
 public class OreCrusher extends MultiBlockMachine {
 
 	private final DoubleOreSetting doubleOres = new DoubleOreSetting();
@@ -95,14 +102,17 @@ public class OreCrusher extends MultiBlockMachine {
 					if (convert != null && SlimefunUtils.isItemSimilar(current, convert, true)) {
 						ItemStack adding = RecipeType.getRecipeOutput(this, convert);
 						Inventory outputInv = findOutputInventory(adding, dispBlock, inv);
-						if (outputInv != null) {
-							ItemStack removing = current.clone();
-							removing.setAmount(convert.getAmount());
-							inv.removeItem(removing);
-							outputInv.addItem(adding);
-							p.getWorld().playEffect(b.getLocation(), Effect.STEP_SOUND, 1);
-						} else {
-							SlimefunPlugin.getLocalization().sendMessage(p, "machines.full-inventory", true);
+
+						if (Slimefun.hasUnlocked(p, adding, true)) {
+							if (outputInv != null) {
+								ItemStack removing = current.clone();
+								removing.setAmount(convert.getAmount());
+								inv.removeItem(removing);
+								outputInv.addItem(adding);
+								p.getWorld().playEffect(b.getLocation(), Effect.STEP_SOUND, 1);
+							} else {
+								SlimefunPlugin.getLocalization().sendMessage(p, "machines.full-inventory", true);
+							}
 						}
 
 						return;

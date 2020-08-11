@@ -1,7 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks;
 
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
-import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
@@ -20,12 +20,21 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * This abstract super class is responsible for some utility methods for machines which
+ * are capable of upgrading backpacks.
+ *
+ * @author TheBusyBiscuit
+ * @see EnhancedCraftingTable
+ * @see MagicWorkbench
+ */
 abstract class BackpackCrafter extends MultiBlockMachine {
 
-    public BackpackCrafter(Category category, SlimefunItemStack item, ItemStack[] recipe, BlockFace trigger) {
+    BackpackCrafter(Category category, SlimefunItemStack item, ItemStack[] recipe, BlockFace trigger) {
         super(category, item, recipe, trigger);
     }
 
@@ -33,7 +42,15 @@ abstract class BackpackCrafter extends MultiBlockMachine {
         Inventory fakeInv = Bukkit.createInventory(null, 9, "Fake Inventory");
 
         for (int j = 0; j < inv.getContents().length; j++) {
-            ItemStack stack = inv.getContents()[j] != null && inv.getContents()[j].getAmount() > 1 ? new CustomItem(inv.getContents()[j], inv.getContents()[j].getAmount() - 1) : null;
+            ItemStack stack = inv.getContents()[j];
+
+            // Fixes #2103 - Properly simulating the consumption
+            // (which may leave behind empty buckets or glass bottles)
+            if (stack != null) {
+                stack = stack.clone();
+                ItemUtils.consumeItem(stack, true);
+            }
+
             fakeInv.setItem(j, stack);
         }
 
@@ -82,14 +99,13 @@ abstract class BackpackCrafter extends MultiBlockMachine {
 
     private Optional<String> retrieveID(ItemStack backpack, int size) {
         if (backpack != null) {
-            for (String line : backpack.getItemMeta().getLore()) {
+            for (String line : Objects.requireNonNull(Objects.requireNonNull(backpack.getItemMeta()).getLore())) {
                 if (line.startsWith(ChatColors.color("&7ID: ")) && line.contains("#")) {
                     String id = line.replace(ChatColors.color("&7ID: "), "");
                     String[] idSplit = PatternUtils.HASH.split(id);
 
                     PlayerProfile.fromUUID(UUID.fromString(idSplit[0]), profile -> {
                         Optional<PlayerBackpack> optional = profile.getBackpack(Integer.parseInt(idSplit[1]));
-
                         optional.ifPresent(playerBackpack -> playerBackpack.setSize(size));
                     });
 

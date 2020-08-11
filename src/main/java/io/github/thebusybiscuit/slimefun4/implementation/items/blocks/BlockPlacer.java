@@ -2,10 +2,11 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.blocks;
 
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.materials.MaterialCollections;
+import io.github.thebusybiscuit.slimefun4.api.events.BlockPlacerPlaceEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockDispenseHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
@@ -13,19 +14,18 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Nameable;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Dispenser;
-import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class BlockPlacer extends SimpleSlimefunItem<BlockDispenseHandler> {
@@ -34,7 +34,15 @@ public class BlockPlacer extends SimpleSlimefunItem<BlockDispenseHandler> {
 
     public BlockPlacer(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
-
+        
+        SlimefunItem.registerBlockHandler(getID(), (p, b, tool, reason) -> {
+        	if(b.isBlockIndirectlyPowered() || b.isBlockPowered()) {
+        		return false;
+        	}
+        	
+            return true;
+        });
+        
         addItemSetting(blacklist);
     }
 
@@ -42,19 +50,19 @@ public class BlockPlacer extends SimpleSlimefunItem<BlockDispenseHandler> {
     public BlockDispenseHandler getItemHandler() {
         return (e, dispenser, facedBlock, machine) -> {
             if (isShulkerBox(e.getItem().getType())) {
-                // Since vanilla Dispensers can already place Shulker boxes, we simply fallback
-                // to the vanilla behaviour.
+                // Since vanilla Dispensers can already place Shulker boxes, we
+                // simply fallback to the vanilla behaviour.
                 return;
             }
 
             e.setCancelled(true);
 
-            if ((facedBlock.getType() == null || facedBlock.getType() == Material.AIR) && e.getItem().getType().isBlock() && !isBlacklisted(e.getItem().getType())) {
+            if (facedBlock.isEmpty() && e.getItem().getType().isBlock() && !isBlacklisted(e.getItem().getType())) {
                 SlimefunItem item = SlimefunItem.getByItem(e.getItem());
 
                 if (item != null) {
                     // Check if this Item can even be placed down
-                    if (!(item instanceof NotPlaceable) && !SlimefunPlugin.getRegistry().getBlockHandlers().containsKey(item.getID())) {
+                    if (!(item instanceof NotPlaceable)) {
                         placeSlimefunBlock(item, e.getItem(), facedBlock, dispenser);
                     }
                 } else {
@@ -77,56 +85,81 @@ public class BlockPlacer extends SimpleSlimefunItem<BlockDispenseHandler> {
 
         return false;
     }
-
+    
     private void placeSlimefunBlock(SlimefunItem sfItem, ItemStack item, Block block, Dispenser dispenser) {
-        if (dispenser.getInventory().containsAtLeast(item, 2)) {
-            dispenser.getInventory().removeItem(new CustomItem(item, 1));
-        } else {
-            return;
+        BlockPlacerPlaceEvent e = new BlockPlacerPlaceEvent(dispenser.getBlock(), item, block);
+        Bukkit.getPluginManager().callEvent(e);   
+        
+        if(!dispenser.getInventory().getViewers().isEmpty()){
+        	e.setCancelled(true);
         }
         
-        block.setType(item.getType());
-        BlockStorage.store(block, sfItem.getID());
-        block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, item.getType());
+        if (!e.isCancelled()) {
+            boolean hasItemHandler = sfItem.callItemHandler(BlockPlaceHandler.class, handler -> {
+                if (handler.isBlockPlacerAllowed()) {
+                    block.setType(item.getType());
+                    block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, item.getType());
 
-        if (item.getType() == Material.SPAWNER && sfItem instanceof RepairedSpawner) {
-            Optional<EntityType> entity = ((RepairedSpawner) sfItem).getEntityType(item);
+                    BlockStorage.store(block, sfItem.getID());
+                    handler.onBlockPlacerPlace(e);
 
-            if (entity.isPresent()) {
-                CreatureSpawner spawner = (CreatureSpawner) block.getState();
-                spawner.setSpawnedType(entity.get());
-                spawner.update(true, false);
+                    if (dispenser.getInventory().containsAtLeast(item, 2)) {
+                        dispenser.getInventory().removeItem(new CustomItem(item, 1));
+                    } else {
+                        Slimefun.runSync(() -> dispenser.getInventory().removeItem(item), 2L);
+                    }
+                }
+            });
+
+            if (!hasItemHandler) {
+                block.setType(item.getType());
+                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, item.getType());
+
+                BlockStorage.store(block, sfItem.getID());
+
+                if (dispenser.getInventory().containsAtLeast(item, 2)) {
+                    dispenser.getInventory().removeItem(new CustomItem(item, 1));
+                } else {
+                    Slimefun.runSync(() -> dispenser.getInventory().removeItem(item), 2L);
+                }
             }
         }
-
     }
-
+    
     private void placeBlock(ItemStack item, Block facedBlock, Dispenser dispenser) {
-        if (dispenser.getInventory().containsAtLeast(item, 2)) {
-            dispenser.getInventory().removeItem(new CustomItem(item, 1));
-        } else {
-            return;
+        BlockPlacerPlaceEvent e = new BlockPlacerPlaceEvent(dispenser.getBlock(), item, facedBlock);
+        Bukkit.getPluginManager().callEvent(e);
+        
+        if(!dispenser.getInventory().getViewers().isEmpty()){
+        	e.setCancelled(true);
         }
         
-        facedBlock.setType(item.getType());
+        if (!e.isCancelled()) {
+            facedBlock.setType(item.getType());
 
-        if (item.hasItemMeta()) {
-            ItemMeta meta = item.getItemMeta();
+            if (item.hasItemMeta()) {
+                ItemMeta meta = item.getItemMeta();
 
-            if (meta.hasDisplayName()) {
-                BlockState blockState = facedBlock.getState();
+                if (meta.hasDisplayName()) {
+                    BlockState blockState = facedBlock.getState();
 
-                if ((blockState instanceof Nameable)) {
-                    ((Nameable) blockState).setCustomName(meta.getDisplayName());
+                    if ((blockState instanceof Nameable)) {
+                        ((Nameable) blockState).setCustomName(meta.getDisplayName());
+                    }
+
+                    // Update block state after changing name
+                    blockState.update();
                 }
 
-                // Update block state after changing name
-                blockState.update();
             }
 
+            facedBlock.getWorld().playEffect(facedBlock.getLocation(), Effect.STEP_SOUND, item.getType());
+
+            if (dispenser.getInventory().containsAtLeast(item, 2)) {
+                dispenser.getInventory().removeItem(new CustomItem(item, 1));
+            } else {
+                Slimefun.runSync(() -> dispenser.getInventory().removeItem(item), 2L);
+            }
         }
-
-        facedBlock.getWorld().playEffect(facedBlock.getLocation(), Effect.STEP_SOUND, item.getType());
-
     }
 }

@@ -28,9 +28,11 @@ import java.util.logging.Level;
  */
 public class MetricsService {
 
+
+    private static final String API_URL = "https://api.github.com/";
     private static final String REPO_NAME = "MetricsModule";
-    private static final String GH_API = "https://api.github.com/repos/Slimefun/" + REPO_NAME;
-    private static final String GH_RELEASES = "https://github.com/Slimefun/" + REPO_NAME + "/releases/download";
+    private static final String RELEASES_URL = API_URL + "repos/Slimefun/" + REPO_NAME + "/releases/latest";
+    private static final String DOWNLOAD_URL = "https://github.com/Slimefun/" + REPO_NAME + "/releases/download";
 
     private final SlimefunPlugin plugin;
     private final File parentFolder;
@@ -65,10 +67,10 @@ public class MetricsService {
      */
     public void start() {
         if (!metricsModuleFile.exists()) {
-            plugin.getLogger().info(REPO_NAME + " 不存在, 正在下载...");
+            plugin.getLogger().info(REPO_NAME + " does not exist, downloading...");
 
             if (!download(getLatestVersion())) {
-                plugin.getLogger().warning("无法启动统计系统, 因为文件未能被下载.");
+                plugin.getLogger().warning("Failed to start metrics as the file could not be downloaded.");
                 return;
             }
         }
@@ -136,7 +138,6 @@ public class MetricsService {
         int latest = getLatestVersion();
 
         if (latest > Integer.parseInt(currentVersion)) {
-            cleanUp();
             return download(latest);
         }
 
@@ -153,7 +154,7 @@ public class MetricsService {
      */
     private int getLatestVersion() {
         try {
-            HttpResponse<JsonNode> response = Unirest.get(GH_API + "/releases/latest").asJson();
+            HttpResponse<JsonNode> response = Unirest.get(RELEASES_URL).asJson();
 
             if (!response.isSuccess()) {
                 return -1;
@@ -167,7 +168,7 @@ public class MetricsService {
 
             return node.getObject().getInt("tag_name");
         } catch (UnirestException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to fetch latest builds for SFMetrics");
+            plugin.getLogger().log(Level.WARNING, "Failed to fetch latest builds for Metrics: {0}", e.getMessage());
             return -1;
         }
     }
@@ -182,7 +183,7 @@ public class MetricsService {
         File file = new File(parentFolder, "Metrics-" + version + ".jar");
 
         try {
-            plugin.getLogger().log(Level.INFO, "# 开始下载 MetricsModule 版本: #{0}", version);
+            plugin.getLogger().log(Level.INFO, "# Starting download of MetricsModule build: #{0}", version);
 
             if (file.exists()) {
                 // Delete the file in case we accidentally downloaded it before
@@ -190,19 +191,19 @@ public class MetricsService {
             }
 
             AtomicInteger lastPercentPosted = new AtomicInteger();
-            GetRequest request = Unirest.get(GH_RELEASES + "/" + version + "/" + REPO_NAME + ".jar");
+            GetRequest request = Unirest.get(DOWNLOAD_URL + "/" + version + "/" + REPO_NAME + ".jar");
 
             HttpResponse<File> response = request.downloadMonitor((b, fileName, bytesWritten, totalBytes) -> {
                 int percent = (int) (20 * (Math.round((((double) bytesWritten / totalBytes) * 100) / 20)));
 
                 if (percent != 0 && percent != lastPercentPosted.get()) {
-                    plugin.getLogger().info("# 正在下载... " + percent + "% " + "(" + bytesWritten + "/" + totalBytes + " bytes)");
+                    plugin.getLogger().info("# Downloading... " + percent + "% " + "(" + bytesWritten + "/" + totalBytes + " bytes)");
                     lastPercentPosted.set(percent);
                 }
             }).asFile(file.getPath());
 
             if (response.isSuccess()) {
-                plugin.getLogger().log(Level.INFO, "成功下载 {0} 构建号 #{1}", new Object[]{REPO_NAME, version});
+                plugin.getLogger().log(Level.INFO, "Successfully downloaded {0} build: #{1}", new Object[]{REPO_NAME, version});
 
                 // Replace the metric file with the new one
                 cleanUp();
@@ -213,9 +214,9 @@ public class MetricsService {
                 return true;
             }
         } catch (UnirestException e) {
-            plugin.getLogger().log(Level.WARNING, "无法从构建页面获取最新版本文件, 因为国内连接 Github 服务器质量不太好, 所以你可以忽略");
+            plugin.getLogger().log(Level.WARNING, "Failed to fetch the latest jar file from the builds page. Perhaps GitHub is down?");
         } catch (IOException e) {
-            plugin.getLogger().log(Level.WARNING, "无法将旧版本的 SFMetric 替换为新版本, 请手动替换! 错误信息: {0}", e.getMessage());
+            plugin.getLogger().log(Level.WARNING, "Failed to replace the old metric file with the new one. Please do this manually! Error: {0}", e.getMessage());
         }
 
         return false;

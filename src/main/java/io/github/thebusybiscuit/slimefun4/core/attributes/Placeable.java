@@ -34,19 +34,4 @@ public interface Placeable {
     default boolean useVanillaBlockBreaking() {
         return false;
     }
-
-    default void onPlace(Player p, Block b) {
-        // Override this as necessary
-    }
-
-    default boolean onBreak(Player p, Block b) {
-        // Override this as necessary
-        return true;
-    }
-
-    default boolean onExplode(Block b) {
-        // Override this as necessary
-        return true;
-    }
-
 }

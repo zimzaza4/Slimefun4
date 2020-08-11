@@ -13,6 +13,8 @@ import java.util.logging.Level;
 
 abstract class GitHubConnector {
 
+    private static final String API_URL = "https://api.github.com/";
+
     protected File file;
     protected String repository;
     protected final GitHubService github;
@@ -40,7 +42,7 @@ abstract class GitHubConnector {
         }
 
         try {
-            HttpResponse<JsonNode> resp = Unirest.get("https://api.github.com/repos/" + repository + getURLSuffix())
+            HttpResponse<JsonNode> resp = Unirest.get(API_URL + repository + getURLSuffix())
                     .header("User-Agent", "Slimefun4 (https://github.com/Slimefun)")
                     .asJson();
 

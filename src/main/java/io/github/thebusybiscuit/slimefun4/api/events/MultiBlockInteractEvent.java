@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerEvent;
  * This {@link Event} is called when a {@link Player} interacts with a {@link MultiBlock}.
  *
  * @author TheBusyBiscuit
+ *
  */
 public class MultiBlockInteractEvent extends PlayerEvent implements Cancellable {
 
@@ -22,14 +23,6 @@ public class MultiBlockInteractEvent extends PlayerEvent implements Cancellable 
     private final Block clickedBlock;
     private final BlockFace clickedFace;
     private boolean cancelled;
-
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
 
     public MultiBlockInteractEvent(Player p, MultiBlock mb, Block clicked, BlockFace face) {
         super(p);
@@ -73,6 +66,15 @@ public class MultiBlockInteractEvent extends PlayerEvent implements Cancellable 
     @Override
     public void setCancelled(boolean cancel) {
         this.cancelled = cancel;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return getHandlerList();
     }
 
 }

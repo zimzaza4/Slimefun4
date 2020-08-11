@@ -31,6 +31,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * long-time deprecated Digital Miner.</i>
  *
  * @author TheBusyBiscuit
+ * @see AdvancedIndustrialMiner
  * @see ActiveMiner
  */
 public class IndustrialMiner extends MultiBlockMachine {
@@ -43,7 +44,7 @@ public class IndustrialMiner extends MultiBlockMachine {
     private final ItemSetting<Boolean> canMineAncientDebris = new ItemSetting<>("can-mine-ancient-debris", false);
 
     public IndustrialMiner(Category category, SlimefunItemStack item, Material baseMaterial, boolean silkTouch, int range) {
-        super(category, item, new ItemStack[]{null, null, null, new CustomItem(Material.PISTON, "活塞 (向上)"), new ItemStack(Material.CHEST), new CustomItem(Material.PISTON, "活塞 (向上)"), new ItemStack(baseMaterial), new ItemStack(SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_14) ? Material.BLAST_FURNACE : Material.FURNACE), new ItemStack(baseMaterial)}, BlockFace.UP);
+        super(category, item, new ItemStack[]{null, null, null, new CustomItem(Material.PISTON, "活塞 (面朝上方)"), new ItemStack(Material.CHEST), new CustomItem(Material.PISTON, "活塞 (面朝上方)"), new ItemStack(baseMaterial), new ItemStack(SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_14) ? Material.BLAST_FURNACE : Material.FURNACE), new ItemStack(baseMaterial)}, BlockFace.UP);
 
         this.range = range;
         this.silkTouch = silkTouch;
@@ -66,7 +67,7 @@ public class IndustrialMiner extends MultiBlockMachine {
      * This method returns the range of the {@link IndustrialMiner}.
      * The total area will be determined by the range multiplied by 2 plus the actual center
      * of the machine.
-     * <p>
+     *
      * So a range of 3 will make the {@link IndustrialMiner} affect an area of 7x7 blocks.
      * 3 on all axis, plus the center of the machine itself.
      *
@@ -98,7 +99,9 @@ public class IndustrialMiner extends MultiBlockMachine {
     /**
      * This method returns the outcome that mining certain ores yields.
      *
-     * @param ore The {@link Material} of the ore that was mined
+     * @param ore
+     *            The {@link Material} of the ore that was mined
+     *
      * @return The outcome when mining this ore
      */
     public ItemStack getOutcome(Material ore) {
@@ -121,10 +124,8 @@ public class IndustrialMiner extends MultiBlockMachine {
                 return new ItemStack(Material.REDSTONE, 4 + random.nextInt(2));
             case LAPIS_ORE:
                 return new ItemStack(Material.LAPIS_LAZULI, 4 + random.nextInt(4));
-            case ANCIENT_DEBRIS:
-                return new ItemStack(Material.ANCIENT_DEBRIS);
             default:
-                // This includes Iron and Gold ore
+                // This includes Iron and Gold ore (and Ancient Debris)
                 return new ItemStack(ore);
         }
     }
@@ -132,11 +133,13 @@ public class IndustrialMiner extends MultiBlockMachine {
     /**
      * This registers a new fuel type for this {@link IndustrialMiner}.
      *
-     * @param ores The amount of ores this allows you to mine
-     * @param item The item that shall be consumed
+     * @param ores
+     *            The amount of ores this allows you to mine
+     * @param item
+     *            The item that shall be consumed
      */
     public void addFuelType(int ores, ItemStack item) {
-        Validate.isTrue(ores > 1 && ores % 2 == 0, "The amount of ores must be at least 2 and a multiple of 2.");
+        Validate.isTrue(ores > 1 && ores % 2 == 0, "矿石的数量必须最少为二且二的倍数.");
         fuelTypes.add(new MachineFuel(ores / 2, item));
     }
 
@@ -153,7 +156,7 @@ public class IndustrialMiner extends MultiBlockMachine {
             ItemStack item = fuel.getInput().clone();
             ItemMeta im = item.getItemMeta();
             List<String> lore = new ArrayList<>();
-            lore.add(ChatColors.color("&8\u21E8 &7Lasts for max. " + fuel.getTicks() + " Ores"));
+            lore.add(ChatColors.color("&8\u21E8 &7剩余最多 " + fuel.getTicks() + " 个矿石"));
             im.setLore(lore);
             item.setItemMeta(im);
             list.add(item);
@@ -193,11 +196,23 @@ public class IndustrialMiner extends MultiBlockMachine {
     /**
      * This returns whether this {@link IndustrialMiner} can mine the given {@link Material}.
      *
-     * @param type The {@link Material} to check
+     * @param type
+     *            The {@link Material} to check
+     *
      * @return Whether this {@link IndustrialMiner} is capable of mining this {@link Material}
      */
     public boolean canMine(Material type) {
-        return type.name().endsWith("_ORE") || (type == Material.ANCIENT_DEBRIS && canMineAncientDebris.getValue());
+        if (type.name().endsWith("_ORE")) {
+            return true;
+        } else if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_16)) {
+            if (type == Material.GILDED_BLACKSTONE) {
+                return true;
+            } else if (type == Material.ANCIENT_DEBRIS) {
+                return canMineAncientDebris.getValue();
+            }
+        }
+
+        return false;
     }
 
 }

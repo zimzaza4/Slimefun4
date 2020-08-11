@@ -1,9 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import io.github.starwishsama.extra.ProtectionChecker;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.materials.MaterialCollections;
-import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans.MagicianTalisman;
@@ -12,7 +10,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -47,10 +44,21 @@ public class TalismanListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDamageGet(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player) {
-            if (e.getCause() == DamageCause.LAVA) Talisman.checkFor(e, SlimefunItems.TALISMAN_LAVA);
-            if (e.getCause() == DamageCause.DROWNING) Talisman.checkFor(e, SlimefunItems.TALISMAN_WATER);
-            if (e.getCause() == DamageCause.FALL) Talisman.checkFor(e, SlimefunItems.TALISMAN_ANGEL);
-            if (e.getCause() == DamageCause.FIRE) Talisman.checkFor(e, SlimefunItems.TALISMAN_FIRE);
+            if (e.getCause() == DamageCause.LAVA) {
+                Talisman.checkFor(e, SlimefunItems.TALISMAN_LAVA);
+            }
+
+            if (e.getCause() == DamageCause.DROWNING) {
+                Talisman.checkFor(e, SlimefunItems.TALISMAN_WATER);
+            }
+
+            if (e.getCause() == DamageCause.FALL) {
+                Talisman.checkFor(e, SlimefunItems.TALISMAN_ANGEL);
+            }
+
+            if (e.getCause() == DamageCause.FIRE) {
+                Talisman.checkFor(e, SlimefunItems.TALISMAN_FIRE);
+            }
 
             if (e.getCause() == DamageCause.ENTITY_ATTACK) {
                 Talisman.checkFor(e, SlimefunItems.TALISMAN_KNIGHT);
@@ -170,6 +178,8 @@ public class TalismanListener implements Listener {
             item.setItemMeta(meta);
 
             int itemSlot = slot;
+
+            // Update the item forcefully
             Slimefun.runSync(() -> inv.setItem(itemSlot, item), 1L);
         }
     }
@@ -188,6 +198,7 @@ public class TalismanListener implements Listener {
         if (Talisman.checkFor(e, SlimefunItems.TALISMAN_MAGICIAN)) {
             MagicianTalisman talisman = (MagicianTalisman) SlimefunItems.TALISMAN_MAGICIAN.getItem();
             TalismanEnchantment enchantment = talisman.getRandomEnchantment(e.getItem());
+
             if (enchantment != null) {
                 e.getEnchantsToAdd().put(enchantment.getEnchantment(), enchantment.getLevel());
             }
@@ -196,9 +207,9 @@ public class TalismanListener implements Listener {
         if (!e.getEnchantsToAdd().containsKey(Enchantment.SILK_TOUCH) && Enchantment.LOOT_BONUS_BLOCKS.canEnchantItem(e.getItem()) && Talisman.checkFor(e, SlimefunItems.TALISMAN_WIZARD)) {
             Set<Enchantment> enchantments = e.getEnchantsToAdd().keySet();
 
-            for (Enchantment en : enchantments) {
+            for (Enchantment enchantment : enchantments) {
                 if (random.nextInt(100) < 40) {
-                    e.getEnchantsToAdd().put(en, random.nextInt(3) + 1);
+                    e.getEnchantsToAdd().put(enchantment, random.nextInt(3) + 1);
                 }
             }
 
@@ -206,33 +217,29 @@ public class TalismanListener implements Listener {
         }
     }
 
-    /**
-     * @param e BlockBreakEvent
-     * @since 4.2.0
-     */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent e) {
-        ItemStack item = e.getPlayer().getInventory().getItemInMainHand();
-        Block b = e.getBlock();
+        // We only want to double ores
+        if (MaterialCollections.getAllOres().contains(e.getBlock().getType())) {
+            ItemStack item = e.getPlayer().getInventory().getItemInMainHand();
 
-        if (item.getType() != Material.AIR && item.getAmount() > 0
-                && SlimefunPlugin.getProtectionManager().hasPermission(e.getPlayer(), b, ProtectableAction.BREAK_BLOCK)
-                && ProtectionChecker.canInteract(e.getPlayer(), b, ProtectableAction.BREAK_BLOCK)) {
-            Collection<ItemStack> drops = b.getDrops(item);
-            int dropAmount = 1;
+            if (item.getType() != Material.AIR && item.getAmount() > 0 && !item.containsEnchantment(Enchantment.SILK_TOUCH)) {
+                Collection<ItemStack> drops = e.getBlock().getDrops(item);
+                int dropAmount = 1;
 
-            if (item.getEnchantments().containsKey(Enchantment.LOOT_BONUS_BLOCKS) && !item.getEnchantments().containsKey(Enchantment.SILK_TOUCH)) {
-                Random random = ThreadLocalRandom.current();
-                dropAmount = random.nextInt(item.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS) + 2) - 1;
-                dropAmount = Math.max(dropAmount, 1);
-                dropAmount = (e.getBlock().getType() == Material.LAPIS_ORE ? 4 + random.nextInt(5) : 1) * (dropAmount + 1);
-            }
+                if (item.containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
+                    Random random = ThreadLocalRandom.current();
+                    dropAmount = random.nextInt(item.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS) + 2) - 1;
+                    dropAmount = Math.max(dropAmount, 1);
+                    dropAmount = (e.getBlock().getType() == Material.LAPIS_ORE ? 4 + random.nextInt(5) : 1) * (dropAmount + 1);
+                }
 
-            if (!item.getEnchantments().containsKey(Enchantment.SILK_TOUCH) && MaterialCollections.getAllOres().contains(b.getType()) && Talisman.checkFor(e, SlimefunItems.TALISMAN_MINER)) {
-                for (ItemStack drop : drops) {
-                    if (!drop.getType().isBlock()) {
-                        int amount = Math.max(1, (dropAmount * 2) - drop.getAmount());
-                        b.getWorld().dropItemNaturally(b.getLocation(), new CustomItem(drop, amount));
+                if (Talisman.checkFor(e, SlimefunItems.TALISMAN_MINER)) {
+                    for (ItemStack drop : drops) {
+                        if (drop != null && !drop.getType().isBlock()) {
+                            int amount = Math.max(1, (dropAmount * 2) - drop.getAmount());
+                            e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), new CustomItem(drop, amount));
+                        }
                     }
                 }
             }

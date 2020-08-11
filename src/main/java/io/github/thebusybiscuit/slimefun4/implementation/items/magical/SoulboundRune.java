@@ -15,7 +15,6 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
@@ -50,7 +49,7 @@ public class SoulboundRune extends SimpleSlimefunItem<ItemDropHandler> {
                     return true;
                 }
 
-                Slimefun.runSync(() -> activate(p, e, item), 20L);
+                Slimefun.runSync(() -> activate(p, item), 20L);
 
                 return true;
             }
@@ -58,7 +57,7 @@ public class SoulboundRune extends SimpleSlimefunItem<ItemDropHandler> {
         };
     }
 
-    private void activate(Player p, PlayerDropItemEvent e, Item rune) {
+    private void activate(Player p, Item rune) {
         // Being sure the entity is still valid and not picked up or whatsoever.
         if (!rune.isValid()) {
             return;
@@ -73,9 +72,6 @@ public class SoulboundRune extends SimpleSlimefunItem<ItemDropHandler> {
             ItemStack itemStack = item.getItemStack();
 
             if (itemStack.getAmount() == 1) {
-                // Prevent other plugins from processing this Item as we will remove it soon
-                e.setCancelled(true);
-
                 // This lightning is just an effect, it deals no damage.
                 l.getWorld().strikeLightningEffect(l);
 

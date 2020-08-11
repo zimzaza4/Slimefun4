@@ -10,10 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -94,10 +91,24 @@ public class VanillaMachinesListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPreBrew(InventoryClickEvent e) {
-        Inventory inventory = e.getInventory();
+        Inventory clickedInventory = e.getClickedInventory();
+        Inventory topInventory = e.getView().getTopInventory();
 
-        if (inventory.getType() == InventoryType.BREWING && e.getRawSlot() < inventory.getSize() && inventory.getHolder() instanceof BrewingStand) {
-            e.setCancelled(isUnallowed(SlimefunItem.getByItem(e.getCursor())));
+        if (clickedInventory != null && topInventory.getType() == InventoryType.BREWING && topInventory.getHolder() instanceof BrewingStand) {
+            if (e.getAction() == InventoryAction.HOTBAR_SWAP) {
+                e.setCancelled(true);
+                return;
+            }
+
+            if (clickedInventory.getType() == InventoryType.BREWING) {
+                e.setCancelled(isUnallowed(SlimefunItem.getByItem(e.getCursor())));
+            } else {
+                e.setCancelled(isUnallowed(SlimefunItem.getByItem(e.getCurrentItem())));
+            }
+
+            if (e.getResult() == Result.DENY) {
+                SlimefunPlugin.getLocalization().sendMessage((Player) e.getWhoClicked(), "brewing_stand.not-working", true);
+            }
         }
     }
 
