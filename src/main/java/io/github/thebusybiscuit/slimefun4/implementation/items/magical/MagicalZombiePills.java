@@ -11,20 +11,20 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Villager;
-import org.bukkit.entity.ZombieVillager;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 
 /**
  * This {@link SlimefunItem} allows you to convert any {@link ZombieVillager} to
  * their {@link Villager} variant. It is also one of the very few utilisations of {@link EntityInteractHandler}.
- * <p>
+ *
  * This item does not work on earlier versions than 1.14 as the {@link ZombieVillager} {@link EntityType}
  * did not exist back then.
  *
  * @author Linox
+ *
  * @see EntityInteractHandler
+ *
  */
 public class MagicalZombiePills extends SimpleSlimefunItem<EntityInteractHandler> {
 
@@ -34,8 +34,11 @@ public class MagicalZombiePills extends SimpleSlimefunItem<EntityInteractHandler
 
     @Override
     public EntityInteractHandler getItemHandler() {
-        return (p, entity, item, offhand) -> {
+        return (e, item, offhand) -> {
+            Entity entity = e.getRightClicked();
+
             if (entity.getType() == EntityType.ZOMBIE_VILLAGER) {
+                Player p = e.getPlayer();
 
                 if (p.getGameMode() != GameMode.CREATIVE) {
                     ItemUtils.consumeItem(item, false);

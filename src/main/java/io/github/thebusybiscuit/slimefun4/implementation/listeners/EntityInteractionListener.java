@@ -8,7 +8,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
@@ -18,14 +18,14 @@ import org.bukkit.inventory.ItemStack;
  * @author Linox
  * @see EntityInteractHandler
  */
-public class PlayerInteractEntityListener implements Listener {
+public class EntityInteractionListener implements Listener {
 
-    public PlayerInteractEntityListener(SlimefunPlugin plugin) {
+    public EntityInteractionListener(SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler
-    public void onInteractEntity(PlayerInteractAtEntityEvent e) {
+    public void onInteractEntity(PlayerInteractEntityEvent e) {
         if (!e.getRightClicked().isValid()) {
             return;
         }
@@ -41,7 +41,7 @@ public class PlayerInteractEntityListener implements Listener {
         SlimefunItem sfItem = SlimefunItem.getByItem(itemStack);
 
         if (sfItem != null && Slimefun.hasUnlocked(e.getPlayer(), sfItem, true)) {
-            sfItem.callItemHandler(EntityInteractHandler.class, handler -> handler.onInteract(e.getPlayer(), e.getRightClicked(), itemStack, e.getHand() == EquipmentSlot.OFF_HAND));
+            sfItem.callItemHandler(EntityInteractHandler.class, handler -> handler.onInteract(e, itemStack, e.getHand() == EquipmentSlot.OFF_HAND));
         }
     }
 }

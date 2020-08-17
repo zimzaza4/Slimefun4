@@ -276,10 +276,10 @@ public final class SlimefunItems {
     public static final SlimefunItemStack GILDED_IRON_LEGGINGS = new SlimefunItemStack("GILDED_IRON_LEGGINGS", Material.GOLDEN_LEGGINGS, "&6镀金铁护腿");
     public static final SlimefunItemStack GILDED_IRON_BOOTS = new SlimefunItemStack("GILDED_IRON_BOOTS", Material.GOLDEN_BOOTS, "&6镀金铁靴子");
 
-    public static final SlimefunItemStack GOLD_HELMET = new SlimefunItemStack("GOLD_12K_HELMET", Material.GOLDEN_HELMET, "&6金头盔", "&912克拉");
-    public static final SlimefunItemStack GOLD_CHESTPLATE = new SlimefunItemStack("GOLD_12K_CHESTPLATE", Material.GOLDEN_CHESTPLATE, "&6金胸甲", "&912克拉");
-    public static final SlimefunItemStack GOLD_LEGGINGS = new SlimefunItemStack("GOLD_12K_LEGGINGS", Material.GOLDEN_LEGGINGS, "&6金护腿", "&912克拉");
-    public static final SlimefunItemStack GOLD_BOOTS = new SlimefunItemStack("GOLD_12K_BOOTS", Material.GOLDEN_BOOTS, "&6金靴子", "&912克拉");
+    public static final SlimefunItemStack GOLD_HELMET_12K = new SlimefunItemStack("GOLD_12K_HELMET", Material.GOLDEN_HELMET, "&6金头盔", "&912克拉");
+    public static final SlimefunItemStack GOLD_CHESTPLATE_12K = new SlimefunItemStack("GOLD_12K_CHESTPLATE", Material.GOLDEN_CHESTPLATE, "&6金胸甲", "&912克拉");
+    public static final SlimefunItemStack GOLD_LEGGINGS_12K = new SlimefunItemStack("GOLD_12K_LEGGINGS", Material.GOLDEN_LEGGINGS, "&6金护腿", "&912克拉");
+    public static final SlimefunItemStack GOLD_BOOTS_12K = new SlimefunItemStack("GOLD_12K_BOOTS", Material.GOLDEN_BOOTS, "&6金靴子", "&912克拉");
 
     public static final SlimefunItemStack SLIME_HELMET_STEEL = new SlimefunItemStack("SLIME_STEEL_HELMET", Material.IRON_HELMET, "&a&l史莱姆头盔", "&7&o已强化", "", "&a&o有弹性的感觉");
     public static final SlimefunItemStack SLIME_CHESTPLATE_STEEL = new SlimefunItemStack("SLIME_STEEL_CHESTPLATE", Material.IRON_CHESTPLATE, "&a&l史莱姆胸甲", "&7&o已强化", "", "&a&o有弹性的感觉");
@@ -325,10 +325,10 @@ public final class SlimefunItems {
         GILDED_IRON_LEGGINGS.addUnsafeEnchantments(gilded);
         GILDED_IRON_BOOTS.addUnsafeEnchantments(gilded);
 
-        GOLD_HELMET.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
-        GOLD_CHESTPLATE.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
-        GOLD_LEGGINGS.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
-        GOLD_BOOTS.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+        GOLD_HELMET_12K.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+        GOLD_CHESTPLATE_12K.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+        GOLD_LEGGINGS_12K.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+        GOLD_BOOTS_12K.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
 
         Map<Enchantment, Integer> slime = new HashMap<>();
         slime.put(Enchantment.DURABILITY, 4);
@@ -394,12 +394,14 @@ public final class SlimefunItems {
     public static final SlimefunItemStack ANCIENT_ALTAR = new SlimefunItemStack("ANCIENT_ALTAR", Material.ENCHANTING_TABLE, "&d古代祭坛", "", "&5在世界里建造祭坛", "&5并用古老的仪式合成物品");
     public static final SlimefunItemStack COPPER_WIRE = new SlimefunItemStack("COPPER_WIRE", Material.STRING, "&6铜线", "", "&6电子配件中的重要组成部分");
 
-    public static final SlimefunItemStack RAINBOW_WOOL = new SlimefunItemStack("RAINBOW_WOOL", Material.WHITE_WOOL, "&5彩虹羊毛", "", "&d轮番展现彩虹的颜色!");
-    public static final SlimefunItemStack RAINBOW_GLASS = new SlimefunItemStack("RAINBOW_GLASS", Material.WHITE_STAINED_GLASS, "&5彩虹玻璃", "", "&d轮番展现彩虹的颜色!");
-    public static final SlimefunItemStack RAINBOW_CLAY = new SlimefunItemStack("RAINBOW_CLAY", Material.WHITE_TERRACOTTA, "&5彩虹粘土块", "", "&d轮番展现彩虹的颜色!");
-    public static final SlimefunItemStack RAINBOW_GLASS_PANE = new SlimefunItemStack("RAINBOW_GLASS_PANE", Material.WHITE_STAINED_GLASS_PANE, "&5彩虹玻璃板", "", "&d轮番展现彩虹的颜色!");
-    public static final SlimefunItemStack RAINBOW_CONCRETE = new SlimefunItemStack("RAINBOW_CONCRETE", Material.WHITE_CONCRETE, "&5彩虹混凝土", "", "&d轮番展现彩虹的颜色!");
-    public static final SlimefunItemStack RAINBOW_GLAZED_TERRACOTTA = new SlimefunItemStack("RAINBOW_GLAZED_TERRACOTTA", Material.WHITE_GLAZED_TERRACOTTA, "&5彩虹带釉陶瓦", "", "&d轮番展现彩虹的颜色!");
+    private static final String RAINBOW = "&d轮番展现彩虹的颜色!";
+
+    public static final SlimefunItemStack RAINBOW_WOOL = new SlimefunItemStack("RAINBOW_WOOL", Material.WHITE_WOOL, "&5彩虹羊毛", "", RAINBOW);
+    public static final SlimefunItemStack RAINBOW_GLASS = new SlimefunItemStack("RAINBOW_GLASS", Material.WHITE_STAINED_GLASS, "&5彩虹玻璃", "", RAINBOW);
+    public static final SlimefunItemStack RAINBOW_CLAY = new SlimefunItemStack("RAINBOW_CLAY", Material.WHITE_TERRACOTTA, "&5彩虹粘土块", "", RAINBOW);
+    public static final SlimefunItemStack RAINBOW_GLASS_PANE = new SlimefunItemStack("RAINBOW_GLASS_PANE", Material.WHITE_STAINED_GLASS_PANE, "&5彩虹玻璃板", "", RAINBOW);
+    public static final SlimefunItemStack RAINBOW_CONCRETE = new SlimefunItemStack("RAINBOW_CONCRETE", Material.WHITE_CONCRETE, "&5彩虹混凝土", "", RAINBOW);
+    public static final SlimefunItemStack RAINBOW_GLAZED_TERRACOTTA = new SlimefunItemStack("RAINBOW_GLAZED_TERRACOTTA", Material.WHITE_GLAZED_TERRACOTTA, "&5彩虹带釉陶瓦", "", RAINBOW);
 
     private static final String CHRISTMAS = ChatUtils.christmas("< 圣诞节版 >");
 

@@ -386,7 +386,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new FireworksListener(this);
         new WitherListener(this);
         new IronGolemListener(this);
-        new PlayerInteractEntityListener(this);
+        new EntityInteractionListener(this);
 
         if (minecraftVersion.isAtLeast(MinecraftVersion.MINECRAFT_1_15)) {
             new BeeListener(this);

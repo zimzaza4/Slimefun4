@@ -12,6 +12,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.*;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -104,7 +105,7 @@ public final class SlimefunGuideSettings {
             return false;
         });
 
-        menu.addItem(51, new CustomItem(Material.TOTEM_OF_UNDYING, "&cSoon", "", "&7Something will be added here later..."), (pl, slot, item, action) -> {
+        menu.addItem(51, new CustomItem(Material.TOTEM_OF_UNDYING, ChatColor.RED + SlimefunPlugin.getLocalization().getMessage(p, "guide.work-in-progress")), (pl, slot, item, action) -> {
             // Add something here
             return false;
         });
