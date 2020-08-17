@@ -33,7 +33,7 @@ public class SlimefunGuideListener implements Listener {
             }
 
             SlimefunGuideLayout type = SlimefunPlugin.getCfg().getBoolean("guide.default-view-book") ? SlimefunGuideLayout.BOOK : SlimefunGuideLayout.CHEST;
-            p.getInventory().addItem(SlimefunGuide.getItem(type));
+            p.getInventory().addItem(SlimefunGuide.getItem(type).clone());
         }
     }
 

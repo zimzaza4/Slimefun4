@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
 
-class OptionFireworks implements SlimefunGuideOption<Boolean> {
+class FireworksOption implements SlimefunGuideOption<Boolean> {
 
     @Override
     public SlimefunAddon getAddon() {
