@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class Juicer extends MultiBlockMachine {
 
 	public Juicer(Category category, SlimefunItemStack item) {
-		super(category, item, new ItemStack[]{null, new ItemStack(Material.GLASS), null, null, new ItemStack(Material.NETHER_BRICK_FENCE), null, null, new CustomItem(Material.DISPENSER, "Dispenser (Facing up)"), null}, BlockFace.SELF);
+		super(category, item, new ItemStack[]{null, new ItemStack(Material.GLASS), null, null, new ItemStack(Material.NETHER_BRICK_FENCE), null, null, new CustomItem(Material.DISPENSER, "发射器 (朝上)"), null}, BlockFace.SELF);
 	}
 
 	@Override

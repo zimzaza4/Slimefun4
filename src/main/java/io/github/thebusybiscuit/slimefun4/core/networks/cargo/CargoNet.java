@@ -133,7 +133,7 @@ public class CargoNet extends ChestTerminalNetwork {
 
     public void tick(Block b) {
         if (!regulator.equals(b.getLocation())) {
-            SimpleHologram.update(b, "&4检测到有多个货运节点");
+            SimpleHologram.update(b, "&4检测到有多个货运管理器");
             return;
         }
 
