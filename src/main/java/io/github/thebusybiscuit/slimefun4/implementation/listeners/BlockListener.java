@@ -132,15 +132,6 @@ public class BlockListener implements Listener {
                     e.setCancelled(true);
                     return;
                 }
-                if (!blockHandler.onBreak(e.getPlayer(), e.getBlock(), sfItem, UnregisterReason.ANDROID_DIG)) {
-                    e.setCancelled(true);
-                    return;
-                }
-                // 爆炸的时候玩家为空
-                if (!blockHandler.onBreak(null, e.getBlock(), sfItem, UnregisterReason.EXPLODE)) {
-                    e.setCancelled(true);
-                    return;
-                }
             } else {
                 sfItem.callItemHandler(BlockBreakHandler.class, handler -> handler.onBlockBreak(e, item, fortune, drops));
             }
