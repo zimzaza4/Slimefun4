@@ -25,7 +25,7 @@ import java.util.List;
 public class ArmorForge extends MultiBlockMachine {
 
     public ArmorForge(Category category, SlimefunItemStack item) {
-        super(category, item, new ItemStack[]{null, null, null, null, new ItemStack(Material.ANVIL), null, null, new CustomItem(Material.DISPENSER, "Dispenser (Facing up)"), null}, BlockFace.SELF);
+        super(category, item, new ItemStack[]{null, null, null, null, new ItemStack(Material.ANVIL), null, null, new CustomItem(Material.DISPENSER, "发射器 (朝上)"), null}, BlockFace.SELF);
     }
 
     @Override
