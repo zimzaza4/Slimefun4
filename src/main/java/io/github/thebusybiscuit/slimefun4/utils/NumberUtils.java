@@ -108,6 +108,10 @@ public final class NumberUtils {
     public static int clamp(int min, int value, int max) {
         if (value < min) {
             return min;
-        } else return Math.min(value, max);
+        } else if (value > max) {
+            return max;
+        } else {
+            return value;
+        }
     }
 }

@@ -15,7 +15,6 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.interfaces.InventoryBlock;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import me.mrCookieSlime.Slimefun.api.energy.ChargableBlock;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import org.bukkit.Material;
@@ -98,11 +97,11 @@ public class AnimalGrowthAccelerator extends SlimefunItem implements InventoryBl
         for (Entity n : b.getWorld().getNearbyEntities(b.getLocation(), 3.0, 3.0, 3.0, n -> n instanceof Ageable && n.isValid() && !((Ageable) n).isAdult())) {
             for (int slot : getInputSlots()) {
                 if (SlimefunUtils.isItemSimilar(inv.getItemInSlot(slot), organicFood, false)) {
-                    if (ChargableBlock.getCharge(b) < ENERGY_CONSUMPTION) {
+                    if (getCharge(b.getLocation()) < ENERGY_CONSUMPTION) {
                         return;
                     }
 
-                    ChargableBlock.addCharge(b, -ENERGY_CONSUMPTION);
+                    removeCharge(b.getLocation(), ENERGY_CONSUMPTION);
                     inv.consumeItem(slot);
                     ((Ageable) n).setAge(((Ageable) n).getAge() + 2000);
 

@@ -12,7 +12,6 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import me.mrCookieSlime.Slimefun.api.energy.ChargableBlock;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
@@ -52,12 +51,12 @@ public abstract class GPSTransmitter extends SimpleSlimefunItem<BlockTicker> imp
 
             @Override
             public void tick(Block b, SlimefunItem item, Config data) {
-                int charge = ChargableBlock.getCharge(b);
+                int charge = getCharge(b.getLocation());
                 UUID owner = UUID.fromString(BlockStorage.getLocationInfo(b.getLocation(), "owner"));
 
                 if (charge >= getEnergyConsumption()) {
                     SlimefunPlugin.getGPSNetwork().updateTransmitter(b.getLocation(), owner, true);
-                    ChargableBlock.setCharge(b.getLocation(), charge - getEnergyConsumption());
+                    removeCharge(b.getLocation(), getEnergyConsumption());
                 } else {
                     SlimefunPlugin.getGPSNetwork().updateTransmitter(b.getLocation(), owner, false);
                 }

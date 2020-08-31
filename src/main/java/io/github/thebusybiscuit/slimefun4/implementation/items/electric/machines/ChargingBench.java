@@ -7,7 +7,6 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import me.mrCookieSlime.Slimefun.api.energy.ChargableBlock;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -36,7 +35,7 @@ public class ChargingBench extends AContainer {
 
     @Override
     protected void tick(Block b) {
-        if (ChargableBlock.getCharge(b) < getEnergyConsumption()) {
+        if (getCharge(b.getLocation()) < getEnergyConsumption()) {
             return;
         }
 
@@ -58,7 +57,7 @@ public class ChargingBench extends AContainer {
             float charge = getEnergyConsumption() / 2F;
 
             if (((Rechargeable) sfItem).addItemCharge(item, charge)) {
-                ChargableBlock.addCharge(b, -getEnergyConsumption());
+                removeCharge(b.getLocation(), getEnergyConsumption());
             } else if (inv.fits(item, getOutputSlots())) {
                 inv.pushItem(item, getOutputSlots());
                 inv.replaceExistingItem(slot, null);

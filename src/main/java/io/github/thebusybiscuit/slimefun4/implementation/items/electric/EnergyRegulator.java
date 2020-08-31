@@ -62,6 +62,7 @@ public class EnergyRegulator extends SlimefunItem {
     }
 
     private void tick(Block b) {
-        EnergyNet.getNetworkFromLocationOrCreate(b.getLocation()).tick(b);
+        EnergyNet network = EnergyNet.getNetworkFromLocationOrCreate(b.getLocation());
+        network.tick(b);
     }
 }

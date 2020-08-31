@@ -74,8 +74,10 @@ public interface EnergyNetComponent extends ItemAttribute {
      * If this {@link EnergyNetComponent} is of type {@code EnergyNetComponentType.CAPACITOR}, then
      * this method will automatically update the texture of this {@link Capacitor} as well.
      *
-     * @param l      The target {@link Location}
-     * @param charge The new charge
+     * @param l
+     *            The target {@link Location}
+     * @param charge
+     *            The new charge
      */
     default void setCharge(Location l, int charge) {
         Validate.notNull(l, "Location was null!");
