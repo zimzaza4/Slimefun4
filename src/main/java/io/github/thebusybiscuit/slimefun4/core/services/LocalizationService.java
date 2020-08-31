@@ -5,6 +5,7 @@ import io.github.thebusybiscuit.slimefun4.core.services.localization.Language;
 import io.github.thebusybiscuit.slimefun4.core.services.localization.SlimefunLocalization;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
+import org.apache.commons.lang.Validate;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,10 +16,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -58,16 +56,19 @@ public class LocalizationService extends SlimefunLocalization implements Persist
             loadEmbeddedLanguages();
 
             String language = getConfig().getString(LANGUAGE_PATH);
-            if (language == null) language = serverDefaultLanguage;
+
+            if (language == null) {
+                language = serverDefaultLanguage;
+            }
 
             if (hasLanguage(serverDefaultLanguage)) {
                 setLanguage(serverDefaultLanguage, !serverDefaultLanguage.equals(language));
             } else {
                 setLanguage("en", false);
-                plugin.getLogger().log(Level.WARNING, "无法识别指定的语言: \"{0}\"", serverDefaultLanguage);
+                plugin.getLogger().log(Level.WARNING, "Could not recognize the given language: \"{0}\"", serverDefaultLanguage);
             }
 
-            Slimefun.getLogger().log(Level.INFO, "可用的语言类型: {0}", String.join(", ", languages.keySet()));
+            Slimefun.getLogger().log(Level.INFO, "Available languages: {0}", String.join(", ", languages.keySet()));
             save();
         } else {
             translationsEnabled = false;
@@ -110,7 +111,14 @@ public class LocalizationService extends SlimefunLocalization implements Persist
         return containsResource("messages_" + language);
     }
 
+    /**
+     * This returns whether the given {@link Language} is loaded or not.
+     *
+     * @param id The id of that {@link Language}
+     * @return Whether or not this {@link Language} is loaded
+     */
     public boolean isLanguageLoaded(String id) {
+        Validate.notNull(id, "The language id cannot be null!");
         return languages.containsKey(id);
     }
 
@@ -159,14 +167,17 @@ public class LocalizationService extends SlimefunLocalization implements Persist
             FileConfiguration config = YamlConfiguration.loadConfiguration(reader);
             getConfig().getConfiguration().setDefaults(config);
         } catch (IOException e) {
-            Slimefun.getLogger().log(Level.SEVERE, e, () -> "无法加载多语言文件: \"" + path + "\"");
+            Slimefun.getLogger().log(Level.SEVERE, e, () -> "Failed to load language file: \"" + path + "\"");
         }
 
         save();
     }
 
     @Override
-    protected void addLanguage(String id, String hash) {
+    protected void addLanguage(String id, String texture) {
+        Validate.notNull(id, "The language id cannot be null!");
+        Validate.notNull(texture, "The language texture cannot be null");
+
         if (hasLanguage(id)) {
             FileConfiguration messages = streamConfigFile("messages_" + id + ".yml", getConfig().getConfiguration());
             FileConfiguration researches = streamConfigFile("researches_" + id + ".yml", null);
@@ -174,7 +185,7 @@ public class LocalizationService extends SlimefunLocalization implements Persist
             FileConfiguration categories = streamConfigFile("categories_" + id + ".yml", null);
             FileConfiguration recipes = streamConfigFile("recipes_" + id + ".yml", null);
 
-            Language language = new Language(id, hash);
+            Language language = new Language(id, texture);
             language.setMessagesFile(messages);
             language.setResearchesFile(researches);
             language.setResourcesFile(resources);
@@ -190,28 +201,41 @@ public class LocalizationService extends SlimefunLocalization implements Persist
      * The progress is determined by the amount of translated strings divided by the amount
      * of strings in the english {@link Language} file and multiplied by 100.0
      *
-     * @param lang The {@link Language} to get the progress of
+     * @param lang
+     *            The {@link Language} to get the progress of
+     *
      * @return A percentage {@code (0.0 - 100.0)} for the progress of translation of that {@link Language}
      */
-    public double getProgress(Language lang) {
-        int defaultKeys = getTotalKeys(languages.get("en"));
+    public double calculateProgress(Language lang) {
+        Validate.notNull(lang, "Cannot get the language progress of null");
 
-        if (defaultKeys == 0) {
+        Set<String> defaultKeys = getTotalKeys(languages.get("en"));
+
+        if (defaultKeys.isEmpty()) {
             return 0;
         }
 
-        return Math.min(DoubleHandler.fixDouble(100.0 * (getTotalKeys(lang) / (double) defaultKeys)), 100.0);
+        Set<String> keys = getTotalKeys(lang);
+        int matches = 0;
+
+        for (String key : defaultKeys) {
+            if (keys.contains(key)) {
+                matches++;
+            }
+        }
+
+        return Math.min(DoubleHandler.fixDouble(100.0 * (matches / (double) defaultKeys.size())), 100.0);
     }
 
-    private int getTotalKeys(Language lang) {
+    private Set<String> getTotalKeys(Language lang) {
         return getKeys(lang.getFiles());
     }
 
-    private int getKeys(FileConfiguration... files) {
-        int keys = 0;
+    private Set<String> getKeys(FileConfiguration... files) {
+        Set<String> keys = new HashSet<>();
 
         for (FileConfiguration cfg : files) {
-            keys += cfg != null ? cfg.getKeys(true).size() : 0;
+            keys.addAll(cfg.getKeys(true));
         }
 
         return keys;
@@ -233,7 +257,7 @@ public class LocalizationService extends SlimefunLocalization implements Persist
 
             return config;
         } catch (IOException e) {
-            Slimefun.getLogger().log(Level.SEVERE, e, () -> "向内存中加载语言文件时失败: \"" + path + "\"");
+            Slimefun.getLogger().log(Level.SEVERE, e, () -> "Failed to load language file into memory: \"" + path + "\"");
             return null;
         }
     }

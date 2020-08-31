@@ -2,7 +2,6 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machine
 
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
@@ -23,8 +22,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 public abstract class ElectricSmeltery extends AContainer {
@@ -60,12 +59,12 @@ public abstract class ElectricSmeltery extends AContainer {
                 }
 
                 int fullSlots = 0;
-                List<Integer> slots = new ArrayList<>();
+                List<Integer> slots = new LinkedList<>();
 
                 for (int slot : getInputSlots()) {
                     ItemStack stack = menu.getItemInSlot(slot);
-                    if (stack != null && SlimefunUtils.isItemSimilar(stack, item, true)) {
-                        if (stack.getAmount() < stack.getMaxStackSize()) {
+                    if (stack != null && SlimefunUtils.isItemSimilar(stack, item, true, false)) {
+                        if (stack.getAmount() >= stack.getMaxStackSize()) {
                             fullSlots++;
                         }
 
@@ -108,24 +107,24 @@ public abstract class ElectricSmeltery extends AContainer {
     }
 
     private Comparator<Integer> compareSlots(DirtyChestMenu menu) {
-        return Comparator.comparingInt(slot -> menu.getItemInSlot(slot).getAmount());
+        return (slot1, slot2) -> menu.getItemInSlot(slot1).getAmount() - menu.getItemInSlot(slot2).getAmount();
     }
 
     @Override
     protected void constructMenu(BlockMenuPreset preset) {
         for (int i : border) {
-            preset.addItem(i, new CustomItem(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), " "), ChestMenuUtils.getEmptyClickHandler());
+            preset.addItem(i, new CustomItem(Material.GRAY_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
         }
 
         for (int i : inputBorder) {
-            preset.addItem(i, new CustomItem(new ItemStack(Material.CYAN_STAINED_GLASS_PANE), " "), ChestMenuUtils.getEmptyClickHandler());
+            preset.addItem(i, new CustomItem(Material.CYAN_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
         }
 
         for (int i : outputBorder) {
-            preset.addItem(i, new CustomItem(new ItemStack(Material.ORANGE_STAINED_GLASS_PANE), " "), ChestMenuUtils.getEmptyClickHandler());
+            preset.addItem(i, new CustomItem(Material.ORANGE_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
         }
 
-        preset.addItem(22, new CustomItem(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), " "), ChestMenuUtils.getEmptyClickHandler());
+        preset.addItem(22, new CustomItem(Material.BLACK_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
 
         for (int i : getOutputSlots()) {
             preset.addMenuClickHandler(i, new AdvancedMenuClickHandler() {
@@ -145,7 +144,7 @@ public abstract class ElectricSmeltery extends AContainer {
 
     @Override
     public String getInventoryTitle() {
-        return SlimefunItems.ELECTRIC_SMELTERY.clone().getItemMeta().getDisplayName();
+        return "&c电力冶炼炉";
     }
 
     @Override

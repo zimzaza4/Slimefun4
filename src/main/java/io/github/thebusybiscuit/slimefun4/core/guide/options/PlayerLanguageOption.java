@@ -44,7 +44,7 @@ class PlayerLanguageOption implements SlimefunGuideOption<String> {
             lore.add("");
             lore.add(ChatColors.color("&e&o") + SlimefunPlugin.getLocalization().getMessage(p, "guide.work-in-progress"));
             lore.add("");
-            lore.addAll(SlimefunPlugin.getLocalization().getMessages(p, "guide.languages.description"));
+            lore.addAll(SlimefunPlugin.getLocalization().getMessages(p, "guide.languages.description", msg -> msg.replace("%contributors%", String.valueOf(SlimefunPlugin.getGitHubService().getContributors().size()))));
             lore.add("");
             lore.add("&7\u21E8 &e" + SlimefunPlugin.getLocalization().getMessage(p, "guide.languages.change"));
 
@@ -113,7 +113,7 @@ class PlayerLanguageOption implements SlimefunGuideOption<String> {
         int slot = 10;
 
         for (Language language : SlimefunPlugin.getLocalization().getLanguages()) {
-            menu.addItem(slot, new CustomItem(language.getItem(), ChatColor.GREEN + language.getName(p), "&b" + SlimefunPlugin.getLocalization().getProgress(language) + '%', "", "&7\u21E8 &e" + SlimefunPlugin.getLocalization().getMessage(p, "guide.languages.select")), (pl, i, item, action) -> {
+            menu.addItem(slot, new CustomItem(language.getItem(), ChatColor.GREEN + language.getName(p), "&b" + language.getTranslationProgress() + '%', "", "&7\u21E8 &e" + SlimefunPlugin.getLocalization().getMessage(p, "guide.languages.select")), (pl, i, item, action) -> {
                 SlimefunPlugin.instance().getServer().getPluginManager().callEvent(new PlayerLanguageChangeEvent(pl, SlimefunPlugin.getLocalization().getLanguage(pl), language));
                 setSelectedOption(pl, guide, language.getId());
 

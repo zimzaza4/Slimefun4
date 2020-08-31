@@ -2,53 +2,65 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.blocks;
 
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.materials.MaterialCollections;
+import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.events.BlockPlacerPlaceEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockDispenseHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.papermc.lib.PaperLib;
+import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import org.bukkit.Bukkit;
-import org.bukkit.Effect;
-import org.bukkit.Material;
-import org.bukkit.Nameable;
+import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Dispenser;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class BlockPlacer extends SimpleSlimefunItem<BlockDispenseHandler> {
+public class BlockPlacer extends SlimefunItem {
 
     private final ItemSetting<List<String>> blacklist = new ItemSetting<>("unplaceable-blocks", MaterialCollections.getAllUnbreakableBlocks().stream().map(Material::name).collect(Collectors.toList()));
 
     public BlockPlacer(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
-        
-        SlimefunItem.registerBlockHandler(getID(), (p, b, tool, reason) -> {
-        	if(b.isBlockIndirectlyPowered() || b.isBlockPowered()) {
-        		return false;
-        	}
-        	
-            return true;
-        });
-        
+
+        SlimefunItem.registerBlockHandler(getID(), (p, b, tool, reason) -> !b.isBlockIndirectlyPowered() && !b.isBlockPowered());
+
         addItemSetting(blacklist);
     }
 
-    @Override
-    public BlockDispenseHandler getItemHandler() {
+
+    private BlockPlaceHandler onPlace() {
+        return new BlockPlaceHandler(false) {
+
+            @Override
+            public void onPlayerPlace(BlockPlaceEvent e) {
+                Player p = e.getPlayer();
+                Block b = e.getBlock();
+
+                BlockStorage.addBlockInfo(b, "owner", p.getUniqueId().toString());
+            }
+        };
+    }
+
+    private BlockDispenseHandler onBlockDispense() {
         return (e, dispenser, facedBlock, machine) -> {
+            if (!hasPermission(dispenser, facedBlock)) {
+                return;
+            }
+
             if (isShulkerBox(e.getItem().getType())) {
                 // Since vanilla Dispensers can already place Shulker boxes, we
                 // simply fallback to the vanilla behaviour.
@@ -72,6 +84,28 @@ public class BlockPlacer extends SimpleSlimefunItem<BlockDispenseHandler> {
         };
     }
 
+    /**
+     * This checks whether the {@link Player} who placed down this {@link BlockPlacer} has
+     * building permissions at that {@link Location}.
+     *
+     * @param dispenser The {@link Dispenser} who represents our {@link BlockPlacer}
+     * @param target    The {@link Block} where it should be placed
+     * @return Whether this action is permitted or not
+     */
+    private boolean hasPermission(Dispenser dispenser, Block target) {
+        String owner = BlockStorage.getLocationInfo(dispenser.getLocation(), "owner");
+
+        if (owner == null) {
+            // If no owner was set, then we will fallback to the previous behaviour:
+            // Allowing block placers to bypass protection, newly placed Block placers
+            // will respect protection plugins.
+            return true;
+        }
+
+        OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(owner));
+        return SlimefunPlugin.getProtectionManager().hasPermission(player, target, ProtectableAction.PLACE_BLOCK);
+    }
+
     private boolean isShulkerBox(Material type) {
         return type == Material.SHULKER_BOX || type.name().endsWith("_SHULKER_BOX");
     }
@@ -85,15 +119,11 @@ public class BlockPlacer extends SimpleSlimefunItem<BlockDispenseHandler> {
 
         return false;
     }
-    
+
     private void placeSlimefunBlock(SlimefunItem sfItem, ItemStack item, Block block, Dispenser dispenser) {
         BlockPlacerPlaceEvent e = new BlockPlacerPlaceEvent(dispenser.getBlock(), item, block);
-        Bukkit.getPluginManager().callEvent(e);   
-        
-        if(!dispenser.getInventory().getViewers().isEmpty()){
-        	e.setCancelled(true);
-        }
-        
+        Bukkit.getPluginManager().callEvent(e);
+
         if (!e.isCancelled()) {
             boolean hasItemHandler = sfItem.callItemHandler(BlockPlaceHandler.class, handler -> {
                 if (handler.isBlockPlacerAllowed()) {
@@ -125,15 +155,11 @@ public class BlockPlacer extends SimpleSlimefunItem<BlockDispenseHandler> {
             }
         }
     }
-    
+
     private void placeBlock(ItemStack item, Block facedBlock, Dispenser dispenser) {
         BlockPlacerPlaceEvent e = new BlockPlacerPlaceEvent(dispenser.getBlock(), item, facedBlock);
         Bukkit.getPluginManager().callEvent(e);
-        
-        if(!dispenser.getInventory().getViewers().isEmpty()){
-        	e.setCancelled(true);
-        }
-        
+
         if (!e.isCancelled()) {
             facedBlock.setType(item.getType());
 
@@ -141,14 +167,17 @@ public class BlockPlacer extends SimpleSlimefunItem<BlockDispenseHandler> {
                 ItemMeta meta = item.getItemMeta();
 
                 if (meta.hasDisplayName()) {
-                    BlockState blockState = facedBlock.getState();
+                    BlockStateSnapshotResult blockState = PaperLib.getBlockState(facedBlock, false);
 
-                    if ((blockState instanceof Nameable)) {
-                        ((Nameable) blockState).setCustomName(meta.getDisplayName());
+                    if ((blockState.getState() instanceof Nameable)) {
+                        Nameable nameable = ((Nameable) blockState.getState());
+                        nameable.setCustomName(meta.getDisplayName());
+
+                        if (blockState.isSnapshot()) {
+                            // Update block state after changing name
+                            blockState.getState().update(true, false);
+                        }
                     }
-
-                    // Update block state after changing name
-                    blockState.update();
                 }
 
             }

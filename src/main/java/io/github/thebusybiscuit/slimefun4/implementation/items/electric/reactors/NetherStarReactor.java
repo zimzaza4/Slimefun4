@@ -9,6 +9,7 @@ import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -43,12 +44,13 @@ public abstract class NetherStarReactor extends Reactor {
     @Override
     public void extraTick(Location l) {
         Slimefun.runSync(() -> {
-            for (Entity entity : ReactorHologram.getArmorStand(l, true).getNearbyEntities(5, 5, 5)) {
-                if (entity instanceof LivingEntity) {
+            ArmorStand hologram = ReactorHologram.getArmorStand(l, true);
+            for (Entity entity : hologram.getNearbyEntities(5, 5, 5)) {
+                if (entity instanceof LivingEntity && entity.isValid()) {
                     ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 60, 1));
                 }
             }
-        }, 0L);
+        });
     }
 
     @Override
