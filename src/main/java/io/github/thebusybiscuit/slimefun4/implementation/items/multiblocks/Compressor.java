@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class Compressor extends MultiBlockMachine {
 
     public Compressor(Category category, SlimefunItemStack item) {
-        super(category, item, new ItemStack[]{null, null, null, null, new ItemStack(Material.NETHER_BRICK_FENCE), null, new ItemStack(Material.PISTON), new CustomItem(Material.DISPENSER, "Dispenser (Facing up)"), new ItemStack(Material.PISTON)}, BlockFace.SELF);
+        super(category, item, new ItemStack[]{null, null, null, null, new ItemStack(Material.NETHER_BRICK_FENCE), null, new ItemStack(Material.PISTON), new CustomItem(Material.DISPENSER, "发射器 (朝上)"), new ItemStack(Material.PISTON)}, BlockFace.SELF);
     }
 
     @Override
