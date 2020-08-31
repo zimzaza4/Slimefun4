@@ -20,6 +20,7 @@ import io.github.thebusybiscuit.slimefun4.core.services.github.GitHubService;
 import io.github.thebusybiscuit.slimefun4.core.services.plugins.ThirdPartyPluginService;
 import io.github.thebusybiscuit.slimefun4.core.services.profiler.SlimefunProfiler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAltar;
+import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientPedestal;
 import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.Cooler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.reactors.Reactor;
 import io.github.thebusybiscuit.slimefun4.implementation.items.tools.GrapplingHook;
@@ -99,7 +100,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     private final Config researches = new Config(this, "Researches.yml");
 
     // Listeners that need to be accessed elsewhere
-    private final AncientAltarListener ancientAltarListener = new AncientAltarListener();
     private final GrapplingHookListener grapplingHookListener = new GrapplingHookListener();
     private final BackpackListener backpackListener = new BackpackListener();
     private final SlimefunBowListener bowListener = new SlimefunBowListener();
@@ -163,7 +163,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
             networkManager = new NetworkManager(networkSize);
 
             // Setting up bStats
-            new Thread(metricsService::start).start();
+            new Thread(metricsService::start, "Slimefun Metrics").start();
 
             // 魔改的自动更新服务
             // 自动选择分支
@@ -405,8 +405,8 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new VampireBladeListener(this, (VampireBlade) SlimefunItems.BLADE_OF_VAMPIRES.getItem());
         new CoolerListener(this, (Cooler) SlimefunItems.COOLER.getItem());
         new SeismicAxeListener(this, (SeismicAxe) SlimefunItems.SEISMIC_AXE.getItem());
+        new AncientAltarListener(this, (AncientAltar) SlimefunItems.ANCIENT_ALTAR.getItem(), (AncientPedestal) SlimefunItems.ANCIENT_PEDESTAL.getItem());
         grapplingHookListener.register(this, (GrapplingHook) SlimefunItems.GRAPPLING_HOOK.getItem());
-        ancientAltarListener.register(this, (AncientAltar) SlimefunItems.ANCIENT_ALTAR.getItem());
 
         bowListener.register(this);
 
@@ -553,10 +553,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
     public static NetworkManager getNetworkManager() {
         return instance.networkManager;
-    }
-
-    public static AncientAltarListener getAncientAltarListener() {
-        return instance.ancientAltarListener;
     }
 
     public static GrapplingHookListener getGrapplingHookListener() {

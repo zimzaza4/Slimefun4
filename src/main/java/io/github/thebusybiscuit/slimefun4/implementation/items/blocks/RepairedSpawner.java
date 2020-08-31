@@ -14,6 +14,8 @@ import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -73,4 +75,10 @@ public class RepairedSpawner extends SimpleSlimefunItem<BlockPlaceHandler> {
         return Optional.empty();
     }
 
+    @Override
+    public Collection<ItemStack> getDrops() {
+        // There should be no drops by default since drops are handled by the
+        // Pickaxe of Containment exclusively.
+        return new ArrayList<>();
+    }
 }

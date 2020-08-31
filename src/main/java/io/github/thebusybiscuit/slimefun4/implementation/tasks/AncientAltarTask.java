@@ -1,8 +1,10 @@
 package io.github.thebusybiscuit.slimefun4.implementation.tasks;
 
 import io.github.thebusybiscuit.slimefun4.api.events.AncientAltarCraftEvent;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAltar;
+import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientPedestal;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.AncientAltarListener;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.*;
@@ -27,7 +29,8 @@ import java.util.*;
  */
 public class AncientAltarTask implements Runnable {
 
-    private final AncientAltarListener listener = SlimefunPlugin.getAncientAltarListener();
+    private final AncientAltarListener listener;
+    private final AncientPedestal pedestalItem = (AncientPedestal) SlimefunItems.ANCIENT_PEDESTAL.getItem();
 
     private final Block altar;
     private final int speed;
@@ -37,13 +40,14 @@ public class AncientAltarTask implements Runnable {
     private final List<ItemStack> items;
 
     private final Collection<Location> particleLocations = new LinkedList<>();
-    private final Map<Item, Location> itemLock = new HashMap<>();
+    private final Map<Item, Location> positionLock = new HashMap<>();
 
     private boolean running;
     private int stage;
     private final Player player;
 
-    public AncientAltarTask(Block altar, int speed, ItemStack output, List<Block> pedestals, List<ItemStack> items, Player player) {
+    public AncientAltarTask(AncientAltarListener listener, Block altar, int speed, ItemStack output, List<Block> pedestals, List<ItemStack> items, Player player) {
+        this.listener = listener;
         this.dropLocation = altar.getLocation().add(0.5, 1.3, 0.5);
         this.speed = speed;
         this.altar = altar;
@@ -56,8 +60,12 @@ public class AncientAltarTask implements Runnable {
         this.stage = 0;
 
         for (Block pedestal : pedestals) {
-            Item item = listener.findItem(pedestal);
-            this.itemLock.put(item, item.getLocation().clone());
+            Optional<Item> item = pedestalItem.getPlacedItem(pedestal);
+
+            if (item.isPresent()) {
+                Item entity = item.get();
+                positionLock.put(entity, entity.getLocation().clone());
+            }
         }
     }
 
@@ -84,7 +92,7 @@ public class AncientAltarTask implements Runnable {
     }
 
     private boolean checkLockedItems() {
-        for (Map.Entry<Item, Location> entry : itemLock.entrySet()) {
+        for (Map.Entry<Item, Location> entry : positionLock.entrySet()) {
             if (entry.getKey().getLocation().distanceSquared(entry.getValue()) > 0.1) {
                 return false;
             }
@@ -104,22 +112,22 @@ public class AncientAltarTask implements Runnable {
     }
 
     private void checkPedestal(Block pedestal) {
-        Item item = listener.findItem(pedestal);
+        Optional<Item> item = pedestalItem.getPlacedItem(pedestal);
 
-        if (item == null || itemLock.remove(item) == null) {
+        if (!item.isPresent() || positionLock.remove(item.get()) == null) {
             abort();
         } else {
+            Item entity = item.get();
             particleLocations.add(pedestal.getLocation().add(0.5, 1.5, 0.5));
-            items.add(listener.fixItemStack(item.getItemStack(), item.getCustomName()));
+            items.add(pedestalItem.getOriginalItemStack(entity));
             pedestal.getWorld().playSound(pedestal.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1F, 2F);
 
             dropLocation.getWorld().spawnParticle(Particle.ENCHANTMENT_TABLE, pedestal.getLocation().add(0.5, 1.5, 0.5), 16, 0.3F, 0.2F, 0.3F);
             dropLocation.getWorld().spawnParticle(Particle.CRIT_MAGIC, pedestal.getLocation().add(0.5, 1.5, 0.5), 8, 0.3F, 0.2F, 0.3F);
 
-            itemLock.remove(item);
-            item.remove();
-
-            pedestal.removeMetadata("item_placed", SlimefunPlugin.instance());
+            positionLock.remove(entity);
+            entity.remove();
+            entity.removeMetadata("no_pickup", SlimefunPlugin.instance());
         }
     }
 
@@ -133,7 +141,7 @@ public class AncientAltarTask implements Runnable {
         // This should re-enable altar blocks on craft failure.
         listener.getAltarsInUse().remove(altar.getLocation());
         dropLocation.getWorld().playSound(dropLocation, Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 1F, 1F);
-        itemLock.clear();
+        positionLock.clear();
         listener.getAltars().remove(altar);
     }
 

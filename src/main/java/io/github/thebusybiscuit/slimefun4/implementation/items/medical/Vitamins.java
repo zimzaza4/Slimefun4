@@ -8,12 +8,14 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class Vitamins extends SimpleSlimefunItem<ItemUseHandler> {
+
+    private static final double HEALING_AMOUNT = 8.0;
 
     public Vitamins(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
@@ -39,7 +41,10 @@ public class Vitamins extends SimpleSlimefunItem<ItemUseHandler> {
             if (p.hasPotionEffect(PotionEffectType.BLINDNESS)) p.removePotionEffect(PotionEffectType.BLINDNESS);
 
             p.setFireTicks(0);
-            p.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 1, 2));
+
+            double health = p.getHealth() + HEALING_AMOUNT;
+            double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+            p.setHealth(Math.min(health, maxHealth));
 
             e.cancel();
         };

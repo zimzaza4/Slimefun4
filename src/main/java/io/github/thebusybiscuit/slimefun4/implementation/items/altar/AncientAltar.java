@@ -9,26 +9,32 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The {@link AncientAltar} is a multiblock structure.
  * The altar itself stands in the center, surrounded by {@link AncientPedestal Pedestals}, it is used
  * to craft various magical items.
  *
  * @author TheBusyBiscuit
+ *
  * @see AncientAltarListener
  * @see AncientAltarTask
  * @see AncientAltarCraftEvent
  * @see AncientPedestal
+ *
  */
 public class AncientAltar extends SlimefunItem {
 
     private final int speed;
+    private final List<AltarRecipe> recipes = new ArrayList<>();
 
     public AncientAltar(Category category, int speed, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
         if (speed < 1) {
-            throw new IllegalArgumentException("速度必须大于 1");
+            throw new IllegalArgumentException("The speed must be at least 1.");
         }
 
         this.speed = speed;
@@ -43,6 +49,10 @@ public class AncientAltar extends SlimefunItem {
      */
     public int getSpeed() {
         return speed;
+    }
+
+    public List<AltarRecipe> getRecipes() {
+        return recipes;
     }
 
 }
