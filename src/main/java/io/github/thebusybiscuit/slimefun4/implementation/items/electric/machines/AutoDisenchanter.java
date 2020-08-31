@@ -47,11 +47,6 @@ public class AutoDisenchanter extends AContainer {
     }
 
     @Override
-    public String getInventoryTitle() {
-        return "&5自动祛魔机";
-    }
-
-    @Override
     public ItemStack getProgressBar() {
         return new ItemStack(Material.DIAMOND_CHESTPLATE);
     }

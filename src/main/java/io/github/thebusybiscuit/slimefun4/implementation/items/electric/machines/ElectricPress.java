@@ -65,12 +65,6 @@ public abstract class ElectricPress extends AContainer implements RecipeDisplayI
     }
 
     @Override
-    public String getInventoryTitle() {
-        return SlimefunItems.ELECTRIC_PRESS.getItemMeta().getDisplayName();
-
-    }
-
-    @Override
     public ItemStack getProgressBar() {
         return new ItemStack(Material.IRON_HOE);
 

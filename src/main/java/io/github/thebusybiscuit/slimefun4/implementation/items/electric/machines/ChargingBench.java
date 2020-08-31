@@ -20,11 +20,6 @@ public class ChargingBench extends AContainer {
     }
 
     @Override
-    public String getInventoryTitle() {
-        return "&3Charging Bench";
-    }
-
-    @Override
     public ItemStack getProgressBar() {
         return new ItemStack(Material.GOLDEN_PICKAXE);
     }

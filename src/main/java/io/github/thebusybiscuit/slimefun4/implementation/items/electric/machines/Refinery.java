@@ -21,11 +21,6 @@ public abstract class Refinery extends AContainer implements RecipeDisplayItem {
     }
 
     @Override
-    public String getInventoryTitle() {
-        return SlimefunItems.REFINERY.clone().getItemMeta().getDisplayName();
-    }
-
-    @Override
     public ItemStack getProgressBar() {
         return new ItemStack(Material.FLINT_AND_STEEL);
     }

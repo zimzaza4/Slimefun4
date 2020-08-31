@@ -47,11 +47,6 @@ public abstract class Freezer extends AContainer implements RecipeDisplayItem {
     }
 
     @Override
-    public String getInventoryTitle() {
-        return item.getItemMeta().getDisplayName();
-    }
-
-    @Override
     public String getMachineIdentifier() {
         return "FREEZER";
     }

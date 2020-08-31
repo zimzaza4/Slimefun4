@@ -18,15 +18,14 @@ import io.github.thebusybiscuit.slimefun4.core.researching.Research;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import io.github.thebusybiscuit.slimefun4.utils.itemstack.SlimefunGuideItem;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -39,20 +38,7 @@ public class BookSlimefunGuide implements SlimefunGuideImplementation {
     private final ItemStack item;
 
     public BookSlimefunGuide() {
-        item = new ItemStack(Material.ENCHANTED_BOOK);
-        ItemMeta meta = item.getItemMeta();
-
-        meta.setDisplayName(ChatColors.color("&aSlimefun 指南 &7(书与笔 GUI)"));
-
-        List<String> lore = new LinkedList<>();
-
-        lore.add("");
-        lore.add(ChatColors.color("&e右键 &8\u21E8 &7查看物品"));
-        lore.add(ChatColors.color("&eShift + 右键 &8\u21E8 &7打开设置"));
-
-        meta.setLore(lore);
-        SlimefunPlugin.getItemTextureService().setTexture(meta, "SLIMEFUN_GUIDE");
-        item.setItemMeta(meta);
+        item = new SlimefunGuideItem(this, "&aSlimefun 指南 &7(书与笔 GUI)");
     }
 
     @Override

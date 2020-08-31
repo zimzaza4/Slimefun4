@@ -45,9 +45,4 @@ public abstract class FoodComposter extends AContainer implements RecipeDisplayI
         return new ItemStack(Material.GOLDEN_HOE);
     }
 
-    @Override
-    public String getInventoryTitle() {
-        return item.clone().getItemMeta().getDisplayName();
-    }
-
 }

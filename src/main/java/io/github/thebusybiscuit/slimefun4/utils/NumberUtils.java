@@ -36,13 +36,13 @@ public final class NumberUtils {
         long hours = Duration.between(date, LocalDateTime.now()).toHours();
 
         if (hours == 0) {
-            return "< 1 小时";
+            return "< 1h";
         } else if ((hours / 24) == 0) {
-            return (hours % 24) + "小时";
+            return (hours % 24) + "h";
         } else if (hours % 24 == 0) {
-            return (hours / 24) + "天";
+            return (hours / 24) + "d";
         } else {
-            return (hours / 24) + "天 " + (hours % 24) + "小时";
+            return (hours / 24) + "d " + (hours % 24) + "h";
         }
     }
 
@@ -51,11 +51,11 @@ public final class NumberUtils {
 
         int minutes = (int) (seconds / 60L);
         if (minutes > 0) {
-            timeleft += minutes + "分钟 ";
+            timeleft += minutes + "m ";
         }
 
         seconds -= minutes * 60;
-        return timeleft + seconds + "秒";
+        return timeleft + seconds + "s";
     }
 
     public static int getInt(String str, int defaultValue) {
@@ -75,9 +75,9 @@ public final class NumberUtils {
         String[] parts = PatternUtils.NUMBER_SEPARATOR.split(number);
 
         if (parts.length == 1) {
-            return parts[0] + "毫秒";
+            return parts[0] + "ms";
         } else {
-            return parts[0] + '.' + parts[1] + "毫秒";
+            return parts[0] + '.' + parts[1] + "ms";
         }
     }
 
@@ -91,5 +91,23 @@ public final class NumberUtils {
 
     public static int getInt(Integer value, int defaultValue) {
         return value == null ? defaultValue : value;
+    }
+
+    public static float getFloat(Float value, float defaultValue) {
+        return value == null ? defaultValue : value;
+    }
+
+    /**
+     * This method is a combination of Math.min and Math.max, it clamps the given value
+     * between a minimum and a maximum.
+     *
+     * @param min   The minimum value
+     * @param value The value to clamp
+     * @param max   The maximum value
+     */
+    public static int clamp(int min, int value, int max) {
+        if (value < min) {
+            return min;
+        } else return Math.min(value, max);
     }
 }

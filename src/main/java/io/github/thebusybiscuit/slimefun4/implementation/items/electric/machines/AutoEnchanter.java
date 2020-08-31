@@ -2,7 +2,6 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machine
 
 import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.EmeraldEnchants.EmeraldEnchants;
@@ -38,11 +37,6 @@ public class AutoEnchanter extends AContainer {
 
         limit = SlimefunPlugin.getCfg().getInt("options.enchanter-level-limit");
         emeraldEnchantsLimit = SlimefunPlugin.getCfg().getInt("options.emerald-enchantment-limit");
-    }
-
-    @Override
-    public String getInventoryTitle() {
-        return SlimefunItems.AUTO_ENCHANTER.clone().getItemMeta().getDisplayName();
     }
 
     @Override

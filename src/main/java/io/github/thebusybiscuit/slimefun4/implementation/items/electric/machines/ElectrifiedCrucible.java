@@ -40,9 +40,4 @@ public abstract class ElectrifiedCrucible extends AContainer {
         return new ItemStack(Material.FLINT_AND_STEEL);
     }
 
-    @Override
-    public String getInventoryTitle() {
-        return item.getItemMeta().getDisplayName();
-    }
-
 }

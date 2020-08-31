@@ -40,11 +40,6 @@ public abstract class ElectricGoldPan extends AContainer implements RecipeDispla
         return recipes;
     }
 
-	@Override
-	public String getInventoryTitle() {
-        return SlimefunItems.ELECTRIC_GOLD_PAN.clone().getItemMeta().getDisplayName();
-    }
-
     @Override
     public ItemStack getProgressBar() {
         return new ItemStack(Material.DIAMOND_SHOVEL);

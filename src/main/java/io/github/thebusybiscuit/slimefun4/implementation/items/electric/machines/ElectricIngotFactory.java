@@ -1,7 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines;
 
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
@@ -23,11 +22,6 @@ public abstract class ElectricIngotFactory extends AContainer implements RecipeD
     @Override
     public ItemStack getProgressBar() {
         return new ItemStack(Material.FLINT_AND_STEEL);
-    }
-
-    @Override
-    public String getInventoryTitle() {
-        return SlimefunItems.ELECTRIC_INGOT_FACTORY.getItemMeta().getDisplayName();
     }
 
 }

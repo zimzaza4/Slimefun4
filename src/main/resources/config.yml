@@ -32,6 +32,7 @@ options:
   enable-translations: true
   backwards-compatibility: true
   log-duplicate-block-entries: true
+  drop-excess-sf-give-items: false
 guide:
   # 是否默认使用书与笔进行GUI的展示
   default-view-book: false
@@ -60,7 +61,6 @@ networks:
   cargo-ticker-delay: 0
 
 items:
-  # 是否启用以下物品类别
   talismans: true
   backpacks: true
   soulbound: true
@@ -68,7 +68,6 @@ items:
 metrics:
   auto-update: true
 
-# 研究等级，可自行更改
 research-ranks:
   - Chicken
   - Cow

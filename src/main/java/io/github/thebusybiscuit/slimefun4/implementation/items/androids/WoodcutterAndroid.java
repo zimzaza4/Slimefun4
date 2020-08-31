@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class WoodcutterAndroid extends ProgrammableAndroid {
+public class WoodcutterAndroid extends ProgrammableAndroid {
 
     private static final int MAX_REACH = 160;
 
-    public WoodcutterAndroid(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
-        super(category, item, recipeType, recipe);
+    public WoodcutterAndroid(Category category, int tier, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+        super(category, tier, item, recipeType, recipe);
     }
 
     @Override

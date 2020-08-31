@@ -35,7 +35,7 @@ public abstract class ElectricSmeltery extends AContainer {
     public ElectricSmeltery(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
-        new BlockMenuPreset(getID(), getInventoryTitle()) {
+        new BlockMenuPreset(getID(), getItemName()) {
 
             @Override
             public void init() {
@@ -140,11 +140,6 @@ public abstract class ElectricSmeltery extends AContainer {
                 }
             });
         }
-    }
-
-    @Override
-    public String getInventoryTitle() {
-        return "&c电力冶炼炉";
     }
 
     @Override

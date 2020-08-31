@@ -138,7 +138,7 @@ public class TickerTask implements Runnable {
 
         if (errors == 1) {
             // Generate a new Error-Report
-            new ErrorReport(x, l, item);
+            new ErrorReport<>(x, l, item);
             bugs.put(position, errors);
         } else if (errors == 4) {
             Slimefun.getLogger().log(Level.SEVERE, "X: {0} Y: {1} Z: {2} ({3})", new Object[]{l.getBlockX(), l.getBlockY(), l.getBlockZ(), item.getID()});

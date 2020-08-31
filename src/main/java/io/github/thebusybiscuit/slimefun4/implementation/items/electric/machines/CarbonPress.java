@@ -36,9 +36,4 @@ public abstract class CarbonPress extends AContainer implements RecipeDisplayIte
         return new ItemStack(Material.DIAMOND_PICKAXE);
     }
 
-    @Override
-    public String getInventoryTitle() {
-        return SlimefunItems.CARBON_PRESS.getItemMeta().getDisplayName();
-    }
-
 }

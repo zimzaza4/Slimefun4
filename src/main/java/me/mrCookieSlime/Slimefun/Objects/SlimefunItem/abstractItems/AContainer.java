@@ -103,12 +103,14 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
     /**
      * This method returns the title that is used for the {@link Inventory} of an
      * {@link AContainer} that has been opened by a Player.
-     *
+     * <p>
      * Override this method to set the title.
      *
      * @return The title of the {@link Inventory} of this {@link AContainer}
      */
-    public abstract String getInventoryTitle();
+    public String getInventoryTitle() {
+        return getItemName();
+    }
 
     /**
      * This method returns the {@link ItemStack} that this {@link AContainer} will
@@ -255,7 +257,7 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
                 processing.remove(b);
             }
         } else {
-            MachineRecipe next = nextRecipe(inv);
+            MachineRecipe next = findNextRecipe(inv);
 
             if (next != null) {
                 processing.put(b, next);
@@ -264,7 +266,7 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
         }
     }
 
-    private MachineRecipe nextRecipe(BlockMenu inv) {
+    protected MachineRecipe findNextRecipe(BlockMenu inv) {
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
         for (int slot : getInputSlots()) {

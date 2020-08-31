@@ -27,11 +27,6 @@ public class ElectricIngotPulverizer extends AContainer implements RecipeDisplay
     }
 
     @Override
-    public String getInventoryTitle() {
-        return SlimefunItems.ELECTRIC_INGOT_PULVERIZER.getItemMeta().getDisplayName();
-    }
-
-    @Override
     public ItemStack getProgressBar() {
         return new ItemStack(Material.IRON_PICKAXE);
     }

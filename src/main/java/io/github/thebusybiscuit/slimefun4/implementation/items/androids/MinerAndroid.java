@@ -22,13 +22,13 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Collection;
 import java.util.UUID;
 
-public abstract class MinerAndroid extends ProgrammableAndroid {
+public class MinerAndroid extends ProgrammableAndroid {
 
     // Determines the drops a miner android will get
     private final ItemStack effectivePickaxe = new ItemStack(Material.DIAMOND_PICKAXE);
 
-    public MinerAndroid(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
-        super(category, item, recipeType, recipe);
+    public MinerAndroid(Category category, int tier, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+        super(category, tier, item, recipeType, recipe);
     }
 
     @Override
