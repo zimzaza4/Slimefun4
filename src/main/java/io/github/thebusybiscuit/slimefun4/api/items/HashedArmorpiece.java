@@ -91,4 +91,8 @@ public final class HashedArmorpiece {
         return item;
     }
 
+    @Override
+    public String toString() {
+        return "HashedArmorpiece {hash=" + hash + ",item=" + item.map(SlimefunItem::getID).orElse(null) + '}';
+    }
 }

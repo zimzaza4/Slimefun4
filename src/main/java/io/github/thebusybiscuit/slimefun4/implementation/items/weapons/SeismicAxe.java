@@ -29,6 +29,7 @@ import java.util.List;
  * It is quite similar to a shockwave.
  *
  * @author TheBusyBiscuit
+ *
  */
 public class SeismicAxe extends SimpleSlimefunItem<ItemUseHandler> implements NotPlaceable, DamageableItem {
 
@@ -74,17 +75,18 @@ public class SeismicAxe extends SimpleSlimefunItem<ItemUseHandler> implements No
     }
 
     private void pushEntity(Player p, Entity entity) {
-        Vector vector = entity.getLocation().toVector().subtract(p.getLocation().toVector()).normalize();
-        vector.multiply(STRENGTH);
-        vector.setY(0.9);
-        entity.setVelocity(vector);
-
         if (entity.getType() != EntityType.PLAYER || p.getWorld().getPVP()) {
-            EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(p, entity, DamageCause.ENTITY_ATTACK, 6D);
+            EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(p, entity, DamageCause.ENTITY_ATTACK, DAMAGE);
             Bukkit.getPluginManager().callEvent(event);
 
+            // Fixes #2207 - Only apply Vector if the Player is able to damage the entity
             if (!event.isCancelled()) {
-                ((LivingEntity) entity).damage(DAMAGE);
+                Vector vector = entity.getLocation().toVector().subtract(p.getLocation().toVector()).normalize();
+                vector.multiply(STRENGTH);
+                vector.setY(0.9);
+                entity.setVelocity(vector);
+
+                ((LivingEntity) entity).damage(event.getDamage());
             }
         }
     }

@@ -121,6 +121,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
             local = new LocalizationService(this, "", null);
             gpsNetwork = new GPSNetwork();
             command.register();
+            registry.load(config);
         } else if (getServer().getPluginManager().isPluginEnabled("CS-CoreLib")) {
             long timestamp = System.nanoTime();
 
@@ -204,7 +205,8 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
             // Armor Update Task
             if (config.getBoolean("options.enable-armor-effects")) {
-                getServer().getScheduler().runTaskTimerAsynchronously(this, new ArmorTask(), 0L, config.getInt("options.armor-update-interval") * 20L);
+                boolean radioactiveFire = config.getBoolean("options.burn-players-when-radioactive");
+                getServer().getScheduler().runTaskTimerAsynchronously(this, new ArmorTask(radioactiveFire), 0L, config.getInt("options.armor-update-interval") * 20L);
             }
 
             autoSavingService.start(this, config.getInt("options.auto-save-delay-in-minutes"));

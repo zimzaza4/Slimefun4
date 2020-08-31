@@ -32,7 +32,7 @@ public class SlimefunGuideListener implements Listener {
                 return;
             }
 
-            SlimefunGuideLayout type = SlimefunPlugin.getCfg().getBoolean("guide.default-view-book") ? SlimefunGuideLayout.BOOK : SlimefunGuideLayout.CHEST;
+            SlimefunGuideLayout type = SlimefunGuide.getDefaultLayout();
             p.getInventory().addItem(SlimefunGuide.getItem(type).clone());
         }
     }
@@ -64,7 +64,7 @@ public class SlimefunGuideListener implements Listener {
         Player p = e.getPlayer();
         ItemStack item = e.getItem();
 
-        if (SlimefunUtils.isItemSimilar(item, SlimefunGuide.getItem(layout), true)) {
+        if (SlimefunUtils.isItemSimilar(item, SlimefunGuide.getItem(layout), true, false)) {
             e.cancel();
 
             if (!SlimefunPlugin.getWorldSettingsService().isWorldEnabled(p.getWorld())) {

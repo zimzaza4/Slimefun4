@@ -34,8 +34,16 @@ import java.util.Set;
 public class ArmorTask implements Runnable {
 
     private final Set<PotionEffect> radiationEffects;
+    private final boolean radioactiveFire;
 
-    public ArmorTask() {
+    /**
+     * This creates a new {@link ArmorTask}.
+     *
+     * @param radioactiveFire Whether radiation also causes a {@link Player} to burn
+     */
+    public ArmorTask(boolean radioactiveFire) {
+        this.radioactiveFire = radioactiveFire;
+
         Set<PotionEffect> effects = new HashSet<>();
         effects.add(new PotionEffect(PotionEffectType.WITHER, 400, 2));
         effects.add(new PotionEffect(PotionEffectType.BLINDNESS, 400, 3));
@@ -44,6 +52,16 @@ public class ArmorTask implements Runnable {
         effects.add(new PotionEffect(PotionEffectType.SLOW, 400, 1));
         effects.add(new PotionEffect(PotionEffectType.SLOW_DIGGING, 400, 1));
         radiationEffects = Collections.unmodifiableSet(effects);
+    }
+
+    /**
+     * This returns a {@link Set} of {@link PotionEffect PotionEffects} which get applied to
+     * a {@link Player} when they are exposed to deadly radiation.
+     *
+     * @return The {@link Set} of {@link PotionEffect PotionEffects} applied upon radioactive contact
+     */
+    public Set<PotionEffect> getRadiationEffects() {
+        return radiationEffects;
     }
 
     @Override
@@ -143,7 +161,11 @@ public class ArmorTask implements Runnable {
 
                 Slimefun.runSync(() -> {
                     p.addPotionEffects(radiationEffects);
-                    p.setFireTicks(400);
+
+                    // if radiative fire is enabled
+                    if (radioactiveFire) {
+                        p.setFireTicks(400);
+                    }
                 });
 
                 return true;

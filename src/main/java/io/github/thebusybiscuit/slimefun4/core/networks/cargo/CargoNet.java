@@ -165,7 +165,7 @@ public class CargoNet extends ChestTerminalNetwork {
                 display();
             }
 
-            SlimefunPlugin.getProfiler().scheduleEntries(1 + inputNodes.size());
+            SlimefunPlugin.getProfiler().scheduleEntries((terminals.isEmpty() ? 1 : 2) + inputs.size());
 
             CargoNetworkTask runnable = new CargoNetworkTask(this, inputs, outputs, chestTerminalInputs, chestTerminalOutputs);
             Slimefun.runSync(runnable);

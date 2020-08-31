@@ -439,7 +439,8 @@ public final class PlayerProfile {
             Optional<SlimefunArmorPiece> armorPiece = armorpiece.getItem();
 
             if (!armorPiece.isPresent()) {
-                return false;
+                setId = null;
+                continue;
             }
 
             if (armorPiece.get() instanceof ProtectiveArmor) {
