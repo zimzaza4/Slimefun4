@@ -29,18 +29,29 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * The {@link BlockPlacer} is a machine which can place {@link Block Blocks}, as the name
+ * would suggest.
+ * It really just is a special type of {@link Dispenser} which places items instead of
+ * shooting them.
+ * 
+ * @author TheBusyBiscuit
+ * 
+ * @see BlockPlacerPlaceEvent
+ *
+ */
 public class BlockPlacer extends SlimefunItem {
 
     private final ItemSetting<List<String>> blacklist = new ItemSetting<>("unplaceable-blocks", MaterialCollections.getAllUnbreakableBlocks().stream().map(Material::name).collect(Collectors.toList()));
 
     public BlockPlacer(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
-
+        
         SlimefunItem.registerBlockHandler(getID(), (p, b, tool, reason) -> !b.isBlockIndirectlyPowered() && !b.isBlockPowered());
 
         addItemSetting(blacklist);
+        addItemHandler(onPlace(), onBlockDispense());
     }
-
 
     private BlockPlaceHandler onPlace() {
         return new BlockPlaceHandler(false) {
@@ -77,7 +88,8 @@ public class BlockPlacer extends SlimefunItem {
                     if (!(item instanceof NotPlaceable)) {
                         placeSlimefunBlock(item, e.getItem(), facedBlock, dispenser);
                     }
-                } else {
+                }
+                else {
                     placeBlock(e.getItem(), facedBlock, dispenser);
                 }
             }
@@ -87,9 +99,12 @@ public class BlockPlacer extends SlimefunItem {
     /**
      * This checks whether the {@link Player} who placed down this {@link BlockPlacer} has
      * building permissions at that {@link Location}.
-     *
-     * @param dispenser The {@link Dispenser} who represents our {@link BlockPlacer}
-     * @param target    The {@link Block} where it should be placed
+     * 
+     * @param dispenser
+     *            The {@link Dispenser} who represents our {@link BlockPlacer}
+     * @param target
+     *            The {@link Block} where it should be placed
+     * 
      * @return Whether this action is permitted or not
      */
     private boolean hasPermission(Dispenser dispenser, Block target) {
@@ -123,7 +138,11 @@ public class BlockPlacer extends SlimefunItem {
     private void placeSlimefunBlock(SlimefunItem sfItem, ItemStack item, Block block, Dispenser dispenser) {
         BlockPlacerPlaceEvent e = new BlockPlacerPlaceEvent(dispenser.getBlock(), item, block);
         Bukkit.getPluginManager().callEvent(e);
-
+        
+        if(!dispenser.getInventory().getViewers().isEmpty()){
+        	e.setCancelled(true);
+        }
+        
         if (!e.isCancelled()) {
             boolean hasItemHandler = sfItem.callItemHandler(BlockPlaceHandler.class, handler -> {
                 if (handler.isBlockPlacerAllowed()) {
@@ -135,7 +154,8 @@ public class BlockPlacer extends SlimefunItem {
 
                     if (dispenser.getInventory().containsAtLeast(item, 2)) {
                         dispenser.getInventory().removeItem(new CustomItem(item, 1));
-                    } else {
+                    }
+                    else {
                         Slimefun.runSync(() -> dispenser.getInventory().removeItem(item), 2L);
                     }
                 }
@@ -149,7 +169,8 @@ public class BlockPlacer extends SlimefunItem {
 
                 if (dispenser.getInventory().containsAtLeast(item, 2)) {
                     dispenser.getInventory().removeItem(new CustomItem(item, 1));
-                } else {
+                }
+                else {
                     Slimefun.runSync(() -> dispenser.getInventory().removeItem(item), 2L);
                 }
             }
@@ -159,7 +180,11 @@ public class BlockPlacer extends SlimefunItem {
     private void placeBlock(ItemStack item, Block facedBlock, Dispenser dispenser) {
         BlockPlacerPlaceEvent e = new BlockPlacerPlaceEvent(dispenser.getBlock(), item, facedBlock);
         Bukkit.getPluginManager().callEvent(e);
-
+        
+        if(!dispenser.getInventory().getViewers().isEmpty()){
+        	e.setCancelled(true);
+        }
+        
         if (!e.isCancelled()) {
             facedBlock.setType(item.getType());
 
@@ -186,7 +211,8 @@ public class BlockPlacer extends SlimefunItem {
 
             if (dispenser.getInventory().containsAtLeast(item, 2)) {
                 dispenser.getInventory().removeItem(new CustomItem(item, 1));
-            } else {
+            }
+            else {
                 Slimefun.runSync(() -> dispenser.getInventory().removeItem(item), 2L);
             }
         }
