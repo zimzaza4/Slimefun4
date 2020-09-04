@@ -20,8 +20,11 @@ import java.util.UUID;
 
 public abstract class GPSTransmitter extends SimpleSlimefunItem<BlockTicker> implements EnergyNetComponent {
 
-    public GPSTransmitter(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    private final int capacity;
+
+    public GPSTransmitter(Category category, int tier, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
+        this.capacity = 4 << (2 * tier);
 
         addItemHandler(onPlace());
         registerBlockHandler(getID(), (p, b, stack, reason) -> {
@@ -29,6 +32,11 @@ public abstract class GPSTransmitter extends SimpleSlimefunItem<BlockTicker> imp
             SlimefunPlugin.getGPSNetwork().updateTransmitter(b.getLocation(), owner, false);
             return true;
         });
+    }
+
+    @Override
+    public int getCapacity() {
+        return capacity;
     }
 
     private BlockPlaceHandler onPlace() {

@@ -1,16 +1,14 @@
 package io.github.thebusybiscuit.slimefun4.implementation.resources;
 
-import io.github.thebusybiscuit.slimefun4.api.geo.GEOResource;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Biome;
-import org.bukkit.inventory.ItemStack;
 
-class SaltResource implements GEOResource {
+class SaltResource extends SlimefunResource {
 
-    private final NamespacedKey key = new NamespacedKey(SlimefunPlugin.instance(), "salt");
+    SaltResource() {
+        super("salt", "盐", SlimefunItems.SALT, 18, true);
+    }
 
     @Override
     public int getDefaultSupply(Environment environment, Biome biome) {
@@ -48,31 +46,6 @@ class SaltResource implements GEOResource {
             default:
                 return 6;
         }
-    }
-
-    @Override
-    public int getMaxDeviation() {
-        return 18;
-    }
-
-    @Override
-    public NamespacedKey getKey() {
-        return key;
-    }
-
-    @Override
-    public String getName() {
-        return "盐";
-    }
-
-    @Override
-    public ItemStack getItem() {
-        return SlimefunItems.SALT.clone();
-    }
-
-    @Override
-    public boolean isObtainableFromGEOMiner() {
-        return true;
     }
 
 }

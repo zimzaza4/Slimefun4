@@ -109,6 +109,7 @@ public class EnergyNet extends Network {
 
         if (!regulator.equals(b.getLocation())) {
             SimpleHologram.update(b, "&4检测到附近有其他调节器");
+            SlimefunPlugin.getProfiler().closeEntry(b.getLocation(), SlimefunItems.ENERGY_REGULATOR.getItem(), timestamp.get());
             return;
         }
 

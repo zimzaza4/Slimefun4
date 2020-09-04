@@ -1,16 +1,14 @@
 package io.github.thebusybiscuit.slimefun4.implementation.resources;
 
-import io.github.thebusybiscuit.slimefun4.api.geo.GEOResource;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Biome;
-import org.bukkit.inventory.ItemStack;
 
-class UraniumResource implements GEOResource {
+class UraniumResource extends SlimefunResource {
 
-    private final NamespacedKey key = new NamespacedKey(SlimefunPlugin.instance(), "uranium");
+    UraniumResource() {
+        super("uranium", "小块铀", SlimefunItems.SMALL_URANIUM, 2, true);
+    }
 
     @Override
     public int getDefaultSupply(Environment envionment, Biome biome) {
@@ -19,31 +17,6 @@ class UraniumResource implements GEOResource {
         }
 
         return 0;
-    }
-
-    @Override
-    public NamespacedKey getKey() {
-        return key;
-    }
-
-    @Override
-    public int getMaxDeviation() {
-        return 2;
-    }
-
-    @Override
-    public String getName() {
-        return "小块铀";
-    }
-
-    @Override
-    public ItemStack getItem() {
-        return SlimefunItems.SMALL_URANIUM.clone();
-    }
-
-    @Override
-    public boolean isObtainableFromGEOMiner() {
-        return true;
     }
 
 }
