@@ -24,10 +24,4 @@ public abstract class MagnesiumGenerator extends AGenerator {
     public ItemStack getProgressBar() {
         return new ItemStack(Material.FLINT_AND_STEEL);
     }
-
-    @Override
-    public String getInventoryTitle() {
-        return SlimefunItems.MAGNESIUM_GENERATOR.getItemMeta().getDisplayName();
-    }
-
 }

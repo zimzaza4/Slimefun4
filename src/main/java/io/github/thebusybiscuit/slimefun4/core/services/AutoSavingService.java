@@ -9,6 +9,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -31,7 +32,7 @@ public class AutoSavingService {
      * @param plugin   The current instance of Slimefun
      * @param interval The interval in which to run this task
      */
-    public void start(SlimefunPlugin plugin, int interval) {
+    public void start(@Nonnull SlimefunPlugin plugin, int interval) {
         this.interval = interval;
 
         plugin.getServer().getScheduler().runTaskTimer(plugin, this::saveAllPlayers, 2000L, interval * 60L * 20L);

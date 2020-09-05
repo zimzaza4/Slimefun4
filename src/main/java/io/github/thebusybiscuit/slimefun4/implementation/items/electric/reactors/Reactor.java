@@ -177,16 +177,16 @@ public abstract class Reactor extends AbstractEnergyProvider {
 
         preset.addItem(22, new CustomItem(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), " "), ChestMenuUtils.getEmptyClickHandler());
 
-        preset.addItem(1, new CustomItem(getFuelIcon(), "&7燃料", "", "&r这里可以放入放射性燃料:", "&2铀 &r或 &a镎"), ChestMenuUtils.getEmptyClickHandler());
+        preset.addItem(1, new CustomItem(getFuelIcon(), "&7燃料", "", "&f这里可以放入放射性燃料:", "&2铀 &f或 &a镎"), ChestMenuUtils.getEmptyClickHandler());
 
         for (int i : border_2) {
             preset.addItem(i, new CustomItem(new ItemStack(Material.CYAN_STAINED_GLASS_PANE), " "), ChestMenuUtils.getEmptyClickHandler());
         }
 
         if (needsCooling()) {
-            preset.addItem(7, new CustomItem(getCoolant(), "&b冷却剂", "", "&r在此处放入冷却剂", "&4没有了冷却剂, 你的反应堆", "&4将会瞬间爆炸"));
+            preset.addItem(7, new CustomItem(getCoolant(), "&b冷却剂", "", "&f在此处放入冷却剂", "&4没有了冷却剂, 你的反应堆", "&4将会瞬间爆炸"));
         } else {
-            preset.addItem(7, new CustomItem(new ItemStack(Material.BARRIER), "&b冷却剂", "", "&r在此处放入冷却剂"));
+            preset.addItem(7, new CustomItem(new ItemStack(Material.BARRIER), "&b冷却剂", "", "&f在此处放入冷却剂"));
 
             for (int i : border_4) {
                 preset.addItem(i, new CustomItem(new ItemStack(Material.BARRIER), "&c无需冷却剂"), ChestMenuUtils.getEmptyClickHandler());

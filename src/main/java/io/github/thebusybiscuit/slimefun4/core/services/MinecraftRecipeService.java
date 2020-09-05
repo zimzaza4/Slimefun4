@@ -8,6 +8,8 @@ import org.bukkit.Server;
 import org.bukkit.inventory.*;
 import org.bukkit.plugin.Plugin;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,7 +41,7 @@ public class MinecraftRecipeService {
      *
      * @param plugin The {@link Plugin} that requests this Service
      */
-    public MinecraftRecipeService(Plugin plugin) {
+    public MinecraftRecipeService(@Nonnull Plugin plugin) {
         this.plugin = plugin;
     }
 
@@ -62,7 +64,7 @@ public class MinecraftRecipeService {
      * @param subscription
      *            A callback to run when the {@link RecipeSnapshot} has been created.
      */
-    public void subscribe(Consumer<RecipeSnapshot> subscription) {
+    public void subscribe(@Nonnull Consumer<RecipeSnapshot> subscription) {
         Validate.notNull(subscription, "Callback must not be null!");
         subscriptions.add(subscription);
     }
@@ -76,7 +78,8 @@ public class MinecraftRecipeService {
      *
      * @return An {@link Optional} describing the furnace output of the given {@link ItemStack}
      */
-    public Optional<ItemStack> getFurnaceOutput(ItemStack input) {
+    @Nonnull
+    public Optional<ItemStack> getFurnaceOutput(@Nullable ItemStack input) {
         if (snapshot == null || input == null) {
             return Optional.empty();
         }
@@ -92,7 +95,7 @@ public class MinecraftRecipeService {
      *
      * @return Whether this item can be smelted
      */
-    public boolean isSmeltable(ItemStack input) {
+    public boolean isSmeltable(@Nullable ItemStack input) {
         return getFurnaceOutput(input).isPresent();
     }
 
@@ -107,7 +110,8 @@ public class MinecraftRecipeService {
      *            The {@link Recipe} to get the shape from
      * @return An Array of {@link RecipeChoice} representing the shape of this {@link Recipe}
      */
-    public RecipeChoice[] getRecipeShape(Recipe recipe) {
+    @Nonnull
+    public RecipeChoice[] getRecipeShape(@Nonnull Recipe recipe) {
         Validate.notNull(recipe, "Recipe must not be null!");
 
         if (recipe instanceof ShapedRecipe) {
@@ -140,7 +144,8 @@ public class MinecraftRecipeService {
      *            The {@link ItemStack} for which to get the recipes
      * @return An array of {@link Recipe Recipes} to craft the given {@link ItemStack}
      */
-    public Recipe[] getRecipesFor(ItemStack item) {
+    @Nonnull
+    public Recipe[] getRecipesFor(@Nullable ItemStack item) {
         if (snapshot == null || item == null) {
             return new Recipe[0];
         } else {

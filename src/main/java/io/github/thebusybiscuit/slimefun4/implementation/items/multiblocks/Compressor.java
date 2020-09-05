@@ -19,6 +19,7 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ public class Compressor extends MultiBlockMachine {
     }
 
     @Override
-    protected void registerDefaultRecipes(List<ItemStack> recipes) {
+    protected void registerDefaultRecipes(@NotNull List<ItemStack> recipes) {
         recipes.add(new SlimefunItemStack(SlimefunItems.STONE_CHUNK, 4));
         recipes.add(new ItemStack(Material.COBBLESTONE));
 

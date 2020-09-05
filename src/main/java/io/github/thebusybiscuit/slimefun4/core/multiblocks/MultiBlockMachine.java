@@ -26,6 +26,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -60,7 +61,7 @@ public abstract class MultiBlockMachine extends SlimefunItem implements NotPlace
         this(category, item, recipe, new ItemStack[0], trigger);
     }
 
-    protected void registerDefaultRecipes(List<ItemStack> recipes) {
+    protected void registerDefaultRecipes(@Nonnull List<ItemStack> recipes) {
         // Override this method to register some default recipes
     }
 
@@ -85,7 +86,7 @@ public abstract class MultiBlockMachine extends SlimefunItem implements NotPlace
     }
 
     @Override
-    public void register(SlimefunAddon addon) {
+    public void register(@Nonnull SlimefunAddon addon) {
         addItemHandler(getInteractionHandler());
         super.register(addon);
     }

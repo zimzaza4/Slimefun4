@@ -9,16 +9,9 @@ import java.util.logging.Level;
 
 class GitHubIssuesTracker extends GitHubConnector {
 
-    @FunctionalInterface
-    interface IssuesCallback {
+    private final IssuesTrackerConsumer callback;
 
-        void update(int issues, int pullRequests);
-
-    }
-
-    private final IssuesCallback callback;
-
-    GitHubIssuesTracker(GitHubService github, String repository, IssuesCallback callback) {
+    GitHubIssuesTracker(GitHubService github, String repository, IssuesTrackerConsumer callback) {
         super(github, repository);
         this.callback = callback;
     }
@@ -41,7 +34,7 @@ class GitHubIssuesTracker extends GitHubConnector {
                 }
             }
 
-            callback.update(issues, pullRequests);
+            callback.accept(issues, pullRequests);
         } else {
             Slimefun.getLogger().log(Level.WARNING, "Received an unusual answer from GitHub, possibly a timeout? ({0})", element);
         }

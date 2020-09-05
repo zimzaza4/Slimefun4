@@ -32,11 +32,6 @@ public abstract class NetherStarReactor extends Reactor {
     }
 
     @Override
-    public String getInventoryTitle() {
-        return "下界之星反应堆";
-    }
-
-    @Override
     protected void registerDefaultFuelTypes() {
         registerFuel(new MachineFuel(1800, new ItemStack(Material.NETHER_STAR)));
     }

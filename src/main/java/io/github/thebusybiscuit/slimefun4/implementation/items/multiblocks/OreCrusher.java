@@ -22,6 +22,7 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,18 +44,18 @@ public class OreCrusher extends MultiBlockMachine {
 		addItemSetting(doubleOres);
 	}
 
-	@Override
-	protected void registerDefaultRecipes(List<ItemStack> recipes) {
-		recipes.add(SlimefunItems.GOLD_4K);
-		recipes.add(SlimefunItems.GOLD_DUST);
+    @Override
+    protected void registerDefaultRecipes(@NotNull List<ItemStack> recipes) {
+        recipes.add(SlimefunItems.GOLD_4K);
+        recipes.add(SlimefunItems.GOLD_DUST);
 
-		recipes.add(new ItemStack(Material.GRAVEL));
-		recipes.add(new ItemStack(Material.SAND));
+        recipes.add(new ItemStack(Material.GRAVEL));
+        recipes.add(new ItemStack(Material.SAND));
 
-		recipes.add(new ItemStack(Material.MAGMA_BLOCK, 4));
-		recipes.add(SlimefunItems.SULFATE);
+        recipes.add(new ItemStack(Material.MAGMA_BLOCK, 4));
+        recipes.add(SlimefunItems.SULFATE);
 
-		recipes.add(SlimefunItems.CARBON);
+        recipes.add(SlimefunItems.CARBON);
 		recipes.add(new ItemStack(Material.COAL, 8));
 
 		recipes.add(SlimefunItems.COMPRESSED_CARBON);

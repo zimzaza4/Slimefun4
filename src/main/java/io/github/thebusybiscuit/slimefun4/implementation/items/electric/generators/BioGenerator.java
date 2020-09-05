@@ -12,8 +12,6 @@ import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Objects;
-
 public abstract class BioGenerator extends AGenerator {
 
     public BioGenerator(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
@@ -69,6 +67,7 @@ public abstract class BioGenerator extends AGenerator {
             registerFuel(new MachineFuel(4, new ItemStack(Material.SHROOMLIGHT)));
             registerFuel(new MachineFuel(2, new ItemStack(Material.CRIMSON_FUNGUS)));
             registerFuel(new MachineFuel(2, new ItemStack(Material.WARPED_FUNGUS)));
+            registerFuel(new MachineFuel(16, SlimefunItems.STRANGE_NETHER_GOO));
         }
 
         // Leaves
@@ -94,11 +93,6 @@ public abstract class BioGenerator extends AGenerator {
     @Override
     public ItemStack getProgressBar() {
         return new ItemStack(Material.GOLDEN_HOE);
-    }
-
-    @Override
-    public String getInventoryTitle() {
-        return Objects.requireNonNull(SlimefunItems.BIO_REACTOR.getItemMeta()).getDisplayName();
     }
 
 }

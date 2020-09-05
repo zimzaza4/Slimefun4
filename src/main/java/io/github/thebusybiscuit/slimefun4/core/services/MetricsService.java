@@ -6,6 +6,7 @@ import kong.unirest.*;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.plugin.Plugin;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +28,6 @@ import java.util.logging.Level;
  * @author WalshyDev
  */
 public class MetricsService {
-
 
     private static final String API_URL = "https://api.github.com/";
     private static final String REPO_NAME = "MetricsModule";
@@ -51,7 +51,7 @@ public class MetricsService {
                 .cookieSpec("ignoreCookies");
     }
 
-    public MetricsService(SlimefunPlugin plugin) {
+    public MetricsService(@Nonnull SlimefunPlugin plugin) {
         this.plugin = plugin;
         this.parentFolder = new File(plugin.getDataFolder(), "cache" + File.separatorChar + "modules");
 
@@ -128,9 +128,9 @@ public class MetricsService {
      * If there is a new version available then this returns true.
      *
      * @param currentVersion The current version which is being used.
-     * @return True if there is an update available.
+     * @return if there is an update available.
      */
-    public boolean checkForUpdate(String currentVersion) {
+    public boolean checkForUpdate(@Nullable String currentVersion) {
         if (currentVersion == null || !PatternUtils.NUMERIC.matcher(currentVersion).matches()) {
             return false;
         }

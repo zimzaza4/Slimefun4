@@ -7,6 +7,7 @@ import kong.unirest.UnirestException;
 import kong.unirest.json.JSONException;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 
+import javax.annotation.Nonnull;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
@@ -92,7 +93,7 @@ abstract class GitHubConnector {
         }
     }
 
-    private void writeCacheFile(JsonNode node) {
+    private void writeCacheFile(@Nonnull JsonNode node) {
         try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(node.toString().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {

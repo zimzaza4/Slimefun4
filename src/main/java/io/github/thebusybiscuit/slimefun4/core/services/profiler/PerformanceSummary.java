@@ -6,9 +6,12 @@ import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Content;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nonnull;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +38,7 @@ class PerformanceSummary {
     private final Map<String, Long> plugins;
     private final Map<String, Long> items;
 
-    PerformanceSummary(SlimefunProfiler profiler, long totalElapsedTime, int totalTickedBlocks) {
+    PerformanceSummary(@Nonnull SlimefunProfiler profiler, long totalElapsedTime, int totalTickedBlocks) {
         this.profiler = profiler;
         this.rating = profiler.getPerformance();
         this.percentage = profiler.getPercentageOfTick();
@@ -48,7 +51,7 @@ class PerformanceSummary {
         items = profiler.getByItem();
     }
 
-    public void send(CommandSender sender) {
+    public void send(@Nonnull CommandSender sender) {
         sender.sendMessage("");
         sender.sendMessage(ChatColor.GREEN + "===== Slimefun Lag Profiler =====");
         sender.sendMessage(ChatColor.GOLD + "Total time: " + ChatColor.YELLOW + NumberUtils.getAsMillis(totalElapsedTime));
@@ -107,24 +110,24 @@ class PerformanceSummary {
             hoverComponent.setColor(ChatColor.GRAY);
             StringBuilder builder = new StringBuilder();
 
-            int displayed = 0;
-            int hidden = 0;
+            int shownEntries = 0;
+            int hiddenEntries = 0;
 
             for (Map.Entry<String, Long> entry : results) {
-                if (displayed < MAX_ITEMS && (displayed < MIN_ITEMS || entry.getValue() > VISIBILITY_THRESHOLD)) {
+                if (shownEntries < MAX_ITEMS && (shownEntries < MIN_ITEMS || entry.getValue() > VISIBILITY_THRESHOLD)) {
                     builder.append("\n").append(ChatColor.YELLOW).append(formatter.apply(entry));
-                    displayed++;
+                    shownEntries++;
                 } else {
-                    hidden++;
+                    hiddenEntries++;
                 }
             }
 
-            if (hidden > 0) {
-                builder.append("\n\n&c+ &6").append(hidden).append(" more");
+            if (hiddenEntries > 0) {
+                builder.append("\n\n&c+ &6").append(hiddenEntries).append(" more");
             }
 
-            // 旧版本似乎并没有 net.md_5.bungee.api.chat.hover.content.Content
-            hoverComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(ChatColors.color(builder.toString()))));
+            Content content = new Text(TextComponent.fromLegacyText(ChatColors.color(builder.toString())));
+            hoverComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, content));
 
             component.addExtra(hoverComponent);
         }
@@ -133,30 +136,27 @@ class PerformanceSummary {
     }
 
     private String summarizeAsString(int count, String prefix, List<Entry<String, Long>> results, Function<Entry<String, Long>, String> formatter) {
-        int displayed = 0;
-        int hidden = 0;
+        int shownEntries = 0;
+        int hiddenEntries = 0;
 
         StringBuilder builder = new StringBuilder();
-        builder.append(ChatColor.GOLD);
-        builder.append(prefix);
+        builder.append(ChatColor.GOLD).append(prefix);
 
         if (count > 0) {
             builder.append(ChatColor.YELLOW);
 
             for (Map.Entry<String, Long> entry : results) {
-                if (displayed < MAX_ITEMS && (displayed < MIN_ITEMS || entry.getValue() > VISIBILITY_THRESHOLD)) {
+                if (shownEntries < MAX_ITEMS && (shownEntries < MIN_ITEMS || entry.getValue() > VISIBILITY_THRESHOLD)) {
                     builder.append("\n  ");
                     builder.append(ChatColor.stripColor(formatter.apply(entry)));
-                    displayed++;
+                    shownEntries++;
                 } else {
-                    hidden++;
+                    hiddenEntries++;
                 }
             }
 
-            if (hidden > 0) {
-                builder.append("\n+ ");
-                builder.append(hidden);
-                builder.append(" more...");
+            if (hiddenEntries > 0) {
+                builder.append("\n+ ").append(hiddenEntries).append(" more...");
             }
         }
 

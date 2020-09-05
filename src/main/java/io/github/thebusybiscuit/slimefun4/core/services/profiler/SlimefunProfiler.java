@@ -13,6 +13,7 @@ import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -103,7 +104,7 @@ public class SlimefunProfiler {
      *
      * @return The total timings of this entry
      */
-    public long closeEntry(Location l, SlimefunItem item, long timestamp) {
+    public long closeEntry(@Nonnull Location l, @Nonnull SlimefunItem item, long timestamp) {
         Validate.notNull(l, "Location must not be null!");
         Validate.notNull(item, "You need to specify a SlimefunItem!");
 
@@ -191,12 +192,13 @@ public class SlimefunProfiler {
      * @param sender
      *            The {@link CommandSender} who shall receive this summary.
      */
-    public void requestSummary(CommandSender sender) {
+    public void requestSummary(@Nonnull CommandSender sender) {
         Validate.notNull(sender, "Cannot request a summary for null");
 
         requests.add(sender);
     }
 
+    @Nonnull
     protected Map<String, Long> getByItem() {
         Map<String, Long> map = new HashMap<>();
 
@@ -207,6 +209,7 @@ public class SlimefunProfiler {
         return map;
     }
 
+    @Nonnull
     protected Map<String, Long> getByPlugin() {
         Map<String, Long> map = new HashMap<>();
 
@@ -217,6 +220,7 @@ public class SlimefunProfiler {
         return map;
     }
 
+    @Nonnull
     protected Map<String, Long> getByChunk() {
         Map<String, Long> map = new HashMap<>();
 
@@ -231,7 +235,8 @@ public class SlimefunProfiler {
         return map;
     }
 
-    protected int getBlocksInChunk(String chunk) {
+    protected int getBlocksInChunk(@Nonnull String chunk) {
+        Validate.notNull(chunk, "The chunk cannot be null!");
         int blocks = 0;
 
         for (ProfiledBlock block : timings.keySet()) {
@@ -247,7 +252,8 @@ public class SlimefunProfiler {
         return blocks;
     }
 
-    protected int getBlocksOfId(String id) {
+    protected int getBlocksOfId(@Nonnull String id) {
+        Validate.notNull(id, "The id cannot be null!");
         int blocks = 0;
 
         for (ProfiledBlock block : timings.keySet()) {
@@ -259,11 +265,12 @@ public class SlimefunProfiler {
         return blocks;
     }
 
-    protected int getBlocksFromPlugin(String id) {
+    protected int getBlocksFromPlugin(@Nonnull String pluginName) {
+        Validate.notNull(pluginName, "The Plugin name cannot be null!");
         int blocks = 0;
 
         for (ProfiledBlock block : timings.keySet()) {
-            if (block.getAddon().getName().equals(id)) {
+            if (block.getAddon().getName().equals(pluginName)) {
                 blocks++;
             }
         }
@@ -282,6 +289,7 @@ public class SlimefunProfiler {
      *
      * @return The current performance grade
      */
+    @Nonnull
     public PerformanceRating getPerformance() {
         float percentage = getPercentageOfTick();
 
@@ -311,26 +319,26 @@ public class SlimefunProfiler {
      *
      * @return Whether timings of this {@link Block} have been collected
      */
-    public boolean hasTimings(Block b) {
+    public boolean hasTimings(@Nonnull Block b) {
         Validate.notNull("Cannot get timings for a null Block");
         return timings.containsKey(new ProfiledBlock(b));
     }
 
-    public String getTime(Block b) {
+    public String getTime(@Nonnull Block b) {
         Validate.notNull("Cannot get timings for a null Block");
 
         long time = timings.getOrDefault(new ProfiledBlock(b), 0L);
         return NumberUtils.getAsMillis(time);
     }
 
-    public String getTime(Chunk chunk) {
+    public String getTime(@Nonnull Chunk chunk) {
         Validate.notNull("Cannot get timings for a null Chunk");
 
         long time = getByChunk().getOrDefault(chunk.getWorld().getName() + " (" + chunk.getX() + ',' + chunk.getZ() + ')', 0L);
         return NumberUtils.getAsMillis(time);
     }
 
-    public String getTime(SlimefunItem item) {
+    public String getTime(@Nonnull SlimefunItem item) {
         Validate.notNull("Cannot get timings for a null SlimefunItem");
 
         long time = getByItem().getOrDefault(item.getID(), 0L);

@@ -6,6 +6,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Bukkit;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +30,7 @@ class GitHubTask implements Runnable {
 
     private final GitHubService gitHubService;
 
-    GitHubTask(GitHubService github) {
+    GitHubTask(@Nonnull GitHubService github) {
         gitHubService = github;
     }
 
@@ -71,13 +72,13 @@ class GitHubTask implements Runnable {
         gitHubService.saveCache();
     }
 
-    private int requestTexture(Contributor contributor, Map<String, String> skins) {
+    private int requestTexture(@Nonnull Contributor contributor, @Nonnull Map<String, String> skins) {
         if (!contributor.hasTexture()) {
             try {
                 if (skins.containsKey(contributor.getMinecraftName())) {
                     contributor.setTexture(skins.get(contributor.getMinecraftName()));
                 } else {
-                    contributor.setTexture(pullTexture(skins, contributor));
+                    contributor.setTexture(pullTexture(contributor, skins));
                     return contributor.getUniqueId().isPresent() ? 1 : 2;
                 }
             } catch (IllegalArgumentException x) {
@@ -85,8 +86,8 @@ class GitHubTask implements Runnable {
                 contributor.setTexture(null);
             } catch (IOException x) {
                 // Too many requests
-                Slimefun.getLogger().log(Level.WARNING, "无法连接至 Mojang, 响应信息: {0}: {1}", new Object[]{x.getClass().getSimpleName(), x.getMessage()});
-                Slimefun.getLogger().log(Level.WARNING, "这通常是因为 Mojang 服务器状态异常或者被限制次数所导致的, 所以它并不是一个问题!");
+                Slimefun.getLogger().log(Level.WARNING, "Attempted to connect to mojang.com, got this response: {0}: {1}", new Object[]{x.getClass().getSimpleName(), x.getMessage()});
+                Slimefun.getLogger().log(Level.WARNING, "This usually means mojang.com is down or started to rate-limit this connection, this is not an error message!");
 
                 // Retry after 5 minutes if it was rate-limiting
                 if (x.getMessage().contains("429")) {
@@ -95,7 +96,7 @@ class GitHubTask implements Runnable {
 
                 return -1;
             } catch (TooManyRequestsException x) {
-                Slimefun.getLogger().log(Level.WARNING, "请求已被 Mojang 限制, 将在 4 分钟后重试");
+                Slimefun.getLogger().log(Level.WARNING, "Received a rate-limit from mojang.com, retrying in 4 minutes");
                 Bukkit.getScheduler().runTaskLaterAsynchronously(SlimefunPlugin.instance(), this::grabTextures, 4 * 60 * 20L);
 
                 return -1;
@@ -105,7 +106,7 @@ class GitHubTask implements Runnable {
         return 0;
     }
 
-    private String pullTexture(Map<String, String> skins, Contributor contributor) throws TooManyRequestsException, IOException {
+    private String pullTexture(@Nonnull Contributor contributor, @Nonnull Map<String, String> skins) throws TooManyRequestsException, IOException {
         Optional<UUID> uuid = contributor.getUniqueId();
 
         if (!uuid.isPresent()) {

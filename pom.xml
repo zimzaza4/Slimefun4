@@ -155,6 +155,12 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- Hard dependencies -->
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -186,6 +192,7 @@
             <groupId>com.konghq</groupId>
             <artifactId>unirest-java</artifactId>
             <version>3.9.00</version>
+            <scope>compile</scope>
             <exclusions>
                 <exclusion>
                     <groupId>com.google.code.gson</groupId>

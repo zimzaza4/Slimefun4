@@ -18,7 +18,9 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,18 +30,18 @@ public class GrindStone extends MultiBlockMachine {
 		super(category, item, new ItemStack[]{null, null, null, null, new ItemStack(Material.OAK_FENCE), null, null, new CustomItem(Material.DISPENSER, "发射器 (朝上)"), null}, BlockFace.SELF);
 	}
 
-	@Override
-	protected void registerDefaultRecipes(List<ItemStack> recipes) {
-		recipes.add(new ItemStack(Material.BLAZE_ROD));
-		recipes.add(new ItemStack(Material.BLAZE_POWDER, 4));
+    @Override
+    protected void registerDefaultRecipes(@Nonnull @NotNull List<ItemStack> recipes) {
+        recipes.add(new ItemStack(Material.BLAZE_ROD));
+        recipes.add(new ItemStack(Material.BLAZE_POWDER, 4));
 
-		recipes.add(new ItemStack(Material.BONE));
-		recipes.add(new ItemStack(Material.BONE_MEAL, 4));
+        recipes.add(new ItemStack(Material.BONE));
+        recipes.add(new ItemStack(Material.BONE_MEAL, 4));
 
-		recipes.add(new ItemStack(Material.BONE_BLOCK));
-		recipes.add(new ItemStack(Material.BONE_MEAL, 9));
+        recipes.add(new ItemStack(Material.BONE_BLOCK));
+        recipes.add(new ItemStack(Material.BONE_MEAL, 9));
 
-		recipes.add(new ItemStack(Material.ENDER_EYE));
+        recipes.add(new ItemStack(Material.ENDER_EYE));
 		recipes.add(new SlimefunItemStack(SlimefunItems.ENDER_LUMP_1, 2));
 
 		recipes.add(new ItemStack(Material.COBBLESTONE));
