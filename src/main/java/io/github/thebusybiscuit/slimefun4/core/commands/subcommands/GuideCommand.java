@@ -7,6 +7,7 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideLayout;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 class GuideCommand extends SubCommand {
 
@@ -15,7 +16,7 @@ class GuideCommand extends SubCommand {
     }
 
     @Override
-    public void onExecute(CommandSender sender, String[] args) {
+    public void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
         if (sender instanceof Player) {
             if (sender.hasPermission("slimefun.command.guide")) {
                 SlimefunGuideLayout design = SlimefunGuide.getDefaultLayout();

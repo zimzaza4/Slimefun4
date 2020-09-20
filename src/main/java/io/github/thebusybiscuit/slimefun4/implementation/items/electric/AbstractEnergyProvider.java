@@ -17,6 +17,7 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -86,12 +87,12 @@ public abstract class AbstractEnergyProvider extends SlimefunItem implements Inv
     }
 
     @Override
-    public String getLabelLocalPath() {
+    public @NotNull String getLabelLocalPath() {
         return "guide.tooltips.recipes.generator";
     }
 
     @Override
-    public List<ItemStack> getDisplayRecipes() {
+    public @NotNull List<ItemStack> getDisplayRecipes() {
         List<ItemStack> list = new ArrayList<>();
 
         for (MachineFuel fuel : fuelTypes) {

@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class SlimefunCommand implements CommandExecutor, Listener {
     private final List<SubCommand> commands = new LinkedList<>();
     private final Map<SubCommand, Integer> commandUsage = new HashMap<>();
 
-    public SlimefunCommand(SlimefunPlugin plugin) {
+    public SlimefunCommand(@Nonnull SlimefunPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -40,6 +41,7 @@ public class SlimefunCommand implements CommandExecutor, Listener {
         commands.addAll(SlimefunSubCommands.getAllCommands(this));
     }
 
+    @Nonnull
     public SlimefunPlugin getPlugin() {
         return plugin;
     }
@@ -49,6 +51,7 @@ public class SlimefunCommand implements CommandExecutor, Listener {
      *
      * @return A {@link Map} holding the amount of times each command was run
      */
+    @Nonnull
     public Map<SubCommand, Integer> getCommandUsage() {
         return commandUsage;
     }
@@ -70,7 +73,7 @@ public class SlimefunCommand implements CommandExecutor, Listener {
         return true;
     }
 
-    public void sendHelp(CommandSender sender) {
+    public void sendHelp(@Nonnull CommandSender sender) {
         sender.sendMessage("");
         sender.sendMessage(ChatColors.color("&aSlimefun &2v" + SlimefunPlugin.getVersion()));
         sender.sendMessage("");
@@ -90,6 +93,7 @@ public class SlimefunCommand implements CommandExecutor, Listener {
         }
     }
 
+    @Nonnull
     public List<String> getSubCommandNames() {
         return commands.stream().map(SubCommand::getName).collect(Collectors.toList());
     }

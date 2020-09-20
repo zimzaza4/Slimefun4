@@ -25,6 +25,7 @@ import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public abstract class MultiBlockMachine extends SlimefunItem implements NotPlace
     }
 
     @Override
-    public List<ItemStack> getDisplayRecipes() {
+    public @NotNull List<ItemStack> getDisplayRecipes() {
         return displayRecipes;
     }
 

@@ -24,6 +24,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -86,7 +87,7 @@ public abstract class GEOMiner extends AContainer implements RecipeDisplayItem {
     }
 
     @Override
-    public List<ItemStack> getDisplayRecipes() {
+    public @NotNull List<ItemStack> getDisplayRecipes() {
         List<ItemStack> displayRecipes = new LinkedList<>();
 
         for (GEOResource resource : SlimefunPlugin.getRegistry().getGEOResources().values()) {
@@ -99,7 +100,7 @@ public abstract class GEOMiner extends AContainer implements RecipeDisplayItem {
     }
 
     @Override
-    public String getLabelLocalPath() {
+    public @NotNull String getLabelLocalPath() {
         return "guide.tooltips.recipes.miner";
     }
 

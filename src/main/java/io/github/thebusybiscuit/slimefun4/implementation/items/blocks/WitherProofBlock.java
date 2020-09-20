@@ -8,6 +8,7 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Wither;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A quick and easy implementation of {@link SlimefunItem} that also implements the
@@ -28,7 +29,7 @@ public class WitherProofBlock extends SlimefunItem implements WitherProof {
     }
 
     @Override
-    public void onAttack(Block block, Wither wither) {
+    public void onAttack(@NotNull Block block, @NotNull Wither wither) {
         // In this implementation we simply do nothing.
     }
 

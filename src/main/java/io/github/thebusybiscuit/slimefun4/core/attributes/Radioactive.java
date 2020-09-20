@@ -2,6 +2,8 @@ package io.github.thebusybiscuit.slimefun4.core.attributes;
 
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 
+import javax.annotation.Nonnull;
+
 /**
  * This Interface, when attached to a class that inherits from {@link SlimefunItem}, marks
  * the Item as radioactive.
@@ -11,6 +13,7 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
  *
  * @author TheBusyBiscuit
  */
+@FunctionalInterface
 public interface Radioactive extends ItemAttribute {
 
     /**
@@ -19,6 +22,7 @@ public interface Radioactive extends ItemAttribute {
      *
      * @return The level of {@link Radioactivity} of this item.
      */
+    @Nonnull
     Radioactivity getRadioactivity();
 
 }

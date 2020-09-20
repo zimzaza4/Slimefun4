@@ -10,6 +10,8 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 
+import javax.annotation.Nonnull;
+
 /**
  * This Interface, when attached to a class that inherits from {@link SlimefunItem}, marks
  * the Item as an electric Block.
@@ -32,6 +34,7 @@ public interface EnergyNetComponent extends ItemAttribute {
      *
      * @return The {@link EnergyNetComponentType} this {@link SlimefunItem} represents.
      */
+    @Nonnull
     EnergyNetComponentType getEnergyComponentType();
 
     /**
@@ -58,7 +61,7 @@ public interface EnergyNetComponent extends ItemAttribute {
      * @param l The target {@link Location}
      * @return The charge stored at that {@link Location}
      */
-    default int getCharge(Location l) {
+    default int getCharge(@Nonnull Location l) {
         Validate.notNull(l, "Location was null!");
         String charge = BlockStorage.getLocationInfo(l, "energy-charge");
 
@@ -74,12 +77,10 @@ public interface EnergyNetComponent extends ItemAttribute {
      * If this {@link EnergyNetComponent} is of type {@code EnergyNetComponentType.CAPACITOR}, then
      * this method will automatically update the texture of this {@link Capacitor} as well.
      *
-     * @param l
-     *            The target {@link Location}
-     * @param charge
-     *            The new charge
+     * @param l      The target {@link Location}
+     * @param charge The new charge
      */
-    default void setCharge(Location l, int charge) {
+    default void setCharge(@Nonnull Location l, int charge) {
         Validate.notNull(l, "Location was null!");
         Validate.isTrue(charge >= 0, "You can only set a charge of zero or more!");
         int capacity = getCapacity();
@@ -100,7 +101,7 @@ public interface EnergyNetComponent extends ItemAttribute {
         }
     }
 
-    default void addCharge(Location l, int charge) {
+    default void addCharge(@Nonnull Location l, int charge) {
         Validate.notNull(l, "Location was null!");
         Validate.isTrue(charge > 0, "You can only add a positive charge!");
         int capacity = getCapacity();
@@ -122,7 +123,7 @@ public interface EnergyNetComponent extends ItemAttribute {
         }
     }
 
-    default void removeCharge(Location l, int charge) {
+    default void removeCharge(@Nonnull Location l, int charge) {
         Validate.notNull(l, "Location was null!");
         Validate.isTrue(charge > 0, "The charge to remove must be greater than zero!");
         int capacity = getCapacity();

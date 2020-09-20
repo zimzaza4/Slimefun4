@@ -46,6 +46,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -598,12 +599,12 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
     }
 
     @Override
-    public String getLabelLocalPath() {
+    public @NotNull String getLabelLocalPath() {
         return "guide.tooltips.recipes.generator";
     }
 
     @Override
-    public List<ItemStack> getDisplayRecipes() {
+    public @NotNull List<ItemStack> getDisplayRecipes() {
         List<ItemStack> list = new ArrayList<>();
 
         for (MachineFuel fuel : fuelTypes) {

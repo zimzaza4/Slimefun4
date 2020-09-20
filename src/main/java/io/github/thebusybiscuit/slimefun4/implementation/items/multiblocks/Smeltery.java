@@ -47,7 +47,7 @@ public class Smeltery extends AbstractSmeltery {
     }
 
     @Override
-    public List<ItemStack> getDisplayRecipes() {
+    public @NotNull List<ItemStack> getDisplayRecipes() {
         List<ItemStack> items = new ArrayList<>();
 
         for (int i = 0; i < recipes.size() - 1; i += 2) {

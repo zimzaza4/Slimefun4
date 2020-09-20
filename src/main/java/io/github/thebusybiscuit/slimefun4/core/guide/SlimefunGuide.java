@@ -11,6 +11,7 @@ import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
 /**
@@ -29,7 +30,7 @@ public final class SlimefunGuide {
     private SlimefunGuide() {
     }
 
-    public static ItemStack getItem(SlimefunGuideLayout design) {
+    public static ItemStack getItem(@Nonnull SlimefunGuideLayout design) {
         return SlimefunPlugin.getRegistry().getGuideLayout(design).getItem();
     }
 

@@ -8,6 +8,8 @@ import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AGenerator;
 import org.bukkit.Location;
 
+import javax.annotation.Nonnull;
+
 /**
  * An {@link EnergyNetProvider} is an extension of {@link EnergyNetComponent} which provides
  * energy to an {@link EnergyNet}.
@@ -36,7 +38,7 @@ public interface EnergyNetProvider extends EnergyNetComponent {
      * @param data The stored block data
      * @return The generated output energy of this {@link EnergyNetProvider}.
      */
-    int getGeneratedOutput(Location l, Config data);
+    int getGeneratedOutput(@Nonnull Location l, @Nonnull Config data);
 
     /**
      * This method returns whether the given {@link Location} is going to explode on the
@@ -46,7 +48,7 @@ public interface EnergyNetProvider extends EnergyNetComponent {
      * @param data The stored block data
      * @return Whether or not this {@link Location} will explode.
      */
-    default boolean willExplode(Location l, Config data) {
+    default boolean willExplode(@Nonnull Location l, @Nonnull Config data) {
         return false;
     }
 

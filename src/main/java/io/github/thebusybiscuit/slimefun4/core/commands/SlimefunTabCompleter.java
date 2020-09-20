@@ -7,6 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 class SlimefunTabCompleter implements TabCompleter {
@@ -20,15 +21,13 @@ class SlimefunTabCompleter implements TabCompleter {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+    public List<String> onTabComplete(@Nonnull CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 1) {
             return createReturnList(command.getSubCommandNames(), args[0]);
-        }
-        else if (args.length == 3) {
+        } else if (args.length == 3) {
             if (args[0].equalsIgnoreCase("give")) {
                 return createReturnList(getSlimefunItems(), args[2]);
-            }
-            else if (args[0].equalsIgnoreCase("research")) {
+            } else if (args[0].equalsIgnoreCase("research")) {
                 List<Research> researches = SlimefunPlugin.getRegistry().getResearches();
                 List<String> suggestions = new LinkedList<>();
 
@@ -59,7 +58,8 @@ class SlimefunTabCompleter implements TabCompleter {
      *            The typed string
      * @return Sublist if string is not empty
      */
-    private List<String> createReturnList(List<String> list, String string) {
+    @Nonnull
+    private List<String> createReturnList(@Nonnull List<String> list, String string) {
         if (string.length() == 0) {
             return list;
         }
@@ -82,6 +82,7 @@ class SlimefunTabCompleter implements TabCompleter {
         return returnList;
     }
 
+    @Nonnull
     private List<String> getSlimefunItems() {
         List<SlimefunItem> items = SlimefunPlugin.getRegistry().getEnabledSlimefunItems();
         List<String> list = new ArrayList<>(items.size());

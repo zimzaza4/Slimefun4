@@ -82,7 +82,7 @@ public class OreCrusher extends MultiBlockMachine {
 	}
 
 	@Override
-	public List<ItemStack> getDisplayRecipes() {
+	public @NotNull List<ItemStack> getDisplayRecipes() {
 		return recipes.stream().map(items -> items[0]).collect(Collectors.toList());
 	}
 

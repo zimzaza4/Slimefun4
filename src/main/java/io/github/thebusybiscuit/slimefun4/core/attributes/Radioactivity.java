@@ -3,6 +3,8 @@ package io.github.thebusybiscuit.slimefun4.core.attributes;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nonnull;
+
 /**
  * This enum holds all available levels of {@link Radioactivity}.
  * The higher the level the more severe the effect of radiation will be.
@@ -46,11 +48,12 @@ public enum Radioactivity {
     private final ChatColor color;
     private final String alias;
 
-    Radioactivity(ChatColor color, String alias) {
+    Radioactivity(@Nonnull ChatColor color, String alias) {
         this.color = color;
         this.alias = alias;
     }
 
+    @Nonnull
     public String getLore() {
         return ChatColor.GREEN + "\u2622" + ChatColor.GRAY + " 辐射等级: " + color + alias;
     }

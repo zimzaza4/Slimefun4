@@ -7,6 +7,8 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -30,7 +32,7 @@ public class GuideHistory {
      *
      * @param profile The {@link PlayerProfile} this {@link GuideHistory} was made for
      */
-    public GuideHistory(PlayerProfile profile) {
+    public GuideHistory(@Nonnull PlayerProfile profile) {
         Validate.notNull(profile, "Cannot create a GuideHistory without a PlayerProfile!");
         this.profile = profile;
     }
@@ -47,12 +49,10 @@ public class GuideHistory {
      * Should the {@link Category} already be the last element in this {@link GuideHistory},
      * then the entry will be overridden with the new page.
      *
-     * @param category
-     *            The {@link Category} that should be added to this {@link GuideHistory}
-     * @param page
-     *            The current page of the {@link Category} that should be stored
+     * @param category The {@link Category} that should be added to this {@link GuideHistory}
+     * @param page     The current page of the {@link Category} that should be stored
      */
-    public void add(Category category, int page) {
+    public void add(@Nonnull Category category, int page) {
         refresh(category, page);
     }
 
@@ -66,7 +66,7 @@ public class GuideHistory {
      * @param page
      *            The current page of the recipes of this {@link ItemStack}
      */
-    public void add(ItemStack item, int page) {
+    public void add(@Nonnull ItemStack item, int page) {
         refresh(item, page);
     }
 
@@ -76,8 +76,8 @@ public class GuideHistory {
      * @param item
      *            The {@link SlimefunItem} that should be added to this {@link GuideHistory}
      */
-    public void add(SlimefunItem item) {
-        Validate.notNull(item, "Cannot add a nonexisting SlimefunItem to the GuideHistory!");
+    public void add(@Nonnull SlimefunItem item) {
+        Validate.notNull(item, "Cannot add a non-existing SlimefunItem to the GuideHistory!");
         queue.add(new GuideEntry<>(item, 0));
     }
 
@@ -87,12 +87,12 @@ public class GuideHistory {
      * @param searchTerm
      *            The term that the {@link Player} searched for
      */
-    public void add(String searchTerm) {
+    public void add(@Nonnull String searchTerm) {
         Validate.notNull(searchTerm, "Cannot add an empty Search Term to the GuideHistory!");
         queue.add(new GuideEntry<>(searchTerm, 0));
     }
 
-    private <T> void refresh(T object, int page) {
+    private <T> void refresh(@Nonnull T object, int page) {
         Validate.notNull(object, "Cannot add a null Entry to the GuideHistory!");
         Validate.isTrue(page >= 0, "page must not be negative!");
 
@@ -122,6 +122,7 @@ public class GuideHistory {
      *            Whether to remove the current entry so it moves back to the entry returned.
      * @return The last Guide Entry that was saved to the given Players guide history.
      */
+    @Nullable
     private GuideEntry<?> getLastEntry(boolean remove) {
         if (remove && !queue.isEmpty()) {
             queue.removeLast();
@@ -137,7 +138,7 @@ public class GuideHistory {
      * @param guide
      *            The {@link SlimefunGuideImplementation} to use
      */
-    public void openLastEntry(SlimefunGuideImplementation guide) {
+    public void openLastEntry(@Nonnull SlimefunGuideImplementation guide) {
         GuideEntry<?> entry = getLastEntry(false);
         open(guide, entry);
     }
@@ -152,12 +153,12 @@ public class GuideHistory {
      * @param guide
      *            The {@link SlimefunGuideImplementation} to use
      */
-    public void goBack(SlimefunGuideImplementation guide) {
+    public void goBack(@Nonnull SlimefunGuideImplementation guide) {
         GuideEntry<?> entry = getLastEntry(true);
         open(guide, entry);
     }
 
-    private <T> void open(SlimefunGuideImplementation guide, GuideEntry<T> entry) {
+    private <T> void open(@Nonnull SlimefunGuideImplementation guide, @Nullable GuideEntry<T> entry) {
         if (entry == null) {
             guide.openMainMenu(profile, 1);
         } else if (entry.getIndexedObject() instanceof Category) {

@@ -8,6 +8,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 class TeleporterCommand extends SubCommand {
 
@@ -16,7 +17,7 @@ class TeleporterCommand extends SubCommand {
     }
 
     @Override
-    public void onExecute(CommandSender sender, String[] args) {
+    public void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
         if (sender instanceof Player) {
             if (sender.hasPermission("slimefun.command.teleporter")) {
                 if (args.length == 1) {

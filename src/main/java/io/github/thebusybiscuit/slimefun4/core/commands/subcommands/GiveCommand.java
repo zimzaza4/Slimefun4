@@ -11,6 +11,7 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 import java.util.Map;
@@ -27,7 +28,7 @@ class GiveCommand extends SubCommand {
     }
 
     @Override
-    public void onExecute(CommandSender sender, String[] args) {
+    public void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
         if (sender.hasPermission("slimefun.cheat.items") || !(sender instanceof Player)) {
             if (args.length > 2) {
                 Optional<Player> player = PlayerList.findByName(args[1]);

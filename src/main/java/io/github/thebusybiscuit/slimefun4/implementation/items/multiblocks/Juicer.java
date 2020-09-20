@@ -18,6 +18,7 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,10 +29,10 @@ public class Juicer extends MultiBlockMachine {
 		super(category, item, new ItemStack[]{null, new ItemStack(Material.GLASS), null, null, new ItemStack(Material.NETHER_BRICK_FENCE), null, null, new CustomItem(Material.DISPENSER, "发射器 (朝上)"), null}, BlockFace.SELF);
 	}
 
-	@Override
-	public List<ItemStack> getDisplayRecipes() {
-		return recipes.stream().map(items -> items[0]).collect(Collectors.toList());
-	}
+    @Override
+    public @NotNull List<ItemStack> getDisplayRecipes() {
+        return recipes.stream().map(items -> items[0]).collect(Collectors.toList());
+    }
 
 	@Override
 	public void onInteract(Player p, Block b) {

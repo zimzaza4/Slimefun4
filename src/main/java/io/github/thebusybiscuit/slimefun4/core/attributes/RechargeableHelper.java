@@ -9,6 +9,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ final class RechargeableHelper {
     private RechargeableHelper() {
     }
 
-    static void setCharge(ItemMeta meta, float charge, float capacity) {
+    static void setCharge(@Nonnull ItemMeta meta, float charge, float capacity) {
         BigDecimal decimal = BigDecimal.valueOf(charge).setScale(2, RoundingMode.HALF_UP);
         float value = decimal.floatValue();
 
@@ -56,7 +57,7 @@ final class RechargeableHelper {
         meta.setLore(lore);
     }
 
-    static float getCharge(ItemMeta meta) {
+    static float getCharge(@Nonnull ItemMeta meta) {
         if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_14)) {
             Float value = meta.getPersistentDataContainer().get(CHARGE_KEY, PersistentDataType.FLOAT);
 

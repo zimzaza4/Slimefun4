@@ -5,6 +5,8 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Wither;
 
+import javax.annotation.Nonnull;
+
 /**
  * This Interface, when attached to a class that inherits from {@link SlimefunItem}, marks
  * the Item as "Wither-Proof".
@@ -23,6 +25,6 @@ public interface WitherProof extends ItemAttribute {
      * @param block  The {@link Block} which was attacked.
      * @param wither The {@link Wither} who attacked.
      */
-    void onAttack(Block block, Wither wither);
+    void onAttack(@Nonnull Block block, @Nonnull Wither wither);
 
 }

@@ -26,6 +26,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -131,7 +132,7 @@ public abstract class AGenerator extends AbstractEnergyProvider {
     }
 
     @Override
-    public int getGeneratedOutput(Location l, Config data) {
+    public int getGeneratedOutput(@NotNull Location l, @NotNull Config data) {
         BlockMenu inv = BlockStorage.getInventory(l);
 
         if (isProcessing(l)) {

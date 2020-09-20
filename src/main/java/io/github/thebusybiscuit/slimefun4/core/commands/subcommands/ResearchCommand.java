@@ -8,6 +8,7 @@ import io.github.thebusybiscuit.slimefun4.core.researching.Research;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.function.UnaryOperator;
@@ -27,7 +28,7 @@ class ResearchCommand extends SubCommand {
     }
 
     @Override
-    public void onExecute(CommandSender sender, String[] args) {
+    public void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
         if (args.length == 3) {
             if (!(sender instanceof Player) || sender.hasPermission("slimefun.cheat.researches")) {
                 Optional<Player> player = PlayerList.findByName(args[1]);

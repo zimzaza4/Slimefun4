@@ -18,6 +18,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class AutomatedPanningMachine extends MultiBlockMachine {
 	}
 
 	@Override
-	public List<ItemStack> getDisplayRecipes() {
+	public @NotNull List<ItemStack> getDisplayRecipes() {
 		List<ItemStack> recipes = new ArrayList<>();
 
 		recipes.addAll(goldPan.getDisplayRecipes());

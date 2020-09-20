@@ -18,6 +18,7 @@ import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -80,7 +81,7 @@ public class GoldPan extends SimpleSlimefunItem<ItemUseHandler> implements Recip
     }
 
     @Override
-    public String getLabelLocalPath() {
+    public @NotNull String getLabelLocalPath() {
         return "guide.tooltips.recipes.gold-pan";
     }
 
@@ -109,7 +110,7 @@ public class GoldPan extends SimpleSlimefunItem<ItemUseHandler> implements Recip
     }
 
     @Override
-    public List<ItemStack> getDisplayRecipes() {
+    public @NotNull List<ItemStack> getDisplayRecipes() {
         List<ItemStack> recipes = new LinkedList<>();
 
         for (GoldPanDrop drop : drops) {

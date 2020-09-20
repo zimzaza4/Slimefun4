@@ -302,10 +302,11 @@ public class BlockStorage {
                 cfg.save(tmpFile);
 
                 try {
-                    // Refer to #173#issuecomment-687565346
-                    Files.move(tmpFile.toPath(), cfg.getFile().toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+                    // use REPLACE_EXISTING necessary? ATOMIC_MOVE seems more stable. Refer to #173
+                    // 可能需要使用 Oracle JDK 8 编译, 已经更换
+                    Files.move(tmpFile.toPath(), cfg.getFile().toPath(), StandardCopyOption.ATOMIC_MOVE);
                 } catch (IOException x) {
-                    Slimefun.getLogger().log(Level.SEVERE, x, () -> "An Error occurred while copying a temporary File for Slimefun " + SlimefunPlugin.getVersion());
+                    Slimefun.getLogger().log(Level.SEVERE, x, () -> "在尝试复制缓存文件时发生了意外, Slimefun 版本: " + SlimefunPlugin.getVersion());
                 }
             }
         }
@@ -555,8 +556,10 @@ public class BlockStorage {
      * <strong>Do not call this method!</strong>.
      * This method is used for internal purposes only.
      *
-     * @param l       The {@link Location}
-     * @param destroy Whether to completely destroy the block data
+     * @param l
+     *            The {@link Location}
+     * @param destroy
+     *            Whether to completely destroy the block data
      */
     public static void deleteLocationInfoUnsafely(Location l, boolean destroy) {
         BlockStorage storage = getStorage(l.getWorld());
@@ -602,8 +605,10 @@ public class BlockStorage {
      * <strong>Do not call this method!</strong>.
      * This method is used for internal purposes only.
      *
-     * @param from The origin {@link Location}
-     * @param to   The destination {@link Location}
+     * @param from
+     *            The origin {@link Location}
+     * @param to
+     *            The destination {@link Location}
      */
     public static void moveLocationInfoUnsafely(Location from, Location to) {
         if (!hasBlockInfo(from)) {

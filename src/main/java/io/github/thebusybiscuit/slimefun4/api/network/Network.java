@@ -10,6 +10,8 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Queue;
@@ -41,7 +43,7 @@ public abstract class Network {
      * @param manager   The {@link NetworkManager} instance
      * @param regulator The {@link Location} marking the regulator of this {@link Network}.
      */
-    protected Network(NetworkManager manager, Location regulator) {
+    protected Network(@Nonnull NetworkManager manager, @Nonnull Location regulator) {
         Validate.notNull(manager, "A NetworkManager must be provided");
         Validate.notNull(regulator, "No regulator was specified");
 
@@ -71,6 +73,7 @@ public abstract class Network {
      *            The {@link Location} to classify
      * @return The assigned type of {@link NetworkComponent} for this {@link Location}
      */
+    @Nullable
     public abstract NetworkComponent classifyLocation(Location l);
 
     /**
@@ -96,7 +99,7 @@ public abstract class Network {
         return regulatorNodes.size() + connectorNodes.size() + terminusNodes.size();
     }
 
-    protected void addLocationToNetwork(Location l) {
+    protected void addLocationToNetwork(@Nonnull Location l) {
         if (connectedLocations.contains(l)) {
             return;
         }
@@ -109,10 +112,9 @@ public abstract class Network {
      * This method marks the given {@link Location} as dirty and adds it to a {@link Queue}
      * to handle this update.
      *
-     * @param l
-     *            The {@link Location} to update
+     * @param l The {@link Location} to update
      */
-    public void markDirty(Location l) {
+    public void markDirty(@Nonnull Location l) {
         if (regulator.equals(l)) {
             manager.unregisterNetwork(this);
         } else {
@@ -127,10 +129,11 @@ public abstract class Network {
      *            The {@link Location} to check for
      * @return Whether the given {@link Location} is part of this {@link Network}
      */
-    public boolean connectsTo(Location l) {
+    public boolean connectsTo(@Nonnull Location l) {
         return connectedLocations.contains(l);
     }
 
+    @Nullable
     private NetworkComponent getCurrentClassification(Location l) {
         if (regulatorNodes.contains(l)) {
             return NetworkComponent.REGULATOR;
@@ -183,14 +186,14 @@ public abstract class Network {
         }
     }
 
-    private void discoverNeighbors(Location l, double xDiff, double yDiff, double zDiff) {
+    private void discoverNeighbors(@Nonnull Location l, double xDiff, double yDiff, double zDiff) {
         for (int i = getRange() + 1; i > 0; i--) {
             Location newLocation = l.clone().add(i * xDiff, i * yDiff, i * zDiff);
             addLocationToNetwork(newLocation);
         }
     }
 
-    private void discoverNeighbors(Location l) {
+    private void discoverNeighbors(@Nonnull Location l) {
         discoverNeighbors(l, 1.0, 0.0, 0.0);
         discoverNeighbors(l, -1.0, 0.0, 0.0);
         discoverNeighbors(l, 0.0, 1.0, 0.0);
@@ -217,6 +220,7 @@ public abstract class Network {
         });
     }
 
+    @Nullable
     public Location getRegulator() {
         return regulator;
     }

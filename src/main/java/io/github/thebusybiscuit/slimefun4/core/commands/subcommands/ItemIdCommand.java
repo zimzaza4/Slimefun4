@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 class ItemIdCommand extends SubCommand {
     protected ItemIdCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
@@ -16,7 +17,7 @@ class ItemIdCommand extends SubCommand {
     }
 
     @Override
-    public void onExecute(CommandSender sender, String[] args) {
+    public void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
         if (sender instanceof Player) {
             if (sender.hasPermission("slimefun.command.id")) {
                 Player p = (Player) sender;
