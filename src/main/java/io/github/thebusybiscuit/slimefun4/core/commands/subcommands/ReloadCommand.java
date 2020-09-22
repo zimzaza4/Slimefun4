@@ -5,7 +5,8 @@ import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 class ReloadCommand extends SubCommand {
     ReloadCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
@@ -13,7 +14,7 @@ class ReloadCommand extends SubCommand {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
+    public void onExecute(@Nonnull CommandSender sender, @Nonnull String[] args) {
         if (sender.hasPermission("slimefun.command.reload") || sender instanceof ConsoleCommandSender) {
             SlimefunPlugin.getCfg().reload();
             SlimefunPlugin.getItemCfg().reload();

@@ -20,6 +20,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -211,7 +212,7 @@ public class SlimefunItemStack extends CustomItem {
     }
 
     @Override
-    public void setType(Material type) {
+    public void setType(@NotNull Material type) {
         validate();
         super.setType(type);
     }
