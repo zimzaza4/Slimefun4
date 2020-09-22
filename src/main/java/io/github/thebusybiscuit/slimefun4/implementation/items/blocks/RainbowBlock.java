@@ -6,6 +6,7 @@ import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class RainbowBlock extends SimpleSlimefunItem<RainbowTickHandler> {
 
@@ -18,7 +19,7 @@ public class RainbowBlock extends SimpleSlimefunItem<RainbowTickHandler> {
     }
 
     @Override
-    public RainbowTickHandler getItemHandler() {
+    public @NotNull RainbowTickHandler getItemHandler() {
         return ticker;
     }
 

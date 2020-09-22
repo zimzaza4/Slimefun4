@@ -13,6 +13,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Villager.Profession;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -29,7 +30,7 @@ public class VillagerRune extends SimpleSlimefunItem<EntityInteractHandler> {
     }
 
     @Override
-    public EntityInteractHandler getItemHandler() {
+    public @NotNull EntityInteractHandler getItemHandler() {
         return (e, item, offhand) -> {
             if (e.getRightClicked() instanceof Villager) {
                 Villager v = (Villager) e.getRightClicked();

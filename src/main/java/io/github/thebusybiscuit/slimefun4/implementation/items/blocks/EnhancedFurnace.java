@@ -15,6 +15,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -67,7 +68,7 @@ public class EnhancedFurnace extends SimpleSlimefunItem<BlockTicker> {
     }
 
     @Override
-    public BlockTicker getItemHandler() {
+    public @NotNull BlockTicker getItemHandler() {
         return new BlockTicker() {
 
             @Override

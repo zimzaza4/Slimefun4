@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 public class MagicSugar extends SimpleSlimefunItem<ItemUseHandler> {
 
@@ -21,7 +22,7 @@ public class MagicSugar extends SimpleSlimefunItem<ItemUseHandler> {
     }
 
     @Override
-    public ItemUseHandler getItemHandler() {
+    public @NotNull ItemUseHandler getItemHandler() {
         return e -> {
             // Check if it is being placed into an ancient altar.
             if (e.getClickedBlock().isPresent()) {

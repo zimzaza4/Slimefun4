@@ -6,11 +6,15 @@ import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class ReactorHologram {
 
     private ReactorHologram() {
     }
 
+    @Nullable
     public static ArmorStand getArmorStand(Location reactor, boolean createIfNoneExists) {
         Location l = new Location(reactor.getWorld(), reactor.getX() + 0.5, reactor.getY() + 0.7, reactor.getZ() + 0.5);
 
@@ -30,7 +34,7 @@ public final class ReactorHologram {
         return hologram;
     }
 
-    public static void update(Location l, String name) {
+    public static void update(@Nonnull Location l, String name) {
         Slimefun.runSync(() -> {
             ArmorStand hologram = getArmorStand(l, true);
             if (!hologram.isCustomNameVisible()) hologram.setCustomNameVisible(true);

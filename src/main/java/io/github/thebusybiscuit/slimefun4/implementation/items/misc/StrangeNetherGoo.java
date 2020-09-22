@@ -1,4 +1,4 @@
-package io.github.thebusybiscuit.slimefun4.implementation.resources;
+package io.github.thebusybiscuit.slimefun4.implementation.items.misc;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.core.attributes.PiglinBarterDrop;

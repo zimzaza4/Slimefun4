@@ -9,6 +9,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class Vitamins extends MedicalSupply<ItemUseHandler> {
 
@@ -17,7 +18,7 @@ public class Vitamins extends MedicalSupply<ItemUseHandler> {
     }
 
     @Override
-    public ItemUseHandler getItemHandler() {
+    public @NotNull ItemUseHandler getItemHandler() {
         return e -> {
             Player p = e.getPlayer();
             p.getWorld().playSound(p.getLocation(), Sound.ENTITY_GENERIC_EAT, 1, 1);

@@ -155,7 +155,7 @@ public class Contributor {
         return headTexture.isComputed();
     }
 
-    public void setTexture(@Nonnull String skin) {
+    public void setTexture(@Nullable String skin) {
         headTexture.compute(skin);
     }
 
@@ -167,6 +167,7 @@ public class Contributor {
         return -getTotalContributions();
     }
 
+    @Nonnull
     public String getDisplayName() {
         return ChatColor.GRAY + githubUsername + (!githubUsername.equals(minecraftUsername) ? ChatColor.DARK_GRAY + " (MC: " + minecraftUsername + ")" : "");
     }

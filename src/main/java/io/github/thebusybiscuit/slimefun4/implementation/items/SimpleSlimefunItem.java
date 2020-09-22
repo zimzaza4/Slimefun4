@@ -8,6 +8,8 @@ import me.mrCookieSlime.Slimefun.Objects.handlers.ItemHandler;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+
 /**
  * This is basically a quickstart class for your very first {@link SlimefunItem}.
  * This class easily allows you to add one {@link ItemHandler} to your {@link SlimefunItem}.
@@ -41,6 +43,7 @@ public abstract class SimpleSlimefunItem<T extends ItemHandler> extends Slimefun
      *
      * @return The {@link ItemHandler} that should be added to this {@link SlimefunItem}
      */
+    @Nonnull
     public abstract T getItemHandler();
 
 }

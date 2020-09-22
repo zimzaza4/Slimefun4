@@ -21,6 +21,8 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
@@ -141,7 +143,7 @@ public class SlimefunItemStack extends CustomItem {
         setItemId(id);
     }
 
-    private void setItemId(String id) {
+    private void setItemId(@Nonnull String id) {
         Validate.notNull(id, "The Item id must never be null!");
         Validate.isTrue(id.equals(id.toUpperCase(Locale.ROOT)), "Slimefun Item Ids must be uppercase! (e.g. 'MY_ITEM_ID')");
 
@@ -164,6 +166,7 @@ public class SlimefunItemStack extends CustomItem {
      *
      * @return The {@link SlimefunItem} id for this {@link SlimefunItemStack}
      */
+    @Nonnull
     public String getItemId() {
         return id;
     }
@@ -174,6 +177,7 @@ public class SlimefunItemStack extends CustomItem {
      *
      * @return The {@link SlimefunItem} for this {@link SlimefunItemStack}, null if not found.
      */
+    @Nullable
     public SlimefunItem getItem() {
         return SlimefunItem.getByID(id);
     }
@@ -260,7 +264,11 @@ public class SlimefunItemStack extends CustomItem {
         return SkullItem.fromBase64(getTexture(id, texture));
     }
 
-    private static String getTexture(String id, String texture) {
+    @Nonnull
+    private static String getTexture(@Nonnull String id, @Nonnull String texture) {
+        Validate.notNull(id, "The id cannot be null");
+        Validate.notNull(texture, "The texture cannot be null");
+
         if (texture.startsWith("ey")) {
             return texture;
         } else if (PatternUtils.ALPHANUMERIC.matcher(texture).matches()) {

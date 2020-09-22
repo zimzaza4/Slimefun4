@@ -18,6 +18,7 @@ import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class PickaxeOfContainment extends SimpleSlimefunItem<ToolUseHandler> {
     }
 
     @Override
-    public ToolUseHandler getItemHandler() {
+    public @NotNull ToolUseHandler getItemHandler() {
         return (e, tool, fortune, drops) -> {
             Block b = e.getBlock();
 

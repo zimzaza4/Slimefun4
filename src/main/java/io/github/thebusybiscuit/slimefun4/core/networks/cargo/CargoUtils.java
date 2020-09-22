@@ -19,6 +19,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.*;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -37,7 +39,7 @@ final class CargoUtils {
      * @param block The {@link Block} to check
      * @return Whether this {@link Block} represents a {@link BlockState} that is an {@link InventoryHolder}
      */
-    static boolean hasInventory(Block block) {
+    static boolean hasInventory(@Nullable Block block) {
         if (block == null) {
             // No block, no inventory
             return false;
@@ -77,9 +79,9 @@ final class CargoUtils {
         return false;
     }
 
-    static int[] getInputSlotRange(Inventory inv, ItemStack item) {
+    static int[] getInputSlotRange(@Nonnull Inventory inv, @Nullable ItemStack item) {
         if (inv instanceof FurnaceInventory) {
-            if (item.getType().isFuel()) {
+            if (item != null && item.getType().isFuel()) {
                 if (isSmeltable(item, true)) {
                     // Any non-smeltable items should not land in the upper slot
                     return new int[]{0, 2};
@@ -332,7 +334,7 @@ final class CargoUtils {
         return stack;
     }
 
-    static DirtyChestMenu getChestMenu(Block block) {
+    static DirtyChestMenu getChestMenu(@Nonnull Block block) {
         if (BlockStorage.hasInventory(block)) {
             return BlockStorage.getInventory(block);
         }
@@ -340,7 +342,7 @@ final class CargoUtils {
         return BlockStorage.getUniversalInventory(block);
     }
 
-    static boolean matchesFilter(Block block, ItemStack item) {
+    static boolean matchesFilter(@Nonnull Block block, @Nullable ItemStack item) {
         if (item == null || item.getType() == Material.AIR) {
             return false;
         }
@@ -419,7 +421,7 @@ final class CargoUtils {
      * @param lazy  Whether or not to perform a "lazy" but performance-saving check
      * @return Whether the given {@link ItemStack} can be smelted or not
      */
-    private static boolean isSmeltable(ItemStack stack, boolean lazy) {
+    private static boolean isSmeltable(@Nullable ItemStack stack, boolean lazy) {
         if (lazy) {
             return stack != null && Tag.LOGS.isTagged(stack.getType());
         } else {
@@ -427,7 +429,7 @@ final class CargoUtils {
         }
     }
 
-    private static boolean isPotion(ItemStack item) {
+    private static boolean isPotion(@Nullable ItemStack item) {
         return item != null && (item.getType() == Material.POTION || item.getType() == Material.SPLASH_POTION || item.getType() == Material.LINGERING_POTION);
     }
 

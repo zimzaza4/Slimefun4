@@ -12,6 +12,7 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This class represents a {@link SlimefunItem} that is considered a Backpack.
@@ -36,7 +37,7 @@ public class SlimefunBackpack extends SimpleSlimefunItem<ItemUseHandler> {
     }
 
     @Override
-    public ItemUseHandler getItemHandler() {
+    public @NotNull ItemUseHandler getItemHandler() {
         return e -> {
             e.cancel();
 

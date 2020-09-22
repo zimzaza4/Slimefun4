@@ -86,7 +86,7 @@ public class GoldPan extends SimpleSlimefunItem<ItemUseHandler> implements Recip
     }
 
     @Override
-    public ItemUseHandler getItemHandler() {
+    public @NotNull ItemUseHandler getItemHandler() {
         return e -> {
             Optional<Block> block = e.getClickedBlock();
 

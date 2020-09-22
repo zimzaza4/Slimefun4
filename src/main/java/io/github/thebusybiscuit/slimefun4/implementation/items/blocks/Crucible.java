@@ -75,7 +75,7 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
     }
 
     @Override
-    public BlockUseHandler getItemHandler() {
+    public @NotNull BlockUseHandler getItemHandler() {
         return e -> {
             Optional<Block> optional = e.getClickedBlock();
 

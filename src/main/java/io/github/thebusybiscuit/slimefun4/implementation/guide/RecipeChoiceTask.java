@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.RecipeChoice.MaterialChoice;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,18 +38,18 @@ class RecipeChoiceTask implements Runnable {
      *
      * @param inv The {@link Inventory} to start this task for
      */
-    public void start(Inventory inv) {
+    public void start(@Nonnull Inventory inv) {
         Validate.notNull(inv, "Inventory must not be null");
         inventory = inv;
         id = Bukkit.getScheduler().runTaskTimerAsynchronously(SlimefunPlugin.instance(), this, 0, UPDATE_INTERVAL).getTaskId();
     }
 
-    public void add(int slot, MaterialChoice choice) {
+    public void add(int slot, @Nonnull MaterialChoice choice) {
         Validate.notNull(choice, "Cannot add a null RecipeChoice");
         iterators.put(slot, new LoopIterator<>(choice.getChoices()));
     }
 
-    public void add(int slot, Tag<Material> tag) {
+    public void add(int slot, @Nonnull Tag<Material> tag) {
         Validate.notNull(tag, "Cannot add a null Tag");
         iterators.put(slot, new LoopIterator<>(tag.getValues()));
     }

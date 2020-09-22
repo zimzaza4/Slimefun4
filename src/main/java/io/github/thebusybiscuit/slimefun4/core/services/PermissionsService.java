@@ -34,7 +34,7 @@ public class PermissionsService {
 
     public void register(@Nonnull Iterable<SlimefunItem> items, boolean save) {
         for (SlimefunItem item : items) {
-            if (item != null && item.getID() != null) {
+            if (item != null) {
                 String path = item.getID() + ".permission";
 
                 config.setDefaultValue(path, "none");

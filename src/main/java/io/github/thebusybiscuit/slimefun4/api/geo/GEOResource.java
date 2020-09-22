@@ -12,6 +12,8 @@ import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+
 /**
  * A {@link GEOResource} is a virtual resource that can be thought of as world-gen.
  * However it cannot be found in a {@link World}.
@@ -31,14 +33,11 @@ public interface GEOResource extends Keyed {
     /**
      * Returns the default supply of this resource in that biome
      *
-     * @param environment
-     *            The {@link Environment} this area is currently in (NORMAL / NETHER / THE_END)
-     * @param biome
-     *            The {@link Biome} this area is currently in.
-     *
+     * @param environment The {@link Environment} this area is currently in (NORMAL / NETHER / THE_END)
+     * @param biome       The {@link Biome} this area is currently in.
      * @return The default supply found in a {@link Chunk} with the given {@link Biome}
      */
-    int getDefaultSupply(Environment environment, Biome biome);
+    int getDefaultSupply(@Nonnull Environment environment, @Nonnull Biome biome);
 
     /**
      * Returns how much the value may deviate from the default supply (positive only).
@@ -52,6 +51,7 @@ public interface GEOResource extends Keyed {
      *
      * @return The name of this Resource
      */
+    @Nonnull
     String getName();
 
     /**
@@ -60,6 +60,7 @@ public interface GEOResource extends Keyed {
      *
      * @return The {@link ItemStack} version of this Resource.
      */
+    @Nonnull
     ItemStack getItem();
 
     /**
@@ -85,7 +86,8 @@ public interface GEOResource extends Keyed {
      *            The {@link Player} to localize the name for.
      * @return The localized name for this {@link GEOResource}
      */
-    default String getName(Player p) {
+    @Nonnull
+    default String getName(@Nonnull Player p) {
         String name = SlimefunPlugin.getLocalization().getResourceString(p, "resources." + getKey().getNamespace() + "." + getKey().getKey());
         return name == null ? getName() : name;
     }

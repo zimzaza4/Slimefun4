@@ -9,6 +9,7 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class HerculesPickaxe extends SimpleSlimefunItem<ToolUseHandler> {
 
@@ -17,7 +18,7 @@ public class HerculesPickaxe extends SimpleSlimefunItem<ToolUseHandler> {
     }
 
     @Override
-    public ToolUseHandler getItemHandler() {
+    public @NotNull ToolUseHandler getItemHandler() {
         return (e, tool, fortune, drops) -> {
             if (e.getBlock().getType().toString().endsWith("_ORE")) {
                 if (e.getBlock().getType() == Material.IRON_ORE) {

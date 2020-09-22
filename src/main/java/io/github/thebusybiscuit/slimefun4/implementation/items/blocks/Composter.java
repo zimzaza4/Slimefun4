@@ -73,7 +73,7 @@ public class Composter extends SimpleSlimefunItem<BlockUseHandler> implements Re
     }
 
     @Override
-    public BlockUseHandler getItemHandler() {
+    public @NotNull BlockUseHandler getItemHandler() {
         return e -> {
             Optional<Block> block = e.getClickedBlock();
 

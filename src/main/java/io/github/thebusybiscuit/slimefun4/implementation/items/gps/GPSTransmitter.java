@@ -15,6 +15,7 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -54,7 +55,7 @@ public abstract class GPSTransmitter extends SimpleSlimefunItem<BlockTicker> imp
     public abstract int getEnergyConsumption();
 
     @Override
-    public BlockTicker getItemHandler() {
+    public @NotNull BlockTicker getItemHandler() {
         return new BlockTicker() {
 
             @Override

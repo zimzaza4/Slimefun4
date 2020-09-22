@@ -45,7 +45,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.seasonal.Christma
 import io.github.thebusybiscuit.slimefun4.implementation.items.seasonal.EasterEgg;
 import io.github.thebusybiscuit.slimefun4.implementation.items.tools.*;
 import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.*;
-import io.github.thebusybiscuit.slimefun4.implementation.resources.StrangeNetherGoo;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
@@ -61,6 +60,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +97,7 @@ public final class SlimefunItemSetup {
     private SlimefunItemSetup() {
     }
 
-    public static void setup(SlimefunPlugin plugin) {
+    public static void setup(@Nonnull SlimefunPlugin plugin) {
         if (registeredItems) {
             throw new UnsupportedOperationException("Slimefun Items can only be registered once!");
         }

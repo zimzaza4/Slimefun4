@@ -8,6 +8,7 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -35,14 +36,14 @@ public abstract class FlexCategory extends Category {
     }
 
     @Override
-    public final boolean isHidden(Player p) {
+    public final boolean isHidden(@NotNull Player p) {
         // We can stop this method right here.
         // We provide a custom method for this. See isVisible(...)
         return false;
     }
 
     @Override
-    public final void add(SlimefunItem item) {
+    public final void add(@NotNull SlimefunItem item) {
         throw new UnsupportedOperationException("You cannot add items to a FlexCategory!");
     }
 
@@ -57,7 +58,7 @@ public abstract class FlexCategory extends Category {
     }
 
     @Override
-    public final void remove(SlimefunItem item) {
+    public final void remove(@NotNull SlimefunItem item) {
         throw new UnsupportedOperationException("A FlexCategory has no items, so there is nothing remove!");
     }
 

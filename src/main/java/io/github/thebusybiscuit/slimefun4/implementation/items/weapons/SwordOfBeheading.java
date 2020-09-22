@@ -11,6 +11,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -30,7 +31,7 @@ public class SwordOfBeheading extends SimpleSlimefunItem<EntityKillHandler> {
     }
 
     @Override
-    public EntityKillHandler getItemHandler() {
+    public @NotNull EntityKillHandler getItemHandler() {
         return (e, entity, killer, item) -> {
             Random random = ThreadLocalRandom.current();
 
@@ -38,8 +39,7 @@ public class SwordOfBeheading extends SimpleSlimefunItem<EntityKillHandler> {
                 if (random.nextInt(100) < chanceZombie.getValue()) {
                     e.getDrops().add(new ItemStack(Material.ZOMBIE_HEAD));
                 }
-            }
-            else if (e.getEntity() instanceof WitherSkeleton) {
+            } else if (e.getEntity() instanceof WitherSkeleton) {
                 if (random.nextInt(100) < chanceWitherSkeleton.getValue()) {
                     e.getDrops().add(new ItemStack(Material.WITHER_SKELETON_SKULL));
                 }

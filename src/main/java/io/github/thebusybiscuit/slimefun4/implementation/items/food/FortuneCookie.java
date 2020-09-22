@@ -8,6 +8,7 @@ import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -19,7 +20,7 @@ public class FortuneCookie extends SimpleSlimefunItem<ItemConsumptionHandler> {
     }
 
     @Override
-    public ItemConsumptionHandler getItemHandler() {
+    public @NotNull ItemConsumptionHandler getItemHandler() {
         return (e, p, item) -> {
             List<String> messages = SlimefunPlugin.getLocalization().getMessages(p, "messages.fortune-cookie");
             String message = messages.get(ThreadLocalRandom.current().nextInt(messages.size()));

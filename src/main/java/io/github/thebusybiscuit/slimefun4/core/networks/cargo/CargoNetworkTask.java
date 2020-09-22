@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
 /**
@@ -36,6 +37,7 @@ class CargoNetworkTask implements Runnable {
     private final Set<Location> chestTerminalInputs;
     private final Set<Location> chestTerminalOutputs;
 
+    @ParametersAreNonnullByDefault
     CargoNetworkTask(CargoNet network, Map<Location, Integer> inputs, Map<Integer, List<Location>> outputs, Set<Location> chestTerminalInputs, Set<Location> chestTerminalOutputs) {
         this.network = network;
 

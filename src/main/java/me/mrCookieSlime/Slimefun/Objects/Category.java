@@ -16,6 +16,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
 /**
@@ -44,6 +46,7 @@ public class Category implements Keyed {
      * @param item
      *            The {@link ItemStack} that is used to display this {@link Category}
      */
+    @ParametersAreNonnullByDefault
     public Category(NamespacedKey key, ItemStack item) {
         this(key, item, 3);
     }
@@ -60,6 +63,7 @@ public class Category implements Keyed {
      *            The tier of this {@link Category}, higher tiers will make this {@link Category} appear further down in
      *            the {@link SlimefunGuide}
      */
+    @ParametersAreNonnullByDefault
     public Category(NamespacedKey key, ItemStack item, int tier) {
         Validate.notNull(key, "A Category's NamespacedKey must not be null!");
         Validate.notNull(item, "A Category's ItemStack must not be null!");
@@ -94,7 +98,7 @@ public class Category implements Keyed {
      *
      * @param item the {@link SlimefunItem} that should be added to this {@link Category}
      */
-    public void add(SlimefunItem item) {
+    public void add(@Nonnull SlimefunItem item) {
         Validate.notNull(item, "Cannot add null Items to a Category!");
 
         if (items.contains(item)) {
@@ -108,10 +112,10 @@ public class Category implements Keyed {
     /**
      * Removes the given {@link SlimefunItem} from this {@link Category}.
      *
-     * @param item
-     *            the {@link SlimefunItem} that should be removed from this {@link Category}
+     * @param item the {@link SlimefunItem} that should be removed from this {@link Category}
      */
-    public void remove(SlimefunItem item) {
+    public void remove(@Nonnull SlimefunItem item) {
+        Validate.notNull(item, "Cannot remove null from a Category!");
         items.remove(item);
     }
 
@@ -123,6 +127,7 @@ public class Category implements Keyed {
      *            The Player to create this {@link ItemStack} for
      * @return A localized display item for this {@link Category}
      */
+    @Nonnull
     public ItemStack getItem(Player p) {
         return new CustomItem(item, meta -> {
             String name = SlimefunPlugin.getLocalization().getCategoryName(p, getKey());
@@ -144,6 +149,7 @@ public class Category implements Keyed {
      *
      * @return The unlocalized name of this {@link Category}
      */
+    @Nonnull
     public String getUnlocalizedName() {
         return ChatColor.stripColor(item.getItemMeta().getDisplayName());
     }
@@ -153,6 +159,7 @@ public class Category implements Keyed {
      *
      * @return the list of SlimefunItems bound to this category
      */
+    @Nonnull
     public List<SlimefunItem> getItems() {
         return items;
     }
@@ -192,7 +199,7 @@ public class Category implements Keyed {
      *            The {@link Player} to check for
      * @return Whether this {@link Category} will be hidden to the given {@link Player}
      */
-    public boolean isHidden(Player p) {
+    public boolean isHidden(@Nonnull Player p) {
         for (SlimefunItem slimefunItem : getItems()) {
             if (!slimefunItem.isHidden() && Slimefun.isEnabled(p, slimefunItem, false)) {
                 return false;

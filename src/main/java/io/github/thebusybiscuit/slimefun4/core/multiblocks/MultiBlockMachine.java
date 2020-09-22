@@ -28,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -75,6 +76,7 @@ public abstract class MultiBlockMachine extends SlimefunItem implements NotPlace
         return displayRecipes;
     }
 
+    @Nonnull
     public MultiBlock getMultiBlock() {
         return multiblock;
     }
@@ -118,7 +120,9 @@ public abstract class MultiBlockMachine extends SlimefunItem implements NotPlace
                 }
 
                 return true;
-            } else return false;
+            } else {
+                return false;
+            }
         };
     }
 
@@ -154,7 +158,8 @@ public abstract class MultiBlockMachine extends SlimefunItem implements NotPlace
         }
     }
 
-    protected Inventory findOutputChest(Block b, ItemStack output) {
+    @Nullable
+    protected Inventory findOutputChest(@Nonnull Block b, @Nonnull ItemStack output) {
         for (BlockFace face : outputFaces) {
             Block potentialOutput = b.getRelative(face);
 
@@ -179,6 +184,7 @@ public abstract class MultiBlockMachine extends SlimefunItem implements NotPlace
         return null;
     }
 
+    @Nonnull
     private static Material[] convertItemStacksToMaterial(ItemStack[] items) {
         List<Material> materials = new ArrayList<>();
 

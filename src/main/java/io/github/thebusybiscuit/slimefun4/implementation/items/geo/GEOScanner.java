@@ -8,6 +8,7 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class GEOScanner extends SimpleSlimefunItem<BlockUseHandler> {
 
@@ -16,7 +17,7 @@ public class GEOScanner extends SimpleSlimefunItem<BlockUseHandler> {
     }
 
     @Override
-    public BlockUseHandler getItemHandler() {
+    public @NotNull BlockUseHandler getItemHandler() {
         return e -> {
             Block b = e.getClickedBlock().get();
 

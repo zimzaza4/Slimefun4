@@ -10,6 +10,7 @@ import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The {@link DietCookie} gives you a {@link PotionEffect} of Type {@code PotionEffectType.LEVITATION}
@@ -26,7 +27,7 @@ public class DietCookie extends SimpleSlimefunItem<ItemConsumptionHandler> {
     }
 
     @Override
-    public ItemConsumptionHandler getItemHandler() {
+    public @NotNull ItemConsumptionHandler getItemHandler() {
         return (e, p, item) -> {
             SlimefunPlugin.getLocalization().sendMessage(p, "messages.diet-cookie");
             p.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EAT, 1, 1);

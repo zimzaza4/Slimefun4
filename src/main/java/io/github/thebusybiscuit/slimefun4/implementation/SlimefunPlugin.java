@@ -49,6 +49,8 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
@@ -243,6 +245,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         }
     }
 
+    @Nonnull
     private String getStartupTime(long timestamp) {
         long ms = (System.nanoTime() - timestamp) / 1000000;
 
@@ -280,6 +283,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         return false;
     }
 
+    @Nonnull
     private Collection<String> getSupportedVersions() {
         List<String> list = new ArrayList<>();
 
@@ -450,6 +454,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         }
     }
 
+    @Nullable
     public static SlimefunPlugin instance() {
         return instance;
     }
@@ -576,6 +581,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
      *
      * @return A {@link Set} of every {@link Plugin} that is dependent on Slimefun
      */
+    @Nonnull
     public static Set<Plugin> getInstalledAddons() {
         return Arrays.stream(instance.getServer().getPluginManager().getPlugins()).filter(plugin -> plugin.getDescription().getDepend().contains(instance.getName()) || plugin.getDescription().getSoftDepend().contains(instance.getName())).collect(Collectors.toSet());
     }

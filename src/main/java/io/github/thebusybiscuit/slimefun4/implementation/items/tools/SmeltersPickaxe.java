@@ -13,6 +13,7 @@ import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -24,7 +25,7 @@ public class SmeltersPickaxe extends SimpleSlimefunItem<ToolUseHandler> implemen
     }
 
     @Override
-    public ToolUseHandler getItemHandler() {
+    public @NotNull ToolUseHandler getItemHandler() {
         return (e, tool, fortune, drops) -> {
             if (MaterialCollections.getAllOres().contains(e.getBlock().getType()) && !BlockStorage.hasBlockInfo(e.getBlock())) {
                 Collection<ItemStack> blockDrops = e.getBlock().getDrops(getItem());

@@ -17,6 +17,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -56,7 +57,7 @@ public class EnchantmentRune extends SimpleSlimefunItem<ItemDropHandler> {
     }
 
     @Override
-    public ItemDropHandler getItemHandler() {
+    public @NotNull ItemDropHandler getItemHandler() {
         return (e, p, item) -> {
             if (isItem(item.getItemStack())) {
                 if (Slimefun.hasUnlocked(p, this, true)) {

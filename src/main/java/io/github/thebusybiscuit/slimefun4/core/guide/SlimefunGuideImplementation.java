@@ -12,6 +12,7 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 /**
@@ -33,6 +34,7 @@ public interface SlimefunGuideImplementation {
      *
      * @return The layout this {@link SlimefunGuideImplementation} represents
      */
+    @Nonnull
     SlimefunGuideLayout getLayout();
 
     /**
@@ -42,6 +44,7 @@ public interface SlimefunGuideImplementation {
      *
      * @return The {@link ItemStack} representation for this {@link SlimefunGuideImplementation}
      */
+    @Nonnull
     ItemStack getItem();
 
     /**

@@ -17,6 +17,7 @@ import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class PickaxeOfVeinMining extends SimpleSlimefunItem<ToolUseHandler> {
     }
 
     @Override
-    public ToolUseHandler getItemHandler() {
+    public @NotNull ToolUseHandler getItemHandler() {
         return (e, tool, fortune, drops) -> {
             if (MaterialCollections.getAllOres().contains(e.getBlock().getType())) {
                 List<Block> blocks = Vein.find(e.getBlock(), maxBlocks.getValue(), MaterialCollections.getAllOres());

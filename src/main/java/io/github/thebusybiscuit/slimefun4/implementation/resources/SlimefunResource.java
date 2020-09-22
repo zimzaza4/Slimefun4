@@ -5,6 +5,10 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.apache.commons.lang.Validate;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 abstract class SlimefunResource implements GEOResource {
 
@@ -14,6 +18,7 @@ abstract class SlimefunResource implements GEOResource {
     private final int maxDeviation;
     private final boolean geoMiner;
 
+    @ParametersAreNonnullByDefault
     SlimefunResource(String key, String defaultName, ItemStack item, int maxDeviation, boolean geoMiner) {
         Validate.notNull(key, "NamespacedKey cannot be null!");
         Validate.notNull(defaultName, "The default name cannot be null!");
@@ -27,17 +32,20 @@ abstract class SlimefunResource implements GEOResource {
     }
 
     @Override
+    @Nonnull
     public NamespacedKey getKey() {
         return key;
     }
 
     @Override
-    public String getName() {
+    @Nonnull
+    public @NotNull String getName() {
         return defaultName;
     }
 
     @Override
-    public ItemStack getItem() {
+    @Nonnull
+    public @NotNull ItemStack getItem() {
         return item.clone();
     }
 

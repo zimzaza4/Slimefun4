@@ -10,6 +10,7 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class CargoConnectorNode extends SimpleSlimefunItem<BlockUseHandler> {
 
@@ -18,7 +19,7 @@ public class CargoConnectorNode extends SimpleSlimefunItem<BlockUseHandler> {
     }
 
     @Override
-    public BlockUseHandler getItemHandler() {
+    public @NotNull BlockUseHandler getItemHandler() {
         return e -> {
             Player p = e.getPlayer();
             Block b = e.getClickedBlock().get();

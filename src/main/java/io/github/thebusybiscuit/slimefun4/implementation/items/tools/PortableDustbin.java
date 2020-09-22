@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class PortableDustbin extends SimpleSlimefunItem<ItemUseHandler> implements NotPlaceable {
 
@@ -19,7 +20,7 @@ public class PortableDustbin extends SimpleSlimefunItem<ItemUseHandler> implemen
     }
 
     @Override
-    public ItemUseHandler getItemHandler() {
+    public @NotNull ItemUseHandler getItemHandler() {
         return e -> {
             e.cancel();
 
