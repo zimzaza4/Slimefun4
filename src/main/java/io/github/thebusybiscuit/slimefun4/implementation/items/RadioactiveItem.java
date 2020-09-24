@@ -10,7 +10,6 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A quick and easy implementation of {@link SlimefunItem} that also implements the
@@ -68,7 +67,7 @@ public class RadioactiveItem extends SlimefunItem implements Radioactive, NotPla
     }
 
     @Override
-    public @NotNull Radioactivity getRadioactivity() {
+    public Radioactivity getRadioactivity() {
         return radioactivity;
     }
 

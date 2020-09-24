@@ -13,7 +13,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.event.Event.Result;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -24,7 +23,7 @@ public class InfernalBonemeal extends SimpleSlimefunItem<ItemUseHandler> {
     }
 
     @Override
-    public @NotNull ItemUseHandler getItemHandler() {
+    public ItemUseHandler getItemHandler() {
         return e -> {
             Optional<Block> block = e.getClickedBlock();
             e.setUseBlock(Result.DENY);

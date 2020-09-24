@@ -19,7 +19,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -67,7 +66,7 @@ public abstract class OilPump extends AContainer implements RecipeDisplayItem {
     }
 
     @Override
-    public @NotNull List<ItemStack> getDisplayRecipes() {
+    public List<ItemStack> getDisplayRecipes() {
         return Arrays.asList(new ItemStack(Material.BUCKET), SlimefunItems.OIL_BUCKET);
     }
 

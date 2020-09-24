@@ -5,7 +5,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.apache.commons.lang.Validate;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -39,13 +38,13 @@ abstract class SlimefunResource implements GEOResource {
 
     @Override
     @Nonnull
-    public @NotNull String getName() {
+    public String getName() {
         return defaultName;
     }
 
     @Override
     @Nonnull
-    public @NotNull ItemStack getItem() {
+    public ItemStack getItem() {
         return item.clone();
     }
 

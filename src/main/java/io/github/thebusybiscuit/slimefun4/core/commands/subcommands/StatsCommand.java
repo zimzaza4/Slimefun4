@@ -8,7 +8,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -19,7 +18,7 @@ class StatsCommand extends SubCommand {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
+    public void onExecute(CommandSender sender, String[] args) {
         if (args.length > 1) {
             if (sender.hasPermission("slimefun.stats.others") || sender instanceof ConsoleCommandSender) {
                 Optional<Player> player = PlayerList.findByName(args[1]);

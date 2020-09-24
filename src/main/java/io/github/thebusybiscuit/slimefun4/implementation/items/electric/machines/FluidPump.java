@@ -28,7 +28,6 @@ import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -196,7 +195,7 @@ public class FluidPump extends SimpleSlimefunItem<BlockTicker> implements Invent
     }
 
     @Override
-    public @NotNull BlockTicker getItemHandler() {
+    public BlockTicker getItemHandler() {
         return new BlockTicker() {
 
             @Override

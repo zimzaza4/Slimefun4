@@ -9,7 +9,6 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.jetbrains.annotations.NotNull;
 
 public class MonsterJerky extends SimpleSlimefunItem<ItemConsumptionHandler> {
 
@@ -18,7 +17,7 @@ public class MonsterJerky extends SimpleSlimefunItem<ItemConsumptionHandler> {
     }
 
     @Override
-    public @NotNull ItemConsumptionHandler getItemHandler() {
+    public ItemConsumptionHandler getItemHandler() {
         return (e, p, item) -> Slimefun.runSync(() -> {
             if (p.hasPotionEffect(PotionEffectType.HUNGER)) {
                 p.removePotionEffect(PotionEffectType.HUNGER);

@@ -17,7 +17,6 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Orientable;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -65,7 +64,7 @@ public class LumberAxe extends SimpleSlimefunItem<ItemUseHandler> implements Not
     }
 
     @Override
-    public @NotNull ItemUseHandler getItemHandler() {
+    public ItemUseHandler getItemHandler() {
         return e -> {
             if (e.getClickedBlock().isPresent()) {
                 Block block = e.getClickedBlock().get();

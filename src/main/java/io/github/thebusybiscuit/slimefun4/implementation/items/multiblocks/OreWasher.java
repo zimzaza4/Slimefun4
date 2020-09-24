@@ -17,7 +17,6 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -36,7 +35,7 @@ public class OreWasher extends MultiBlockMachine {
     }
 
     @Override
-    protected void registerDefaultRecipes(@NotNull List<ItemStack> recipes) {
+    protected void registerDefaultRecipes(List<ItemStack> recipes) {
         // Iron and Gold are displayed as Ore Crusher recipes, as that is their primary
         // way of obtainining them. But we also wanna display them here, so we just
         // add these two recipes manually
@@ -49,7 +48,7 @@ public class OreWasher extends MultiBlockMachine {
 
 
     @Override
-    public @NotNull List<ItemStack> getDisplayRecipes() {
+    public List<ItemStack> getDisplayRecipes() {
         return recipes.stream().map(items -> items[0]).collect(Collectors.toList());
     }
 

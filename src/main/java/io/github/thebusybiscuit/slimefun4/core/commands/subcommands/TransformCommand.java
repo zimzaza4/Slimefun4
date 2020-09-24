@@ -10,7 +10,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.List;
@@ -25,7 +24,7 @@ class TransformCommand extends SubCommand {
     private final Set<Player> noticedPlayer = new HashSet<>();
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
+    public void onExecute(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (args.length > 1 && args[1].equalsIgnoreCase("update")) {

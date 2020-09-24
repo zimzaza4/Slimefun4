@@ -4,8 +4,8 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -50,7 +50,7 @@ public class SeasonalCategory extends Category {
     }
 
     @Override
-    public boolean isHidden(@NotNull Player p) {
+    public boolean isHidden(@Nonnull Player p) {
         if (month != LocalDate.now().getMonth()) {
             return true;
         }

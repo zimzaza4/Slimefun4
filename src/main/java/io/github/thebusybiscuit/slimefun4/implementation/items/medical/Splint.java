@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.jetbrains.annotations.NotNull;
 
 public class Splint extends SimpleSlimefunItem<ItemUseHandler> {
 
@@ -22,7 +21,7 @@ public class Splint extends SimpleSlimefunItem<ItemUseHandler> {
     }
 
     @Override
-    public @NotNull ItemUseHandler getItemHandler() {
+    public ItemUseHandler getItemHandler() {
         return e -> {
             Player p = e.getPlayer();
 

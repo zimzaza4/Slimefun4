@@ -18,7 +18,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
 
 public class InfusedHopper extends SimpleSlimefunItem<BlockTicker> {
 
@@ -32,7 +31,7 @@ public class InfusedHopper extends SimpleSlimefunItem<BlockTicker> {
     }
 
     @Override
-    public @NotNull BlockTicker getItemHandler() {
+    public BlockTicker getItemHandler() {
         return new BlockTicker() {
 
             @Override

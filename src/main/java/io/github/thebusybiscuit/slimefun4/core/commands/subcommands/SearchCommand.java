@@ -7,7 +7,6 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
@@ -18,7 +17,7 @@ class SearchCommand extends SubCommand {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
+    public void onExecute(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             if (sender.hasPermission("slimefun.command.search")) {
                 if (args.length > 1) {

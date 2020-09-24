@@ -8,7 +8,6 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public class WaterStaff extends SimpleSlimefunItem<ItemUseHandler> {
 
@@ -17,7 +16,7 @@ public class WaterStaff extends SimpleSlimefunItem<ItemUseHandler> {
     }
 
     @Override
-    public @NotNull ItemUseHandler getItemHandler() {
+    public ItemUseHandler getItemHandler() {
         return e -> {
             Player p = e.getPlayer();
 

@@ -26,7 +26,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +42,7 @@ class ExplosiveTool extends SimpleSlimefunItem<ToolUseHandler> implements NotPla
     }
 
     @Override
-    public @NotNull ToolUseHandler getItemHandler() {
+    public ToolUseHandler getItemHandler() {
         return (e, tool, fortune, drops) -> {
             Player p = e.getPlayer();
             Block b = e.getBlock();

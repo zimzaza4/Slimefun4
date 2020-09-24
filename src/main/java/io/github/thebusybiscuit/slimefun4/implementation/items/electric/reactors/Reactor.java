@@ -32,7 +32,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -262,7 +261,7 @@ public abstract class Reactor extends AbstractEnergyProvider {
     }
 
     @Override
-    public int getGeneratedOutput(@NotNull Location l, @NotNull Config data) {
+    public int getGeneratedOutput(Location l, Config data) {
         BlockMenu inv = BlockStorage.getInventory(l);
         BlockMenu accessPort = getAccessPort(l);
 
@@ -308,7 +307,7 @@ public abstract class Reactor extends AbstractEnergyProvider {
     }
 
     @Override
-    public boolean willExplode(@NotNull Location l, @NotNull Config data) {
+    public boolean willExplode(Location l, Config data) {
         boolean explosion = explosionsQueue.contains(l);
 
         if (explosion) {

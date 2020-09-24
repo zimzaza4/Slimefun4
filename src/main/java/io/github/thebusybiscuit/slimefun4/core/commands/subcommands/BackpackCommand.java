@@ -12,7 +12,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 class BackpackCommand extends SubCommand {
 
@@ -26,7 +25,7 @@ class BackpackCommand extends SubCommand {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
+    public void onExecute(CommandSender sender, String[] args) {
         if (!(sender instanceof Player) || !sender.hasPermission("slimefun.command.backpack")) {
             SlimefunPlugin.getLocalization().sendMessage(sender, "messages.no-permission", true);
             return;

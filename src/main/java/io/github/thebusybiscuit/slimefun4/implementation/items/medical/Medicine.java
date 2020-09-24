@@ -5,7 +5,6 @@ import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public class Medicine extends MedicalSupply<ItemConsumptionHandler> {
 
@@ -14,7 +13,7 @@ public class Medicine extends MedicalSupply<ItemConsumptionHandler> {
     }
 
     @Override
-    public @NotNull ItemConsumptionHandler getItemHandler() {
+    public ItemConsumptionHandler getItemHandler() {
         return (e, p, item) -> {
             p.setFireTicks(0);
             clearNegativeEffects(p);

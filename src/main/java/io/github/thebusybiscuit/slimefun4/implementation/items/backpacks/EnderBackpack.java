@@ -9,7 +9,6 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public class EnderBackpack extends SimpleSlimefunItem<ItemUseHandler> implements NotPlaceable {
 
@@ -18,7 +17,7 @@ public class EnderBackpack extends SimpleSlimefunItem<ItemUseHandler> implements
     }
 
     @Override
-    public @NotNull ItemUseHandler getItemHandler() {
+    public ItemUseHandler getItemHandler() {
         return e -> {
             Player p = e.getPlayer();
             p.openInventory(p.getEnderChest());

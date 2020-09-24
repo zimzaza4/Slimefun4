@@ -11,7 +11,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
@@ -22,7 +21,7 @@ class VersionsCommand extends SubCommand {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
+    public void onExecute(CommandSender sender, String[] args) {
         if (sender.hasPermission("slimefun.command.versions") || sender instanceof ConsoleCommandSender) {
             // After all these years... Spigot still displays as "CraftBukkit"
             // so we will just fix this inconsistency for them :)

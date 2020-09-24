@@ -3,7 +3,6 @@ package io.github.thebusybiscuit.slimefun4.implementation.resources;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Biome;
-import org.jetbrains.annotations.NotNull;
 
 class UraniumResource extends SlimefunResource {
 
@@ -12,7 +11,7 @@ class UraniumResource extends SlimefunResource {
     }
 
     @Override
-    public int getDefaultSupply(@NotNull Environment envionment, @NotNull Biome biome) {
+    public int getDefaultSupply(Environment envionment, Biome biome) {
         if (envionment == Environment.NORMAL) {
             return 5;
         }

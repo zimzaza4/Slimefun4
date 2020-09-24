@@ -17,7 +17,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +50,7 @@ public class Juice extends SimpleSlimefunItem<ItemConsumptionHandler> {
     }
 
     @Override
-    public @NotNull ItemConsumptionHandler getItemHandler() {
+    public ItemConsumptionHandler getItemHandler() {
         return (e, p, item) -> {
             // Fix for Saturation on potions is no longer working,
             // Minecraft has been broken when it comes to Saturation potions for a long time

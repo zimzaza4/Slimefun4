@@ -7,7 +7,6 @@ import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public class MeatJerky extends SimpleSlimefunItem<ItemConsumptionHandler> {
 
@@ -20,7 +19,7 @@ public class MeatJerky extends SimpleSlimefunItem<ItemConsumptionHandler> {
     }
 
     @Override
-    public @NotNull ItemConsumptionHandler getItemHandler() {
+    public ItemConsumptionHandler getItemHandler() {
         return (e, p, item) -> p.setSaturation(p.getSaturation() + saturation.getValue());
     }
 

@@ -13,7 +13,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * This {@link SlimefunItem} allows you to convert any {@link ZombieVillager} to
@@ -34,7 +33,7 @@ public class MagicalZombiePills extends SimpleSlimefunItem<EntityInteractHandler
     }
 
     @Override
-    public @NotNull EntityInteractHandler getItemHandler() {
+    public EntityInteractHandler getItemHandler() {
         return (e, item, offhand) -> {
             Entity entity = e.getRightClicked();
 

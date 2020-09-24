@@ -13,7 +13,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * The {@link SolarGenerator} is a simple {@link EnergyNetProvider} which generates energy if
@@ -64,7 +63,7 @@ public class SolarGenerator extends SlimefunItem implements EnergyNetProvider {
     }
 
     @Override
-    public int getGeneratedOutput(@NotNull Location l, @NotNull Config data) {
+    public int getGeneratedOutput(Location l, Config data) {
         World world = l.getWorld();
 
         if (world.getEnvironment() != Environment.NORMAL) {

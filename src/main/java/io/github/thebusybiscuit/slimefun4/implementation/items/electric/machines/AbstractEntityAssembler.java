@@ -33,7 +33,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * This is an abstract super class for Entity Assemblers.
@@ -181,7 +180,7 @@ public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSl
     }
 
     @Override
-    public @NotNull BlockTicker getItemHandler() {
+    public BlockTicker getItemHandler() {
         return new BlockTicker() {
 
             @Override
