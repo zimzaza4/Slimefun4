@@ -11,6 +11,8 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+
 /**
  * A quick and easy implementation of {@link SlimefunItem} that also implements the
  * interface {@link Radioactive}.
@@ -62,11 +64,13 @@ public class RadioactiveItem extends SlimefunItem implements Radioactive, NotPla
         addItemHandler(onRightClick());
     }
 
+    @Nonnull
     private ItemUseHandler onRightClick() {
         return PlayerRightClickEvent::cancel;
     }
 
     @Override
+    @Nonnull
     public Radioactivity getRadioactivity() {
         return radioactivity;
     }

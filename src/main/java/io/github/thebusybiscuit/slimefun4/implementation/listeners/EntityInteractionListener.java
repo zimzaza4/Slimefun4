@@ -12,6 +12,8 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+
 /**
  * The Listener class responsible for a {@link Player} interacting with an {@link Entity}.
  *
@@ -20,7 +22,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class EntityInteractionListener implements Listener {
 
-    public EntityInteractionListener(SlimefunPlugin plugin) {
+    public EntityInteractionListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

@@ -19,6 +19,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 
+import javax.annotation.Nonnull;
+
 /**
  * This {@link Listener} listens for a {@link FoodLevelChangeEvent} or an {@link EntityDamageEvent} for starvation damage
  * and consumes a {@link Juice} from any {@link Cooler} that can be found in the {@link Inventory} of the given {@link Player}.
@@ -32,7 +34,7 @@ public class CoolerListener implements Listener {
 
     private final Cooler cooler;
 
-    public CoolerListener(SlimefunPlugin plugin, Cooler cooler) {
+    public CoolerListener(@Nonnull SlimefunPlugin plugin, @Nonnull Cooler cooler) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
         this.cooler = cooler;
@@ -62,7 +64,7 @@ public class CoolerListener implements Listener {
         }
     }
 
-    private void checkAndConsume(Player p) {
+    private void checkAndConsume(@Nonnull Player p) {
         for (ItemStack item : p.getInventory().getContents()) {
             if (cooler.isItem(item)) {
                 if (Slimefun.hasUnlocked(p, cooler, true)) {
@@ -81,7 +83,7 @@ public class CoolerListener implements Listener {
      * @param p      The {@link Player}
      * @param cooler The {@link Cooler} {@link ItemStack} to take the {@link Juice} from
      */
-    private void takeJuiceFromCooler(Player p, ItemStack cooler) {
+    private void takeJuiceFromCooler(@Nonnull Player p, @Nonnull ItemStack cooler) {
         PlayerProfile.getBackpack(cooler, backpack -> {
             if (backpack != null) {
                 Slimefun.runSync(() -> consumeJuice(p, backpack));
@@ -89,7 +91,7 @@ public class CoolerListener implements Listener {
         });
     }
 
-    private boolean consumeJuice(Player p, PlayerBackpack backpack) {
+    private boolean consumeJuice(@Nonnull Player p, @Nonnull PlayerBackpack backpack) {
         Inventory inv = backpack.getInventory();
         int slot = -1;
 

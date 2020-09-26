@@ -15,6 +15,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
 
+import javax.annotation.Nonnull;
+
 /**
  * This {@link Listener} listens to the {@link BlockDispenseEvent} and calls the
  * {@link BlockDispenseHandler} as a result of that.
@@ -25,7 +27,7 @@ import org.bukkit.event.block.BlockDispenseEvent;
  */
 public class DispenserListener implements Listener {
 
-    public DispenserListener(SlimefunPlugin plugin) {
+    public DispenserListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

@@ -13,11 +13,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
+import javax.annotation.Nonnull;
 import java.util.Iterator;
 
 public class ExplosionsListener implements Listener {
 
-    public ExplosionsListener(SlimefunPlugin plugin) {
+    public ExplosionsListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

@@ -16,6 +16,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -31,7 +33,7 @@ public class ButcherAndroidListener implements Listener {
 
     private static final String METADATA_KEY = "android_killer";
 
-    public ButcherAndroidListener(SlimefunPlugin plugin) {
+    public ButcherAndroidListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -72,6 +74,7 @@ public class ButcherAndroidListener implements Listener {
      * @param entityType
      *            The {@link EntityType} of the killed entity
      */
+    @ParametersAreNonnullByDefault
     private void addExtraDrops(List<ItemStack> drops, EntityType entityType) {
         Random random = ThreadLocalRandom.current();
 

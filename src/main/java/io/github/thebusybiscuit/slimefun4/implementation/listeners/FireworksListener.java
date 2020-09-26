@@ -8,9 +8,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 
+import javax.annotation.Nonnull;
+
 public class FireworksListener implements Listener {
 
-    public FireworksListener(SlimefunPlugin plugin) {
+    public FireworksListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

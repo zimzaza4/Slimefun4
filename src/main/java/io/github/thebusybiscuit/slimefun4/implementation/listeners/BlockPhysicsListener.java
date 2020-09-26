@@ -20,6 +20,8 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+
 /**
  * This {@link Listener} is responsible for listening to any physics-based events, such
  * as {@link EntityChangeBlockEvent} or a {@link BlockPistonEvent}.
@@ -33,7 +35,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class BlockPhysicsListener implements Listener {
 
-    public BlockPhysicsListener(SlimefunPlugin plugin) {
+    public BlockPhysicsListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

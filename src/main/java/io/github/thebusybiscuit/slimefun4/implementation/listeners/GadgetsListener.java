@@ -18,6 +18,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
+import javax.annotation.Nonnull;
+
 /**
  * This {@link Listener} is responsible for listening to the {@link PlayerToggleSneakEvent}
  * to start tasks for various gadgets that are activated by pressing shift,
@@ -31,7 +33,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
  */
 public class GadgetsListener implements Listener {
 
-    public GadgetsListener(SlimefunPlugin plugin) {
+    public GadgetsListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

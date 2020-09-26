@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
 /**
@@ -21,7 +22,7 @@ import java.util.Optional;
  */
 public class BeeListener implements Listener {
 
-    public BeeListener(SlimefunPlugin plugin) {
+    public BeeListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

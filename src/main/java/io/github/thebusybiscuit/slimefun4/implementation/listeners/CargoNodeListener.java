@@ -10,6 +10,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+
 /**
  * This {@link Listener} is solely responsible for preventing Cargo Nodes from being placed
  * on the top or bottom of a block.
@@ -19,7 +21,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class CargoNodeListener implements Listener {
 
-    public CargoNodeListener(SlimefunPlugin plugin) {
+    public CargoNodeListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -31,7 +33,7 @@ public class CargoNodeListener implements Listener {
         }
     }
 
-    private boolean isCargoNode(ItemStack item) {
+    private boolean isCargoNode(@Nonnull ItemStack item) {
         if (SlimefunPlugin.getRegistry().isBackwardsCompatible()) {
             ItemStackWrapper wrapper = new ItemStackWrapper(item);
 

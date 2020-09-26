@@ -24,6 +24,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.logging.Level;
 
 /**
@@ -38,7 +40,7 @@ public class DebugFishListener implements Listener {
     private final String greenCheckmark;
     private final String redCross;
 
-    public DebugFishListener(SlimefunPlugin plugin) {
+    public DebugFishListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
         greenCheckmark = "&2\u2714";
@@ -68,6 +70,7 @@ public class DebugFishListener implements Listener {
         }
     }
 
+    @ParametersAreNonnullByDefault
     private void onLeftClick(Player p, Block b, PlayerInteractEvent e) {
         if (p.isSneaking()) {
             if (BlockStorage.hasBlockInfo(b)) {
@@ -78,6 +81,7 @@ public class DebugFishListener implements Listener {
         }
     }
 
+    @ParametersAreNonnullByDefault
     private void onRightClick(Player p, Block b, BlockFace face) {
         if (p.isSneaking()) {
             Block block = b.getRelative(face);
@@ -92,6 +96,7 @@ public class DebugFishListener implements Listener {
         }
     }
 
+    @ParametersAreNonnullByDefault
     private void sendInfo(Player p, Block b) {
         SlimefunItem item = BlockStorage.check(b);
 

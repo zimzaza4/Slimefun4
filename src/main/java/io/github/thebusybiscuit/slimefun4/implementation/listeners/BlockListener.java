@@ -23,6 +23,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -40,7 +43,7 @@ public class BlockListener implements Listener {
     // Materials that require a Block under it, e.g. Pressure Plates
     private final Set<Material> sensitiveMaterials = EnumSet.noneOf(Material.class);
 
-    public BlockListener(SlimefunPlugin plugin) {
+    public BlockListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
         sensitiveMaterials.add(Material.CAKE);
@@ -141,6 +144,7 @@ public class BlockListener implements Listener {
         }
     }
 
+    @ParametersAreNonnullByDefault
     private void dropItems(BlockBreakEvent e, List<ItemStack> drops) {
         if (!drops.isEmpty()) {
             e.getBlock().setType(Material.AIR);
@@ -165,6 +169,7 @@ public class BlockListener implements Listener {
      * @param b
      *            The {@link Block} that was broken
      */
+    @ParametersAreNonnullByDefault
     private void checkForSensitiveBlockAbove(Player p, Block b) {
         Block blockAbove = b.getRelative(BlockFace.UP);
 
@@ -187,7 +192,7 @@ public class BlockListener implements Listener {
         }
     }
 
-    private int getBonusDropsWithFortune(ItemStack item, Block b) {
+    private int getBonusDropsWithFortune(@Nullable ItemStack item, @Nonnull Block b) {
         int fortune = 1;
 
         if (item != null && item.getEnchantments().containsKey(Enchantment.LOOT_BONUS_BLOCKS) && !item.getEnchantments().containsKey(Enchantment.SILK_TOUCH)) {

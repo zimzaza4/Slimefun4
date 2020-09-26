@@ -16,6 +16,7 @@ import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
 /**
@@ -29,7 +30,7 @@ import java.util.Optional;
  */
 public class EnhancedFurnaceListener implements Listener {
 
-    public EnhancedFurnaceListener(SlimefunPlugin plugin) {
+    public EnhancedFurnaceListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
