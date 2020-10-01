@@ -10,14 +10,18 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 
+import javax.annotation.Nonnull;
+
 /**
  * A {@link WaypointCreateEvent} is called when a {@link Player} creates a new waypoint.
  * Either manually or through dying with an emergency transmitter.
  *
  * @author TheBusyBiscuit
+ *
  * @see GPSNetwork
  * @see TeleportationManager
  * @see Waypoint
+ *
  */
 public class WaypointCreateEvent extends PlayerEvent implements Cancellable {
 
@@ -29,7 +33,7 @@ public class WaypointCreateEvent extends PlayerEvent implements Cancellable {
     private final boolean deathpoint;
     private boolean cancelled;
 
-    public WaypointCreateEvent(Player player, String name, Location location) {
+    public WaypointCreateEvent(@Nonnull Player player, @Nonnull String name, @Nonnull Location location) {
         super(player);
 
         Validate.notNull(location, "Location must not be null!");
@@ -45,6 +49,7 @@ public class WaypointCreateEvent extends PlayerEvent implements Cancellable {
      *
      * @return The {@link Location} of this waypoint
      */
+    @Nonnull
     public Location getLocation() {
         return location;
     }
@@ -53,10 +58,9 @@ public class WaypointCreateEvent extends PlayerEvent implements Cancellable {
      * This sets the {@link Location} of the waypoint.
      * The {@link Location} may never be null!
      *
-     * @param loc
-     *            The {@link Location} to set
+     * @param loc The {@link Location} to set
      */
-    public void setLocation(Location loc) {
+    public void setLocation(@Nonnull Location loc) {
         Validate.notNull(loc, "Cannot set the Location to null!");
         this.location = loc;
     }
@@ -66,6 +70,7 @@ public class WaypointCreateEvent extends PlayerEvent implements Cancellable {
      *
      * @return The name of this waypoint
      */
+    @Nonnull
     public String getName() {
         return name;
     }
@@ -76,7 +81,7 @@ public class WaypointCreateEvent extends PlayerEvent implements Cancellable {
      * @param name
      *            The name for this waypoint
      */
-    public void setName(String name) {
+    public void setName(@Nonnull String name) {
         Validate.notEmpty(name, "The name of a waypoint must not be empty!");
         this.name = name;
     }
@@ -101,10 +106,12 @@ public class WaypointCreateEvent extends PlayerEvent implements Cancellable {
         this.cancelled = cancel;
     }
 
+    @Nonnull
     public static HandlerList getHandlerList() {
         return handlers;
     }
 
+    @Nonnull
     @Override
     public HandlerList getHandlers() {
         return getHandlerList();

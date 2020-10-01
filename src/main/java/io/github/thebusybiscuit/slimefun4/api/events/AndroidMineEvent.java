@@ -7,6 +7,9 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * This {@link Event} is fired before a {@link MinerAndroid} mines a {@link Block}.
  * If this {@link Event} is cancelled, the {@link Block} will not be mined.
@@ -27,6 +30,7 @@ public class AndroidMineEvent extends Event implements Cancellable {
      * @param android
      *            The {@link AndroidInstance} that triggered this {@link Event}
      */
+    @ParametersAreNonnullByDefault
     public AndroidMineEvent(Block block, AndroidInstance android) {
         this.block = block;
         this.android = android;
@@ -37,6 +41,7 @@ public class AndroidMineEvent extends Event implements Cancellable {
      *
      * @return the mined {@link Block}
      */
+    @Nonnull
     public Block getBlock() {
         return block;
     }
@@ -47,6 +52,7 @@ public class AndroidMineEvent extends Event implements Cancellable {
      *
      * @return the involved {@link AndroidInstance}
      */
+    @Nonnull
     public AndroidInstance getAndroid() {
         return android;
     }
@@ -61,10 +67,12 @@ public class AndroidMineEvent extends Event implements Cancellable {
         cancelled = cancel;
     }
 
+    @Nonnull
     public static HandlerList getHandlerList() {
         return handlers;
     }
 
+    @Nonnull
     @Override
     public HandlerList getHandlers() {
         return getHandlerList();

@@ -16,6 +16,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * The {@link NetherStarReactor} is an implementation of {@link Reactor} that consumes
  * Nether Stars and adds Withering to any nearby {@link LivingEntity}
@@ -27,6 +30,7 @@ import org.bukkit.potion.PotionEffectType;
  */
 public abstract class NetherStarReactor extends Reactor {
 
+    @ParametersAreNonnullByDefault
     public NetherStarReactor(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
     }
@@ -37,7 +41,7 @@ public abstract class NetherStarReactor extends Reactor {
     }
 
     @Override
-    public void extraTick(Location l) {
+    public void extraTick(@Nonnull Location l) {
         Slimefun.runSync(() -> {
             ArmorStand hologram = ReactorHologram.getArmorStand(l, true);
             for (Entity entity : hologram.getNearbyEntities(5, 5, 5)) {

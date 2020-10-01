@@ -6,6 +6,8 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * Represents a vanilla item that is overridden by Slimefun (like {@code ELYTRA}).
  * <p>
@@ -30,6 +32,7 @@ public class VanillaItem extends SlimefunItem {
      * @param recipeType the type of the recipe to obtain this {@link VanillaItem}
      * @param recipe     the recipe to obtain this {@link VanillaItem}
      */
+    @ParametersAreNonnullByDefault
     public VanillaItem(Category category, ItemStack item, String id, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, id, recipeType, recipe);
 

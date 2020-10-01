@@ -6,12 +6,13 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+
 /**
  * An {@link Event} that is called whenever an {@link AutoDisenchanter} has
  * disenchanted an {@link ItemStack}.
  *
  * @author poma123
- *
  */
 public class AutoDisenchantEvent extends Event implements Cancellable {
 
@@ -20,7 +21,7 @@ public class AutoDisenchantEvent extends Event implements Cancellable {
     private final ItemStack item;
     private boolean cancelled;
 
-    public AutoDisenchantEvent(ItemStack item) {
+    public AutoDisenchantEvent(@Nonnull ItemStack item) {
         super(true);
 
         this.item = item;
@@ -31,13 +32,14 @@ public class AutoDisenchantEvent extends Event implements Cancellable {
      *
      * @return The {@link ItemStack} that is being disenchanted
      */
+    @Nonnull
     public ItemStack getItem() {
-        return this.item;
+        return item;
     }
 
     @Override
     public boolean isCancelled() {
-        return this.cancelled;
+        return cancelled;
     }
 
     @Override
@@ -45,10 +47,12 @@ public class AutoDisenchantEvent extends Event implements Cancellable {
         this.cancelled = cancel;
     }
 
+    @Nonnull
     public static HandlerList getHandlerList() {
         return handlers;
     }
 
+    @Nonnull
     @Override
     public HandlerList getHandlers() {
         return getHandlerList();

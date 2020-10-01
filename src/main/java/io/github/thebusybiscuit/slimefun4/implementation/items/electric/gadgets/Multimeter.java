@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 
 /**
@@ -25,6 +26,7 @@ import java.util.Optional;
  */
 public class Multimeter extends SimpleSlimefunItem<ItemUseHandler> {
 
+    @ParametersAreNonnullByDefault
     public Multimeter(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
     }

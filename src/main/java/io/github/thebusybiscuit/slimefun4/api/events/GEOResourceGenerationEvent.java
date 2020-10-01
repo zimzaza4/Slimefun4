@@ -11,6 +11,9 @@ import org.bukkit.block.Biome;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * This {@link Event} is fired whenever a {@link GEOResource} is being freshly generated.
  * This only ocurs when a {@link GEOScanner} queries the {@link Chunk} for a {@link GEOResource}
@@ -37,6 +40,7 @@ public class GEOResourceGenerationEvent extends Event {
 
     private int value;
 
+    @ParametersAreNonnullByDefault
     public GEOResourceGenerationEvent(World world, Biome biome, int x, int z, GEOResource resource, int value) {
         this.world = world;
         this.biome = biome;
@@ -74,6 +78,7 @@ public class GEOResourceGenerationEvent extends Event {
      *
      * @return The affected {@link World}
      */
+    @Nonnull
     public World getWorld() {
         return world;
     }
@@ -83,6 +88,7 @@ public class GEOResourceGenerationEvent extends Event {
      *
      * @return The generated {@link GEOResource}
      */
+    @Nonnull
     public GEOResource getResource() {
         return resource;
     }
@@ -113,6 +119,7 @@ public class GEOResourceGenerationEvent extends Event {
      *
      * @return The {@link Environment} of this generation
      */
+    @Nonnull
     public Environment getEnvironment() {
         return world.getEnvironment();
     }
@@ -123,6 +130,7 @@ public class GEOResourceGenerationEvent extends Event {
      *
      * @return The {@link Biome} of this generation
      */
+    @Nonnull
     public Biome getBiome() {
         return biome;
     }

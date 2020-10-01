@@ -12,18 +12,18 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A quick and easy implementation of {@link SlimefunItem} that also implements the
  * interface {@link Radioactive}.
- *
+ * This implementation is {@link NotPlaceable}!
+ * <p>
  * Simply specify a level of {@link Radioactivity} in the constructor.
  *
  * @author TheBusyBiscuit
- *
  * @see Radioactive
  * @see Radioactivity
- *
  */
 public class RadioactiveItem extends SlimefunItem implements Radioactive, NotPlaceable {
 
@@ -43,6 +43,7 @@ public class RadioactiveItem extends SlimefunItem implements Radioactive, NotPla
      * @param recipe
      *            The recipe of how to craft this {@link SlimefunItem}
      */
+    @ParametersAreNonnullByDefault
     public RadioactiveItem(Category category, Radioactivity radioactivity, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         this(category, radioactivity, item, recipeType, recipe, null);
     }
@@ -50,13 +51,20 @@ public class RadioactiveItem extends SlimefunItem implements Radioactive, NotPla
     /**
      * This will create a new {@link RadioactiveItem} with the given level of {@link Radioactivity}
      *
-     * @param category      The {@link Category} of this {@link SlimefunItem}
-     * @param radioactivity the level of {@link Radioactivity}
-     * @param item          the {@link SlimefunItemStack} this {@link SlimefunItem} represents
-     * @param recipeType    The {@link RecipeType} for this item
-     * @param recipe        The recipe of how to craft this {@link SlimefunItem}
-     * @param recipeOutput  The recipe output
+     * @param category
+     *            The {@link Category} of this {@link SlimefunItem}
+     * @param radioactivity
+     *            the level of {@link Radioactivity}
+     * @param item
+     *            the {@link SlimefunItemStack} this {@link SlimefunItem} represents
+     * @param recipeType
+     *            The {@link RecipeType} for this item
+     * @param recipe
+     *            The recipe of how to craft this {@link SlimefunItem}
+     * @param recipeOutput
+     *            The recipe output
      */
+    @ParametersAreNonnullByDefault
     public RadioactiveItem(Category category, Radioactivity radioactivity, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
         super(category, item, recipeType, recipe, recipeOutput);
 

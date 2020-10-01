@@ -10,6 +10,10 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * The {@link SolarHelmet} can be worn by {@link Player}.
  * As long as that {@link Player} has contact with sunlight, the helmet will charge any
@@ -24,6 +28,7 @@ public class SolarHelmet extends SlimefunItem {
 
     private final ItemSetting<Double> charge;
 
+    @ParametersAreNonnullByDefault
     public SolarHelmet(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, double defaultChargingLevel) {
         super(category, item, recipeType, recipe);
 
@@ -41,7 +46,7 @@ public class SolarHelmet extends SlimefunItem {
      *
      * @param p The {@link Player} wearing this {@link SolarHelmet}
      */
-    public void rechargeItems(Player p) {
+    public void rechargeItems(@Nonnull Player p) {
         recharge(p.getInventory().getHelmet());
         recharge(p.getInventory().getChestplate());
         recharge(p.getInventory().getLeggings());
@@ -50,7 +55,7 @@ public class SolarHelmet extends SlimefunItem {
         recharge(p.getInventory().getItemInOffHand());
     }
 
-    private void recharge(ItemStack item) {
+    private void recharge(@Nullable ItemStack item) {
         SlimefunItem sfItem = SlimefunItem.getByItem(item);
 
         if (sfItem instanceof Rechargeable) {

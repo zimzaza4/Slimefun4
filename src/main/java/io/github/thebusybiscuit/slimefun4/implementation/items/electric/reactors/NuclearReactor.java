@@ -9,6 +9,9 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * The {@link NuclearReactor} is an implementation of {@link Reactor} that uses
  * any {@link Radioactive} material to generate energy.
@@ -21,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public abstract class NuclearReactor extends Reactor {
 
+    @ParametersAreNonnullByDefault
     public NuclearReactor(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
     }
@@ -48,7 +52,7 @@ public abstract class NuclearReactor extends Reactor {
     }
 
     @Override
-    public void extraTick(Location l) {
+    public void extraTick(@Nonnull Location l) {
         // This machine does not need to perform anything while ticking
         // The Nether Star Reactor uses this method to generate the Wither Effect
     }

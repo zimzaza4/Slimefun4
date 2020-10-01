@@ -15,6 +15,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * The {@link EnergyRegulator} is a special type of {@link SlimefunItem} which serves as the heart of every
@@ -26,6 +27,7 @@ import javax.annotation.Nonnull;
  */
 public class EnergyRegulator extends SlimefunItem {
 
+    @ParametersAreNonnullByDefault
     public EnergyRegulator(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
