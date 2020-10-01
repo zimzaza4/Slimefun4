@@ -8,7 +8,7 @@
 
     <!-- Our default version will be UNOFFICIAL, this will prevent the auto updater -->
     <!-- from overriding our local test file -->
-    <version>4.3-nightly</version>
+    <version>4.8-nightly</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -41,10 +41,6 @@
         <repository>
             <id>worldedit-worldguard-repo</id>
             <url>https://maven.sk89q.com/repo/</url>
-        </repository>
-        <repository>
-            <id>bStats-repo</id>
-            <url>https://repo.codemc.org/repository/maven-public</url>
         </repository>
         <repository>
             <id>placeholderapi-repo</id>
@@ -95,16 +91,16 @@
                     <!-- Shade bStats and CS-CoreLib2 into the output jar -->
                     <relocations>
                         <relocation>
-                            <pattern>org.bstats</pattern>
-                            <shadedPattern>me.mrCookieSlime.Slimefun.bstats</shadedPattern>
-                        </relocation>
-                        <relocation>
                             <pattern>io.github.thebusybiscuit.cscorelib2</pattern>
                             <shadedPattern>me.mrCookieSlime.Slimefun.cscorelib2</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>io.papermc.lib</pattern>
                             <shadedPattern>io.github.thebusybiscuit.slimefun4.libraries.paperlib</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>kong.unirest</pattern>
+                            <shadedPattern>io.github.thebusybiscuit.slimefun4.libraries.unirest</shadedPattern>
                         </relocation>
                     </relocations>
 
@@ -180,12 +176,6 @@
             <groupId>com.github.TheBusyBiscuit</groupId>
             <artifactId>CS-CoreLib2</artifactId>
             <version>0.25.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-bukkit</artifactId>
-            <version>1.7</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

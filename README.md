@@ -1,5 +1,5 @@
 # Slimefun 
-Looking for English Version? [**Click here**](https://github.com/TheBusyBiscuit/Slimefun4/)
+Looking for English Version? [**Click here**](https://github.com/Slimefun/Slimefun4/)
 
 想要直接下载吗? [**单击此处**](https://github.com/StarWishsama/Slimefun4/blob/master/README.md#%e4%b8%8b%e8%bd%bd-Slimefun4)
 
@@ -28,20 +28,20 @@ Slimefun 让每个玩家可以自己决定在魔法或科技方面发展<br>
 该项目从2013年开始开发，此后一直发展.<br>
 从那时一个人开发插件到发展成一个拥有数千名参与者和一百多位贡献者的社区.<br>
 它目前添加了超过 **500 种新物品/合成配方** 
-([查看关于 Slimefun 的历史](https://github.com/TheBusyBiscuit/Slimefun4/wiki/Slimefun-in-a-nutshell)).
+([查看关于 Slimefun 的历史](https://github.com/Slimefun/Slimefun4/wiki/Slimefun-in-a-nutshell)).
 
 与此同时, Slimefun 还有种类繁多的扩展插件可供选择!<br>
-打开 [扩展列表](https://github.com/TheBusyBiscuit/Slimefun4/wiki/Addons), 你可能会找到你想要的扩展.
+打开 [扩展列表](https://github.com/Slimefun/Slimefun4/wiki/Addons), 你可能会找到你想要的扩展.
 
 ### 导航
 * **[下载 Slimefun 4](#%e4%b8%8b%e8%bd%bd-Slimefun4)**
 * **[Discord 服务器](#discord)**
 * **[Bug 反馈](https://github.com/StarWishsama/Slimefun4/issues)**
-* **[Wiki](https://github.com/TheBusyBiscuit/Slimefun4/wiki)**
-* **[FAQ](https://github.com/TheBusyBiscuit/Slimefun4/wiki/FAQ)**
+* **[Wiki](https://github.com/Slimefun/Slimefun4/wiki)**
+* **[FAQ](https://github.com/Slimefun/Slimefun4/wiki/FAQ)**
 
 ## 下载 Slimefun4
-(可以查看: [如何安装 Slimefun](https://github.com/TheBusyBiscuit/Slimefun4/wiki/Installing-Slimefun))
+(可以查看: [如何安装 Slimefun](https://github.com/Slimefun/Slimefun4/wiki/Installing-Slimefun))
 
 Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 目前汉化版仅提供了官方开发版的选项, 但某些发布的版本会被标记为官方的 "稳定" 版.<br>
@@ -56,7 +56,7 @@ Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 | **Discord 支持** | :heavy_check_mark: | :x: |
 | **Bug 反馈** | :heavy_check_mark: | :x: |
 | **在发布前进行测试** | :x: | :heavy_check_mark: |
-| **有无更新日志** | :x: | :memo: **[更新日志(英文)](https://github.com/TheBusyBiscuit/Slimefun4/blob/master/CHANGELOG.md)** |
+| **有无更新日志** | :x: | :memo: **[更新日志(英文)](https://github.com/Slimefun/Slimefun4/blob/master/CHANGELOG.md)** |
 | **下载链接** | :package: **[下载 最新版](https://github.com/StarWishsama/Slimefun4/releases)** | :package: **[下载 "稳定版"](https://github.com/StarWishsama/Slimefun4/releases/latest)** |
 
 **! 建议你使用最新版本的开发版, 可以获得最新的内容更新和 Bug 修复 !**
@@ -77,7 +77,7 @@ Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 我们经常会举办一些社区活动, 加入我们了解更多.<br>
 **注意**: 我们在 Discord 服务器 **不** 接受任何形式的问题反馈, 请使用我们的 [问题追踪器](https://github.com/StarWishsama/Slimefun4/issues) 反馈问题!
 
-由于 Discord 服务器规模已经庞大, 我们需要强调一下 [重要的规则](https://github.com/TheBusyBiscuit/Slimefun4/wiki/Discord-Rules).<br>
+由于 Discord 服务器规模已经庞大, 我们需要强调一下 [重要的规则](https://github.com/Slimefun/Slimefun4/wiki/Discord-Rules).<br>
 不遵守以上规则的人可能会被从服务器中踢出甚至封禁.
 
 <p align="center">
@@ -90,35 +90,35 @@ Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 ## Wiki
 Slimefun 有一个 (详细且经常维护的 - *咳咳*) Wiki 为新玩家准备, 
 你也可以考虑为 Wiki 的编写献出一份力量.
-https://github.com/TheBusyBiscuit/Slimefun4/wiki
+https://github.com/Slimefun/Slimefun4/wiki
 
 ##### 有用的文章 (英文)
-* [什么是 Slimefun?](https://github.com/TheBusyBiscuit/Slimefun4/wiki/Slimefun-in-a-nutshell)
-* [如何安装 Slimefun](https://github.com/TheBusyBiscuit/Slimefun4/wiki/Installing-Slimefun)
-* [Slimefun 4 扩展列表](https://github.com/TheBusyBiscuit/Slimefun4/wiki/Addons)
-* [Slimefun 4 扩展编写教程](https://github.com/TheBusyBiscuit/Slimefun4/wiki/Developer-Guide)
-* [开始使用](https://github.com/TheBusyBiscuit/Slimefun4/wiki/Getting-Started)
-* [常见问题](https://github.com/TheBusyBiscuit/Slimefun4/wiki/FAQ)
-* [使用中的常见问题](https://github.com/TheBusyBiscuit/Slimefun4/wiki/Common-Issues)
-* [帮助我们扩展 Wiki!](https://github.com/TheBusyBiscuit/Slimefun4/wiki/Expanding-the-Wiki)
-* [帮助我们翻译 Slimefun!](https://github.com/TheBusyBiscuit/Slimefun4/wiki/Translating-Slimefun)
+* [什么是 Slimefun?](https://github.com/Slimefun/Slimefun4/wiki/Slimefun-in-a-nutshell)
+* [如何安装 Slimefun](https://github.com/Slimefun/Slimefun4/wiki/Installing-Slimefun)
+* [Slimefun 4 扩展列表](https://github.com/Slimefun/Slimefun4/wiki/Addons)
+* [Slimefun 4 扩展编写教程](https://github.com/Slimefun/Slimefun4/wiki/Developer-Guide)
+* [开始使用](https://github.com/Slimefun/Slimefun4/wiki/Getting-Started)
+* [常见问题](https://github.com/Slimefun/Slimefun4/wiki/FAQ)
+* [使用中的常见问题](https://github.com/Slimefun/Slimefun4/wiki/Common-Issues)
+* [帮助我们扩展 Wiki!](https://github.com/Slimefun/Slimefun4/wiki/Expanding-the-Wiki)
+* [帮助我们翻译 Slimefun!](https://github.com/Slimefun/Slimefun4/wiki/Translating-Slimefun)
 
 这个 Wiki 由社区进行维护, 如果你发现有文章缺失, 可以自由补充并和他人分享.
 
 ## 对项目作出贡献
-Slimefun 4 是一个以 [GNU GPLv3](https://github.com/TheBusyBiscuit/Slimefun4/blob/master/LICENSE). 开源的项目<br>
+Slimefun 4 是一个以 [GNU GPLv3](https://github.com/Slimefun/Slimefun4/blob/master/LICENSE). 开源的项目<br>
 超过 100 人对这个超过 100 个人已经为这个项目做出了贡献. 这些人真是太棒了.<br>
 我们鼓励通过提交 PR 的方式为 Slimefun 4 做出贡献, 你的贡献将会使插件保持活力 <3.
 
 ### 翻译
 Slimefun4 最近添加了多语言支持, 请注意这些多语言功能仍在_开发_中.<br>
 所以目前并不是所有东西 (尤其是物品) 都能被翻译.<br>
-[查看更多...](https://github.com/TheBusyBiscuit/Slimefun4/wiki/Translating-Slimefun)
+[查看更多...](https://github.com/Slimefun/Slimefun4/wiki/Translating-Slimefun)
 
 ### 合并请求
 这是一个开源的社区项目, 所以 **你的贡献将会使插件保持活力!**<br>
 合并请求可以是 Bug 修复, 修改甚至加入新内容. 但请注意, 如果你打算加入很多内容的话, 可以自己制作一个扩展插件代替.
-([开发者指南](https://github.com/TheBusyBiscuit/Slimefun4/wiki/Developer-Guide)).
+([开发者指南](https://github.com/Slimefun/Slimefun4/wiki/Developer-Guide)).
 
 ### 代码质量
 Slimefun 使用 [Sonarcloud.io](https://sonarcloud.io/dashboard?id=TheBusyBiscuit_Slimefun4) 监控代码质量.
@@ -137,7 +137,7 @@ _如果你要针对代码异味做出修改, 请先在 [Discord](#discord) 上�
 
 ##### Test Coverage (测试覆盖率)
 Slimefun 现在也使用自动化测试系统以检测一个更新是否破坏了什么东西. 覆盖率表示这些测试覆盖了代码的多少部分. 更高的覆盖率意味着更少的重大更改, 因此也可以提供更好, 更可靠的新构建.
-由于这是一个非常大的项目, 使覆盖率到达 `100%` 几乎是不可能的. 但是使这个数字稍微增加一点仍然有帮助. 因此, 请随时为 Slimefun 编写单元测试并将其放在 [/src/test/java/](https://github.com/TheBusyBiscuit/Slimefun4/tree/master/src/test/java) 文件夹下.
+由于这是一个非常大的项目, 使覆盖率到达 `100%` 几乎是不可能的. 但是使这个数字稍微增加一点仍然有帮助. 因此, 请随时为 Slimefun 编写单元测试并将其放在 [/src/test/java/](https://github.com/Slimefun/Slimefun4/tree/master/src/test/java) 文件夹下.
 
 ## 免责声明
 Slimefun4 使用多种系统收集使用数据, 以及使用自动更新让你知晓关于这个项目的最新信息
@@ -172,7 +172,7 @@ Slimefun4 使用 [bStats](https://bstats.org/plugin/bukkit/Slimefun/4574) 收集
 你的 Minecraft 服务器信息不会被发送到 Github.
 
 这些信息包括但不限于
-* 协作者列表, TA 们的用户名和个人主页链接 (来自仓库 `TheBusyBiscuit/Slimefun4`, `Slimefun/Slimefun-Wiki` 和 `Slimefun/Resourcepack`)
+* 协作者列表, TA 们的用户名和个人主页链接 (来自仓库 `Slimefun/Slimefun4`, `Slimefun/Slimefun-Wiki` 和 `Slimefun/Resourcepack`)
 * 仓库中开启的问题的数量
 * 仓库中待定合并请求的数量
 * 仓库的小星星数量

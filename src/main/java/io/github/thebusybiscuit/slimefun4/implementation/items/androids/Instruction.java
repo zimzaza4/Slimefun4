@@ -12,6 +12,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Predicate;
 
 enum Instruction {
@@ -139,31 +144,59 @@ enum Instruction {
         android.refuel(inv, target);
     });
 
+    private static final Map<String, Instruction> nameLookup = new HashMap<>();
+    public static final Instruction[] values = values();
+
     private final ItemStack item;
     private final AndroidType type;
     private final AndroidAction method;
 
-    Instruction(AndroidType type, HeadTexture head, AndroidAction method) {
+    static {
+        for (Instruction instruction : values) {
+            nameLookup.put(instruction.name(), instruction);
+        }
+    }
+
+    @ParametersAreNonnullByDefault
+    Instruction(AndroidType type, HeadTexture head, @Nullable AndroidAction method) {
         this.type = type;
         this.item = SlimefunUtils.getCustomHead(head.getTexture());
         this.method = method;
     }
 
+    @ParametersAreNonnullByDefault
     Instruction(AndroidType type, HeadTexture head) {
         this(type, head, null);
     }
 
+    @Nonnull
     public ItemStack getItem() {
         return item;
     }
 
+    @Nonnull
     public AndroidType getRequiredType() {
         return type;
     }
 
+    @ParametersAreNonnullByDefault
     public void execute(ProgrammableAndroid android, Block b, BlockMenu inventory, BlockFace face) {
         Validate.notNull(method, "Instruction '" + name() + "' must be executed manually!");
         method.perform(android, b, inventory, face);
     }
 
+    /**
+     * Get a value from the cache map rather than calling {@link Enum#valueOf(Class, String)}.
+     * This is 25-40% quicker than the standard {@link Enum#valueOf(Class, String)} depending on
+     * your Java version. It also means that you can avoid an IllegalArgumentException which let's
+     * face it is always good.
+     *
+     * @param value The value which you would like to look up.
+     * @return The {@link Instruction} or null if it does not exist.
+     */
+    @Nullable
+    public static Instruction getFromCache(@Nonnull String value) {
+        Validate.notNull(value, "An Instruction cannot be null!");
+        return nameLookup.get(value);
+    }
 }

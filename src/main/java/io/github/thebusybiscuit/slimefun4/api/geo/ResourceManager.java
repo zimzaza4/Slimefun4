@@ -158,7 +158,7 @@ public class ResourceManager {
 
         menu.addItem(4, new CustomItem(HeadTexture.MINECRAFT_CHUNK.getAsItemStack(), ChatColor.YELLOW + SlimefunPlugin.getLocalization().getResourceString(p, "tooltips.chunk"), "", "&8\u21E8 &7" + SlimefunPlugin.getLocalization().getResourceString(p, "tooltips.world") + ": " + block.getWorld().getName(), "&8\u21E8 &7X: " + x + " Z: " + z), ChestMenuUtils.getEmptyClickHandler());
         List<GEOResource> resources = new ArrayList<>(SlimefunPlugin.getRegistry().getGEOResources().values());
-        Collections.sort(resources, (a, b) -> a.getName(p).toLowerCase(Locale.ROOT).compareTo(b.getName(p).toLowerCase(Locale.ROOT)));
+        resources.sort(Comparator.comparing(a -> a.getName(p).toLowerCase(Locale.ROOT)));
 
         int index = 10;
         int pages = (resources.size() - 1) / 36 + 1;

@@ -4,6 +4,7 @@ public enum SlimefunGuideLayout {
 
     BOOK,
     CHEST,
-    CHEAT_SHEET
+    CHEAT_SHEET;
 
+    public static final SlimefunGuideLayout[] values = values();
 }

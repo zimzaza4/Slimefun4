@@ -20,6 +20,10 @@ commands:
     player-never-joined: "&4找不到叫这个名字的玩家!"
     backpack-does-not-exist: "&4你指定的背包不存在!"
     restored-backpack-given: "&a你的背包已被恢复并且已经放入了你的物品栏!"
+  charge:
+    description: 为你手持的物品充电
+    charge-success: 充电完成!
+    not-rechargeable: 这个物品不能充电!
   reload: 重载配置文件
   transform: 将物品转换为英文物品
 guide:
@@ -84,6 +88,7 @@ guide:
       miner: 此采矿机可以获得的资源
       generator: 可用的燃料种类
       gold-pan: 你可以获得的资源
+      climbing-pick: 你可以攀爬的平面
   back:
     title: 返回
     guide: 返回 Slimefun 指南
@@ -178,6 +183,9 @@ messages:
   multi-tool:
     mode-change: "&b%device% 的模式已切换为: &9%mode%"
     not-shears: "&c多功能工具 (Multi Tool) 不能用来剪羊毛!"
+  climbing-pick:
+    dual-wielding: "&4你需要双手拿着攀岩镐才能使用!"
+    wrong-material: "&c你不能爬上这个平面. 查看指南书了解更多!"
 mode-change: "&b%device% 的模式已切换为: &9%mode%"
 machines:
   pattern-not-found: "&e抱歉, 你记错合成表了吧. 这不是一个正确的合成配方, 请检查发射器里放置物品的顺序."

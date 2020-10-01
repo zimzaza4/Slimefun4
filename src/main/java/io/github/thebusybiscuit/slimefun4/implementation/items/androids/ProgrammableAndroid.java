@@ -52,6 +52,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 
 public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock, RecipeDisplayItem {
 
@@ -252,7 +253,14 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
                     return false;
                 });
             } else {
-                ItemStack stack = Instruction.valueOf(script[i]).getItem();
+                Instruction instruction = Instruction.getFromCache(script[i]);
+
+                if (instruction == null) {
+                    SlimefunPlugin.instance().getLogger().log(Level.WARNING, "Failed to parse Android instruction: {0}, maybe your server is out of date?", script[i]);
+                    return;
+                }
+
+                ItemStack stack = instruction.getItem();
                 menu.addItem(i, new CustomItem(stack, SlimefunPlugin.getLocalization().getMessage(p, "android.scripts.instructions." + Instruction.valueOf(script[i]).name()), "", "&7\u21E8 &e左键 &7编辑", "&7\u21E8 &e右键 &7删除", "&7\u21E8 &eShift + 右键 &7复制"));
                 menu.addMenuClickHandler(i, (pl, slot, item, action) -> {
                     if (action.isRightClicked() && action.isShiftClicked()) {
@@ -281,7 +289,7 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
 
     private String addInstruction(String[] script, int index, Instruction instruction) {
         int i = 0;
-        StringBuilder builder = new StringBuilder(Instruction.START + "-");
+        StringBuilder builder = new StringBuilder(Instruction.START.name() + '-');
 
         for (String current : script) {
             if (i > 0) {
@@ -488,7 +496,7 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
     protected List<Instruction> getValidScriptInstructions() {
         List<Instruction> list = new ArrayList<>();
 
-        for (Instruction part : Instruction.values()) {
+        for (Instruction part : Instruction.values) {
             if (part == Instruction.START || part == Instruction.REPEAT) {
                 continue;
             }
@@ -657,7 +665,11 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
                 }
 
                 BlockStorage.addBlockInfo(b, "fuel", String.valueOf(fuel - 1));
-                Instruction instruction = Instruction.valueOf(script[index]);
+                Instruction instruction = Instruction.getFromCache(script[index]);
+                if (instruction == null) {
+                    SlimefunPlugin.instance().getLogger().log(Level.WARNING, "Failed to parse Android instruction: {0}, maybe your server is out of date?", script[index]);
+                    return;
+                }
                 executeInstruction(instruction, b, menu, data, index);
             }
         }

@@ -4,6 +4,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.magical.InfusedMa
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -50,7 +51,7 @@ public class MagnetTask extends PlayerTask {
         }
 
         if (playSound) {
-            p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 0.25F, 0.9F);
+            p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 0.25F, 0.9F);
         }
     }
 

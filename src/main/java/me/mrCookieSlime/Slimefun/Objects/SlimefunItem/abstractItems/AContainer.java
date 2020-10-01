@@ -2,6 +2,7 @@ package me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems;
 
 import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.api.events.AsyncMachineProcessCompleteEvent;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
@@ -19,6 +20,7 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -240,10 +242,8 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
                     }
 
                     removeCharge(b.getLocation(), getEnergyConsumption());
-                    progress.put(b, timeleft - 1);
-                } else {
-                    progress.put(b, timeleft - 1);
                 }
+                progress.put(b, timeleft - 1);
             }
             else {
                 inv.replaceExistingItem(22, new CustomItem(Material.BLACK_STAINED_GLASS_PANE, " "));
@@ -251,6 +251,8 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
                 for (ItemStack output : processing.get(b).getOutput()) {
                     inv.pushItem(output.clone(), getOutputSlots());
                 }
+
+                Bukkit.getPluginManager().callEvent(new AsyncMachineProcessCompleteEvent(b, getProcessing(b)));
 
                 progress.remove(b);
                 processing.remove(b);

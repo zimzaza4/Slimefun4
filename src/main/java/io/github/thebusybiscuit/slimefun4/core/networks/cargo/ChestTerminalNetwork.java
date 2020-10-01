@@ -305,6 +305,12 @@ abstract class ChestTerminalNetwork extends Network {
         }
     }
 
+    @Override
+    public void markDirty(@Nonnull Location l) {
+        connectorCache.remove(l);
+        super.markDirty(l);
+    }
+
     private void updateTerminal(Location l, BlockMenu terminal, int slot, int index, List<ItemStackAndInteger> items) {
         if (items.size() > index) {
             ItemStackAndInteger item = items.get(index);
