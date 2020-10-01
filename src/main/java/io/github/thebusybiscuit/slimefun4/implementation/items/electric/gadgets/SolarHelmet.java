@@ -9,6 +9,7 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,12 +48,14 @@ public class SolarHelmet extends SlimefunItem {
      * @param p The {@link Player} wearing this {@link SolarHelmet}
      */
     public void rechargeItems(@Nonnull Player p) {
-        recharge(p.getInventory().getHelmet());
-        recharge(p.getInventory().getChestplate());
-        recharge(p.getInventory().getLeggings());
-        recharge(p.getInventory().getBoots());
-        recharge(p.getInventory().getItemInMainHand());
-        recharge(p.getInventory().getItemInOffHand());
+        PlayerInventory inv = p.getInventory();
+
+        recharge(inv.getHelmet());
+        recharge(inv.getChestplate());
+        recharge(inv.getLeggings());
+        recharge(inv.getBoots());
+        recharge(inv.getItemInMainHand());
+        recharge(inv.getItemInOffHand());
     }
 
     private void recharge(@Nullable ItemStack item) {
