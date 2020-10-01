@@ -1,7 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.utils.holograms;
 
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
@@ -17,14 +17,14 @@ public final class SimpleHologram {
     }
 
     public static void update(@Nonnull Block b, @Nonnull String name) {
-        Slimefun.runSync(() -> {
+        SlimefunPlugin.runSync(() -> {
             ArmorStand hologram = getArmorStand(b, true);
             hologram.setCustomName(ChatColors.color(name));
         });
     }
 
     public static void remove(@Nonnull Block b) {
-        Slimefun.runSync(() -> {
+        SlimefunPlugin.runSync(() -> {
             ArmorStand hologram = getArmorStand(b, false);
             if (hologram != null) hologram.remove();
         });

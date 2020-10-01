@@ -15,7 +15,6 @@ import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -156,7 +155,7 @@ public class BlockPlacer extends SlimefunItem {
                         dispenser.getInventory().removeItem(new CustomItem(item, 1));
                     }
                     else {
-                        Slimefun.runSync(() -> dispenser.getInventory().removeItem(item), 2L);
+                        SlimefunPlugin.runSync(() -> dispenser.getInventory().removeItem(item), 2L);
                     }
                 }
             });
@@ -171,7 +170,7 @@ public class BlockPlacer extends SlimefunItem {
                     dispenser.getInventory().removeItem(new CustomItem(item, 1));
                 }
                 else {
-                    Slimefun.runSync(() -> dispenser.getInventory().removeItem(item), 2L);
+                    SlimefunPlugin.runSync(() -> dispenser.getInventory().removeItem(item), 2L);
                 }
             }
         }
@@ -213,7 +212,7 @@ public class BlockPlacer extends SlimefunItem {
                 dispenser.getInventory().removeItem(new CustomItem(item, 1));
             }
             else {
-                Slimefun.runSync(() -> dispenser.getInventory().removeItem(item), 2L);
+                SlimefunPlugin.runSync(() -> dispenser.getInventory().removeItem(item), 2L);
             }
         }
     }

@@ -1,15 +1,12 @@
 package me.mrCookieSlime.Slimefun.api;
 
-import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemState;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.VanillaItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -173,31 +170,5 @@ public final class Slimefun {
             return false;
         }
         return true;
-    }
-
-    public static BukkitTask runSync(Runnable r) {
-        if (SlimefunPlugin.getMinecraftVersion() == MinecraftVersion.UNIT_TEST) {
-            r.run();
-            return null;
-        }
-
-        if (SlimefunPlugin.instance() == null || !SlimefunPlugin.instance().isEnabled()) {
-            return null;
-        }
-
-        return Bukkit.getScheduler().runTask(SlimefunPlugin.instance(), r);
-    }
-
-    public static BukkitTask runSync(Runnable r, long delay) {
-        if (SlimefunPlugin.getMinecraftVersion() == MinecraftVersion.UNIT_TEST) {
-            r.run();
-            return null;
-        }
-
-        if (SlimefunPlugin.instance() == null || !SlimefunPlugin.instance().isEnabled()) {
-            return null;
-        }
-
-        return Bukkit.getScheduler().runTaskLater(SlimefunPlugin.instance(), r, delay);
     }
 }

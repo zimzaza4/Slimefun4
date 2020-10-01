@@ -17,7 +17,6 @@ import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
@@ -264,7 +263,7 @@ public class GPSNetwork {
                 return;
             }
 
-            Slimefun.runSync(() -> {
+            SlimefunPlugin.runSync(() -> {
                 WaypointCreateEvent event = new WaypointCreateEvent(p, name, l);
                 Bukkit.getPluginManager().callEvent(event);
 

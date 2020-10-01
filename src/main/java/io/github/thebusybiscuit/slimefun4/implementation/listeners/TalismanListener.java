@@ -6,7 +6,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans.MagicianTalisman;
 import io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans.Talisman;
 import io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans.TalismanEnchantment;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -201,7 +200,7 @@ public class TalismanListener implements Listener {
             int itemSlot = slot;
 
             // Update the item forcefully
-            Slimefun.runSync(() -> inv.setItem(itemSlot, item), 1L);
+            SlimefunPlugin.runSync(() -> inv.setItem(itemSlot, item), 1L);
         }
     }
 

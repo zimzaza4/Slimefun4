@@ -1,9 +1,9 @@
 package io.github.thebusybiscuit.slimefun4.api.player;
 
 import io.github.thebusybiscuit.cscorelib2.config.Config;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.BackpackListener;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -118,7 +118,7 @@ public class PlayerBackpack {
      *            The players who this Backpack will be shown to
      */
     public void open(Player... players) {
-        Slimefun.runSync(() -> {
+        SlimefunPlugin.runSync(() -> {
             for (Player p : players) {
                 p.openInventory(inventory);
             }
@@ -139,7 +139,7 @@ public class PlayerBackpack {
         this.size = size;
         cfg.setValue("backpacks." + id + ".size", size);
 
-        Inventory inv = Bukkit.createInventory(null, size, "Backpack [" + size + " Slots]");
+        Inventory inv = Bukkit.createInventory(null, size, "背包 [" + size + " 格]");
 
         for (int slot = 0; slot < this.inventory.getSize(); slot++) {
             inv.setItem(slot, this.inventory.getItem(slot));

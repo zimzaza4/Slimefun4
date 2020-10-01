@@ -3,7 +3,6 @@ package io.github.thebusybiscuit.slimefun4.core.services;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
 import kong.unirest.*;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.plugin.Plugin;
 
 import javax.annotation.Nonnull;
@@ -96,7 +95,7 @@ public class MetricsService {
             String version = metricsClass.getPackage().getImplementationVersion();
 
             // This is required to be sync due to bStats.
-            Slimefun.runSync(() -> {
+            SlimefunPlugin.runSync(() -> {
                 try {
                     start.invoke(null);
                     plugin.getLogger().info("Metrics build #" + version + " started.");

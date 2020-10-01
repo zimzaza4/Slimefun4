@@ -252,7 +252,7 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
                     inv.pushItem(output.clone(), getOutputSlots());
                 }
 
-                Bukkit.getPluginManager().callEvent(new AsyncMachineProcessCompleteEvent(b, getProcessing(b)));
+                Bukkit.getPluginManager().callEvent(new AsyncMachineProcessCompleteEvent(b.getLocation(), AContainer.this, getProcessing(b)));
 
                 progress.remove(b);
                 processing.remove(b);

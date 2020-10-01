@@ -86,7 +86,7 @@ public class CoolerListener implements Listener {
     private void takeJuiceFromCooler(@Nonnull Player p, @Nonnull ItemStack cooler) {
         PlayerProfile.getBackpack(cooler, backpack -> {
             if (backpack != null) {
-                Slimefun.runSync(() -> consumeJuice(p, backpack));
+                SlimefunPlugin.runSync(() -> consumeJuice(p, backpack));
             }
         });
     }

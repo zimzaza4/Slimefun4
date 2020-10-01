@@ -9,7 +9,6 @@ import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -73,7 +72,7 @@ public final class TeleportationManager {
                 index++;
             }
 
-            Slimefun.runSync(() -> menu.open(p));
+            SlimefunPlugin.runSync(() -> menu.open(p));
         });
     }
 
@@ -127,7 +126,7 @@ public final class TeleportationManager {
                     if (teleported) {
                         // This needs to run on the main Thread so we force it, as the
                         // async teleportation might happen on a seperate Thread.
-                        Slimefun.runSync(() -> {
+                        SlimefunPlugin.runSync(() -> {
                             if (resistance) {
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 600, 20));
                                 SlimefunPlugin.getLocalization().sendMessage(p, "machines.TELEPORTER.invulnerability");
@@ -145,7 +144,7 @@ public final class TeleportationManager {
                 source.getWorld().spawnParticle(Particle.PORTAL, source, progress * 2, 0.2F, 0.8F, 0.2F);
                 source.getWorld().playSound(source, Sound.BLOCK_BEACON_AMBIENT, 1F, 0.6F);
 
-                Slimefun.runSync(() -> updateProgress(uuid, speed, progress + speed, source, destination, resistance), 10L);
+                SlimefunPlugin.runSync(() -> updateProgress(uuid, speed, progress + speed, source, destination, resistance), 10L);
             }
         } else {
             cancel(uuid, p);

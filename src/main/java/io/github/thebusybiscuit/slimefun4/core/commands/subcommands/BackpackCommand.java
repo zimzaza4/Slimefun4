@@ -6,7 +6,6 @@ import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -57,7 +56,7 @@ class BackpackCommand extends SubCommand {
                 return;
             }
 
-            Slimefun.runSync(() -> {
+            SlimefunPlugin.runSync(() -> {
                 ItemStack item = SlimefunItems.RESTORED_BACKPACK.clone();
                 SlimefunPlugin.getBackpackListener().setBackpackId(backpackOwner, item, 2, id);
                 ((Player) sender).getInventory().addItem(item);

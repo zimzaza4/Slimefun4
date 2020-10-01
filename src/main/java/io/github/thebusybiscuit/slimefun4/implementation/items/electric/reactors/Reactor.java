@@ -3,6 +3,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.electric.reactor
 import io.github.starwishsama.extra.ProtectionChecker;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
+import io.github.thebusybiscuit.slimefun4.api.events.AsyncReactorProcessCompleteEvent;
 import io.github.thebusybiscuit.slimefun4.api.events.ReactorExplodeEvent;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
@@ -19,7 +20,6 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AGenerator;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
@@ -324,7 +324,7 @@ public abstract class Reactor extends AbstractEnergyProvider {
         boolean explosion = explosionsQueue.contains(l);
 
         if (explosion) {
-            Slimefun.runSync(() -> {
+            SlimefunPlugin.runSync(() -> {
                 ReactorExplodeEvent event = new ReactorExplodeEvent(l, Reactor.this);
                 Bukkit.getPluginManager().callEvent(event);
 
@@ -341,7 +341,7 @@ public abstract class Reactor extends AbstractEnergyProvider {
     }
 
     private void checkForWaterBlocks(Location l) {
-        Slimefun.runSync(() -> {
+        SlimefunPlugin.runSync(() -> {
             // We will pick a surrounding block at random and see if this is water.
             // If it isn't, then we will make it explode.
             int index = ThreadLocalRandom.current().nextInt(WATER_BLOCKS.length);
@@ -367,6 +367,8 @@ public abstract class Reactor extends AbstractEnergyProvider {
                 }
             }
         }
+
+        Bukkit.getPluginManager().callEvent(new AsyncReactorProcessCompleteEvent(l, Reactor.this, getProcessing(l)));
 
         progress.remove(l);
         processing.remove(l);

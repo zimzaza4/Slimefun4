@@ -6,7 +6,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAltar;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientPedestal;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.AncientAltarListener;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
@@ -91,7 +90,7 @@ public class AncientAltarTask implements Runnable {
         }
 
         this.stage += 1;
-        Slimefun.runSync(this, speed);
+        SlimefunPlugin.runSync(this, speed);
     }
 
     private boolean checkLockedItems() {
