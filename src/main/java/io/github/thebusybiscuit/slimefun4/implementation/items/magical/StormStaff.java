@@ -18,6 +18,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 /**
@@ -33,10 +35,12 @@ public class StormStaff extends SimpleSlimefunItem<ItemUseHandler> {
     private static final NamespacedKey usageKey = new NamespacedKey(SlimefunPlugin.instance(), "stormstaff_usage");
     public static final int MAX_USES = 8;
 
+    @ParametersAreNonnullByDefault
     public StormStaff(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe, getCraftedOutput());
     }
 
+    @Nonnull
     private static ItemStack getCraftedOutput() {
         ItemStack item = SlimefunItems.STAFF_STORM.clone();
         ItemMeta im = item.getItemMeta();
@@ -73,10 +77,11 @@ public class StormStaff extends SimpleSlimefunItem<ItemUseHandler> {
         };
     }
 
+    @ParametersAreNonnullByDefault
     private void useItem(Player p, ItemStack item, Location loc) {
         loc.getWorld().strikeLightning(loc);
 
-        if (p.getInventory().getItemInMainHand().getType() == Material.SHEARS) {
+        if (item.getType() == Material.SHEARS) {
             return;
         }
 
@@ -88,22 +93,41 @@ public class StormStaff extends SimpleSlimefunItem<ItemUseHandler> {
                 p.setFoodLevel(event.getFoodLevel());
             }
         }
+        damageItem(p, item);
+    }
 
-        ItemMeta meta = item.getItemMeta();
-        int usesLeft = meta.getPersistentDataContainer().getOrDefault(usageKey, PersistentDataType.INTEGER, MAX_USES);
+    @ParametersAreNonnullByDefault
+    private void damageItem(Player p, ItemStack item) {
+        if (item.getAmount() > 1) {
+            item.setAmount(item.getAmount() - 1);
 
-        if (usesLeft == 1) {
-            p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
-            item.setAmount(0);
+            // Seperate one item from the stack and damage it
+            ItemStack seperateItem = item.clone();
+            seperateItem.setAmount(1);
+            damageItem(p, seperateItem);
+
+            // Try to give the Player the new item
+            if (!p.getInventory().addItem(seperateItem).isEmpty()) {
+                // or throw it on the ground
+                p.getWorld().dropItemNaturally(p.getLocation(), seperateItem);
+            }
         } else {
-            usesLeft--;
-            meta.getPersistentDataContainer().set(usageKey, PersistentDataType.INTEGER, usesLeft);
+            ItemMeta meta = item.getItemMeta();
+            int usesLeft = meta.getPersistentDataContainer().getOrDefault(usageKey, PersistentDataType.INTEGER, MAX_USES);
 
-            List<String> lore = meta.getLore();
-            lore.set(4, ChatColors.color("&7还可以使用 &e" + usesLeft + " 次"));
-            meta.setLore(lore);
+            if (usesLeft == 1) {
+                p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
+                item.setAmount(0);
+            } else {
+                usesLeft--;
+                meta.getPersistentDataContainer().set(usageKey, PersistentDataType.INTEGER, usesLeft);
 
-            item.setItemMeta(meta);
+                List<String> lore = meta.getLore();
+                lore.set(4, ChatColors.color("&7还可以使用 &e" + usesLeft + " 次"));
+                meta.setLore(lore);
+
+                item.setItemMeta(meta);
+            }
         }
     }
 
