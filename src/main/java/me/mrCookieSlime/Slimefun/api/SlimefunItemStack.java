@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class SlimefunItemStack extends CustomItem implements Cloneable {
+public class SlimefunItemStack extends CustomItem {
 
     private String id;
     private ImmutableItemMeta immutableMeta;
