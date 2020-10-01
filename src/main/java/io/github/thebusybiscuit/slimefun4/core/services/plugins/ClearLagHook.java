@@ -7,9 +7,11 @@ import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import javax.annotation.Nonnull;
+
 class ClearLagHook implements Listener {
 
-    ClearLagHook(SlimefunPlugin plugin) {
+    ClearLagHook(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffect;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -23,7 +24,7 @@ public class VampireBladeListener implements Listener {
 
     private final VampireBlade blade;
 
-    public VampireBladeListener(SlimefunPlugin plugin, VampireBlade blade) {
+    public VampireBladeListener(@Nonnull SlimefunPlugin plugin, @Nonnull VampireBlade blade) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
         this.blade = blade;

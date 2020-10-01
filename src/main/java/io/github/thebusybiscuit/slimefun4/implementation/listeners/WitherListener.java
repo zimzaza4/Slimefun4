@@ -11,6 +11,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 
+import javax.annotation.Nonnull;
+
 /**
  * This {@link Listener} is responsible for implementing the functionality of blocks that
  * were marked as {@link WitherProof} to not be destroyed by a {@link Wither}.
@@ -20,7 +22,7 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
  */
 public class WitherListener implements Listener {
 
-    public WitherListener(SlimefunPlugin plugin) {
+    public WitherListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

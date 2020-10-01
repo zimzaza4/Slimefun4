@@ -5,6 +5,8 @@ import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +40,7 @@ class ContributionsConnector extends GitHubConnector {
 
     private boolean finished = false;
 
+    @ParametersAreNonnullByDefault
     ContributionsConnector(GitHubService github, String prefix, int page, String repository, String role) {
         super(github, repository);
 
@@ -58,6 +61,7 @@ class ContributionsConnector extends GitHubConnector {
     @Override
     public void onSuccess(JsonNode element) {
         finished = true;
+
         if (element.isArray()) {
             computeContributors(element.getArray());
         } else {
@@ -80,7 +84,7 @@ class ContributionsConnector extends GitHubConnector {
         return "/contributors?per_page=100&page=" + page;
     }
 
-    private void computeContributors(JSONArray array) {
+    private void computeContributors(@Nonnull JSONArray array) {
         for (int i = 0; i < array.length(); i++) {
             JSONObject object = array.getJSONObject(i);
 

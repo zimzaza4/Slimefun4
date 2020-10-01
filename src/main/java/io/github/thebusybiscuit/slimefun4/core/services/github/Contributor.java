@@ -35,7 +35,7 @@ public class Contributor {
 
     public Contributor(@Nonnull String username, @Nonnull String profile) {
         Validate.notNull(username, "Username must never be null!");
-        Validate.notNull(profile, "The profile link must never be null!");
+        Validate.notNull(profile, "The profile cannot be null!");
 
         githubUsername = profile.substring(profile.lastIndexOf('/') + 1);
         minecraftUsername = username;
@@ -63,6 +63,7 @@ public class Contributor {
      *
      * @return the name of this contributor
      */
+    @Nonnull
     public String getName() {
         return githubUsername;
     }
@@ -73,6 +74,7 @@ public class Contributor {
      *
      * @return The MC username of this contributor.
      */
+    @Nonnull
     public String getMinecraftName() {
         return minecraftUsername;
     }
@@ -82,10 +84,12 @@ public class Contributor {
      *
      * @return The GitHub profile of this {@link Contributor}
      */
+    @Nullable
     public String getProfile() {
         return profileLink;
     }
 
+    @Nonnull
     public List<Map.Entry<String, Integer>> getContributions() {
         List<Map.Entry<String, Integer>> list = new ArrayList<>(contributions.entrySet());
         list.sort(Comparator.comparingInt(entry -> -entry.getValue()));
@@ -96,18 +100,18 @@ public class Contributor {
      * This method gives you the amount of contributions this {@link Contributor}
      * has submmited in the name of the given role.
      *
-     * @param role
-     *            The role for which to count the contributions.
+     * @param role The role for which to count the contributions.
      * @return The amount of contributions this {@link Contributor} submitted as the given role
      */
-    public int getContributions(String role) {
+    public int getContributions(@Nonnull String role) {
         return contributions.getOrDefault(role, 0);
     }
 
     /**
      * This method sets the {@link UUID} for this {@link Contributor}.
      *
-     * @param uuid The {@link UUID} for this {@link Contributor}
+     * @param uuid
+     *            The {@link UUID} for this {@link Contributor}
      */
     public void setUniqueId(@Nullable UUID uuid) {
         this.uuid = uuid == null ? Optional.empty() : Optional.of(uuid);
@@ -119,6 +123,7 @@ public class Contributor {
      *
      * @return The {@link UUID} of this {@link Contributor}
      */
+    @Nonnull
     public Optional<UUID> getUniqueId() {
         return uuid;
     }
@@ -130,6 +135,7 @@ public class Contributor {
      *
      * @return A Base64-Head Texture
      */
+    @Nonnull
     public String getTexture() {
         if (!headTexture.isComputed() || !headTexture.isPresent()) {
             GitHubService github = SlimefunPlugin.getGitHubService();

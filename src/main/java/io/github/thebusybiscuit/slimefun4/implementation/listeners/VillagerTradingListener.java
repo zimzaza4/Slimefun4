@@ -13,6 +13,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * This {@link Listener} prevents any {@link SlimefunItem} from being used to trade with
  * Villagers, with one exception being {@link SyntheticEmerald}.
@@ -21,7 +24,7 @@ import org.bukkit.inventory.Inventory;
  */
 public class VillagerTradingListener implements Listener {
 
-    public VillagerTradingListener(SlimefunPlugin plugin) {
+    public VillagerTradingListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -48,7 +51,7 @@ public class VillagerTradingListener implements Listener {
         }
     }
 
-    private boolean isUnallowed(SlimefunItem item) {
+    private boolean isUnallowed(@Nullable SlimefunItem item) {
         return item != null && !(item instanceof VanillaItem) && !(item instanceof SyntheticEmerald) && !item.isDisabled();
     }
 }

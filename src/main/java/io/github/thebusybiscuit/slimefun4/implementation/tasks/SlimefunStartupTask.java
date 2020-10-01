@@ -11,6 +11,7 @@ import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import javax.annotation.Nonnull;
 import java.util.logging.Level;
 
 /**
@@ -31,7 +32,7 @@ public class SlimefunStartupTask implements Runnable {
      * @param plugin   The main instance of our {@link SlimefunPlugin}
      * @param runnable A {@link Runnable} containing additional operations that need to be run
      */
-    public SlimefunStartupTask(SlimefunPlugin plugin, Runnable runnable) {
+    public SlimefunStartupTask(@Nonnull SlimefunPlugin plugin, @Nonnull Runnable runnable) {
         this.plugin = plugin;
         this.runnable = runnable;
     }

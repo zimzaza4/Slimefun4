@@ -25,11 +25,13 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 
 public class SlimefunItemListener implements Listener {
 
-    public SlimefunItemListener(SlimefunPlugin plugin) {
+    public SlimefunItemListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -63,6 +65,7 @@ public class SlimefunItemListener implements Listener {
         }
     }
 
+    @ParametersAreNonnullByDefault
     private boolean rightClickItem(PlayerInteractEvent e, PlayerRightClickEvent event, boolean defaultValue) {
         Optional<SlimefunItem> optional = event.getSlimefunItem();
 
@@ -77,6 +80,7 @@ public class SlimefunItemListener implements Listener {
         return defaultValue;
     }
 
+    @ParametersAreNonnullByDefault
     private boolean rightClickBlock(PlayerInteractEvent e, PlayerRightClickEvent event) {
         Optional<SlimefunItem> optional = event.getSlimefunBlock();
 

@@ -8,6 +8,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 final class GrapplingHookEntity {
 
     private final boolean dropItem;
@@ -15,17 +18,19 @@ final class GrapplingHookEntity {
     private final Arrow arrow;
     private final Entity leashTarget;
 
+    @ParametersAreNonnullByDefault
     GrapplingHookEntity(Player p, Arrow arrow, Entity leashTarget, boolean dropItem) {
         this.arrow = arrow;
         this.leashTarget = leashTarget;
         this.dropItem = p.getGameMode() != GameMode.CREATIVE && dropItem;
     }
 
+    @Nonnull
     public Arrow getArrow() {
         return arrow;
     }
 
-    public void drop(Location l) {
+    public void drop(@Nonnull Location l) {
         if (dropItem) {
             Item item = l.getWorld().dropItem(l, SlimefunItems.GRAPPLING_HOOK.clone());
             item.setPickupDelay(16);

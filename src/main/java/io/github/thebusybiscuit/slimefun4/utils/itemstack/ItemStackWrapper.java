@@ -6,6 +6,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +29,11 @@ public final class ItemStackWrapper extends ItemStack {
     private final int amount;
     private final boolean hasItemMeta;
 
-    public ItemStackWrapper(ItemStack item) {
+    public ItemStackWrapper(@Nonnull ItemStack item) {
         super(item.getType());
         amount = item.getAmount();
         hasItemMeta = item.hasItemMeta();
+
         if (hasItemMeta) {
             meta = item.getItemMeta();
         } else {
@@ -103,7 +105,8 @@ public final class ItemStackWrapper extends ItemStack {
      * @param items The array of {@link ItemStack ItemStacks} to transform
      * @return An {@link ItemStackWrapper} array
      */
-    public static ItemStackWrapper[] wrapArray(ItemStack[] items) {
+    @Nonnull
+    public static ItemStackWrapper[] wrapArray(@Nonnull ItemStack[] items) {
         Validate.notNull(items, "The array must not be null!");
         ItemStackWrapper[] array = new ItemStackWrapper[items.length];
 
@@ -119,10 +122,13 @@ public final class ItemStackWrapper extends ItemStack {
     /**
      * This creates an {@link ItemStackWrapper} {@link List} from a given {@link ItemStack} {@link List} *
      *
-     * @param items The {@link List} of {@link ItemStack ItemStacks} to transform
+     * @param items
+     *            The {@link List} of {@link ItemStack ItemStacks} to transform
+     *
      * @return An {@link ItemStackWrapper} array
      */
-    public static List<ItemStackWrapper> wrapList(List<ItemStack> items) {
+    @Nonnull
+    public static List<ItemStackWrapper> wrapList(@Nonnull List<ItemStack> items) {
         Validate.notNull(items, "The list must not be null!");
         List<ItemStackWrapper> list = new ArrayList<>(items.size());
 

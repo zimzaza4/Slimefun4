@@ -16,6 +16,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -26,6 +29,7 @@ public final class TeleportationManager {
     private final int[] teleporterBorder = {0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 26, 27, 35, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53};
     private final int[] teleporterInventory = {19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43};
 
+    @ParametersAreNonnullByDefault
     public void openTeleporterGUI(Player p, UUID uuid, Block b, int complexity) {
         if (teleporterUsers.contains(p.getUniqueId())) {
             return;
@@ -73,6 +77,7 @@ public final class TeleportationManager {
         });
     }
 
+    @ParametersAreNonnullByDefault
     public void teleport(UUID uuid, int complexity, Location source, Location destination, boolean resistance) {
         teleporterUsers.add(uuid);
 
@@ -80,6 +85,7 @@ public final class TeleportationManager {
         updateProgress(uuid, Math.max(1, 100 / time), 0, source, destination, resistance);
     }
 
+    @ParametersAreNonnullByDefault
     public int getTeleportationTime(int complexity, Location source, Location destination) {
         if (complexity < 100) return 100;
 
@@ -87,6 +93,7 @@ public final class TeleportationManager {
         return 1 + Math.min(4 * distanceSquared(source, destination) / speed, 40);
     }
 
+    @ParametersAreNonnullByDefault
     private int distanceSquared(Location source, Location destination) {
         if (source.getWorld().getUID().equals(destination.getWorld().getUID())) {
             int distance = (int) source.distanceSquared(destination);
@@ -96,11 +103,11 @@ public final class TeleportationManager {
         }
     }
 
-    private boolean isValid(Player p, Location source) {
+    private boolean isValid(@Nullable Player p, @Nonnull Location source) {
         return p != null && p.isValid() && p.getWorld().getUID().equals(source.getWorld().getUID()) && p.getLocation().distanceSquared(source) < 2.0;
     }
 
-    private void cancel(UUID uuid, Player p) {
+    private void cancel(@Nonnull UUID uuid, @Nullable Player p) {
         teleporterUsers.remove(uuid);
 
         if (p != null) {
@@ -108,6 +115,7 @@ public final class TeleportationManager {
         }
     }
 
+    @ParametersAreNonnullByDefault
     private void updateProgress(UUID uuid, int speed, int progress, Location source, Location destination, boolean resistance) {
         Player p = Bukkit.getPlayer(uuid);
 

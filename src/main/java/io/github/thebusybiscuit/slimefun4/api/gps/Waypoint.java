@@ -9,6 +9,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
 /**
@@ -16,10 +18,12 @@ import java.util.Objects;
  * It can be used via a {@link Teleporter}.
  *
  * @author TheBusyBiscuit
+ *
  * @see WaypointCreateEvent
  * @see GPSNetwork
  * @see TeleportationManager
  * @see Teleporter
+ *
  */
 public class Waypoint {
 
@@ -28,6 +32,7 @@ public class Waypoint {
     private final String name;
     private final Location location;
 
+    @ParametersAreNonnullByDefault
     public Waypoint(PlayerProfile profile, String id, Location l, String name) {
         Validate.notNull(profile, "Profile must never be null!");
         Validate.notNull(id, "id must never be null!");
@@ -40,18 +45,22 @@ public class Waypoint {
         this.name = name;
     }
 
+    @Nonnull
     public PlayerProfile getOwner() {
         return profile;
     }
 
+    @Nonnull
     public String getId() {
         return id;
     }
 
+    @Nonnull
     public String getName() {
         return name;
     }
 
+    @Nonnull
     public Location getLocation() {
         return location;
     }
@@ -60,6 +69,7 @@ public class Waypoint {
         return name.startsWith("player:death ");
     }
 
+    @Nonnull
     public ItemStack getIcon() {
         return SlimefunPlugin.getGPSNetwork().getIcon(name, location.getWorld().getEnvironment());
     }
@@ -76,7 +86,6 @@ public class Waypoint {
         }
 
         Waypoint waypoint = (Waypoint) obj;
-
         return profile.getUUID().equals(waypoint.getOwner().getUUID()) && id.equals(waypoint.getId()) && location.equals(waypoint.getLocation()) && name.equals(waypoint.getName());
     }
 

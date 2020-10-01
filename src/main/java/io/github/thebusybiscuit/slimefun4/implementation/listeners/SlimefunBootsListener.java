@@ -19,6 +19,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import javax.annotation.Nonnull;
+
 /**
  * This {@link Listener} is responsible for handling all boots provided by
  * Slimefun, such as the {@link StomperBoots} or any {@link SlimefunArmorPiece} that
@@ -29,7 +31,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  */
 public class SlimefunBootsListener implements Listener {
 
-    public SlimefunBootsListener(SlimefunPlugin plugin) {
+    public SlimefunBootsListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -48,7 +50,7 @@ public class SlimefunBootsListener implements Listener {
         }
     }
 
-    private void onFallDamage(EntityDamageEvent e) {
+    private void onFallDamage(@Nonnull EntityDamageEvent e) {
         Player p = (Player) e.getEntity();
         SlimefunItem boots = SlimefunItem.getByItem(p.getInventory().getBoots());
 
@@ -67,7 +69,7 @@ public class SlimefunBootsListener implements Listener {
         }
     }
 
-    private void onEnderPearlDamage(EntityDamageEvent e) {
+    private void onEnderPearlDamage(@Nonnull EntityDamageEvent e) {
         Player p = (Player) e.getEntity();
         SlimefunItem boots = SlimefunItem.getByItem(p.getInventory().getBoots());
 

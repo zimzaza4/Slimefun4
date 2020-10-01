@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nonnull;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
  */
 public class SlimefunGuideItem extends ItemStack {
 
-    public SlimefunGuideItem(SlimefunGuideImplementation implementation, String name) {
+    public SlimefunGuideItem(@Nonnull SlimefunGuideImplementation implementation, @Nonnull String name) {
         super(Material.ENCHANTED_BOOK);
 
         ItemMeta meta = getItemMeta();

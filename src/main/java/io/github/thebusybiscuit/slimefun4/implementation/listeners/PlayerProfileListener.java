@@ -7,11 +7,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public class PlayerProfileListener implements Listener {
 
-    public PlayerProfileListener(SlimefunPlugin plugin) {
+    public PlayerProfileListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

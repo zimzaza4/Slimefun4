@@ -14,6 +14,9 @@ import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * This {@link Listener} prevents any {@link SlimefunItem} from being used in a vanilla
  * machine like the workbench, grindstone, brewing stand or an anvil.
@@ -26,7 +29,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class VanillaMachinesListener implements Listener {
 
-    public VanillaMachinesListener(SlimefunPlugin plugin) {
+    public VanillaMachinesListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -112,7 +115,7 @@ public class VanillaMachinesListener implements Listener {
         }
     }
 
-    private boolean checkForUnallowedItems(ItemStack item1, ItemStack item2) {
+    private boolean checkForUnallowedItems(@Nullable ItemStack item1, @Nullable ItemStack item2) {
         if (SlimefunGuide.isGuideItem(item1) || SlimefunGuide.isGuideItem(item2)) {
             return true;
         } else {
@@ -127,7 +130,7 @@ public class VanillaMachinesListener implements Listener {
         return false;
     }
 
-    private boolean isUnallowed(SlimefunItem item) {
+    private boolean isUnallowed(@Nullable SlimefunItem item) {
         return item != null && !(item instanceof VanillaItem) && !item.isDisabled();
     }
 }

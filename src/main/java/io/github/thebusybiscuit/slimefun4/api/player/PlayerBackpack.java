@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 
 /**
@@ -34,12 +35,10 @@ public class PlayerBackpack {
     /**
      * This constructor loads an existing Backpack
      *
-     * @param profile
-     *            The {@link PlayerProfile} of this Backpack
-     * @param id
-     *            The id of this Backpack
+     * @param profile The {@link PlayerProfile} of this Backpack
+     * @param id      The id of this Backpack
      */
-    public PlayerBackpack(PlayerProfile profile, int id) {
+    public PlayerBackpack(@Nonnull PlayerProfile profile, int id) {
         this(profile, id, profile.getConfig().getInt("backpacks." + id + ".size"));
 
         for (int i = 0; i < size; i++) {
@@ -57,9 +56,9 @@ public class PlayerBackpack {
      * @param size
      *            The size of this Backpack
      */
-    public PlayerBackpack(PlayerProfile profile, int id, int size) {
+    public PlayerBackpack(@Nonnull PlayerProfile profile, int id, int size) {
         if (size < 9 || size > 54 || size % 9 != 0) {
-            throw new IllegalArgumentException("无效的背包大小! 大小必须为右侧中的一种: [9, 18, 27, 36, 45, 54]");
+            throw new IllegalArgumentException("无效的背包大小! 大小必须为以下几种: [9, 18, 27, 36, 45, 54]");
         }
 
         this.profile = profile;
@@ -87,6 +86,7 @@ public class PlayerBackpack {
      *
      * @return The owning {@link PlayerProfile}
      */
+    @Nonnull
     public PlayerProfile getOwner() {
         return profile;
     }
@@ -105,6 +105,7 @@ public class PlayerBackpack {
      *
      * @return The {@link Inventory} of this {@link PlayerBackpack}
      */
+    @Nonnull
     public Inventory getInventory() {
         return inventory;
     }

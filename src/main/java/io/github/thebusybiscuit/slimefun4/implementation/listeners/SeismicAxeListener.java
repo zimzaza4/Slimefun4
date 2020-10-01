@@ -8,6 +8,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 
+import javax.annotation.Nonnull;
+
 /**
  * This {@link Listener} is responsible for removing every {@link FallingBlock} that was
  * created using a {@link SeismicAxe}.
@@ -19,7 +21,7 @@ public class SeismicAxeListener implements Listener {
 
     private final SeismicAxe seismicAxe;
 
-    public SeismicAxeListener(SlimefunPlugin plugin, SeismicAxe seismicAxe) {
+    public SeismicAxeListener(@Nonnull SlimefunPlugin plugin, @Nonnull SeismicAxe seismicAxe) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         this.seismicAxe = seismicAxe;
     }

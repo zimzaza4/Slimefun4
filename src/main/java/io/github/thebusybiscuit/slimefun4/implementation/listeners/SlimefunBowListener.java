@@ -16,6 +16,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -33,7 +34,7 @@ public class SlimefunBowListener implements Listener {
 
     private final Map<UUID, SlimefunBow> projectiles = new HashMap<>();
 
-    public void register(SlimefunPlugin plugin) {
+    public void register(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -43,6 +44,7 @@ public class SlimefunBowListener implements Listener {
      *
      * @return A {@link HashMap} with all actively tracked {@link Arrow Arrows}
      */
+    @Nonnull
     public Map<UUID, SlimefunBow> getProjectileData() {
         return projectiles;
     }

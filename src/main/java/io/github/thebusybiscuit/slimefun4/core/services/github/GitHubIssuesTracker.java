@@ -5,12 +5,14 @@ import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.logging.Level;
 
 class GitHubIssuesTracker extends GitHubConnector {
 
     private final IssuesTrackerConsumer callback;
 
+    @ParametersAreNonnullByDefault
     GitHubIssuesTracker(GitHubService github, String repository, IssuesTrackerConsumer callback) {
         super(github, repository);
         this.callback = callback;

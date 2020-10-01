@@ -4,12 +4,14 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nonnull;
+
 abstract class PlayerTask implements Runnable {
 
     protected int id;
     protected Player p;
 
-    public PlayerTask(Player p) {
+    public PlayerTask(@Nonnull Player p) {
         this.p = p;
     }
 

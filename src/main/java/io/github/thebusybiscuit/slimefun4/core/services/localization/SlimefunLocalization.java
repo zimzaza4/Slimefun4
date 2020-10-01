@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -46,6 +47,7 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
      * @param id The language code
      * @return A {@link Language} with the given id or null
      */
+    @Nullable
     public abstract Language getLanguage(@Nonnull String id);
 
     /**
@@ -53,6 +55,7 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
      *
      * @param p
      *            The {@link Player} to query
+     *
      * @return The {@link Language} that was selected by the given {@link Player}
      */
     public abstract Language getLanguage(@Nonnull Player p);
@@ -72,6 +75,7 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
      *
      * @return A {@link Collection} that contains every installed {@link Language}
      */
+    @Nonnull
     public abstract Collection<Language> getLanguages();
 
     protected abstract void addLanguage(@Nonnull String id, @Nonnull String texture);

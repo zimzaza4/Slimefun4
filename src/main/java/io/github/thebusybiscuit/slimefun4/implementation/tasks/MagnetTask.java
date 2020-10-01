@@ -8,6 +8,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nonnull;
+
 /**
  * This {@link PlayerTask} is run when a {@link Player} carries an {@link InfusedMagnet}.
  * It manages the automatic pickup of nearby items.
@@ -23,12 +25,10 @@ public class MagnetTask extends PlayerTask {
      * This creates a new {@link MagnetTask} for the given {@link Player} with the given
      * pickup radius.
      *
-     * @param p
-     *            The {@link Player} who items should be teleported to
-     * @param radius
-     *            The radius in which items should be picked up
+     * @param p      The {@link Player} who items should be teleported to
+     * @param radius The radius in which items should be picked up
      */
-    public MagnetTask(Player p, double radius) {
+    public MagnetTask(@Nonnull Player p, double radius) {
         super(p);
 
         this.radius = radius;

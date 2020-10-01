@@ -2,6 +2,8 @@ package io.github.thebusybiscuit.slimefun4.api.exceptions;
 
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A {@link MissingDependencyException} is thrown when a {@link SlimefunAddon} tried
  * to register Items without marking Slimefun as a dependency.
@@ -20,6 +22,7 @@ public class MissingDependencyException extends RuntimeException {
      * @param addon      The {@link SlimefunAddon} that caused this exception
      * @param dependency The dependency that is required ("Slimefun")
      */
+    @ParametersAreNonnullByDefault
     public MissingDependencyException(SlimefunAddon addon, String dependency) {
         super("Slimefun Addon \"" + addon.getName() + "\" forgot to define \"" + dependency + "\" as a depend or softdepend inside the plugin.yml file");
     }

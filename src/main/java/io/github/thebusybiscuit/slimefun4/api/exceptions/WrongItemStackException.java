@@ -5,6 +5,8 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A {@link WrongItemStackException} is thrown when someone tries to alter an {@link ItemStack}
  * but actually wanted to alter a different one.
@@ -25,6 +27,7 @@ public class WrongItemStackException extends RuntimeException {
      *
      * @param message An error message to display
      */
+    @ParametersAreNonnullByDefault
     public WrongItemStackException(String message) {
         super("You probably wanted to alter a different ItemStack: " + message);
     }

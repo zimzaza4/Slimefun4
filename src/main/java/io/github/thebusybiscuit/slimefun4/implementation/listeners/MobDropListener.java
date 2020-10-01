@@ -13,12 +13,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MobDropListener implements Listener {
 
-    public MobDropListener(SlimefunPlugin plugin) {
+    public MobDropListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -48,7 +49,7 @@ public class MobDropListener implements Listener {
         }
     }
 
-    private boolean canDrop(Player p, ItemStack item) {
+    private boolean canDrop(@Nonnull Player p, @Nonnull ItemStack item) {
         SlimefunItem sfi = SlimefunItem.getByItem(item);
 
         if (sfi == null) {

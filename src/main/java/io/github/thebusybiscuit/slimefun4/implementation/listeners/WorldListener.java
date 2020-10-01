@@ -8,11 +8,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 
+import javax.annotation.Nonnull;
 import java.util.logging.Level;
 
 public class WorldListener implements Listener {
 
-    public WorldListener(SlimefunPlugin plugin) {
+    public WorldListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

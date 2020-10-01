@@ -10,6 +10,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -23,8 +25,10 @@ import java.util.logging.Level;
  * See {@link Category} for the complete documentation.
  *
  * @author TheBusyBiscuit
+ *
  * @see Category
  * @see SeasonalCategory
+ *
  */
 public class LockedCategory extends Category {
 
@@ -39,6 +43,7 @@ public class LockedCategory extends Category {
      * @param item    The display item for this category
      * @param parents The parent categories for this category
      */
+    @ParametersAreNonnullByDefault
     public LockedCategory(NamespacedKey key, ItemStack item, NamespacedKey... parents) {
         this(key, item, 3, parents);
     }
@@ -46,11 +51,17 @@ public class LockedCategory extends Category {
     /**
      * The constructor for a LockedCategory.
      *
-     * @param key     A unique identifier for this category
-     * @param item    The display item for this category
-     * @param tier    The tier of this category
-     * @param parents The parent categories for this category
+     * @param key
+     *            A unique identifier for this category
+     * @param item
+     *            The display item for this category
+     * @param tier
+     *            The tier of this category
+     * @param parents
+     *            The parent categories for this category
+     *
      */
+    @ParametersAreNonnullByDefault
     public LockedCategory(NamespacedKey key, ItemStack item, int tier, NamespacedKey... parents) {
         super(key, item, tier);
         Validate.noNullElements(parents, "A LockedCategory must not have any 'null' parents!");
@@ -85,9 +96,11 @@ public class LockedCategory extends Category {
      * Gets the list of parent categories for this {@link LockedCategory}.
      *
      * @return the list of parent categories
+     *
      * @see #addParent(Category)
      * @see #removeParent(Category)
      */
+    @Nonnull
     public Set<Category> getParents() {
         return parents;
     }
@@ -95,7 +108,9 @@ public class LockedCategory extends Category {
     /**
      * Adds a parent {@link Category} to this {@link LockedCategory}.
      *
-     * @param category The {@link Category} to add as a parent
+     * @param category
+     *            The {@link Category} to add as a parent
+     *
      * @see #getParents()
      * @see #removeParent(Category)
      */
@@ -110,22 +125,26 @@ public class LockedCategory extends Category {
     /**
      * Removes a {@link Category} from the parents of this {@link LockedCategory}.
      *
-     * @param category The {@link Category} to remove from the parents of this {@link LockedCategory}
+     * @param category
+     *            The {@link Category} to remove from the parents of this {@link LockedCategory}
+     *
      * @see #getParents()
      * @see #addParent(Category)
      */
-    public void removeParent(Category category) {
+    public void removeParent(@Nonnull Category category) {
         parents.remove(category);
     }
 
     /**
      * Checks if the {@link Player} has fully unlocked all parent categories.
      *
-     * @param p       The {@link Player} to check
-     * @param profile The {@link PlayerProfile} that belongs to the given {@link Player}
+     * @param p
+     *            The {@link Player} to check
+     * @param profile
+     *            The {@link PlayerProfile} that belongs to the given {@link Player}
      * @return Whether the {@link Player} has fully completed all parent categories, otherwise false
      */
-    public boolean hasUnlocked(Player p, PlayerProfile profile) {
+    public boolean hasUnlocked(@Nonnull Player p, @Nonnull PlayerProfile profile) {
         for (Category category : parents) {
             for (SlimefunItem item : category.getItems()) {
                 // Should probably be replaced with Slimefun.hasUnlocked(...)

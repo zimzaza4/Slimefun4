@@ -13,6 +13,8 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
 /**
@@ -46,6 +48,7 @@ public class AncientAltarTask implements Runnable {
     private int stage;
     private final Player player;
 
+    @ParametersAreNonnullByDefault
     public AncientAltarTask(AncientAltarListener listener, Block altar, int speed, ItemStack output, List<Block> pedestals, List<ItemStack> items, Player player) {
         this.listener = listener;
         this.dropLocation = altar.getLocation().add(0.5, 1.3, 0.5);
@@ -111,7 +114,7 @@ public class AncientAltarTask implements Runnable {
         }
     }
 
-    private void checkPedestal(Block pedestal) {
+    private void checkPedestal(@Nonnull Block pedestal) {
         Optional<Item> item = pedestalItem.getPlacedItem(pedestal);
 
         if (!item.isPresent() || positionLock.remove(item.get()) == null) {

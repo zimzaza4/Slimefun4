@@ -8,13 +8,15 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import javax.annotation.Nonnull;
+
 public class JetpackTask extends PlayerTask {
 
     private static final float COST = 0.08F;
 
     private final Jetpack jetpack;
 
-    public JetpackTask(Player p, Jetpack jetpack) {
+    public JetpackTask(@Nonnull Player p, @Nonnull Jetpack jetpack) {
         super(p);
         this.jetpack = jetpack;
     }

@@ -3,6 +3,8 @@ package io.github.thebusybiscuit.slimefun4.api.exceptions;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import org.bukkit.plugin.Plugin;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An {@link UnregisteredItemException} is thrown whenever a {@link Plugin} tried to
  * access a method prematurely from {@link SlimefunItem} that can only be called after the
@@ -23,6 +25,7 @@ public class UnregisteredItemException extends RuntimeException {
      * @param item
      *            The {@link SlimefunItem} that was affected by this
      */
+    @ParametersAreNonnullByDefault
     public UnregisteredItemException(SlimefunItem item) {
         super(item.toString() + " has not been registered yet.");
     }

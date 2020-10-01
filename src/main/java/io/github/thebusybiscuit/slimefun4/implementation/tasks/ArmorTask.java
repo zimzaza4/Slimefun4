@@ -12,6 +12,7 @@ import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
@@ -19,6 +20,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -60,6 +64,7 @@ public class ArmorTask implements Runnable {
      *
      * @return The {@link Set} of {@link PotionEffect PotionEffects} applied upon radioactive contact
      */
+    @Nonnull
     public Set<PotionEffect> getRadiationEffects() {
         return radiationEffects;
     }
@@ -86,6 +91,7 @@ public class ArmorTask implements Runnable {
         }
     }
 
+    @ParametersAreNonnullByDefault
     private void handleSlimefunArmor(Player p, ItemStack[] armor, HashedArmorpiece[] cachedArmor) {
         for (int slot = 0; slot < 4; slot++) {
             ItemStack item = armor[slot];
@@ -117,7 +123,7 @@ public class ArmorTask implements Runnable {
         }
     }
 
-    private void checkForSolarHelmet(Player p) {
+    private void checkForSolarHelmet(@Nonnull Player p) {
         ItemStack helmet = p.getInventory().getHelmet();
 
         if (SlimefunPlugin.getRegistry().isBackwardsCompatible() && !SlimefunUtils.isItemSimilar(helmet, SlimefunItems.SOLAR_HELMET, true, false)) {
@@ -132,7 +138,7 @@ public class ArmorTask implements Runnable {
         }
     }
 
-    private boolean hasSunlight(Player p) {
+    private boolean hasSunlight(@Nonnull Player p) {
         World world = p.getWorld();
 
         if (world.getEnvironment() != Environment.NORMAL) {
@@ -143,7 +149,7 @@ public class ArmorTask implements Runnable {
         return (world.getTime() < 12300 || world.getTime() > 23850) && p.getEyeLocation().getBlock().getLightFromSky() == 15;
     }
 
-    private void checkForRadiation(Player p, PlayerProfile profile) {
+    private void checkForRadiation(@Nonnull Player p, @Nonnull PlayerProfile profile) {
         if (!profile.hasFullProtectionAgainst(ProtectionType.RADIATION)) {
             for (ItemStack item : p.getInventory()) {
                 if (checkAndApplyRadiation(p, item)) {
@@ -153,7 +159,11 @@ public class ArmorTask implements Runnable {
         }
     }
 
-    private boolean checkAndApplyRadiation(Player p, ItemStack item) {
+    private boolean checkAndApplyRadiation(@Nonnull Player p, @Nullable ItemStack item) {
+        if (item == null || item.getType() == Material.AIR) {
+            return false;
+        }
+
         for (SlimefunItem radioactiveItem : SlimefunPlugin.getRegistry().getRadioactiveItems()) {
             if (radioactiveItem.isItem(item) && Slimefun.isEnabled(p, radioactiveItem, true)) {
                 // If the item is enabled in the world, then make radioactivity do its job

@@ -29,6 +29,8 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -36,7 +38,7 @@ public class TalismanListener implements Listener {
 
     private final int[] armorSlots = {39, 38, 37, 36};
 
-    public TalismanListener(SlimefunPlugin plugin) {
+    public TalismanListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -70,7 +72,7 @@ public class TalismanListener implements Listener {
         }
     }
 
-    private void onProjectileDamage(EntityDamageByEntityEvent e) {
+    private void onProjectileDamage(@Nonnull EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Projectile && !(e.getDamager() instanceof Trident)) {
             Projectile projectile = (Projectile) e.getDamager();
 
@@ -88,7 +90,7 @@ public class TalismanListener implements Listener {
      * @param p          The {@link Player} who was hit
      * @param projectile The {@link Projectile} that hit this {@link Player}
      */
-    private void returnProjectile(Player p, Projectile projectile) {
+    private void returnProjectile(@Nonnull Player p, @Nonnull Projectile projectile) {
         Vector direction = p.getEyeLocation().getDirection().multiply(2.0);
         Location loc = p.getEyeLocation().add(direction.getX(), direction.getY(), direction.getZ());
 
@@ -127,6 +129,8 @@ public class TalismanListener implements Listener {
         }
     }
 
+    @Nonnull
+    @ParametersAreNonnullByDefault
     private Collection<ItemStack> getExtraDrops(LivingEntity entity, Collection<ItemStack> drops) {
         List<ItemStack> items = new ArrayList<>(drops);
 
@@ -255,7 +259,7 @@ public class TalismanListener implements Listener {
         }
     }
 
-    private int getAmountWithFortune(Material type, int fortuneLevel) {
+    private int getAmountWithFortune(@Nonnull Material type, int fortuneLevel) {
         if (fortuneLevel > 0) {
             Random random = ThreadLocalRandom.current();
             int amount = random.nextInt(fortuneLevel + 2) - 1;

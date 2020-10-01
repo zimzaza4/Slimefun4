@@ -5,6 +5,8 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.handlers.ItemHandler;
 import org.bukkit.plugin.Plugin;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An {@link IncompatibleItemHandlerException} is thrown whenever a {@link Plugin} tried
  * to add an {@link ItemHandler} to a {@link SlimefunItem} despite the {@link SlimefunItem}
@@ -27,6 +29,7 @@ public class IncompatibleItemHandlerException extends RuntimeException {
      * @param item    The {@link SlimefunItem} that was affected by this
      * @param handler The {@link ItemHandler} which someone tried to add
      */
+    @ParametersAreNonnullByDefault
     public IncompatibleItemHandlerException(String message, SlimefunItem item, ItemHandler handler) {
         super("The item handler type: \"" + handler.getIdentifier().getSimpleName() + "\" is not compatible with " + item + " (" + message + ')');
     }

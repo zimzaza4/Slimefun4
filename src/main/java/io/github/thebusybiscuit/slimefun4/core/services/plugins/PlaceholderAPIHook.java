@@ -7,6 +7,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -16,7 +17,7 @@ class PlaceholderAPIHook extends PlaceholderExpansion {
     private final String version;
     private final String author;
 
-    public PlaceholderAPIHook(SlimefunPlugin plugin) {
+    public PlaceholderAPIHook(@Nonnull SlimefunPlugin plugin) {
         this.version = plugin.getDescription().getVersion();
         this.author = plugin.getDescription().getAuthors().toString();
     }

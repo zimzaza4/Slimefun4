@@ -9,6 +9,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import javax.annotation.Nonnull;
+
 /**
  * This {@link Listener} is responsible for all updates to a {@link Network}.
  *
@@ -20,7 +22,7 @@ public class NetworkListener implements Listener {
 
     private final NetworkManager manager;
 
-    public NetworkListener(SlimefunPlugin plugin, NetworkManager manager) {
+    public NetworkListener(@Nonnull SlimefunPlugin plugin, @Nonnull NetworkManager manager) {
         this.manager = manager;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }

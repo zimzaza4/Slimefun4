@@ -9,6 +9,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -17,7 +19,7 @@ public class SoulboundListener implements Listener {
 
     private final Map<UUID, Map<Integer, ItemStack>> soulbound = new HashMap<>();
 
-    public SoulboundListener(SlimefunPlugin plugin) {
+    public SoulboundListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -43,12 +45,13 @@ public class SoulboundListener implements Listener {
         retrieveItems(e.getPlayer());
     }
 
+    @ParametersAreNonnullByDefault
     private void storeItem(UUID uuid, int slot, ItemStack item) {
         Map<Integer, ItemStack> items = soulbound.computeIfAbsent(uuid, uid -> new HashMap<>());
         items.put(slot, item);
     }
 
-    private void retrieveItems(Player p) {
+    private void retrieveItems(@Nonnull Player p) {
         Map<Integer, ItemStack> items = soulbound.remove(p.getUniqueId());
 
         if (items != null) {

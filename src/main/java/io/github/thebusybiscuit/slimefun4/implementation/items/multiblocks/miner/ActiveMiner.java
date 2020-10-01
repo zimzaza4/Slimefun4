@@ -90,8 +90,7 @@ class ActiveMiner implements Runnable {
      * This method stops the {@link IndustrialMiner} with an error message.
      * The error message is a path to the location in Slimefun's localization files.
      *
-     * @param error
-     *            The error message to send
+     * @param error The error message to send
      */
     public void stop(String error) {
         Player p = Bukkit.getPlayer(owner);
@@ -229,9 +228,7 @@ class ActiveMiner implements Runnable {
      * This refuels the {@link IndustrialMiner} and pushes the given {@link ItemStack} to
      * its {@link Chest}.
      *
-     * @param item
-     *            The {@link ItemStack} to push to the {@link Chest}.
-     *
+     * @param item The {@link ItemStack} to push to the {@link Chest}.
      * @return Whether the operation was successful
      */
     private boolean push(ItemStack item) {
@@ -280,21 +277,26 @@ class ActiveMiner implements Runnable {
 
             if (state instanceof Chest) {
                 Inventory inv = ((Chest) state).getBlockInventory();
+                return consumeFuel(inv);
+            }
+        }
 
-                for (int i = 0; i < inv.getSize(); i++) {
-                    for (MachineFuel fuelType : miner.fuelTypes) {
-                        ItemStack item = inv.getContents()[i];
+        return 0;
+    }
 
-                        if (fuelType.test(item)) {
-                            ItemUtils.consumeItem(item, false);
+    private int consumeFuel(Inventory inv) {
+        for (int i = 0; i < inv.getSize(); i++) {
+            for (MachineFuel fuelType : miner.fuelTypes) {
+                ItemStack item = inv.getContents()[i];
 
-                            if (miner instanceof AdvancedIndustrialMiner) {
-                                inv.addItem(new ItemStack(Material.BUCKET));
-                            }
+                if (fuelType.test(item)) {
+                    ItemUtils.consumeItem(item, false);
 
-                            return fuelType.getTicks();
-                        }
+                    if (miner instanceof AdvancedIndustrialMiner) {
+                        inv.addItem(new ItemStack(Material.BUCKET));
                     }
+
+                    return fuelType.getTicks();
                 }
             }
         }
@@ -359,5 +361,4 @@ class ActiveMiner implements Runnable {
 
         block.getWorld().playSound(block.getLocation(), extended ? Sound.BLOCK_PISTON_EXTEND : Sound.BLOCK_PISTON_CONTRACT, 0.1F, 1F);
     }
-
 }

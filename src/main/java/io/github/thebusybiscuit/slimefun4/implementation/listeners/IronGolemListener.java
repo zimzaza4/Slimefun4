@@ -11,9 +11,11 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import javax.annotation.Nonnull;
+
 public class IronGolemListener implements Listener {
 
-    public IronGolemListener(SlimefunPlugin plugin) {
+    public IronGolemListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

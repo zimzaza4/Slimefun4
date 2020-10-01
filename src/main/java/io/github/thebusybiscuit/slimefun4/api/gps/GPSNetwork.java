@@ -18,11 +18,13 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
+import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -52,7 +54,7 @@ public class GPSNetwork {
      * @param uuid   The {@link UUID} who the {@link GPSTransmitter} belongs to
      * @param online Whether that {@link GPSTransmitter} is online
      */
-    public void updateTransmitter(Location l, UUID uuid, boolean online) {
+    public void updateTransmitter(@Nonnull Location l, @Nonnull UUID uuid, boolean online) {
         Set<Location> set = transmitters.computeIfAbsent(uuid, id -> new HashSet<>());
 
         if (online) {
@@ -70,7 +72,7 @@ public class GPSNetwork {
      * @param uuid The {@link UUID} who to calculate it for
      * @return The network complexity for that {@link UUID}
      */
-    public int getNetworkComplexity(UUID uuid) {
+    public int getNetworkComplexity(@Nonnull UUID uuid) {
         if (!transmitters.containsKey(uuid)) {
             return 0;
         }
@@ -94,7 +96,7 @@ public class GPSNetwork {
      * @param uuid The {@link UUID} who these transmitters belong to
      * @return The amount of transmitters
      */
-    public int countTransmitters(UUID uuid) {
+    public int countTransmitters(@Nonnull UUID uuid) {
         if (!transmitters.containsKey(uuid)) {
             return 0;
         } else {
@@ -102,7 +104,7 @@ public class GPSNetwork {
         }
     }
 
-    public void openTransmitterControlPanel(Player p) {
+    public void openTransmitterControlPanel(@Nonnull Player p) {
         ChestMenu menu = new ChestMenu(ChatColor.BLUE + SlimefunPlugin.getLocalization().getMessage(p, "machines.GPS_CONTROL_PANEL.title"));
 
         for (int slot : border) {
@@ -160,7 +162,8 @@ public class GPSNetwork {
      *
      * @return An icon for this waypoint
      */
-    public ItemStack getIcon(String name, Environment environment) {
+    @Nonnull
+    public ItemStack getIcon(@Nonnull String name, @Nonnull Environment environment) {
         if (name.startsWith("player:death ")) {
             return HeadTexture.DEATHPOINT.getAsItemStack();
         } else if (environment == Environment.NETHER) {
@@ -172,7 +175,7 @@ public class GPSNetwork {
         }
     }
 
-    public void openWaypointControlPanel(Player p) {
+    public void openWaypointControlPanel(@Nonnull Player p) {
         PlayerProfile.get(p, profile -> {
             ChestMenu menu = new ChestMenu(ChatColor.BLUE + SlimefunPlugin.getLocalization().getMessage(p, "machines.GPS_CONTROL_PANEL.title"));
 
@@ -220,12 +223,13 @@ public class GPSNetwork {
      * This method will prompt the given {@link Player} to enter a name for a waypoint.
      * After entering the name, it will be added to his waypoint list.
      *
-     * @param p
-     *            The {@link Player} who should get a new waypoint
-     * @param l
-     *            The {@link Location} of the new waypoint
+     * @param p The {@link Player} who should get a new waypoint
+     * @param l The {@link Location} of the new waypoint
      */
-    public void createWaypoint(Player p, Location l) {
+    public void createWaypoint(@Nonnull Player p, @Nonnull Location l) {
+        Validate.notNull(p, "Player cannot be null!");
+        Validate.notNull(l, "Waypoint Location cannot be null!");
+
         PlayerProfile.get(p, profile -> {
             if ((profile.getWaypoints().size() + 2) > inventory.length) {
                 SlimefunPlugin.getLocalization().sendMessage(p, "gps.waypoint.max", true);
@@ -249,7 +253,11 @@ public class GPSNetwork {
      * @param l
      *            The {@link Location} of this waypoint
      */
-    public void addWaypoint(Player p, String name, Location l) {
+    public void addWaypoint(@Nonnull Player p, @Nonnull String name, @Nonnull Location l) {
+        Validate.notNull(p, "Player cannot be null!");
+        Validate.notNull(name, "Waypoint name cannot be null!");
+        Validate.notNull(l, "Waypoint Location cannot be null!");
+
         PlayerProfile.get(p, profile -> {
             if ((profile.getWaypoints().size() + 2) > inventory.length) {
                 SlimefunPlugin.getLocalization().sendMessage(p, "gps.waypoint.max", true);
@@ -288,6 +296,7 @@ public class GPSNetwork {
      *
      * @return A {@link Set} with all {@link Location Locations} of transmitters for this {@link UUID}
      */
+    @Nonnull
     public Set<Location> getTransmitters(UUID uuid) {
         return transmitters.getOrDefault(uuid, new HashSet<>());
     }
@@ -298,6 +307,7 @@ public class GPSNetwork {
      *
      * @return The {@link TeleportationManager} for this {@link GPSNetwork}
      */
+    @Nonnull
     public TeleportationManager getTeleportationManager() {
         return teleportation;
     }
@@ -308,6 +318,7 @@ public class GPSNetwork {
      *
      * @return The {@link ResourceManager} for this {@link GPSNetwork}
      */
+    @Nonnull
     public ResourceManager getResourceManager() {
         return resourceManager;
     }

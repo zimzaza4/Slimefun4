@@ -9,6 +9,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class JetBootsTask extends PlayerTask {
@@ -17,7 +18,7 @@ public class JetBootsTask extends PlayerTask {
 
     private final JetBoots boots;
 
-    public JetBootsTask(Player p, JetBoots boots) {
+    public JetBootsTask(@Nonnull Player p, @Nonnull JetBoots boots) {
         super(p);
         this.boots = boots;
     }

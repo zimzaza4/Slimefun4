@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 class SlimefunTabCompleter implements TabCompleter {
@@ -20,6 +21,7 @@ class SlimefunTabCompleter implements TabCompleter {
         this.command = command;
     }
 
+    @Nullable
     @Override
     public List<String> onTabComplete(@Nonnull CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 1) {
@@ -39,12 +41,10 @@ class SlimefunTabCompleter implements TabCompleter {
                 }
 
                 return createReturnList(suggestions, args[2]);
-            }
-            else {
+            } else {
                 return null;
             }
-        }
-        else {
+        } else {
             return null;
         }
     }

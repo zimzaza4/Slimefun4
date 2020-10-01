@@ -10,6 +10,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+
 /**
  * This {@link Listener} is responsible for handling the {@link ItemConsumptionHandler}
  * for any {@link SlimefunItem}.
@@ -18,7 +20,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class SlimefunItemConsumeListener implements Listener {
 
-    public SlimefunItemConsumeListener(SlimefunPlugin plugin) {
+    public SlimefunItemConsumeListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

@@ -11,6 +11,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -42,6 +44,7 @@ public class ErrorReport<T extends Throwable> {
     private T throwable;
     private File file;
 
+    @ParametersAreNonnullByDefault
     public ErrorReport(T throwable, SlimefunAddon addon, Consumer<PrintStream> printer) {
         this.throwable = throwable;
         this.addon = addon;
@@ -49,6 +52,7 @@ public class ErrorReport<T extends Throwable> {
         Slimefun.runSync(() -> print(printer));
     }
 
+    @ParametersAreNonnullByDefault
     public ErrorReport(T throwable, Location l, SlimefunItem item) {
         this(throwable, item.getAddon(), stream -> {
             stream.println("Block Info:");
@@ -81,6 +85,7 @@ public class ErrorReport<T extends Throwable> {
         });
     }
 
+    @ParametersAreNonnullByDefault
     public ErrorReport(T throwable, SlimefunItem item) {
         this(throwable, item.getAddon(), stream -> {
             stream.println("SlimefunItem:");
@@ -95,6 +100,7 @@ public class ErrorReport<T extends Throwable> {
      *
      * @return The {@link File} for this {@link ErrorReport}
      */
+    @Nonnull
     public File getFile() {
         return file;
     }
@@ -104,6 +110,7 @@ public class ErrorReport<T extends Throwable> {
      *
      * @return The {@link Throwable}
      */
+    @Nonnull
     public T getThrown() {
         return throwable;
     }
@@ -117,7 +124,7 @@ public class ErrorReport<T extends Throwable> {
         return count;
     }
 
-    private void print(Consumer<PrintStream> printer) {
+    private void print(@Nonnull Consumer<PrintStream> printer) {
         this.file = getNewFile();
         count++;
 
@@ -177,7 +184,7 @@ public class ErrorReport<T extends Throwable> {
         }
     }
 
-    private static void scanPlugins(List<String> plugins, List<String> addons) {
+    private static void scanPlugins(@Nonnull List<String> plugins, @Nonnull List<String> addons) {
         String dependency = "Slimefun";
 
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
@@ -197,6 +204,7 @@ public class ErrorReport<T extends Throwable> {
         }
     }
 
+    @Nonnull
     private static File getNewFile() {
         String path = "plugins/Slimefun/error-reports/" + dateFormat.format(LocalDateTime.now());
         File newFile = new File(path + ".err");
@@ -211,7 +219,7 @@ public class ErrorReport<T extends Throwable> {
         return newFile;
     }
 
-    public static void tryCatch(Function<Exception, ErrorReport<Exception>> function, Runnable runnable) {
+    public static void tryCatch(@Nonnull Function<Exception, ErrorReport<Exception>> function, @Nonnull Runnable runnable) {
         try {
             runnable.run();
         } catch (Exception x) {
