@@ -1,6 +1,5 @@
 package me.mrCookieSlime.Slimefun.Objects;
 
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.UnregisterReason;
 import org.bukkit.block.Block;
@@ -18,24 +17,6 @@ import org.bukkit.event.Event;
  */
 @FunctionalInterface
 public interface SlimefunBlockHandler {
-
-    /**
-     * This method gets called when the {@link Block} is placed.
-     * Use this method to initialize block data.
-     *
-     * @deprecated Use a {@link BlockPlaceHandler} instead
-     *
-     * @param p
-     *            The {@link Player} who placed it
-     * @param b
-     *            The {@link Block} that was placed
-     * @param item
-     *            The {@link SlimefunItem} that will be stored inside the {@link Block}
-     */
-    @Deprecated
-    default void onPlace(Player p, Block b, SlimefunItem item) {
-        // This has been deprecated
-    }
 
     /**
      * This method gets called when the {@link Block} is broken.

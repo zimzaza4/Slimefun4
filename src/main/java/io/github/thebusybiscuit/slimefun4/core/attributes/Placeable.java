@@ -5,6 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 /**
@@ -16,9 +17,11 @@ import java.util.Collection;
  */
 public interface Placeable {
 
+    @Nonnull
     Collection<ItemStack> getDrops();
 
-    Collection<ItemStack> getDrops(Player p);
+    @Nonnull
+    Collection<ItemStack> getDrops(@Nonnull Player p);
 
     /**
      * This method determines how to treat this {@link Block} when it is broken.

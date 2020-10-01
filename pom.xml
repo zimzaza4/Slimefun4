@@ -16,7 +16,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <!-- Bukkit properties -->
-        <spigot.version>1.16.2</spigot.version>
+        <spigot.version>1.16.3</spigot.version>
         <spigot.javadocs>https://hub.spigotmc.org/javadocs/bukkit/</spigot.javadocs>
 
     </properties>
@@ -167,7 +167,7 @@
         <dependency>
             <groupId>com.github.TheBusyBiscuit</groupId>
             <artifactId>CS-CoreLib</artifactId>
-            <version>31390302cf</version>
+            <version>1.7</version>
             <scope>provided</scope>
         </dependency>
 

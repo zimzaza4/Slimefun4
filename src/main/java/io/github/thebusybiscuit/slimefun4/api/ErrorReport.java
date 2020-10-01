@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -34,11 +35,12 @@ import java.util.stream.IntStream;
  * Error reports get saved in the plugin folder.
  *
  * @author TheBusyBiscuit
+ *
  */
 public class ErrorReport<T extends Throwable> {
 
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm", Locale.ROOT);
-    private static int count;
+    private static final AtomicInteger count = new AtomicInteger(0);
 
     private SlimefunAddon addon;
     private T throwable;
@@ -121,12 +123,12 @@ public class ErrorReport<T extends Throwable> {
      * @return The amount of {@link ErrorReport ErrorReports} created.
      */
     public static int count() {
-        return count;
+        return count.get();
     }
 
     private void print(@Nonnull Consumer<PrintStream> printer) {
         this.file = getNewFile();
-        count++;
+        count.incrementAndGet();
 
         try (PrintStream stream = new PrintStream(file, StandardCharsets.UTF_8.name())) {
             stream.println();

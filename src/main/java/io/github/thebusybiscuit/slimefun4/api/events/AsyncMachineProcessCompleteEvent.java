@@ -13,10 +13,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * This {@link Event} is fired whenever an {@link AContainer} has completed its process.
  *
  * @author poma123
+ *
  */
 public class AsyncMachineProcessCompleteEvent extends Event {
 
-    private static final HandlerList handlerList = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
     private final Block block;
     private final MachineRecipe machineRecipe;
@@ -51,12 +52,12 @@ public class AsyncMachineProcessCompleteEvent extends Event {
 
     @Nonnull
     public static HandlerList getHandlerList() {
-        return handlerList;
+        return handlers;
     }
 
     @Nonnull
     @Override
     public HandlerList getHandlers() {
-        return handlerList;
+        return getHandlerList();
     }
 }

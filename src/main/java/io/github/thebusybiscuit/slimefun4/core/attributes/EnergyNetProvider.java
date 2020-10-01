@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 public interface EnergyNetProvider extends EnergyNetComponent {
 
     @Override
+    @Nonnull
     default EnergyNetComponentType getEnergyComponentType() {
         return EnergyNetComponentType.GENERATOR;
     }
