@@ -22,6 +22,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -49,11 +52,11 @@ public class BlockStorage {
     private static int chunkChanges = 0;
     private int changes = 0;
 
-    public static BlockStorage getStorage(World world) {
+    public static BlockStorage getStorage(@Nonnull World world) {
         return SlimefunPlugin.getRegistry().getWorlds().get(world.getName());
     }
 
-    public static BlockStorage getForcedStorage(World world) {
+    public static BlockStorage getForcedStorage(@Nonnull World world) {
         return isWorldRegistered(world.getName()) ? SlimefunPlugin.getRegistry().getWorlds().get(world.getName()) : new BlockStorage(world);
     }
 
@@ -185,13 +188,9 @@ public class BlockStorage {
                 storage.put(l, blockInfo);
 
                 if (SlimefunPlugin.getRegistry().getTickerBlocks().contains(file.getName().replace(".sfb", ""))) {
-                    Set<Location> locations = SlimefunPlugin.getRegistry().getActiveTickers().getOrDefault(chunkString, new HashSet<>());
+                    Map<String, Set<Location>> tickers = SlimefunPlugin.getTickerTask().getActiveTickers();
+                    Set<Location> locations = tickers.computeIfAbsent(chunkString, id -> new HashSet<>());
                     locations.add(l);
-                    SlimefunPlugin.getRegistry().getActiveTickers().put(chunkString, locations);
-
-                    if (!SlimefunPlugin.getRegistry().getActiveChunks().contains(chunkString)) {
-                        SlimefunPlugin.getRegistry().getActiveChunks().add(chunkString);
-                    }
                 }
             }
         } catch (Exception x) {
@@ -302,11 +301,9 @@ public class BlockStorage {
                 cfg.save(tmpFile);
 
                 try {
-                    // use REPLACE_EXISTING necessary? ATOMIC_MOVE seems more stable. Refer to #173
-                    // 可能需要使用 Oracle JDK 8 编译, 已经更换
                     Files.move(tmpFile.toPath(), cfg.getFile().toPath(), StandardCopyOption.ATOMIC_MOVE);
                 } catch (IOException x) {
-                    Slimefun.getLogger().log(Level.SEVERE, x, () -> "在尝试复制缓存文件时发生了意外, Slimefun 版本: " + SlimefunPlugin.getVersion());
+                    Slimefun.getLogger().log(Level.SEVERE, x, () -> "An Error occurred while copying a temporary File for Slimefun " + SlimefunPlugin.getVersion());
                 }
             }
         }
@@ -361,18 +358,19 @@ public class BlockStorage {
 
     /**
      * Retrieves the SlimefunItem's ItemStack from the specified Block.
-     * If the specified Block is registered in BlockStorage, its data will be erased from it, regardless of the returned
-     * value.
+     * If the specified Block is registered in BlockStorage,
+     * its data will be erased from it, regardless of the returned value.
      *
      * @param block the block to retrieve the ItemStack from
      * @return the SlimefunItem's ItemStack corresponding to the block if it has one, otherwise null
-     * @since 4.0
      */
+    @Nullable
     public static ItemStack retrieve(Block block) {
         if (!hasBlockInfo(block)) {
             return null;
         } else {
-            SlimefunItem item = SlimefunItem.getByID(getLocationInfo(block.getLocation(), "id"));
+            String id = getLocationInfo(block.getLocation(), "id");
+            SlimefunItem item = SlimefunItem.getByID(id);
             clearBlockInfo(block);
 
             if (item == null) {
@@ -383,6 +381,7 @@ public class BlockStorage {
         }
     }
 
+    @Nonnull
     public static Config getLocationInfo(Location l) {
         BlockStorage storage = getStorage(l.getWorld());
 
@@ -394,6 +393,7 @@ public class BlockStorage {
         return cfg == null ? emptyBlockData : cfg;
     }
 
+    @Nonnull
     private static Map<String, String> parseJSON(String json) {
         Map<String, String> map = new HashMap<>();
 
@@ -582,21 +582,20 @@ public class BlockStorage {
             }
 
             String chunkString = locationToChunkString(l);
+            Map<String, Set<Location>> tickers = SlimefunPlugin.getTickerTask().getActiveTickers();
+            Set<Location> locations = tickers.get(chunkString);
 
-            if (SlimefunPlugin.getRegistry().getActiveTickers().containsKey(chunkString)) {
-                Set<Location> locations = SlimefunPlugin.getRegistry().getActiveTickers().get(chunkString);
+            if (locations != null) {
                 locations.remove(l);
 
                 if (locations.isEmpty()) {
-                    SlimefunPlugin.getRegistry().getActiveTickers().remove(chunkString);
-                    SlimefunPlugin.getRegistry().getActiveChunks().remove(chunkString);
-                } else {
-                    SlimefunPlugin.getRegistry().getActiveTickers().put(chunkString, locations);
+                    tickers.remove(chunkString);
                 }
             }
         }
     }
 
+    @ParametersAreNonnullByDefault
     public static void moveBlockInfo(Location from, Location to) {
         SlimefunPlugin.getTickerTask().queueMove(from, to);
     }
@@ -610,6 +609,7 @@ public class BlockStorage {
      * @param to
      *            The destination {@link Location}
      */
+    @ParametersAreNonnullByDefault
     public static void moveLocationInfoUnsafely(Location from, Location to) {
         if (!hasBlockInfo(from)) {
             return;
@@ -630,16 +630,14 @@ public class BlockStorage {
         storage.storage.remove(from);
 
         String chunkString = locationToChunkString(from);
+        Map<String, Set<Location>> tickers = SlimefunPlugin.getTickerTask().getActiveTickers();
+        Set<Location> locations = tickers.get(chunkString);
 
-        if (SlimefunPlugin.getRegistry().getActiveTickers().containsKey(chunkString)) {
-            Set<Location> locations = SlimefunPlugin.getRegistry().getActiveTickers().get(chunkString);
+        if (locations != null) {
             locations.remove(from);
 
             if (locations.isEmpty()) {
-                SlimefunPlugin.getRegistry().getActiveTickers().remove(chunkString);
-                SlimefunPlugin.getRegistry().getActiveChunks().remove(chunkString);
-            } else {
-                SlimefunPlugin.getRegistry().getActiveTickers().put(chunkString, locations);
+                tickers.remove(chunkString);
             }
         }
     }
@@ -661,10 +659,9 @@ public class BlockStorage {
                 String chunkString = locationToChunkString(l);
 
                 if (value != null) {
-                    Set<Location> locations = SlimefunPlugin.getRegistry().getActiveTickers().computeIfAbsent(chunkString, c -> new HashSet<>());
+                    Map<String, Set<Location>> tickers = SlimefunPlugin.getTickerTask().getActiveTickers();
+                    Set<Location> locations = tickers.computeIfAbsent(chunkString, id -> new HashSet<>());
                     locations.add(l);
-
-                    SlimefunPlugin.getRegistry().getActiveChunks().add(chunkString);
                 }
             }
         }
@@ -723,14 +720,6 @@ public class BlockStorage {
 
     public static boolean isWorldRegistered(String name) {
         return SlimefunPlugin.getRegistry().getWorlds().containsKey(name);
-    }
-
-    public static Set<String> getTickingChunks() {
-        return SlimefunPlugin.getRegistry().getActiveChunks();
-    }
-
-    public static Set<Location> getTickingLocations(String chunk) {
-        return SlimefunPlugin.getRegistry().getActiveTickers().getOrDefault(chunk, new HashSet<>());
     }
 
     public BlockMenu loadInventory(Location l, BlockMenuPreset preset) {

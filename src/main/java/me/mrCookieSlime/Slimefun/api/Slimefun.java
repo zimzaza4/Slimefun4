@@ -8,6 +8,7 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -22,6 +23,7 @@ public final class Slimefun {
 
     private Slimefun() {}
 
+    @Nonnull
     public static Logger getLogger() {
         return SlimefunPlugin.instance().getLogger();
     }

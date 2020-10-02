@@ -22,7 +22,6 @@ import me.mrCookieSlime.Slimefun.api.BlockInfoConfig;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.inventory.UniversalBlockMenu;
-import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -62,7 +61,7 @@ public class SlimefunRegistry {
 
     private final Set<String> tickers = new HashSet<>();
     private final Set<SlimefunItem> radioactive = new HashSet<>();
-    private final Set<String> activeChunks = ConcurrentHashMap.newKeySet();
+
     private final Set<ItemStack> barterDrops = new HashSet<>();
 
     private final KeyMap<GEOResource> geoResources = new KeyMap<>();
@@ -76,8 +75,6 @@ public class SlimefunRegistry {
     private final Map<String, UniversalBlockMenu> universalInventories = new HashMap<>();
     private final Map<Class<? extends ItemHandler>, Set<ItemHandler>> globalItemHandlers = new HashMap<>();
     private final Map<String, SlimefunBlockHandler> blockHandlers = new HashMap<>();
-
-    private final Map<String, Set<Location>> activeTickers = new ConcurrentHashMap<>();
 
     private final Map<String, ItemStack> automatedCraftingChamberRecipes = new HashMap<>();
 
@@ -218,10 +215,6 @@ public class SlimefunRegistry {
         return tickers;
     }
 
-    public Set<String> getActiveChunks() {
-        return activeChunks;
-    }
-
     public Map<String, SlimefunItem> getSlimefunItemIds() {
         return slimefunIds;
     }
@@ -252,10 +245,6 @@ public class SlimefunRegistry {
 
     public Map<String, BlockInfoConfig> getChunks() {
         return chunks;
-    }
-
-    public Map<String, Set<Location>> getActiveTickers() {
-        return activeTickers;
     }
 
     public KeyMap<GEOResource> getGEOResources() {

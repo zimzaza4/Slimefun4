@@ -7,6 +7,7 @@ import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Bukkit;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -106,6 +107,7 @@ class GitHubTask implements Runnable {
         return 0;
     }
 
+    @Nullable
     private String pullTexture(@Nonnull Contributor contributor, @Nonnull Map<String, String> skins) throws TooManyRequestsException, IOException {
         Optional<UUID> uuid = contributor.getUniqueId();
 

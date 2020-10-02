@@ -4,9 +4,6 @@ import io.github.thebusybiscuit.cscorelib2.config.Config;
 import io.github.thebusybiscuit.slimefun4.core.services.localization.Translators;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
-import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
-import kong.unirest.JsonNode;
-import kong.unirest.json.JSONObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,11 +35,11 @@ public class GitHubService {
 
     private boolean logging = false;
 
-    private int issues = 0;
-    private int pullRequests = 0;
-    private int forks = 0;
-    private int stars = 0;
     private LocalDateTime lastUpdate = LocalDateTime.now();
+    private int openIssues = 0;
+    private int pendingPullRequests = 0;
+    private int publicForks = 0;
+    private int stargazers = 0;
 
     /**
      * This creates a new {@link GitHubService} for the given repository.
@@ -61,6 +58,11 @@ public class GitHubService {
         plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new GitHubTask(this), 80L, 60 * 60 * 20L);
     }
 
+    /**
+     * This method adds a few default {@link Contributor Contributors}.
+     * Think of them like honorable mentions that aren't listed through
+     * the usual methods.
+     */
     private void addDefaultContributors() {
         addContributor("Fuffles_", "&dArtist");
         addContributor("IMS_Art", "&dArtist");
@@ -71,7 +73,7 @@ public class GitHubService {
 
     private void addContributor(@Nonnull String name, @Nonnull String role) {
         Contributor contributor = new Contributor(name);
-        contributor.setContribution(role, 0);
+        contributor.setContributions(role, 0);
         contributor.setUniqueId(uuidCache.getUUID(name));
         contributors.put(name, contributor);
     }
@@ -81,7 +83,7 @@ public class GitHubService {
         String username = profileURL.substring(profileURL.lastIndexOf('/') + 1);
 
         Contributor contributor = contributors.computeIfAbsent(username, key -> new Contributor(minecraftName, profileURL));
-        contributor.setContribution(role, commits);
+        contributor.setContributions(role, commits);
         contributor.setUniqueId(uuidCache.getUUID(minecraftName));
         return contributor;
     }
@@ -95,37 +97,22 @@ public class GitHubService {
         connectors.add(new ContributionsConnector(this, "code2", 2, repository, "developer"));
 
         // TheBusyBiscuit/Slimefun4-Wiki
-        connectors.add(new ContributionsConnector(this, "wiki", 1, "Slimefun/Slimefun-wiki", "wiki"));
+        connectors.add(new ContributionsConnector(this, "wiki", 1, "Slimefun/Wiki", "wiki"));
 
         // TheBusyBiscuit/Slimefun4-Resourcepack
         connectors.add(new ContributionsConnector(this, "resourcepack", 1, "Slimefun/Resourcepack", "resourcepack"));
 
         // Issues and Pull Requests
-        connectors.add(new GitHubIssuesTracker(this, repository, (openIssues, openPullRequests) -> {
-            this.issues = openIssues;
-            this.pullRequests = openPullRequests;
+        connectors.add(new GitHubIssuesConnector(this, repository, (issues, pullRequests) -> {
+            this.openIssues = issues;
+            this.pendingPullRequests = pullRequests;
         }));
 
-        connectors.add(new GitHubConnector(this, repository) {
-
-            @Override
-            public void onSuccess(JsonNode element) {
-                JSONObject object = element.getObject();
-                forks = object.getInt("forks");
-                stars = object.getInt("stargazers_count");
-                lastUpdate = NumberUtils.parseGitHubDate(object.getString("pushed_at"));
-            }
-
-            @Override
-            public String getFileName() {
-                return "repo";
-            }
-
-            @Override
-            public String getURLSuffix() {
-                return "";
-            }
-        });
+        connectors.add(new GitHubActivityConnector(this, repository, (forks, stars, date) -> {
+            this.publicForks = forks;
+            this.stargazers = stars;
+            this.lastUpdate = date;
+        }));
     }
 
     @Nonnull
@@ -153,7 +140,7 @@ public class GitHubService {
      * @return The amount of forks
      */
     public int getForks() {
-        return forks;
+        return publicForks;
     }
 
     /**
@@ -162,7 +149,7 @@ public class GitHubService {
      * @return The amount of people who starred the repository
      */
     public int getStars() {
-        return stars;
+        return stargazers;
     }
 
     /**
@@ -171,7 +158,7 @@ public class GitHubService {
      * @return The amount of open issues
      */
     public int getOpenIssues() {
-        return issues;
+        return openIssues;
     }
 
     /**
@@ -190,7 +177,7 @@ public class GitHubService {
      * @return The amount of pending pull requests
      */
     public int getPendingPullRequests() {
-        return pullRequests;
+        return pendingPullRequests;
     }
 
     /**
@@ -210,7 +197,6 @@ public class GitHubService {
     protected void saveCache() {
         for (Contributor contributor : contributors.values()) {
             Optional<UUID> uuid = contributor.getUniqueId();
-
             uuid.ifPresent(value -> uuidCache.setValue(contributor.getName(), value));
 
             if (contributor.hasTexture()) {

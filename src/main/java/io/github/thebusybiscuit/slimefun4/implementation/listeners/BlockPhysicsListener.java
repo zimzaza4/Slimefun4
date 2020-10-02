@@ -25,13 +25,13 @@ import javax.annotation.Nonnull;
 /**
  * This {@link Listener} is responsible for listening to any physics-based events, such
  * as {@link EntityChangeBlockEvent} or a {@link BlockPistonEvent}.
- *
+ * <p>
  * This ensures that a {@link Piston} cannot be abused to break Slimefun blocks.
  *
  * @author VoidAngel
  * @author Poslovitch
  * @author TheBusyBiscuit
- *
+ * @author AccelShark
  */
 public class BlockPhysicsListener implements Listener {
 
@@ -53,21 +53,27 @@ public class BlockPhysicsListener implements Listener {
 
     @EventHandler
     public void onPistonExtend(BlockPistonExtendEvent e) {
-        for (Block b : e.getBlocks()) {
-            if (BlockStorage.hasBlockInfo(b) || (b.getRelative(e.getDirection()).getType() == Material.AIR && BlockStorage.hasBlockInfo(b.getRelative(e.getDirection())))) {
-                e.setCancelled(true);
-                return;
+        if (BlockStorage.hasBlockInfo(e.getBlock())) {
+            e.setCancelled(true);
+        } else {
+            for (Block b : e.getBlocks()) {
+                if (BlockStorage.hasBlockInfo(b) || (b.getRelative(e.getDirection()).getType() == Material.AIR && BlockStorage.hasBlockInfo(b.getRelative(e.getDirection())))) {
+                    e.setCancelled(true);
+                    break;
+                }
             }
         }
     }
 
     @EventHandler
     public void onPistonRetract(BlockPistonRetractEvent e) {
-        if (e.isSticky()) {
+        if (BlockStorage.hasBlockInfo(e.getBlock())) {
+            e.setCancelled(true);
+        } else if (e.isSticky()) {
             for (Block b : e.getBlocks()) {
                 if (BlockStorage.hasBlockInfo(b) || (b.getRelative(e.getDirection()).getType() == Material.AIR && BlockStorage.hasBlockInfo(b.getRelative(e.getDirection())))) {
                     e.setCancelled(true);
-                    return;
+                    break;
                 }
             }
         }
@@ -90,6 +96,7 @@ public class BlockPhysicsListener implements Listener {
     public void onBucketUse(PlayerBucketEmptyEvent e) {
         // Fix for placing water on player heads
         Location l = e.getBlockClicked().getRelative(e.getBlockFace()).getLocation();
+
         if (BlockStorage.hasBlockInfo(l)) {
             e.setCancelled(true);
         }

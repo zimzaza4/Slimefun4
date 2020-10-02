@@ -33,15 +33,26 @@ public class Contributor {
     private Optional<UUID> uuid = Optional.empty();
     private boolean locked = false;
 
-    public Contributor(@Nonnull String username, @Nonnull String profile) {
-        Validate.notNull(username, "Username must never be null!");
+    /**
+     * This creates a new {@link Contributor} with the given ingame name and GitHub profile.
+     *
+     * @param minecraftName The ingame name in Minecraft for this {@link Contributor}
+     * @param profile       A link to their GitHub profile
+     */
+    public Contributor(@Nonnull String minecraftName, @Nonnull String profile) {
+        Validate.notNull(minecraftName, "Username must never be null!");
         Validate.notNull(profile, "The profile cannot be null!");
 
         githubUsername = profile.substring(profile.lastIndexOf('/') + 1);
-        minecraftUsername = username;
+        minecraftUsername = minecraftName;
         profileLink = profile;
     }
 
+    /**
+     * This creates a new {@link Contributor} with the given username.
+     *
+     * @param username The username of this {@link Contributor}
+     */
     public Contributor(@Nonnull String username) {
         Validate.notNull(username, "Username must never be null!");
 
@@ -50,8 +61,16 @@ public class Contributor {
         profileLink = null;
     }
 
-    public void setContribution(@Nonnull String role, int commits) {
+    /**
+     * This sets the amount of contributions of this {@link Contributor} for the
+     * specified role.
+     *
+     * @param role    The role
+     * @param commits The amount of contributions made as that role
+     */
+    public void setContributions(@Nonnull String role, int commits) {
         Validate.notNull(role, "The role cannot be null!");
+        Validate.isTrue(commits >= 0, "Contributions cannot be negative");
 
         if (!locked || role.startsWith("translator,")) {
             contributions.put(role, commits);
@@ -59,9 +78,9 @@ public class Contributor {
     }
 
     /**
-     * Returns the name of this contributor.
+     * Returns the name of this {@link Contributor}.
      *
-     * @return the name of this contributor
+     * @return the name of this {@link Contributor}
      */
     @Nonnull
     public String getName() {
@@ -69,10 +88,10 @@ public class Contributor {
     }
 
     /**
-     * Returns the MC name of the contributor.
-     * This may be the same as {@link #getName()}.
+     * Returns the Minecraft username of the {@link Contributor}.
+     * This can be the same as {@link #getName()}.
      *
-     * @return The MC username of this contributor.
+     * @return The Minecraft username of this {@link Contributor}.
      */
     @Nonnull
     public String getMinecraftName() {
@@ -100,7 +119,9 @@ public class Contributor {
      * This method gives you the amount of contributions this {@link Contributor}
      * has submmited in the name of the given role.
      *
-     * @param role The role for which to count the contributions.
+     * @param role
+     *            The role for which to count the contributions.
+     *
      * @return The amount of contributions this {@link Contributor} submitted as the given role
      */
     public int getContributions(@Nonnull String role) {
@@ -129,7 +150,7 @@ public class Contributor {
     }
 
     /**
-     * Returns this Creator's head texture.
+     * Returns this contributor's head texture.
      * If no texture could be found, or it hasn't been pulled yet,
      * then it will return a placeholder texture.
      *
@@ -161,10 +182,21 @@ public class Contributor {
         return headTexture.isComputed();
     }
 
+    /**
+     * This sets the skin texture of this {@link Contributor} or clears it.
+     *
+     * @param skin The base64 skin texture or null
+     */
     public void setTexture(@Nullable String skin) {
         headTexture.compute(skin);
     }
 
+    /**
+     * This returns the total amount of contributions towards this project for this
+     * {@link Contributor}.
+     *
+     * @return The total amount of contributions
+     */
     public int getTotalContributions() {
         return contributions.values().stream().mapToInt(Integer::intValue).sum();
     }

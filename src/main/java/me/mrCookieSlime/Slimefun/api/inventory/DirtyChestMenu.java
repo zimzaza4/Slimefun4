@@ -67,6 +67,12 @@ public class DirtyChestMenu extends ChestMenu {
         }
     }
 
+    /**
+     * This method has been deprecated.
+     *
+     * @param event deprecated class
+     * @deprecated The {@link ItemManipulationEvent} has been deprecated.
+     */
     public void registerEvent(ItemManipulationEvent event) {
         this.event = event;
     }
