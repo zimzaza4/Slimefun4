@@ -21,12 +21,14 @@ import java.util.UUID;
 
 public class GrapplingHook extends SimpleSlimefunItem<ItemUseHandler> {
 
+    private final ItemSetting<Boolean> consumeOnUse = new ItemSetting<>("consume-on-use", true);
     private final ItemSetting<Integer> despawnTicks = new ItemSetting<>("despawn-seconds", 60);
 
     public GrapplingHook(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
         addItemSetting(despawnTicks);
+        addItemSetting(consumeOnUse);
     }
 
     @Override
@@ -34,6 +36,7 @@ public class GrapplingHook extends SimpleSlimefunItem<ItemUseHandler> {
         return e -> {
             Player p = e.getPlayer();
             UUID uuid = p.getUniqueId();
+            boolean consumeOnUseValue = consumeOnUse.getValue();
 
             if (!e.getClickedBlock().isPresent() && !SlimefunPlugin.getGrapplingHookListener().isGrappling(uuid)) {
                 e.cancel();
@@ -46,7 +49,10 @@ public class GrapplingHook extends SimpleSlimefunItem<ItemUseHandler> {
                 ItemStack item = e.getItem();
 
                 if (item.getType() == Material.LEAD) {
-                    item.setAmount(item.getAmount() - 1);
+                    //If consume on use is enabled, the if statement below will take 1 grappling hook out of player's hand
+                    if (consumeOnUseValue) {
+                        item.setAmount(item.getAmount() - 1);
+                    }
                 }
 
                 Vector direction = p.getEyeLocation().getDirection().multiply(2.0);
@@ -62,7 +68,7 @@ public class GrapplingHook extends SimpleSlimefunItem<ItemUseHandler> {
                 bat.setLeashHolder(arrow);
 
                 boolean state = item.getType() != Material.SHEARS;
-                SlimefunPlugin.getGrapplingHookListener().addGrapplingHook(p, arrow, bat, state, despawnTicks.getValue());
+                SlimefunPlugin.getGrapplingHookListener().addGrapplingHook(p, arrow, bat, state, despawnTicks.getValue(), consumeOnUseValue);
             }
         };
     }

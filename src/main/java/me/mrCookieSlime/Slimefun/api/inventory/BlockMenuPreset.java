@@ -72,8 +72,10 @@ public abstract class BlockMenuPreset extends ChestMenu {
     /**
      * This method is deprecated.
      *
-     * @param event The event
      * @deprecated Override {@link #onItemStackChange(DirtyChestMenu, int, ItemStack, ItemStack)} instead
+     *
+     * @param event
+     *            The event
      */
     @Deprecated
     public void registerEvent(ItemManipulationEvent event) {
@@ -84,10 +86,15 @@ public abstract class BlockMenuPreset extends ChestMenu {
      * This method is called whenever an {@link ItemStack} changes.
      * You can override this as necessary if you need to listen to these events
      *
-     * @param menu     The {@link Inventory} affected by this
-     * @param slot     The affected slot
-     * @param previous The {@link ItemStack} in that slot before the operation
-     * @param next     The {@link ItemStack} that it changes to
+     * @param menu
+     *            The {@link Inventory} affected by this
+     * @param slot
+     *            The affected slot
+     * @param previous
+     *            The {@link ItemStack} in that slot before the operation
+     * @param next
+     *            The {@link ItemStack} that it changes to
+     *
      * @return The new outcome of this operation
      */
     @Nullable
