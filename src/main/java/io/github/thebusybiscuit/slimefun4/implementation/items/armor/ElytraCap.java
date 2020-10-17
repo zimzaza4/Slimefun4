@@ -8,7 +8,9 @@ import io.github.thebusybiscuit.slimefun4.implementation.listeners.ElytraCrashLi
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -18,6 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * The {@link ElytraCap} negates damage taken when crashing into a wall using an elytra.
  *
  * @author Seggan
+ *
  * @see ElytraCrashListener
  */
 public class ElytraCap extends SlimefunArmorPiece implements DamageableItem, ProtectiveArmor {
@@ -34,6 +37,13 @@ public class ElytraCap extends SlimefunArmorPiece implements DamageableItem, Pro
     @Override
     public boolean isDamageable() {
         return true;
+    }
+
+    @Override
+    public void damageItem(Player p, ItemStack item) {
+        if (p.getGameMode() != GameMode.CREATIVE) {
+            DamageableItem.super.damageItem(p, item);
+        }
     }
 
     @Nonnull
