@@ -9,9 +9,9 @@ import org.bukkit.event.Listener;
 
 import javax.annotation.Nonnull;
 
-class ClearLagHook implements Listener {
+class ClearLagIntegration implements Listener {
 
-    ClearLagHook(@Nonnull SlimefunPlugin plugin) {
+    ClearLagIntegration(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

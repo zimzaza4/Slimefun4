@@ -3,7 +3,9 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.altar;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockDispenseHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.AncientAltarListener;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.AncientAltarTask;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
@@ -23,6 +25,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 
 /**
@@ -38,14 +43,15 @@ import java.util.Optional;
  * @see AncientAltarTask
  *
  */
-public class AncientPedestal extends SlimefunItem {
+public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
 
     public static final String ITEM_PREFIX = ChatColors.color("&dALTAR &3Probe - &e");
 
+    @ParametersAreNonnullByDefault
     public AncientPedestal(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
         super(category, item, recipeType, recipe, recipeOutput);
 
-        SlimefunItem.registerBlockHandler(getID(), (p, b, tool, reason) -> {
+        SlimefunItem.registerBlockHandler(getId(), (p, b, tool, reason) -> {
             Optional<Item> entity = getPlacedItem(b);
 
             if (entity.isPresent()) {
@@ -62,6 +68,12 @@ public class AncientPedestal extends SlimefunItem {
         });
     }
 
+    @Override
+    public BlockDispenseHandler getItemHandler() {
+        return (e, d, block, machine) -> e.setCancelled(true);
+    }
+
+
     public Optional<Item> getPlacedItem(Block pedestal) {
         Location l = pedestal.getLocation().add(0.5, 1.2, 0.5);
 
@@ -74,7 +86,7 @@ public class AncientPedestal extends SlimefunItem {
         return Optional.empty();
     }
 
-    private boolean testItem(Entity n) {
+    private boolean testItem(@Nullable Entity n) {
         if (n instanceof Item && n.isValid()) {
             Item item = (Item) n;
             ItemMeta meta = item.getItemStack().getItemMeta();
@@ -85,6 +97,7 @@ public class AncientPedestal extends SlimefunItem {
         }
     }
 
+    @Nonnull
     public ItemStack getOriginalItemStack(Item item) {
         ItemStack stack = item.getItemStack().clone();
         String customName = item.getCustomName();
@@ -107,7 +120,7 @@ public class AncientPedestal extends SlimefunItem {
         return stack;
     }
 
-    public void placeItem(Player p, Block b) {
+    public void placeItem(@Nonnull Player p, @Nonnull Block b) {
         ItemStack hand = p.getInventory().getItemInMainHand();
         ItemStack displayItem = new CustomItem(hand, ITEM_PREFIX + System.nanoTime());
         displayItem.setAmount(1);

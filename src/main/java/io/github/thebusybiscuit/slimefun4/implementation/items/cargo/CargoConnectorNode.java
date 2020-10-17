@@ -11,15 +11,20 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class CargoConnectorNode extends SimpleSlimefunItem<BlockUseHandler> {
 
     public CargoConnectorNode(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
         super(category, item, recipeType, recipe, recipeOutput);
     }
 
+    @Nonnull
     @Override
     public BlockUseHandler getItemHandler() {
         return e -> {
+            if (!e.getClickedBlock().isPresent()) return;
+
             Player p = e.getPlayer();
             Block b = e.getClickedBlock().get();
 

@@ -46,7 +46,7 @@ public class BlockPlacer extends SlimefunItem {
     public BlockPlacer(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
         
-        SlimefunItem.registerBlockHandler(getID(), (p, b, tool, reason) -> !b.isBlockIndirectlyPowered() && !b.isBlockPowered());
+        SlimefunItem.registerBlockHandler(getId(), (p, b, tool, reason) -> !b.isBlockIndirectlyPowered() && !b.isBlockPowered());
 
         addItemSetting(blacklist);
         addItemHandler(onPlace(), onBlockDispense());
@@ -154,7 +154,7 @@ public class BlockPlacer extends SlimefunItem {
                     block.setType(item.getType());
                     block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, item.getType());
 
-                    BlockStorage.store(block, sfItem.getID());
+                    BlockStorage.store(block, sfItem.getId());
                     handler.onBlockPlacerPlace(e);
 
                     if (dispenser.getInventory().containsAtLeast(item, 2)) {
@@ -170,7 +170,7 @@ public class BlockPlacer extends SlimefunItem {
                 block.setType(item.getType());
                 block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, item.getType());
 
-                BlockStorage.store(block, sfItem.getID());
+                BlockStorage.store(block, sfItem.getId());
 
                 if (dispenser.getInventory().containsAtLeast(item, 2)) {
                     dispenser.getInventory().removeItem(new CustomItem(item, 1));

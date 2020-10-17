@@ -1,6 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.core.services.plugins;
 
-import io.github.starwishsama.extra.VaultHelper;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.categories.FlexCategory;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
@@ -11,13 +10,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Level;
 
 /**
  * This Service holds all interactions and hooks with third-party {@link Plugin Plugins}
- * that are not a dependency or a {@link SlimefunAddon}.
+ * that are not necessarily a dependency or a {@link SlimefunAddon}.
  * <p>
  * Integration with these plugins happens inside Slimefun itself.
  *
@@ -31,12 +31,18 @@ public class ThirdPartyPluginService {
     private boolean isExoticGardenInstalled = false;
     private boolean isChestTerminalInstalled = false;
     private boolean isEmeraldEnchantsInstalled = false;
-    private boolean isCoreProtectInstalled = false;
-    private boolean isPlaceholderAPIInstalled = false;
 
-    // Overridden if ExoticGarden is loaded
+    /**
+     * This gets overridden if ExoticGarden is loaded
+     */
     private Function<Block, Optional<ItemStack>> exoticGardenIntegration = b -> Optional.empty();
 
+    /**
+     * This initializes the {@link ThirdPartyPluginService}
+     *
+     * @param plugin
+     *            Our instance of {@link SlimefunPlugin}
+     */
     public ThirdPartyPluginService(@Nonnull SlimefunPlugin plugin) {
         this.plugin = plugin;
     }
@@ -44,9 +50,8 @@ public class ThirdPartyPluginService {
     public void start() {
         if (isPluginInstalled("PlaceholderAPI")) {
             try {
-                PlaceholderAPIHook hook = new PlaceholderAPIHook(plugin);
+                PlaceholderAPIIntegration hook = new PlaceholderAPIIntegration(plugin);
                 hook.register();
-                isPlaceholderAPIInstalled = true;
             } catch (Exception | LinkageError x) {
                 String version = plugin.getServer().getPluginManager().getPlugin("PlaceholderAPI").getDescription().getVersion();
 
@@ -62,16 +67,12 @@ public class ThirdPartyPluginService {
             category.register();
         }
 
-        if (SlimefunPlugin.getCfg().getBoolean("researches.use-money-unlock") && isPluginInstalled("Vault")) {
-            VaultHelper.register();
-        }
-
         // WorldEdit Hook to clear Slimefun Data upon //set 0 //cut or any other equivalent
         if (isPluginInstalled("WorldEdit")) {
             try {
                 Class.forName("com.sk89q.worldedit.extent.Extent");
-                new WorldEditHook();
-            } catch (Exception x) {
+                new WorldEditIntegration();
+            } catch (Exception | LinkageError x) {
                 String version = plugin.getServer().getPluginManager().getPlugin("WorldEdit").getDescription().getVersion();
 
                 Slimefun.getLogger().log(Level.WARNING, "Maybe consider updating WorldEdit or Slimefun?");
@@ -79,6 +80,10 @@ public class ThirdPartyPluginService {
             }
         }
 
+        // mcMMO Block Placer Integration
+        if (isPluginInstalled("mcMMO")) {
+            new McMMOIntegration(plugin);
+        }
 
         /*
          * These Items are not marked as soft-dependencies and
@@ -87,7 +92,7 @@ public class ThirdPartyPluginService {
          */
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             if (isPluginInstalled("ClearLag")) {
-                new ClearLagHook(plugin);
+                new ClearLagIntegration(plugin);
             }
 
             isChestTerminalInstalled = isPluginInstalled("ChestTerminal");
@@ -103,6 +108,7 @@ public class ThirdPartyPluginService {
         }
     }
 
+    @ParametersAreNonnullByDefault
     public void loadExoticGarden(Plugin plugin, Function<Block, Optional<ItemStack>> method) {
         if (plugin.getName().equals("ExoticGarden")) {
             isExoticGardenInstalled = true;
@@ -120,14 +126,6 @@ public class ThirdPartyPluginService {
 
     public boolean isEmeraldEnchantsInstalled() {
         return isEmeraldEnchantsInstalled;
-    }
-
-    public boolean isCoreProtectInstalled() {
-        return isCoreProtectInstalled;
-    }
-
-    public boolean isPlaceholderAPIInstalled() {
-        return isPlaceholderAPIInstalled;
     }
 
     public Optional<ItemStack> harvestExoticGardenPlant(Block block) {

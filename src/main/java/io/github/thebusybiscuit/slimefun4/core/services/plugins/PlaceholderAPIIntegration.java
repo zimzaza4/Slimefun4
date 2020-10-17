@@ -13,12 +13,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-class PlaceholderAPIHook extends PlaceholderExpansion {
+class PlaceholderAPIIntegration extends PlaceholderExpansion {
 
     private final String version;
     private final String author;
 
-    public PlaceholderAPIHook(@Nonnull SlimefunPlugin plugin) {
+    public PlaceholderAPIIntegration(@Nonnull SlimefunPlugin plugin) {
         this.version = plugin.getDescription().getVersion();
         this.author = plugin.getDescription().getAuthors().toString();
     }

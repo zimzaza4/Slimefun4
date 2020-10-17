@@ -12,9 +12,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-class WorldEditHook {
+class WorldEditIntegration {
 
-    WorldEditHook() {
+    WorldEditIntegration() {
         WorldEdit.getInstance().getEventBus().register(this);
     }
 

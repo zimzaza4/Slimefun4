@@ -2,6 +2,7 @@ package io.github.thebusybiscuit.slimefun4.core.networks.energy;
 
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.Capacitor;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.EnergyConnector;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.reactors.Reactor;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AGenerator;
@@ -12,6 +13,7 @@ import org.bukkit.block.Block;
  * can have.
  *
  * @author TheBusyBiscuit
+ * @author Linox
  * @see EnergyNetComponent
  * @see EnergyNet
  */
@@ -36,9 +38,15 @@ public enum EnergyNetComponentType {
     CONSUMER,
 
     /**
+     * A Connector transmits energy through the network.
+     * Also see: {@link EnergyConnector}
+     */
+    CONNECTOR,
+
+    /**
      * A fallback value to use when a {@link Block} cannot be classified as any of the
      * other options.
      */
-    NONE
+    NONE;
 
 }

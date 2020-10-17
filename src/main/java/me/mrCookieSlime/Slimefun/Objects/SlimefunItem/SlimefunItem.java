@@ -40,25 +40,64 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * A {@link SlimefunItem} is a custom item registered by a {@link SlimefunAddon}.
+ * This class defines the behaviours of the item, you can assign an {@link ItemHandler}
+ * to give the item functionality.
+ * In contrast to that the {@link SlimefunItemStack} defines the look and feel of the item.
+ * <p>
+ * Remember to call {@link #register(SlimefunAddon)} on your {@link SlimefunItem} for it
+ * to appear in the {@link SlimefunGuide}.
+ *
+ * @author TheBusyBiscuit
+ * @author Poslovitch
+ * @see SlimefunItemStack
+ * @see SlimefunAddon
+ */
 public class SlimefunItem implements Placeable {
 
+    /**
+     * This is our item id.
+     */
+    private final String id;
+
+    /**
+     * This is the original {@link ItemStack} that represents this item.
+     * It is immutable and should always be cloned, never used directly.
+     */
+    private final ItemStack itemStackTemplate;
+
+    /**
+     * This is a reference to the {@link SlimefunAddon} that registered this
+     * {@link SlimefunItem}, if the item has not been registered yet, it will be null.
+     */
+    private SlimefunAddon addon;
+
+    /**
+     * This is the state of this {@link SlimefunItem}.
+     */
     private ItemState state = ItemState.UNREGISTERED;
 
-    protected String id;
-    protected SlimefunAddon addon;
-    protected ItemStack item;
-    protected Category category;
-    protected ItemStack[] recipe;
-    protected RecipeType recipeType;
+    /**
+     * This is the {@link Category} in which this {@link SlimefunItem} can be found.
+     */
+    private Category category;
+
+    /**
+     * This is a reference to the associated {@link Research}, can be null.
+     */
+    private Research research;
+
+    private ItemStack[] recipe;
+    private RecipeType recipeType;
     protected ItemStack recipeOutput;
-    protected Research research;
 
     protected boolean enchantable = true;
     protected boolean disenchantable = true;
     protected boolean hidden = false;
     protected boolean useableInWorkbench = false;
 
-    private Optional<String> wikiLink = Optional.empty();
+    private Optional<String> wikiURL = Optional.empty();
 
     private final OptionalMap<Class<? extends ItemHandler>, ItemHandler> itemhandlers = new OptionalMap<>(HashMap::new);
     private final Set<ItemSetting<?>> itemSettings = new HashSet<>();
@@ -98,7 +137,7 @@ public class SlimefunItem implements Placeable {
         Validate.notNull(recipeType, "'recipeType' is not allowed to be null!");
 
         this.category = category;
-        this.item = item;
+        this.itemStackTemplate = item;
         this.id = item.getItemId();
         this.recipeType = recipeType;
         this.recipe = recipe;
@@ -113,7 +152,7 @@ public class SlimefunItem implements Placeable {
         Validate.notNull(recipeType, "'recipeType' is not allowed to be null!");
 
         this.category = category;
-        this.item = item;
+        this.itemStackTemplate = item;
         this.id = id;
         this.recipeType = recipeType;
         this.recipe = recipe;
@@ -123,9 +162,21 @@ public class SlimefunItem implements Placeable {
      * Returns the identifier of this {@link SlimefunItem}.
      *
      * @return the identifier of this {@link SlimefunItem}
+     * @deprecated This method has been renamed to {@link #getId()}.
      */
     @Nonnull
+    @Deprecated
     public final String getID() {
+        return getId();
+    }
+
+    /**
+     * Returns the identifier of this {@link SlimefunItem}.
+     *
+     * @return the identifier of this {@link SlimefunItem}
+     */
+    @Nonnull
+    public final String getId() {
         return id;
     }
 
@@ -151,7 +202,7 @@ public class SlimefunItem implements Placeable {
      */
     @Nonnull
     public ItemStack getItem() {
-        return item;
+        return itemStackTemplate;
     }
 
     /**
@@ -180,7 +231,7 @@ public class SlimefunItem implements Placeable {
      */
     @Nonnull
     public ItemStack getRecipeOutput() {
-        return recipeOutput != null ? recipeOutput.clone() : item.clone();
+        return recipeOutput != null ? recipeOutput.clone() : itemStackTemplate.clone();
     }
 
     /**
@@ -214,11 +265,12 @@ public class SlimefunItem implements Placeable {
      *            The key of this {@link ItemSetting}
      * @param c
      *            The {@link Class} of the type of value stored by this setting
+     *
      * @return An {@link Optional} describing the result
      */
     @SuppressWarnings("unchecked")
     @Nonnull
-    public <T> Optional<ItemSetting<T>> getItemSetting(String key, Class<T> c) {
+    public <T> Optional<ItemSetting<T>> getItemSetting(@Nonnull String key, @Nonnull Class<T> c) {
         for (ItemSetting<?> setting : itemSettings) {
             if (setting.getKey().equals(key) && setting.isType(c)) {
                 return Optional.of((ItemSetting<T>) setting);
@@ -300,10 +352,10 @@ public class SlimefunItem implements Placeable {
      *
      * @return The {@link SlimefunAddon} that registered this {@link SlimefunItem}
      */
+    @Nonnull
     public SlimefunAddon getAddon() {
         if (addon == null) {
-            error("getAddon() cannot be called before registering the item", new UnregisteredItemException(this));
-            return null;
+            throw new UnregisteredItemException(this);
         }
 
         return addon;
@@ -328,16 +380,10 @@ public class SlimefunItem implements Placeable {
         this.addon = addon;
 
         try {
-            if (!addon.hasDependency("Slimefun")) {
-                throw new MissingDependencyException(addon, "Slimefun");
-            }
+            checkDependencies(addon);
+            checkForConflicts();
 
             preRegister();
-
-            SlimefunItem conflicting = getByID(id);
-            if (conflicting != null) {
-                throw new IdConflictException(this, conflicting);
-            }
 
             if (recipe == null || recipe.length < 9) {
                 recipe = new ItemStack[]{null, null, null, null, null, null, null, null, null};
@@ -387,8 +433,8 @@ public class SlimefunItem implements Placeable {
             }
 
             // Lock the SlimefunItemStack from any accidental manipulations
-            if (item instanceof SlimefunItemStack && isItemStackImmutable()) {
-                ((SlimefunItemStack) item).lock();
+            if (itemStackTemplate instanceof SlimefunItemStack && isItemStackImmutable()) {
+                ((SlimefunItemStack) itemStackTemplate).lock();
             }
 
             postRegister();
@@ -415,7 +461,7 @@ public class SlimefunItem implements Placeable {
             category.register();
         }
 
-        // Send out deprecation warnings for any classes or intefaces
+        // Send out deprecation warnings for any classes or interfaces
         checkForDeprecations(getClass());
 
         // Add it to the list of enabled items
@@ -466,13 +512,34 @@ public class SlimefunItem implements Placeable {
     }
 
     /**
+     * This method checks if the dependencies have been set up correctly.
+     *
+     * @param addon The {@link SlimefunAddon} trying to register this {@link SlimefunItem}
+     */
+    private void checkDependencies(@Nonnull SlimefunAddon addon) {
+        if (!addon.hasDependency("Slimefun")) {
+            throw new MissingDependencyException(addon, "Slimefun");
+        }
+    }
+
+    /**
+     * This method checks for id conflicts.
+     */
+    private void checkForConflicts() {
+        SlimefunItem conflictingItem = getByID(id);
+
+        if (conflictingItem != null) {
+            throw new IdConflictException(this, conflictingItem);
+        }
+    }
+
+    /**
      * This method checks recursively for all {@link Class} parents to look for any {@link Deprecated}
      * elements.
-     *
+     * <p>
      * If a {@link Deprecated} element was found, a warning message will be printed.
      *
-     * @param c
-     *            The {@link Class} from which to start this operation.
+     * @param c The {@link Class} from which to start this operation.
      */
     private void checkForDeprecations(@Nullable Class<?> c) {
         if (SlimefunPlugin.getUpdater().getBranch() == SlimefunBranch.DEVELOPMENT) {
@@ -539,7 +606,8 @@ public class SlimefunItem implements Placeable {
     /**
      * This sets the {@link Category} in which this {@link SlimefunItem} will be displayed.
      *
-     * @param category The new {@link Category}
+     * @param category
+     *            The new {@link Category}
      */
     public void setCategory(@Nonnull Category category) {
         Validate.notNull(category, "The Category is not allowed to be null!");
@@ -607,21 +675,21 @@ public class SlimefunItem implements Placeable {
 
         // If the given item is a SlimefunitemStack, simply compare the id
         if (item instanceof SlimefunItemStack) {
-            return getID().equals(((SlimefunItemStack) item).getItemId());
+            return getId().equals(((SlimefunItemStack) item).getItemId());
         }
 
         if (item.hasItemMeta()) {
             Optional<String> itemId = SlimefunPlugin.getItemDataService().getItemData(item);
 
             if (itemId.isPresent()) {
-                return getID().equals(itemId.get());
+                return getId().equals(itemId.get());
             }
         }
 
         // Backwards compatibility
         if (SlimefunPlugin.getRegistry().isBackwardsCompatible()) {
             boolean loreInsensitive = this instanceof Rechargeable || this instanceof SlimefunBackpack || id.equals("BROKEN_SPAWNER") || id.equals("REINFORCED_SPAWNER");
-            return SlimefunUtils.isItemSimilar(item, this.item, !loreInsensitive);
+            return SlimefunUtils.isItemSimilar(item, this.itemStackTemplate, !loreInsensitive);
         } else {
             return false;
         }
@@ -663,7 +731,7 @@ public class SlimefunItem implements Placeable {
             // Tickers are a special case (at the moment at least)
             if (handler instanceof BlockTicker) {
                 ticking = true;
-                SlimefunPlugin.getRegistry().getTickerBlocks().add(getID());
+                SlimefunPlugin.getRegistry().getTickerBlocks().add(getId());
                 blockTicker = (BlockTicker) handler;
             }
         }
@@ -731,7 +799,7 @@ public class SlimefunItem implements Placeable {
      */
     public final void addOficialWikipage(@Nonnull String page) {
         Validate.notNull(page, "Wiki page cannot be null.");
-        wikiLink = Optional.of("https://github.com/Slimefun/Slimefun4/wiki/" + page);
+        wikiURL = Optional.of("https://github.com/Slimefun/Slimefun4/wiki/" + page);
     }
 
     /**
@@ -744,7 +812,7 @@ public class SlimefunItem implements Placeable {
      */
     @Nonnull
     public Optional<String> getWikipage() {
-        return wikiLink;
+        return wikiURL;
     }
 
     /**
@@ -755,15 +823,15 @@ public class SlimefunItem implements Placeable {
      */
     @Nonnull
     public final String getItemName() {
-        if (item instanceof SlimefunItemStack) {
-            Optional<String> name = ((SlimefunItemStack) item).getImmutableMeta().getDisplayName();
+        if (itemStackTemplate instanceof SlimefunItemStack) {
+            Optional<String> name = ((SlimefunItemStack) itemStackTemplate).getImmutableMeta().getDisplayName();
 
             if (name.isPresent()) {
                 return name.get();
             }
         }
 
-        return ItemUtils.getItemName(item);
+        return ItemUtils.getItemName(itemStackTemplate);
     }
 
     /**
@@ -795,8 +863,7 @@ public class SlimefunItem implements Placeable {
         if (handler.isPresent()) {
             try {
                 callable.accept(c.cast(handler.get()));
-            }
-            catch (Exception | LinkageError x) {
+            } catch (Exception | LinkageError x) {
                 error("Could not pass \"" + c.getSimpleName() + "\" for " + toString(), x);
             }
 
@@ -826,7 +893,7 @@ public class SlimefunItem implements Placeable {
 
     @Override
     public Collection<ItemStack> getDrops() {
-        return Arrays.asList(item.clone());
+        return Arrays.asList(itemStackTemplate.clone());
     }
 
     @Override
@@ -839,7 +906,8 @@ public class SlimefunItem implements Placeable {
      * from this {@link SlimefunItem}, the message will be sent using the {@link Logger}
      * of the {@link SlimefunAddon} which registered this {@link SlimefunItem}.
      *
-     * @param message The message to send
+     * @param message
+     *            The message to send
      */
     public void info(@Nonnull String message) {
         String msg = toString() + ": " + message;
@@ -851,7 +919,8 @@ public class SlimefunItem implements Placeable {
      * this {@link SlimefunItem}, the warning will be sent using the {@link Logger}
      * of the {@link SlimefunAddon} which registered this {@link SlimefunItem}.
      *
-     * @param message The message to send
+     * @param message
+     *            The message to send
      */
     public void warn(@Nonnull String message) {
         String msg = toString() + ": " + message;
@@ -867,8 +936,10 @@ public class SlimefunItem implements Placeable {
      * This will throw a {@link Throwable} to the console and signal that
      * this was caused by this {@link SlimefunItem}.
      *
-     * @param message   The message to display alongside this Stacktrace
-     * @param throwable The {@link Throwable} to throw as a stacktrace.
+     * @param message
+     *            The message to display alongside this Stacktrace
+     * @param throwable
+     *            The {@link Throwable} to throw as a stacktrace.
      */
     public void error(@Nonnull String message, @Nonnull Throwable throwable) {
         addon.getLogger().log(Level.SEVERE, "Item \"{0}\" from {1} v{2} has caused an Error!", new Object[]{id, addon.getName(), addon.getPluginVersion()});
@@ -918,7 +989,7 @@ public class SlimefunItem implements Placeable {
                 if (sfi.isItem(wrapper)) {
                     // If we have to loop all items for the given item, then at least
                     // set the id via PersistentDataAPI for future performance boosts
-                    SlimefunPlugin.getItemDataService().setItemData(item, sfi.getID());
+                    SlimefunPlugin.getItemDataService().setItemData(item, sfi.getId());
 
                     return sfi;
                 }

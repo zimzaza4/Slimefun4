@@ -1,5 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines;
 
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
@@ -26,6 +29,11 @@ public abstract class ElectrifiedCrucible extends AContainer {
 
         for (Material leaves : Tag.LEAVES.getValues()) {
             registerRecipe(10, new ItemStack[]{new ItemStack(Material.BUCKET), new ItemStack(leaves, 16)}, new ItemStack[]{new ItemStack(Material.WATER_BUCKET)});
+        }
+
+        if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_16)) {
+            registerRecipe(10, new ItemStack[]{new ItemStack(Material.BUCKET), new ItemStack(Material.BLACKSTONE, 8)}, new ItemStack[]{new ItemStack(Material.LAVA_BUCKET)});
+            registerRecipe(10, new ItemStack[]{new ItemStack(Material.BUCKET), new ItemStack(Material.BASALT, 12)}, new ItemStack[]{new ItemStack(Material.LAVA_BUCKET)});
         }
     }
 

@@ -225,9 +225,9 @@ public class ChestSlimefunGuide implements SlimefunGuideImplementation {
                     if (Slimefun.hasPermission(p, sfitem, false)) {
                         // TODO: 添加一个开关
                         if (VaultHelper.isUsable()) {
-                            menu.addItem(index, new CustomItem(Material.BARRIER, "&f" + ItemUtils.getItemName(sfitem.getItem()), "&7" + sfitem.getID(), "&4&l" + SlimefunPlugin.getLocalization().getMessage(p, "guide.locked"), "", "&a> 单击解锁", "", "&7需要 &b" + (research.getCost() * SlimefunPlugin.getCfg().getDouble("researches.money-multiply")) + " 游戏币"));
+                            menu.addItem(index, new CustomItem(Material.BARRIER, "&f" + ItemUtils.getItemName(sfitem.getItem()), "&7" + sfitem.getId(), "&4&l" + SlimefunPlugin.getLocalization().getMessage(p, "guide.locked"), "", "&a> 单击解锁", "", "&7需要 &b" + (research.getCost() * SlimefunPlugin.getCfg().getDouble("researches.money-multiply")) + " 游戏币"));
                         } else {
-                            menu.addItem(index, new CustomItem(Material.BARRIER, "&f" + ItemUtils.getItemName(sfitem.getItem()), "&7" + sfitem.getID(), "&4&l" + SlimefunPlugin.getLocalization().getMessage(p, "guide.locked"), "", "&a> 单击解锁", "", "&7需要 &b" + research.getCost() + " 级经验"));
+                            menu.addItem(index, new CustomItem(Material.BARRIER, "&f" + ItemUtils.getItemName(sfitem.getItem()), "&7" + sfitem.getId(), "&4&l" + SlimefunPlugin.getLocalization().getMessage(p, "guide.locked"), "", "&a> 单击解锁", "", "&7需要 &b" + research.getCost() + " 级经验"));
                         }
                         menu.addMenuClickHandler(index, (pl, slot, item, action) -> {
                             if (!SlimefunPlugin.getRegistry().getCurrentlyResearchingPlayers().contains(pl.getUniqueId())) {

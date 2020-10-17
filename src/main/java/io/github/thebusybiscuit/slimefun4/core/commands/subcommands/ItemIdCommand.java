@@ -24,7 +24,7 @@ class ItemIdCommand extends SubCommand {
                 if (item.getType() != Material.AIR) {
                     SlimefunItem sfItem = SlimefunItem.getByItem(item);
                     if (sfItem != null) {
-                        sender.sendMessage(ChatColors.color("The item's id: " + sfItem.getID()));
+                        sender.sendMessage(ChatColors.color("The item's id: " + sfItem.getId()));
                     } else {
                         SlimefunPlugin.getLocalization().sendMessage(sender, "messages.not-valid-item", true);
                     }

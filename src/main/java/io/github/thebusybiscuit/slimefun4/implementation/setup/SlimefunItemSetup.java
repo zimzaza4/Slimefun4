@@ -18,6 +18,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.*;
 import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.*;
 import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.*;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.Capacitor;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.EnergyConnector;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.EnergyRegulator;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets.*;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.generators.*;
@@ -68,7 +69,6 @@ import java.util.List;
  * This static utility class holds the recipes of all items.
  * This is the place where all items from Slimefun are registered.
  *
- * @author TheBusyBiscuit
  *
  */
 public final class SlimefunItemSetup {
@@ -289,7 +289,7 @@ public final class SlimefunItemSetup {
 
         new PressureChamber(categories.basicMachines, SlimefunItems.PRESSURE_CHAMBER).register(plugin);
 
-        new SlimefunItem(categories.technicalComponents, SlimefunItems.BATTERY, RecipeType.ENHANCED_CRAFTING_TABLE,
+        new SteelThruster(categories.technicalComponents, SlimefunItems.BATTERY, RecipeType.ENHANCED_CRAFTING_TABLE,
                 new ItemStack[]{null, new ItemStack(Material.REDSTONE), null, SlimefunItems.ZINC_INGOT, SlimefunItems.SULFATE, SlimefunItems.COPPER_INGOT, SlimefunItems.ZINC_INGOT, SlimefunItems.SULFATE, SlimefunItems.COPPER_INGOT})
                 .register(plugin);
 
@@ -776,7 +776,7 @@ public final class SlimefunItemSetup {
                 new ItemStack[]{new ItemStack(Material.SAND, 2), null, null, null, null, null, null, null, null})
                 .register(plugin);
 
-        new SlimefunItem(categories.misc, SlimefunItems.HEAVY_CREAM, RecipeType.ENHANCED_CRAFTING_TABLE,
+        new HeavyCream(categories.misc, SlimefunItems.HEAVY_CREAM, RecipeType.ENHANCED_CRAFTING_TABLE,
                 new ItemStack[]{new ItemStack(Material.MILK_BUCKET), null, null, null, null, null, null, null, null},
                 new SlimefunItemStack(SlimefunItems.HEAVY_CREAM, 2))
                 .register(plugin);
@@ -1373,13 +1373,18 @@ public final class SlimefunItemSetup {
                 new ItemStack[]{SlimefunItems.SILVER_INGOT, SlimefunItems.DAMASCUS_STEEL_INGOT, SlimefunItems.SILVER_INGOT, SlimefunItems.DAMASCUS_STEEL_INGOT, SlimefunItems.ELECTRIC_MOTOR, SlimefunItems.DAMASCUS_STEEL_INGOT, SlimefunItems.SILVER_INGOT, SlimefunItems.DAMASCUS_STEEL_INGOT, SlimefunItems.SILVER_INGOT})
                 .register(plugin);
 
+        new EnergyConnector(categories.electricity, SlimefunItems.ENERGY_CONNECTOR, RecipeType.ENHANCED_CRAFTING_TABLE,
+                new ItemStack[]{SlimefunItems.CARBON, SlimefunItems.COPPER_WIRE, SlimefunItems.CARBON, SlimefunItems.COPPER_WIRE, new ItemStack(Material.REDSTONE_BLOCK), SlimefunItems.COPPER_WIRE, SlimefunItems.CARBON, SlimefunItems.COPPER_WIRE, SlimefunItems.CARBON},
+                new SlimefunItemStack(SlimefunItems.ENERGY_CONNECTOR, 8))
+                .register(plugin);
+
         new SlimefunItem(categories.misc, SlimefunItems.DUCT_TAPE, RecipeType.ENHANCED_CRAFTING_TABLE,
                 new ItemStack[]{SlimefunItems.ALUMINUM_DUST, SlimefunItems.ALUMINUM_DUST, SlimefunItems.ALUMINUM_DUST, new ItemStack(Material.SLIME_BALL), new ItemStack(Material.WHITE_WOOL), new ItemStack(Material.SLIME_BALL), new ItemStack(Material.PAPER), new ItemStack(Material.PAPER), new ItemStack(Material.PAPER)},
                 new SlimefunItemStack(SlimefunItems.DUCT_TAPE, 2))
                 .register(plugin);
 
         new Capacitor(categories.electricity, 128, SlimefunItems.SMALL_CAPACITOR, RecipeType.ENHANCED_CRAFTING_TABLE,
-                new ItemStack[]{SlimefunItems.DURALUMIN_INGOT, SlimefunItems.REDSTONE_ALLOY, SlimefunItems.DURALUMIN_INGOT, new ItemStack(Material.REDSTONE), SlimefunItems.SULFATE, new ItemStack(Material.REDSTONE), SlimefunItems.DURALUMIN_INGOT, SlimefunItems.REDSTONE_ALLOY, SlimefunItems.DURALUMIN_INGOT})
+                new ItemStack[]{SlimefunItems.DURALUMIN_INGOT, SlimefunItems.SULFATE, SlimefunItems.DURALUMIN_INGOT, SlimefunItems.REDSTONE_ALLOY, SlimefunItems.ENERGY_CONNECTOR, SlimefunItems.REDSTONE_ALLOY, SlimefunItems.DURALUMIN_INGOT, new ItemStack(Material.REDSTONE), SlimefunItems.DURALUMIN_INGOT})
                 .register(plugin);
 
         new Capacitor(categories.electricity, 512, SlimefunItems.MEDIUM_CAPACITOR, RecipeType.ENHANCED_CRAFTING_TABLE,
@@ -2049,11 +2054,11 @@ public final class SlimefunItemSetup {
                 new ItemStack[]{null, SlimefunItems.ELECTRO_MAGNET, null, null, SlimefunItems.GPS_TRANSMITTER, null, null, SlimefunItems.ESSENCE_OF_AFTERLIFE, null})
                 .register(plugin);
 
-        new SlimefunItem(categories.androids, SlimefunItems.ANDROID_INTERFACE_ITEMS, RecipeType.ENHANCED_CRAFTING_TABLE,
+        new AndroidInterface(categories.androids, SlimefunItems.ANDROID_INTERFACE_ITEMS, RecipeType.ENHANCED_CRAFTING_TABLE,
                 new ItemStack[]{SlimefunItems.PLASTIC_SHEET, SlimefunItems.STEEL_INGOT, SlimefunItems.PLASTIC_SHEET, SlimefunItems.STEEL_INGOT, SlimefunItems.BASIC_CIRCUIT_BOARD, new ItemStack(Material.BLUE_STAINED_GLASS), SlimefunItems.PLASTIC_SHEET, SlimefunItems.STEEL_INGOT, SlimefunItems.PLASTIC_SHEET})
                 .register(plugin);
 
-        new SlimefunItem(categories.androids, SlimefunItems.ANDROID_INTERFACE_FUEL, RecipeType.ENHANCED_CRAFTING_TABLE,
+        new AndroidInterface(categories.androids, SlimefunItems.ANDROID_INTERFACE_FUEL, RecipeType.ENHANCED_CRAFTING_TABLE,
                 new ItemStack[]{SlimefunItems.PLASTIC_SHEET, SlimefunItems.STEEL_INGOT, SlimefunItems.PLASTIC_SHEET, new ItemStack(Material.RED_STAINED_GLASS), SlimefunItems.BASIC_CIRCUIT_BOARD, SlimefunItems.STEEL_INGOT, SlimefunItems.PLASTIC_SHEET, SlimefunItems.STEEL_INGOT, SlimefunItems.PLASTIC_SHEET})
                 .register(plugin);
 

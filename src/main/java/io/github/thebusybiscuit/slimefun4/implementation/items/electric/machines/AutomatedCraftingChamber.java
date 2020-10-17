@@ -45,7 +45,7 @@ public abstract class AutomatedCraftingChamber extends SlimefunItem implements I
     public AutomatedCraftingChamber(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
-        new BlockMenuPreset(getID(), SlimefunItems.AUTOMATED_CRAFTING_CHAMBER.getItemMeta().getDisplayName()) {
+        new BlockMenuPreset(getId(), SlimefunItems.AUTOMATED_CRAFTING_CHAMBER.getItemMeta().getDisplayName()) {
 
             @Override
             public void init() {
@@ -113,7 +113,7 @@ public abstract class AutomatedCraftingChamber extends SlimefunItem implements I
         };
 
         addItemHandler(onPlace());
-        registerBlockHandler(getID(), (p, b, stack, reason) -> {
+        registerBlockHandler(getId(), (p, b, stack, reason) -> {
             BlockMenu inv = BlockStorage.getInventory(b);
 
             if (inv != null) {

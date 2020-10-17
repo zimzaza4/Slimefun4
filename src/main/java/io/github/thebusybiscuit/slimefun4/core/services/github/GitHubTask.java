@@ -87,8 +87,8 @@ class GitHubTask implements Runnable {
                 contributor.setTexture(null);
             } catch (IOException x) {
                 // Too many requests
-                Slimefun.getLogger().log(Level.WARNING, "Attempted to connect to mojang.com, got this response: {0}: {1}", new Object[]{x.getClass().getSimpleName(), x.getMessage()});
-                Slimefun.getLogger().log(Level.WARNING, "This usually means mojang.com is down or started to rate-limit this connection, this is not an error message!");
+                Slimefun.getLogger().log(Level.WARNING, "尝试连接至 mojang.com 得到响应: {0}: {1}", new Object[]{x.getClass().getSimpleName(), x.getMessage()});
+                Slimefun.getLogger().log(Level.WARNING, "通常是因为 mojang.com 服务不可用或者限制了我们的连接次数, 这不是报错, Slimefun 一切正常!");
 
                 // Retry after 5 minutes if it was rate-limiting
                 if (x.getMessage().contains("429")) {
@@ -97,7 +97,7 @@ class GitHubTask implements Runnable {
 
                 return -1;
             } catch (TooManyRequestsException x) {
-                Slimefun.getLogger().log(Level.WARNING, "Received a rate-limit from mojang.com, retrying in 4 minutes");
+                Slimefun.getLogger().log(Level.WARNING, "收到来自 mojang.com 的限制连接代码, 将在 4 分钟后重试");
                 Bukkit.getScheduler().runTaskLaterAsynchronously(SlimefunPlugin.instance(), this::grabTextures, 4 * 60 * 20L);
 
                 return -1;

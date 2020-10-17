@@ -35,7 +35,7 @@ public abstract class ElectricSmeltery extends AContainer {
     public ElectricSmeltery(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
-        new BlockMenuPreset(getID(), getItemName()) {
+        new BlockMenuPreset(getId(), getItemName()) {
 
             @Override
             public void init() {
@@ -90,7 +90,7 @@ public abstract class ElectricSmeltery extends AContainer {
             }
         };
 
-        registerBlockHandler(getID(), (p, b, tool, reason) -> {
+        registerBlockHandler(getId(), (p, b, tool, reason) -> {
             BlockMenu inv = BlockStorage.getInventory(b);
 
             if (inv != null) {

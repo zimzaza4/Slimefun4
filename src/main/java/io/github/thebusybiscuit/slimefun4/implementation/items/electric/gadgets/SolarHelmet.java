@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.api.items.settings.DoubleRangeSetting;
 import io.github.thebusybiscuit.slimefun4.core.attributes.Rechargeable;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.ArmorTask;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
@@ -37,7 +38,7 @@ public class SolarHelmet extends SlimefunItem {
             throw new IllegalArgumentException("A Solar Helmet must have a positive charging level!");
         }
 
-        charge = new ItemSetting<>("charge-amount", defaultChargingLevel);
+        charge = new DoubleRangeSetting("charge-amount", 0.5, defaultChargingLevel, Double.MAX_VALUE);
         addItemSetting(charge);
     }
 

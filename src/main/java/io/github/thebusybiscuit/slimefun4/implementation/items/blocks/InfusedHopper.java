@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.blocks;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.api.items.settings.DoubleRangeSetting;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
@@ -23,7 +24,7 @@ import org.bukkit.util.Vector;
 public class InfusedHopper extends SimpleSlimefunItem<BlockTicker> {
 
     private final ItemSetting<Boolean> silent = new ItemSetting<>("silent", false);
-    private final ItemSetting<Double> radius = new ItemSetting<>("radius", 3.5);
+    private final ItemSetting<Double> radius = new DoubleRangeSetting("radius", 0.1, 3.5, Double.MAX_VALUE);
 
     public InfusedHopper(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
