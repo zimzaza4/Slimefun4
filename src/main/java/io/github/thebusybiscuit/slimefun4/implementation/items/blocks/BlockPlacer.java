@@ -1,10 +1,10 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.blocks;
 
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
-import io.github.thebusybiscuit.cscorelib2.materials.MaterialCollections;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.events.BlockPlacerPlaceEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.api.items.settings.MaterialTagSetting;
 import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockDispenseHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
@@ -26,7 +26,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * The {@link BlockPlacer} is a machine which can place {@link Block Blocks}, as the name
@@ -41,7 +40,7 @@ import java.util.stream.Collectors;
  */
 public class BlockPlacer extends SlimefunItem {
 
-    private final ItemSetting<List<String>> blacklist = new ItemSetting<>("unplaceable-blocks", MaterialCollections.getAllUnbreakableBlocks().stream().map(Material::name).collect(Collectors.toList()));
+    private final ItemSetting<List<String>> blacklist = new MaterialTagSetting("unplaceable-blocks", SlimefunTag.UNBREAKABLE_MATERIALS);
 
     public BlockPlacer(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
@@ -68,16 +67,26 @@ public class BlockPlacer extends SlimefunItem {
     private BlockDispenseHandler onBlockDispense() {
         return (e, dispenser, facedBlock, machine) -> {
             if (!hasPermission(dispenser, facedBlock)) {
+                e.setCancelled(true);
                 return;
             }
 
-            if (isShulkerBox(e.getItem().getType())) {
+            Material material = e.getItem().getType();
+
+            if (SlimefunTag.SHULKER_BOXES.isTagged(material)) {
                 // Since vanilla Dispensers can already place Shulker boxes, we
                 // simply fallback to the vanilla behaviour.
                 return;
             }
 
             e.setCancelled(true);
+
+            if (!material.isBlock() || SlimefunTag.BLOCK_PLACER_IGNORED_MATERIALS.isTagged(material)) {
+                // Some materials cannot be reliably placed, like beds, it would look
+                // kinda wonky, so we just ignore these altogether.
+                // The event has already been cancelled too, so they won't drop.
+                return;
+            }
 
             if (facedBlock.isEmpty() && e.getItem().getType().isBlock() && !isBlacklisted(e.getItem().getType())) {
                 SlimefunItem item = SlimefunItem.getByItem(e.getItem());
@@ -118,10 +127,6 @@ public class BlockPlacer extends SlimefunItem {
 
         OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(owner));
         return SlimefunPlugin.getProtectionManager().hasPermission(player, target, ProtectableAction.PLACE_BLOCK);
-    }
-
-    private boolean isShulkerBox(Material type) {
-        return type == Material.SHULKER_BOX || type.name().endsWith("_SHULKER_BOX");
     }
 
     private boolean isBlacklisted(Material type) {

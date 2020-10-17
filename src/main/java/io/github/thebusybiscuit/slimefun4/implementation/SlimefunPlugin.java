@@ -177,6 +177,9 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
             getLogger().log(Level.INFO, "加载矿物资源...");
             GEOResourcesSetup.setup();
 
+            getLogger().log(Level.INFO, "加载自定义标签...");
+            loadTags();
+
             getLogger().log(Level.INFO, "加载物品...");
             loadItems();
 
@@ -261,7 +264,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         String currentVersion = ReflectionUtils.getVersion();
 
         if (currentVersion.startsWith("v")) {
-            for (MinecraftVersion version : MinecraftVersion.values) {
+            for (MinecraftVersion version : MinecraftVersion.valuesCache) {
                 if (version.matches(currentVersion)) {
                     minecraftVersion = version;
                     return false;
@@ -288,7 +291,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     private Collection<String> getSupportedVersions() {
         List<String> list = new ArrayList<>();
 
-        for (MinecraftVersion version : MinecraftVersion.values) {
+        for (MinecraftVersion version : MinecraftVersion.valuesCache) {
             if (version != MinecraftVersion.UNKNOWN) {
                 list.add(version.getName());
             }
@@ -439,6 +442,15 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new PlayerProfileListener(this);
     }
 
+    private void loadTags() {
+        for (SlimefunTag tag : SlimefunTag.valuesCache) {
+            try {
+                tag.reload();
+            } catch (TagMisconfigurationException e) {
+                getLogger().log(Level.SEVERE, e, () -> "Failed to load Tag: " + tag.name());
+            }
+        }
+    }
 
     private void loadItems() {
         try {

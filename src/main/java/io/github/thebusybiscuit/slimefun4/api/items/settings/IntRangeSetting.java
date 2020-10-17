@@ -1,0 +1,50 @@
+package io.github.thebusybiscuit.slimefun4.api.items.settings;
+
+import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+/**
+ * This variation of {@link ItemSetting} allows you to define an {@link Integer} range
+ * and enforces this range using the {@link #validateInput(Integer)} method.
+ *
+ * @author TheBusyBiscuit
+ * @see ItemSetting
+ */
+public class IntRangeSetting extends ItemSetting<Integer> {
+
+    private final int min;
+    private final int max;
+
+    @ParametersAreNonnullByDefault
+    public IntRangeSetting(String key, int min, int defaultValue, int max) {
+        super(key, defaultValue);
+
+        this.min = min;
+        this.max = max;
+    }
+
+    @Override
+    public boolean validateInput(Integer input) {
+        return super.validateInput(input) && input >= min && input <= max;
+    }
+
+    /**
+     * This returns the minimum value of this {@link IntRangeSetting}.
+     *
+     * @return The minimum value
+     */
+    public int getMinimum() {
+        return min;
+    }
+
+    /**
+     * This returns the maximum value of this {@link IntRangeSetting}.
+     *
+     * @return The maximum value
+     */
+    public int getMaximum() {
+        return max;
+    }
+
+}

@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.weapons;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.api.items.settings.IntRangeSetting;
 import io.github.thebusybiscuit.slimefun4.core.handlers.EntityKillHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
@@ -17,11 +18,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class SwordOfBeheading extends SimpleSlimefunItem<EntityKillHandler> {
 
-    private final ItemSetting<Integer> chanceZombie = new ItemSetting<>("chance.ZOMBIE", 40);
-    private final ItemSetting<Integer> chanceSkeleton = new ItemSetting<>("chance.SKELETON", 40);
-    private final ItemSetting<Integer> chanceWitherSkeleton = new ItemSetting<>("chance.WITHER_SKELETON", 25);
-    private final ItemSetting<Integer> chanceCreeper = new ItemSetting<>("chance.CREEPER", 40);
-    private final ItemSetting<Integer> chancePlayer = new ItemSetting<>("chance.PLAYER", 70);
+    private final ItemSetting<Integer> chanceZombie = new IntRangeSetting("chance.ZOMBIE", 0, 40, 100);
+    private final ItemSetting<Integer> chanceSkeleton = new IntRangeSetting("chance.SKELETON", 0, 40, 100);
+    private final ItemSetting<Integer> chanceWitherSkeleton = new IntRangeSetting("chance.WITHER_SKELETON", 0, 25, 100);
+    private final ItemSetting<Integer> chanceCreeper = new IntRangeSetting("chance.CREEPER", 0, 40, 100);
+    private final ItemSetting<Integer> chancePlayer = new IntRangeSetting("chance.PLAYER", 0, 70, 100);
 
     public SwordOfBeheading(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
@@ -42,13 +43,11 @@ public class SwordOfBeheading extends SimpleSlimefunItem<EntityKillHandler> {
                 if (random.nextInt(100) < chanceWitherSkeleton.getValue()) {
                     e.getDrops().add(new ItemStack(Material.WITHER_SKELETON_SKULL));
                 }
-            }
-            else if (e.getEntity() instanceof Skeleton) {
+            } else if (e.getEntity() instanceof Skeleton) {
                 if (random.nextInt(100) < chanceSkeleton.getValue()) {
                     e.getDrops().add(new ItemStack(Material.SKELETON_SKULL));
                 }
-            }
-            else if (e.getEntity() instanceof Creeper) {
+            } else if (e.getEntity() instanceof Creeper) {
                 if (random.nextInt(100) < chanceCreeper.getValue()) {
                     e.getDrops().add(new ItemStack(Material.CREEPER_HEAD));
                 }

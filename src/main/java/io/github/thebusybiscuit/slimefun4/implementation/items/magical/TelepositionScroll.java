@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.magical;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.api.items.settings.IntRangeSetting;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
@@ -22,7 +23,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class TelepositionScroll extends SimpleSlimefunItem<ItemUseHandler> {
 
-    private final ItemSetting<Integer> radius = new ItemSetting<>("radius", 10);
+    private final ItemSetting<Integer> radius = new IntRangeSetting("radius", 1, 10, Integer.MAX_VALUE);
 
     public TelepositionScroll(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);

@@ -16,7 +16,7 @@ public class NetherGoldPan extends GoldPan {
     }
 
     @Override
-    protected Material getInput() {
+    protected Material getTargetMaterial() {
         return Material.SOUL_SAND;
     }
 

@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.implementation.settings.TalismanEnchantment;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Material;

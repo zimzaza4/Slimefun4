@@ -1,7 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.tools;
 
 import io.github.starwishsama.extra.ProtectionChecker;
-import io.github.thebusybiscuit.cscorelib2.materials.MaterialTools;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
@@ -28,7 +27,7 @@ public class ExplosiveShovel extends ExplosiveTool {
     protected boolean canBreak(Player p, Block b) {
         if (isUnbreakable(b)) {
             return false;
-        } else if (MaterialTools.getBreakableByShovel().contains(b.getType())) {
+        } else if (SlimefunTag.EXPLOSIVE_SHOVEL_BLOCKS.isTagged(b.getType())) {
             return false;
         } else {
             return SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.BREAK_BLOCK)

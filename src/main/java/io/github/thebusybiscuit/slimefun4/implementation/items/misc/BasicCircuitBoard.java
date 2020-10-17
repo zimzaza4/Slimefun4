@@ -2,6 +2,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.misc;
 
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.api.items.settings.IntRangeSetting;
 import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RandomMobDrop;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
@@ -14,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 public class BasicCircuitBoard extends SimpleSlimefunItem<ItemUseHandler> implements NotPlaceable, RandomMobDrop {
 
     private final ItemSetting<Boolean> dropSetting = new ItemSetting<>("drop-from-golems", true);
-    private final ItemSetting<Integer> chance = new ItemSetting<>("golem-drop-chance", 75);
+    private final ItemSetting<Integer> chance = new IntRangeSetting("golem-drop-chance", 0, 75, 100);
 
     public BasicCircuitBoard(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);

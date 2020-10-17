@@ -11,7 +11,6 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.UnregisterReason;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Material;
-import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
@@ -26,7 +25,10 @@ import org.bukkit.inventory.ItemStack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -40,18 +42,8 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class BlockListener implements Listener {
 
-    // Materials that require a Block under it, e.g. Pressure Plates
-    private final Set<Material> sensitiveMaterials = EnumSet.noneOf(Material.class);
-
     public BlockListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
-
-        sensitiveMaterials.add(Material.CAKE);
-        sensitiveMaterials.add(Material.STONE_PRESSURE_PLATE);
-        sensitiveMaterials.add(Material.LIGHT_WEIGHTED_PRESSURE_PLATE);
-        sensitiveMaterials.add(Material.HEAVY_WEIGHTED_PRESSURE_PLATE);
-        sensitiveMaterials.addAll(Tag.SAPLINGS.getValues());
-        sensitiveMaterials.addAll(Tag.WOODEN_PRESSURE_PLATES.getValues());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -167,7 +159,7 @@ public class BlockListener implements Listener {
     private void checkForSensitiveBlockAbove(Player p, Block b) {
         Block blockAbove = b.getRelative(BlockFace.UP);
 
-        if (sensitiveMaterials.contains(blockAbove.getType())) {
+        if (SlimefunTag.SENSITIVE_MATERIALS.isTagged(blockAbove.getType())) {
             SlimefunItem sfItem = BlockStorage.check(blockAbove);
 
             if (sfItem != null && !sfItem.useVanillaBlockBreaking()) {

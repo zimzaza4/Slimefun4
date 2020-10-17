@@ -1,12 +1,12 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.blocks;
 
-import io.github.thebusybiscuit.cscorelib2.materials.MaterialCollections;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockUseHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
@@ -14,7 +14,6 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.Tag;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Levelled;
@@ -22,6 +21,8 @@ import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -64,7 +65,7 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
             items.add(new ItemStack(Material.WATER_BUCKET));
         }
 
-        for (Material sapling : MaterialCollections.getAllTerracottaColors()) {
+        for (Material sapling : SlimefunTag.TERRACOTTA.getValues()) {
             items.add(new ItemStack(sapling, 12));
             items.add(new ItemStack(Material.LAVA_BUCKET));
         }
@@ -98,6 +99,7 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
         };
     }
 
+    @ParametersAreNonnullByDefault
     private boolean craft(Player p, ItemStack input) {
         for (int i = 0; i < recipes.size(); i += 2) {
             ItemStack convert = recipes.get(i);
@@ -114,11 +116,7 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
         return false;
     }
 
-    private void generateLiquid(Block block, boolean water) {
-        if (water && block.getWorld().getEnvironment() == World.Environment.NETHER) {
-            block.getWorld().playSound(block.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
-            return;
-        }
+    private void generateLiquid(@Nonnull Block block, boolean water) {
         if (block.getType() == (water ? Material.WATER : Material.LAVA)) {
             addLiquidLevel(block, water);
         } else if (block.getType() == (water ? Material.LAVA : Material.WATER)) {
@@ -130,12 +128,7 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
         }
     }
 
-    private void addLiquidLevel(Block block, boolean water) {
-        if (water && block.getWorld().getEnvironment() == World.Environment.NETHER) {
-            block.getWorld().playSound(block.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
-            return;
-        }
-
+    private void addLiquidLevel(@Nonnull Block block, boolean water) {
         int level = ((Levelled) block.getBlockData()).getLevel();
 
         if (level > 7) {
@@ -150,12 +143,7 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
         }
     }
 
-    private void placeLiquid(Block block, boolean water) {
-        if (block.getWorld().getEnvironment() == World.Environment.NETHER && water) {
-            block.getWorld().playSound(block.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
-            return;
-        }
-
+    private void placeLiquid(@Nonnull Block block, boolean water) {
         if (block.getType() == Material.AIR || block.getType() == Material.CAVE_AIR || block.getType() == Material.VOID_AIR) {
             block.setType(water ? Material.WATER : Material.LAVA);
         } else {
@@ -175,6 +163,7 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
         runPostTask(block, water ? Sound.ENTITY_PLAYER_SPLASH : Sound.BLOCK_LAVA_POP, 1);
     }
 
+    @ParametersAreNonnullByDefault
     private void runPostTask(Block block, Sound sound, int times) {
         if (!(block.getBlockData() instanceof Levelled)) {
             block.getWorld().playSound(block.getLocation(), Sound.BLOCK_METAL_BREAK, 1F, 1F);

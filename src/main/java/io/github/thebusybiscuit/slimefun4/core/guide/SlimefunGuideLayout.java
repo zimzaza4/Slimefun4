@@ -6,5 +6,5 @@ public enum SlimefunGuideLayout {
     CHEST,
     CHEAT_SHEET;
 
-    public static final SlimefunGuideLayout[] values = values();
+    public static final SlimefunGuideLayout[] valuesCache = values();
 }

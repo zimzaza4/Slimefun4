@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.weapons;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.api.items.settings.IntRangeSetting;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BowShootHandler;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
@@ -23,18 +24,13 @@ import java.util.Collection;
  *
  * @author TheBusyBiscuit
  * @author Linox
+ *
  * @see SlimefunBow
+ *
  */
 public class ExplosiveBow extends SlimefunBow {
 
-    private final ItemSetting<Integer> range = new ItemSetting<Integer>("explosion-range", 3) {
-
-        @Override
-        public boolean validateInput(Integer input) {
-            return super.validateInput(input) && input > 0;
-        }
-
-    };
+    private final ItemSetting<Integer> range = new IntRangeSetting("explosion-range", 1, 3, Integer.MAX_VALUE);
 
     public ExplosiveBow(Category category, SlimefunItemStack item, ItemStack[] recipe) {
         super(category, item, recipe);
@@ -60,14 +56,13 @@ public class ExplosiveBow extends SlimefunBow {
                 double distanceSquared = distanceVector.lengthSquared();
                 double damage = calculateDamage(distanceSquared, e.getDamage());
 
-                Vector knockback = velocity.add(distanceVector.normalize().multiply((int) (e.getDamage() / damage)));
-                entity.setVelocity(knockback);
-
                 if (!entity.getUniqueId().equals(target.getUniqueId())) {
                     EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(e.getDamager(), entity, EntityDamageEvent.DamageCause.ENTITY_EXPLOSION, damage);
                     Bukkit.getPluginManager().callEvent(event);
 
                     if (!event.isCancelled()) {
+                        Vector knockback = velocity.add(distanceVector.normalize().multiply((int) (e.getDamage() / damage)));
+                        entity.setVelocity(knockback);
                         entity.damage(event.getDamage());
                     }
                 }
