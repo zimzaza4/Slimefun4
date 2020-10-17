@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -23,7 +24,9 @@ import java.util.stream.Collectors;
  * The {@link TagParser} is responsible for parsing a JSON input into a {@link SlimefunTag}.
  *
  * @author TheBusyBiscuit
+ *
  * @see SlimefunTag
+ *
  */
 public class TagParser implements Keyed {
 
@@ -41,7 +44,8 @@ public class TagParser implements Keyed {
     /**
      * This constructs a new {@link TagParser} for the given {@link SlimefunTag}
      *
-     * @param tag The {@link SlimefunTag} to parse inputs for
+     * @param tag
+     *            The {@link SlimefunTag} to parse inputs for
      */
     TagParser(@Nonnull SlimefunTag tag) {
         this(tag.getKey());
@@ -53,7 +57,7 @@ public class TagParser implements Keyed {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(SlimefunPlugin.class.getResourceAsStream(path), StandardCharsets.UTF_8))) {
             parse(reader.lines().collect(Collectors.joining("")), callback);
         } catch (IOException x) {
-            throw new TagMisconfigurationException(key, x.getMessage());
+            throw new TagMisconfigurationException(key, x);
         }
     }
 
@@ -61,16 +65,20 @@ public class TagParser implements Keyed {
      * This will parse the given JSON {@link String} and run the provided callback with {@link Set Sets} of
      * matched {@link Material Materials} and {@link Tag Tags}.
      *
-     * @param json     The JSON {@link String} to parse
-     * @param callback A callback to run after successfully parsing the input
-     * @throws TagMisconfigurationException This is thrown whenever the given input is malformed or no adequate
-     *                                      {@link Material} or {@link Tag} could be found
+     * @param json
+     *            The JSON {@link String} to parse
+     * @param callback
+     *            A callback to run after successfully parsing the input
+     *
+     * @throws TagMisconfigurationException
+     *             This is thrown whenever the given input is malformed or no adequate
+     *             {@link Material} or {@link Tag} could be found
      */
     public void parse(@Nonnull String json, @Nonnull BiConsumer<Set<Material>, Set<Tag<Material>>> callback) throws TagMisconfigurationException {
         Validate.notNull(json, "Cannot parse a null String");
 
         try {
-            Set<Material> materials = new HashSet<>();
+            Set<Material> materials = EnumSet.noneOf(Material.class);
             Set<Tag<Material>> tags = new HashSet<>();
 
             JsonParser parser = new JsonParser();
@@ -100,7 +108,7 @@ public class TagParser implements Keyed {
                 throw new TagMisconfigurationException(key, "No values array specified");
             }
         } catch (IllegalStateException | JsonParseException x) {
-            throw new TagMisconfigurationException(key, x.getMessage());
+            throw new TagMisconfigurationException(key, x);
         }
     }
 

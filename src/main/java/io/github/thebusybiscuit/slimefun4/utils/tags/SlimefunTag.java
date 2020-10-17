@@ -25,7 +25,9 @@ import java.util.stream.Stream;
  * and follow Minecraft's tags.json format.
  *
  * @author TheBusyBiscuit
+ *
  * @see TagParser
+ *
  */
 public enum SlimefunTag implements Tag<Material> {
 
@@ -175,7 +177,7 @@ public enum SlimefunTag implements Tag<Material> {
     }
 
     private final NamespacedKey key;
-    private final Set<Material> includedMaterials = new HashSet<>();
+    private final Set<Material> includedMaterials = EnumSet.noneOf(Material.class);
     private final Set<Tag<Material>> additionalTags = new HashSet<>();
 
     /**
@@ -205,12 +207,13 @@ public enum SlimefunTag implements Tag<Material> {
     /**
      * This method reloads every single {@link SlimefunTag} from the resources directory.
      * It is equivalent to running {@link #reload()} on every single {@link SlimefunTag} manually.
-     * <p>
+     *
      * Do keep in mind though that any misconfigured {@link SlimefunTag} will abort the entire
      * method and throw a {@link TagMisconfigurationException}. So one faulty {@link SlimefunTag}
      * will stop the reloading process.
      *
-     * @throws TagMisconfigurationException This is thrown if one of the {@link SlimefunTag SlimefunTags} could not be parsed correctly
+     * @throws TagMisconfigurationException
+     *             This is thrown if one of the {@link SlimefunTag SlimefunTags} could not be parsed correctly
      */
     public static void reloadAll() throws TagMisconfigurationException {
         for (SlimefunTag tag : valuesCache) {
@@ -247,7 +250,8 @@ public enum SlimefunTag implements Tag<Material> {
         if (additionalTags.isEmpty()) {
             return Collections.unmodifiableSet(includedMaterials);
         } else {
-            Set<Material> materials = new HashSet<>(includedMaterials);
+            Set<Material> materials = EnumSet.noneOf(Material.class);
+            materials.addAll(includedMaterials);
 
             for (Tag<Material> tag : additionalTags) {
                 materials.addAll(tag.getValues());
@@ -296,7 +300,9 @@ public enum SlimefunTag implements Tag<Material> {
      * your Java version. It also means that you can avoid an IllegalArgumentException which let's
      * face it is always good.
      *
-     * @param value The value which you would like to look up.
+     * @param value
+     *            The value which you would like to look up.
+     *
      * @return The {@link SlimefunTag} or null if it does not exist.
      */
     @Nullable

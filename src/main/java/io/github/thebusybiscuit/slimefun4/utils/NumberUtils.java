@@ -27,13 +27,28 @@ public final class NumberUtils {
         return LocalDateTime.parse(date.substring(0, date.length() - 1));
     }
 
+    /**
+     * This will return a representative color for the given percentage.
+     * Lower levels will result in a darker tone of red, higher levels will
+     * result in more brighter shades of green.
+     *
+     * @param percentage The amount of percentage as a float
+     * @return A representative {@link ChatColor}
+     */
     public static ChatColor getColorFromPercentage(float percentage) {
-        if (percentage < 16.0F) return ChatColor.DARK_RED;
-        else if (percentage < 32.0F) return ChatColor.RED;
-        else if (percentage < 48.0F) return ChatColor.GOLD;
-        else if (percentage < 64.0F) return ChatColor.YELLOW;
-        else if (percentage < 80.0F) return ChatColor.DARK_GREEN;
-        else return ChatColor.GREEN;
+        if (percentage < 16.0F) {
+            return ChatColor.DARK_RED;
+        } else if (percentage < 32.0F) {
+            return ChatColor.RED;
+        } else if (percentage < 48.0F) {
+            return ChatColor.GOLD;
+        } else if (percentage < 64.0F) {
+            return ChatColor.YELLOW;
+        } else if (percentage < 80.0F) {
+            return ChatColor.DARK_GREEN;
+        } else {
+            return ChatColor.GREEN;
+        }
     }
 
     public static String getElapsedTime(@Nonnull LocalDateTime date) {
@@ -106,9 +121,12 @@ public final class NumberUtils {
      * This method is a combination of Math.min and Math.max, it clamps the given value
      * between a minimum and a maximum.
      *
-     * @param min   The minimum value
-     * @param value The value to clamp
-     * @param max   The maximum value
+     * @param min
+     *            The minimum value
+     * @param value
+     *            The value to clamp
+     * @param max
+     *            The maximum value
      */
     public static int clamp(int min, int value, int max) {
         if (value < min) {

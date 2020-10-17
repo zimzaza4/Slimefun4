@@ -21,6 +21,7 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -150,14 +151,11 @@ public class AutoDisenchanter extends AContainer {
         book.setItemMeta(meta);
     }
 
-    private boolean isDisenchantable(ItemStack item) {
+    private boolean isDisenchantable(@Nullable ItemStack item) {
         if (item == null) {
             return false;
-        }
-
-        // stops endless checks of getByItem for empty book stacks.
-
-        else if (item.getType() != Material.BOOK) {
+        } else if (item.getType() != Material.BOOK) {
+            // ^ This stops endless checks of getByItem for books
             SlimefunItem sfItem = SlimefunItem.getByItem(item);
             return sfItem == null || sfItem.isDisenchantable();
         } else {

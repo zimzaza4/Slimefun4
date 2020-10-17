@@ -137,8 +137,11 @@ public final class SlimefunUtils {
      * by {@link #isSoulbound(ItemStack)}.<br>
      * If false is passed, this property will be removed.
      *
-     * @param item          The {@link ItemStack} you want to add/remove Soulbound from.
-     * @param makeSoulbound If they item should be soulbound.
+     * @param item
+     *            The {@link ItemStack} you want to add/remove Soulbound from.
+     * @param makeSoulbound
+     *            If they item should be soulbound.
+     *
      * @see #isSoulbound(ItemStack)
      */
     public static void setSoulbound(@Nullable ItemStack item, boolean makeSoulbound) {
@@ -191,10 +194,12 @@ public final class SlimefunUtils {
      * This method returns an {@link ItemStack} for the given texture.
      * The result will be a Player Head with this texture.
      *
-     * @param texture The texture for this head (base64 or hash)
+     * @param texture
+     *            The texture for this head (base64 or hash)
+     *
      * @return An {@link ItemStack} with this Head texture
      */
-    public static ItemStack getCustomHead(String texture) {
+    public static ItemStack getCustomHead(@Nonnull String texture) {
         Validate.notNull(texture, "The provided texture is null");
 
         if (SlimefunPlugin.instance() == null) {
@@ -243,16 +248,17 @@ public final class SlimefunUtils {
     }
 
     public static boolean isItemSimilar(@Nullable ItemStack item, @Nullable ItemStack sfitem, boolean checkLore, boolean checkAmount) {
-        if (item == null) return sfitem == null;
-        if (sfitem == null) return false;
-        if (item.getType() != sfitem.getType()) return false;
-        if (checkAmount && item.getAmount() < sfitem.getAmount()) return false;
-
-        if (sfitem instanceof SlimefunItemStack && item instanceof SlimefunItemStack) {
+        if (item == null) {
+            return sfitem == null;
+        } else if (sfitem == null) {
+            return false;
+        } else if (item.getType() != sfitem.getType()) {
+            return false;
+        } else if (checkAmount && item.getAmount() < sfitem.getAmount()) {
+            return false;
+        } else if (sfitem instanceof SlimefunItemStack && item instanceof SlimefunItemStack) {
             return ((SlimefunItemStack) item).getItemId().equals(((SlimefunItemStack) sfitem).getItemId());
-        }
-
-        if (item.hasItemMeta()) {
+        } else if (item.hasItemMeta()) {
             ItemMeta itemMeta = item.getItemMeta();
 
             if (sfitem instanceof SlimefunItemStack) {
@@ -266,12 +272,12 @@ public final class SlimefunUtils {
                 return equalsItemMeta(itemMeta, meta, checkLore);
             } else if (sfitem.hasItemMeta()) {
                 return equalsItemMeta(itemMeta, sfitem.getItemMeta(), checkLore);
+            } else {
+                return false;
             }
         } else {
             return !sfitem.hasItemMeta();
         }
-
-        return false;
     }
 
     private static boolean equalsItemMeta(@Nonnull ItemMeta itemMeta, @Nonnull ImmutableItemMeta meta, boolean checkLore) {
