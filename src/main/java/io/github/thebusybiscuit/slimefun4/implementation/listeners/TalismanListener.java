@@ -13,6 +13,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -266,6 +267,13 @@ public class TalismanListener implements Listener {
                     }
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent e) {
+        if (e.getBlock().getType().name().endsWith("_ORE")) {
+            Talisman.checkFor(e, SlimefunItems.TALISMAN_CAVEMAN);
         }
     }
 

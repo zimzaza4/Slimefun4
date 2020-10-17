@@ -121,7 +121,9 @@ public class DirtyChestMenu extends ChestMenu {
 
                 if (ItemUtils.canStack(wrapper, stack)) {
                     amount -= (stack.getMaxStackSize() - stack.getAmount());
+
                     stack.setAmount(Math.min(stack.getAmount() + item.getAmount(), stack.getMaxStackSize()));
+                    item.setAmount(amount);
                 }
             }
         }

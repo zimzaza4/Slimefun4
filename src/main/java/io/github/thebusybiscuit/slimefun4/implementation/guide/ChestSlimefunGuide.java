@@ -223,10 +223,11 @@ public class ChestSlimefunGuide implements SlimefunGuideImplementation {
 
                 if (isSurvivalMode() && research != null && !profile.hasUnlocked(research)) {
                     if (Slimefun.hasPermission(p, sfitem, false)) {
+                        // TODO: 添加一个开关
                         if (VaultHelper.isUsable()) {
-                            menu.addItem(index, new CustomItem(Material.BARRIER, "&f" + ItemUtils.getItemName(sfitem.getItem()), "&4&l" + SlimefunPlugin.getLocalization().getMessage(p, "guide.locked"), "", "&a> 单击解锁", "", "&7需要 &b" + (research.getCost() * SlimefunPlugin.getCfg().getDouble("researches.money-multiply")) + " 游戏币"));
+                            menu.addItem(index, new CustomItem(Material.BARRIER, "&f" + ItemUtils.getItemName(sfitem.getItem()), "&7" + sfitem.getID(), "&4&l" + SlimefunPlugin.getLocalization().getMessage(p, "guide.locked"), "", "&a> 单击解锁", "", "&7需要 &b" + (research.getCost() * SlimefunPlugin.getCfg().getDouble("researches.money-multiply")) + " 游戏币"));
                         } else {
-                            menu.addItem(index, new CustomItem(Material.BARRIER, "&f" + ItemUtils.getItemName(sfitem.getItem()), "&4&l" + SlimefunPlugin.getLocalization().getMessage(p, "guide.locked"), "", "&a> 单击解锁", "", "&7需要 &b" + research.getCost() + " 级经验"));
+                            menu.addItem(index, new CustomItem(Material.BARRIER, "&f" + ItemUtils.getItemName(sfitem.getItem()), "&7" + sfitem.getID(), "&4&l" + SlimefunPlugin.getLocalization().getMessage(p, "guide.locked"), "", "&a> 单击解锁", "", "&7需要 &b" + research.getCost() + " 级经验"));
                         }
                         menu.addMenuClickHandler(index, (pl, slot, item, action) -> {
                             if (!SlimefunPlugin.getRegistry().getCurrentlyResearchingPlayers().contains(pl.getUniqueId())) {
@@ -658,8 +659,8 @@ public class ChestSlimefunGuide implements SlimefunGuideImplementation {
     }
 
     private void printErrorMessage(Player p, Throwable x) {
-        p.sendMessage(ChatColor.DARK_RED + "An internal server error has occured. Please inform an admin, check the console for further info.");
-        Slimefun.getLogger().log(Level.SEVERE, "An error has occured while trying to open a SlimefunItem in the guide!", x);
+        p.sendMessage(ChatColor.DARK_RED + "An internal server error has occurred. Please inform an admin, check the console for further info.");
+        Slimefun.getLogger().log(Level.SEVERE, "An error has occurred while trying to open a SlimefunItem in the guide!", x);
     }
 
 }

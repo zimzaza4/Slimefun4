@@ -383,7 +383,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new MultiBlockListener(this);
         new GadgetsListener(this);
         new DispenserListener(this);
-        new MobDropListener(this);
         new BlockListener(this);
         new EnhancedFurnaceListener(this);
         new ItemPickupListener(this);
@@ -395,16 +394,18 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new WitherListener(this);
         new IronGolemListener(this);
         new EntityInteractionListener(this);
+        new MobDropListener(this);
+        new VillagerTradingListener(this);
+        new ElytraCrashListener(this);
 
         if (minecraftVersion.isAtLeast(MinecraftVersion.MINECRAFT_1_15)) {
             new BeeListener(this);
         }
 
-        if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_16)) {
+        if (minecraftVersion.isAtLeast(MinecraftVersion.MINECRAFT_1_16)) {
             new PiglinListener(this);
         }
 
-        // 领地权限检查器
         new ProtectionChecker(this);
 
         // Item-specific Listeners
@@ -413,7 +414,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new SeismicAxeListener(this, (SeismicAxe) SlimefunItems.SEISMIC_AXE.getItem());
         new AncientAltarListener(this, (AncientAltar) SlimefunItems.ANCIENT_ALTAR.getItem(), (AncientPedestal) SlimefunItems.ANCIENT_PEDESTAL.getItem());
         grapplingHookListener.register(this, (GrapplingHook) SlimefunItems.GRAPPLING_HOOK.getItem());
-
         bowListener.register(this);
 
         // Toggleable Listeners for performance reasons
@@ -438,6 +438,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         // Clear the Slimefun Guide History upon Player Leaving
         new PlayerProfileListener(this);
     }
+
 
     private void loadItems() {
         try {

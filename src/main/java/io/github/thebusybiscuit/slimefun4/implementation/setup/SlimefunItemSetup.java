@@ -741,6 +741,11 @@ public final class SlimefunItemSetup {
                 "knight", 30, new PotionEffect(PotionEffectType.REGENERATION, 100, 3))
                 .register(plugin);
 
+        new Talisman(SlimefunItems.TALISMAN_CAVEMAN,
+                new ItemStack[]{SlimefunItems.MAGIC_LUMP_3, null, SlimefunItems.MAGIC_LUMP_3, new ItemStack(Material.GOLDEN_PICKAXE), SlimefunItems.TALISMAN_MINER, SlimefunItems.EARTH_RUNE, SlimefunItems.MAGIC_LUMP_3, null, SlimefunItems.MAGIC_LUMP_3},
+                false, false, "caveman", 50, new PotionEffect(PotionEffectType.FAST_DIGGING, 800, 2))
+                .register(plugin);
+
         new SlimefunItem(categories.resources, SlimefunItems.GILDED_IRON, RecipeType.SMELTERY,
                 new ItemStack[]{SlimefunItems.GOLD_24K, SlimefunItems.IRON_DUST, null, null, null, null, null, null, null})
                 .register(plugin);
@@ -979,6 +984,10 @@ public final class SlimefunItemSetup {
 
         new SlimefunItem(categories.technicalComponents, SlimefunItems.MAGNET, RecipeType.SMELTERY,
                 new ItemStack[]{SlimefunItems.NICKEL_INGOT, SlimefunItems.ALUMINUM_DUST, SlimefunItems.IRON_DUST, SlimefunItems.COBALT_INGOT, null, null, null, null, null})
+                .register(plugin);
+
+        new ElytraCap(categories.magicalGadgets, SlimefunItems.ELYTRA_CAP, RecipeType.ARMOR_FORGE,
+                new ItemStack[]{new ItemStack(Material.SLIME_BALL), new ItemStack(Material.SLIME_BALL), new ItemStack(Material.SLIME_BALL), SlimefunItems.ELYTRA_SCALE, SlimefunItems.ELYTRA_SCALE, SlimefunItems.ELYTRA_SCALE, new ItemStack(Material.SLIME_BALL), new ItemStack(Material.LEATHER_HELMET), new ItemStack(Material.SLIME_BALL)})
                 .register(plugin);
 
         new InfusedMagnet(categories.magicalGadgets, SlimefunItems.INFUSED_MAGNET, RecipeType.MAGIC_WORKBENCH,
