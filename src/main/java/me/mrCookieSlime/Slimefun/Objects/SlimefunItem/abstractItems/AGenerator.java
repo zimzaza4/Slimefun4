@@ -43,7 +43,7 @@ public abstract class AGenerator extends AbstractEnergyProvider {
     public AGenerator(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
-        new BlockMenuPreset(id, getInventoryTitle()) {
+        new BlockMenuPreset(item.getItemId(), getInventoryTitle()) {
 
             @Override
             public void init() {
@@ -67,7 +67,7 @@ public abstract class AGenerator extends AbstractEnergyProvider {
             }
         };
 
-        registerBlockHandler(id, (p, b, tool, reason) -> {
+        registerBlockHandler(item.getItemId(), (p, b, tool, reason) -> {
             BlockMenu inv = BlockStorage.getInventory(b);
 
             if (inv != null) {

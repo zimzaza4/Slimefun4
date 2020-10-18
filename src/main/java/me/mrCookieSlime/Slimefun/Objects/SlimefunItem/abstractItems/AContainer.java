@@ -49,7 +49,7 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
 
         createPreset(this, getInventoryTitle(), this::constructMenu);
 
-        registerBlockHandler(id, (p, b, tool, reason) -> {
+        registerBlockHandler(item.getItemId(), (p, b, tool, reason) -> {
             BlockMenu inv = BlockStorage.getInventory(b);
 
             if (inv != null) {

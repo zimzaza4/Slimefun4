@@ -21,7 +21,9 @@ import java.util.concurrent.ThreadLocalRandom;
  * gift when being placed down.
  *
  * @author TheBusyBiscuit
+ *
  * @see EasterEgg
+ *
  */
 public class ChristmasPresent extends SimpleSlimefunItem<BlockPlaceHandler> implements NotPlaceable {
 
@@ -42,7 +44,7 @@ public class ChristmasPresent extends SimpleSlimefunItem<BlockPlaceHandler> impl
                 e.setCancelled(true);
 
                 if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
-                    ItemUtils.consumeItem(item, false);
+                    ItemUtils.consumeItem(e.getItemInHand(), false);
                 }
 
                 FireworkUtils.launchRandom(e.getPlayer(), 3);
