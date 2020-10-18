@@ -4,6 +4,7 @@ import com.google.gson.*;
 import io.github.thebusybiscuit.slimefun4.api.exceptions.TagMisconfigurationException;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
+import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 
@@ -11,6 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.EnumSet;
@@ -54,7 +56,13 @@ public class TagParser implements Keyed {
     void parse(@Nonnull SlimefunTag tag, @Nonnull BiConsumer<Set<Material>, Set<Tag<Material>>> callback) throws TagMisconfigurationException {
         String path = "/tags/" + tag.getKey().getKey() + ".json";
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(SlimefunPlugin.class.getResourceAsStream(path), StandardCharsets.UTF_8))) {
+        InputStream resource = SlimefunPlugin.class.getResourceAsStream(path);
+
+        if (resource == null) {
+            Slimefun.getLogger().warning("无法获取标签文件 " + path);
+        }
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8))) {
             parse(reader.lines().collect(Collectors.joining("")), callback);
         } catch (IOException x) {
             throw new TagMisconfigurationException(key, x);

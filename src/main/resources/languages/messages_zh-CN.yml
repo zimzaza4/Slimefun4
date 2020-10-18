@@ -26,6 +26,7 @@ commands:
     not-rechargeable: 这个物品不能充电!
   reload: 重载配置文件
   transform: 将物品转换为英文物品
+  id: 获取手持物品的 Slimefun ID
 guide:
   search:
     message: "&b你想要搜索什么?"
@@ -102,6 +103,11 @@ guide:
 messages:
   above-limit-level: "&c你要附魔或祛魔的物品附魔等级超过上限!"
   android-no-permission: "&c你的机器人在某个你没有权限的领地/地皮中无法工作, 机器人已自动暂停运行."
+  transform:
+    success: "&a物品转换成功!"
+    warning: "&c&l警告: &f该转换会影响其他非粘液科技且物品名称或者 Lore 带有颜色的物品\n&f请先&c从背包中拿出&f再进行转换\n&f如果想要继续转换, 请再次输入一次 /sf transform update"
+    in-progress: "&f正在转换中..."
+    wrong-type: "&c目前支持转换的方块: 已修复的刷怪笼"
   not-researched: "&4你没有足够的学识来理解它"
   not-enough-xp: "&4你没有足够的经验来解锁这个研究"
   unlocked: '&b成功解锁研究 &7"%research%"'
@@ -176,18 +182,13 @@ messages:
     wrong-world: "&c你设置的起点似乎在另一个世界!"
     distance: "&7已测量到距离, &e为: %distance%"
     anchor-set: "&a成功在 &e %anchor% &a设置了测量起点"
-  transform:
-    success: "&a物品转换成功!"
-    warning: "&c&l警告: &f该转换会影响其他非粘液科技且物品名称或者 Lore 带有颜色的物品\n&f请先&c从背包中拿出&f再进行转换\n&f如果想要继续转换, 请再次输入一次 /sf transform update"
-    in-progress: "&f正在转换中..."
-    wrong-type: "&c目前支持转换的方块: 已修复的刷怪笼"
   multi-tool:
     mode-change: "&b%device% 的模式已切换为: &9%mode%"
-    not-shears: "&c多功能工具 (Multi Tool) 不能用来剪羊毛!"
+    not-shears: "&c多功能工具 (Multi Tool) 不能当成剪刀来用!"
   climbing-pick:
     dual-wielding: "&4你需要双手拿着攀岩镐才能使用!"
     wrong-material: "&c你不能爬上这个平面. 查看指南书了解更多!"
-mode-change: "&b%device% 的模式已切换为: &9%mode%"
+  mode-change: "&b%device% 的模式已切换为: &9%mode%"
 machines:
   pattern-not-found: "&e抱歉, 你记错合成表了吧. 这不是一个正确的合成配方, 请检查发射器里放置物品的顺序."
   unknown-material: "&e抱歉, 我无法识别在发射器里的物品. 请按照合成配方放置物品."
@@ -238,6 +239,7 @@ machines:
     finished: "&e你的工业矿机采矿已完成! 总共开采了 %ores% 个矿石!"
 anvil:
   not-working: "&4你不能在铁砧里使用 Slimefun 的物品"
+  mcmmo-salvaging: "&4你不能分解 Slimefun 物品!"
 backpack:
   already-open: "&c抱歉, 这个背包已在别处打开了!"
   no-stack: "&c你不能同时手持两个背包"
@@ -314,13 +316,14 @@ languages:
   hu: 匈牙利语
   lv: 拉脱维亚语
   ru: 俄语
-  sk: 斯洛伐克语
+  sk: 斯洛伐克文
   zh-TW: 繁体中文 (台湾)
-  vi: 越南语
+  vi: 越南文
   id: 印尼语
   zh-CN: 简体中文 (中国)
   el: 希腊语
   he: 希伯来语
+  pt: 葡萄牙语 (葡萄牙)
   ar: 阿拉伯语
   af: 南非语
   da: 丹麦语
@@ -332,7 +335,6 @@ languages:
   fa: 波斯语
   th: 泰语
   ro: 罗马尼亚语
-  pt: 葡萄牙语 (葡萄牙)
   pt-BR: 葡萄牙语 (巴西)
   bg: 保加利亚语
   ko: 韩语
@@ -346,5 +348,9 @@ brewing_stand:
   not-working: "&4你不能在酿造台中使用 Slimefun 物品!"
 villagers:
   no-trading: "&4你不能用 Slimefun 的物品和村民交易!"
+cartography_table:
+  not-working: "&4你不能在制图台中使用 Slimefun 物品!"
+cauldron:
+  no-discoloring: "&4你不能用炼药锅清洗 Slimefun 物品上的颜色"
 miner:
   no-ores: "&e抱歉, 周围找不到矿石了!"

@@ -145,7 +145,6 @@ slimefun:
   hologram_projector: 全息图像
   capacitors: 一级电容
   high_tier_capacitors: 二级电容
-  even_higher_tier_capacitors: 三级电容
   solar_generators: 太阳能农场
   electric_furnaces: 电炉
   electric_ore_grinding: 粉碎和研磨
@@ -244,3 +243,6 @@ slimefun:
   climbing_pick: 古块丽影
   shulker_shell: 人造潜影贝
   villager_rune: 防奸商神器
+  caveman_talisman: 穴居人护身符
+  even_higher_tier_capacitors: 三级电容器
+  energy_connectors: 有线连接

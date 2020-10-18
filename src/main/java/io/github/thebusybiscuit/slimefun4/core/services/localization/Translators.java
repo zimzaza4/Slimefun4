@@ -11,7 +11,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A translator is equivalent to the class {@link Contributor} as it also uses that internally.
  *
  * @author TheBusyBiscuit
+ *
  * @see Contributor
+ *
  */
 public class Translators {
 
@@ -41,6 +43,7 @@ public class Translators {
         addTranslator("ThatsCube", SupportedLanguage.ITALIAN, true);
         addTranslator("alessandrobasi", SupportedLanguage.ITALIAN, true);
         addTranslator("dracrus", SupportedLanguage.ITALIAN, true);
+        addTranslator("prolletto64", SupportedLanguage.ITALIAN, true);
 
         // Translators - Latvian
         addTranslator("AgnisT", "NIKNAIZ", SupportedLanguage.LATVIAN, true);
@@ -96,6 +99,9 @@ public class Translators {
         addTranslator("Dr4gonD", "DragonD", SupportedLanguage.DUTCH, true);
         addTranslator("svr333", SupportedLanguage.DUTCH, false);
         addTranslator("PabloMarcendo", SupportedLanguage.DUTCH, true);
+        addTranslator("milvantiou", SupportedLanguage.DUTCH, true);
+        addTranslator("Sven313D", SupportedLanguage.DUTCH, true);
+        addTranslator("TypischTeun", SupportedLanguage.DUTCH, true);
 
         // Translators - Danish
         addTranslator("Mini-kun", SupportedLanguage.DANISH, true);
@@ -130,6 +136,7 @@ public class Translators {
         addTranslator("yumjunstar", SupportedLanguage.KOREAN, true);
         addTranslator("BlWon", SupportedLanguage.KOREAN, true);
         addTranslator("20181241", SupportedLanguage.KOREAN, true);
+        addTranslator("kudansul", SupportedLanguage.KOREAN, true);
 
         // Translators - Indonesian
         addTranslator("diradho", SupportedLanguage.INDONESIAN, false);
