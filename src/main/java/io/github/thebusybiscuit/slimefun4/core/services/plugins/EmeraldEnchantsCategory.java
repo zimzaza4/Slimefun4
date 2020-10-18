@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 
+@Deprecated
 class EmeraldEnchantsCategory extends FlexCategory {
 
     public EmeraldEnchantsCategory(@Nonnull NamespacedKey key) {

@@ -28,6 +28,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.tools.GrapplingHo
 import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.SeismicAxe;
 import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.VampireBlade;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.*;
+import io.github.thebusybiscuit.slimefun4.implementation.listeners.crafting.*;
 import io.github.thebusybiscuit.slimefun4.implementation.resources.GEOResourcesSetup;
 import io.github.thebusybiscuit.slimefun4.implementation.setup.PostSetup;
 import io.github.thebusybiscuit.slimefun4.implementation.setup.ResearchSetup;
@@ -36,6 +37,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.tasks.ArmorTask;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.SlimefunStartupTask;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.TickerTask;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
+import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.CSCoreLibPlugin.CSCoreLib;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AGenerator;
@@ -129,9 +131,14 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
             command.register();
             registry.load(config);
         } else if (getServer().getPluginManager().isPluginEnabled("CS-CoreLib")) {
+            getLogger().log(Level.INFO, "发现前置 CS-CoreLib 已正常安装!");
             long timestamp = System.nanoTime();
 
             StarWishUtil.suggestPaper(this);
+
+            if (PaperLib.isPaper()) {
+                getLogger().log(Level.INFO, "检测到 Paper 服务端! 性能优化已应用.");
+            }
 
             // We wanna ensure that the Server uses a compatible version of Minecraft
             if (isVersionUnsupported()) {
@@ -220,6 +227,8 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
             autoSavingService.start(this, config.getInt("options.auto-save-delay-in-minutes"));
             ticker.start(this);
+
+            getLogger().log(Level.INFO, "正在加载第三方插件支持...");
             thirdPartySupportService.start();
             gitHubService.start(this);
 
@@ -394,7 +403,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new DeathpointListener(this);
         new ExplosionsListener(this);
         new DebugFishListener(this);
-        new VanillaMachinesListener(this);
         new FireworksListener(this);
         new WitherListener(this);
         new IronGolemListener(this);
@@ -402,6 +410,15 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new MobDropListener(this);
         new VillagerTradingListener(this);
         new ElytraCrashListener(this);
+        new CraftingTableListener(this);
+        new AnvilListener(this);
+        new BrewingStandListener(this);
+        new CauldronListener(this);
+
+        if (minecraftVersion.isAtLeast(MinecraftVersion.MINECRAFT_1_14)) {
+            new GrindstoneListener(this);
+            new CartographyTableListener(this);
+        }
 
         if (minecraftVersion.isAtLeast(MinecraftVersion.MINECRAFT_1_15)) {
             new BeeListener(this);

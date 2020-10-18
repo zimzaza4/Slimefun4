@@ -13,6 +13,7 @@ import org.bukkit.inventory.Inventory;
 import java.lang.reflect.Array;
 import java.util.function.Consumer;
 
+// @Deprecated - commented out because we are not ready to send out warnings yet
 public interface InventoryBlock {
 
     /**

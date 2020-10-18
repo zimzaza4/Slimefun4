@@ -52,6 +52,11 @@ public enum SlimefunTag implements Tag<Material> {
     MUSHROOMS,
 
     /**
+     * All leather armor materials
+     */
+    LEATHER_ARMOR,
+
+    /**
      * Every glass variant, includes both blocks and panes.
      * Also stained glass and stained glass panes.
      */

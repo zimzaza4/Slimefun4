@@ -12,6 +12,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+/**
+ * This handles all integrations with {@link WorldEdit}.
+ * If an are is cleared, we also wanna clear all Slimefun-related block data.
+ *
+ * @author TheBusyBiscuit
+ */
 class WorldEditIntegration {
 
     WorldEditIntegration() {

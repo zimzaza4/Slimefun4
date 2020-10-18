@@ -3,6 +3,7 @@ package io.github.thebusybiscuit.slimefun4.core.services.plugins;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.researching.Research;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -13,6 +14,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+/**
+ * This is our integration for {@link PlaceholderAPI}.
+ *
+ * @author TheBusyBiscuit
+ */
 class PlaceholderAPIIntegration extends PlaceholderExpansion {
 
     private final String version;
