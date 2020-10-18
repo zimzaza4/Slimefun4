@@ -20,6 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * spawn a random {@link ItemStack} from the {@link ItemStack} Array specified in the constructor.
  *
  * @author TheBusyBiscuit
+ *
  */
 public class EasterEgg extends SimpleSlimefunItem<ItemUseHandler> {
 
@@ -43,7 +44,6 @@ public class EasterEgg extends SimpleSlimefunItem<ItemUseHandler> {
             }
 
             FireworkUtils.launchRandom(p, 2);
-
             p.getWorld().dropItemNaturally(p.getLocation(), gifts[ThreadLocalRandom.current().nextInt(gifts.length)].clone());
         };
     }
