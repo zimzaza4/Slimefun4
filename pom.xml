@@ -307,9 +307,9 @@
         <dependency>
             <groupId>com.bekvon.bukkit</groupId>
             <artifactId>residence</artifactId>
-            <version>4.9.0.6</version>
+            <version>4.9.1.9</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/lib/Residence4.9.0.6.jar</systemPath>
+            <systemPath>${project.basedir}/lib/Residence4.9.1.9.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

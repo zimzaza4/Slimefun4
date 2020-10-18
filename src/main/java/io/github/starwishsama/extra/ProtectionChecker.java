@@ -87,10 +87,17 @@ public class ProtectionChecker implements Listener {
                 return true;
             }
 
+            if (!action.isBlockAction()) {
+                return true;
+            }
+
             switch (action) {
                 case BREAK_BLOCK:
-                    return perms.playerHas(p, Flags.destroy, true) || perms.playerHas(p, Flags.build, true);
+                    // 领地已支持 Slimefun
+                    // 详情请见 https://github.com/Zrips/Residence/blob/d061c9d09c6e07b1dfe8b5ebf539bafa9f0aa61b/src/com/bekvon/bukkit/residence/slimeFun/SlimeFunResidenceModule.java
+                    return SlimefunPlugin.getProtectionManager().hasPermission(p, block.getLocation(), action);
                 case PLACE_BLOCK:
+                    // move 是为了机器人而检查的, 防止机器人跑进别人领地然后还出不来
                     return perms.playerHas(p, Flags.place, true) || perms.playerHas(p, Flags.build, true) || !perms.playerHas(p, Flags.move, true);
                 case ACCESS_INVENTORIES:
                     if (!perms.playerHas(p, Flags.use, true)) {
