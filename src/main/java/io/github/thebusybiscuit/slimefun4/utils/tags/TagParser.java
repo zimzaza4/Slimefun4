@@ -60,6 +60,7 @@ public class TagParser implements Keyed {
 
         if (resource == null) {
             Slimefun.getLogger().warning("无法获取标签文件 " + path);
+            return;
         }
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8))) {
