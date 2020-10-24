@@ -38,9 +38,11 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author TheBusyBiscuit
  * @author Linox
+ *
  * @see BlockPlaceHandler
  * @see BlockBreakHandler
  * @see ToolUseHandler
+ *
  */
 public class BlockListener implements Listener {
 

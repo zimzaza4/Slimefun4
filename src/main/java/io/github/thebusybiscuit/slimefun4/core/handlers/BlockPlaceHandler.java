@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
  * to.
  *
  * @author TheBusyBiscuit
+ *
  */
 public abstract class BlockPlaceHandler implements ItemHandler {
 
@@ -36,7 +37,8 @@ public abstract class BlockPlaceHandler implements ItemHandler {
      * Override the method {@link #isBlockPlacerAllowed()} instead if you want to disallow the
      * {@link BlockPlacer} from placing this {@link Block}.
      *
-     * @param e The corresponding {@link BlockPlacerPlaceEvent}
+     * @param e
+     *            The corresponding {@link BlockPlacerPlaceEvent}
      */
     public void onBlockPlacerPlace(BlockPlacerPlaceEvent e) {
         // This can be overridden, if necessary

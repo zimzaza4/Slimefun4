@@ -45,14 +45,16 @@ import java.util.logging.Logger;
  * This class defines the behaviours of the item, you can assign an {@link ItemHandler}
  * to give the item functionality.
  * In contrast to that the {@link SlimefunItemStack} defines the look and feel of the item.
- * <p>
+ *
  * Remember to call {@link #register(SlimefunAddon)} on your {@link SlimefunItem} for it
  * to appear in the {@link SlimefunGuide}.
  *
  * @author TheBusyBiscuit
  * @author Poslovitch
+ *
  * @see SlimefunItemStack
  * @see SlimefunAddon
+ *
  */
 public class SlimefunItem implements Placeable {
 
@@ -161,8 +163,9 @@ public class SlimefunItem implements Placeable {
     /**
      * Returns the identifier of this {@link SlimefunItem}.
      *
-     * @return the identifier of this {@link SlimefunItem}
      * @deprecated This method has been renamed to {@link #getId()}.
+     *
+     * @return the identifier of this {@link SlimefunItem}
      */
     @Nonnull
     @Deprecated
@@ -386,7 +389,7 @@ public class SlimefunItem implements Placeable {
             preRegister();
 
             if (recipe == null || recipe.length < 9) {
-                recipe = new ItemStack[]{null, null, null, null, null, null, null, null, null};
+                recipe = new ItemStack[] { null, null, null, null, null, null, null, null, null};
             }
 
             SlimefunPlugin.getRegistry().getAllSlimefunItems().add(this);
@@ -514,7 +517,8 @@ public class SlimefunItem implements Placeable {
     /**
      * This method checks if the dependencies have been set up correctly.
      *
-     * @param addon The {@link SlimefunAddon} trying to register this {@link SlimefunItem}
+     * @param addon
+     *            The {@link SlimefunAddon} trying to register this {@link SlimefunItem}
      */
     private void checkDependencies(@Nonnull SlimefunAddon addon) {
         if (!addon.hasDependency("Slimefun")) {
@@ -536,10 +540,11 @@ public class SlimefunItem implements Placeable {
     /**
      * This method checks recursively for all {@link Class} parents to look for any {@link Deprecated}
      * elements.
-     * <p>
+     *
      * If a {@link Deprecated} element was found, a warning message will be printed.
      *
-     * @param c The {@link Class} from which to start this operation.
+     * @param c
+     *            The {@link Class} from which to start this operation.
      */
     private void checkForDeprecations(@Nullable Class<?> c) {
         if (SlimefunPlugin.getUpdater().getBranch() == SlimefunBranch.DEVELOPMENT) {
