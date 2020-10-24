@@ -62,7 +62,6 @@ networks:
 
 items:
   talismans: true
-  backpacks: true
   soulbound: true
 
 metrics:

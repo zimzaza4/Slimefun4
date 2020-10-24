@@ -28,6 +28,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,7 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
 
     protected final List<MachineRecipe> recipes = new ArrayList<>();
 
+    @ParametersAreNonnullByDefault
     public AContainer(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
@@ -65,6 +67,7 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
         registerDefaultRecipes();
     }
 
+    @ParametersAreNonnullByDefault
     public AContainer(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
         this(category, item, recipeType, recipe);
         this.recipeOutput = recipeOutput;

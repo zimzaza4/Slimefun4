@@ -37,6 +37,11 @@ public enum SlimefunTag implements Tag<Material> {
     ORES,
 
     /**
+     * All minecraft ores that can be affected by fortune.
+     */
+    FORTUNE_COMPATIBLE_ORES,
+
+    /**
      * All Shulker boxes, normal and colored.
      */
     SHULKER_BOXES,
@@ -93,10 +98,26 @@ public enum SlimefunTag implements Tag<Material> {
     STONE_VARIANTS,
 
     /**
+     * All dirt variants. Dirt, coarse dirt, grass, mycelium.
+     * This also includes farmland and grass paths.
+     */
+    DIRT_VARIANTS,
+
+    /**
      * All variants of concrete powder.
      * Can you believe there is no tag for this already?
      */
     CONCRETE_POWDERS,
+
+    /**
+     * All the types of pressure plates.
+     */
+    PRESSURE_PLATES,
+
+    /**
+     * All tall flowers because minecraft doesn't have a tag for this
+     */
+    TALL_FLOWERS,
 
     /**
      * Materials which are sensitive to break.

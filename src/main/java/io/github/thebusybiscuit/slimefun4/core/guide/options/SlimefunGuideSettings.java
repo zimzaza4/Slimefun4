@@ -3,7 +3,6 @@ package io.github.thebusybiscuit.slimefun4.core.guide.options;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.skull.SkullItem;
-import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideLayout;
 import io.github.thebusybiscuit.slimefun4.core.services.github.Contributor;
@@ -39,11 +38,8 @@ public final class SlimefunGuideSettings {
 
     static {
         options.add(new GuideLayoutOption());
-
-        if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_14)) {
-            options.add(new FireworksOption());
-            options.add(new PlayerLanguageOption());
-        }
+        options.add(new FireworksOption());
+        options.add(new PlayerLanguageOption());
     }
 
     private SlimefunGuideSettings() {

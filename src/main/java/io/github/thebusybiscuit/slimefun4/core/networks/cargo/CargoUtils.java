@@ -1,10 +1,10 @@
 package io.github.thebusybiscuit.slimefun4.core.networks.cargo;
 
 import io.github.thebusybiscuit.cscorelib2.blocks.BlockPosition;
-import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
@@ -47,6 +47,11 @@ final class CargoUtils {
 
         Material type = block.getType();
 
+        if (SlimefunTag.SHULKER_BOXES.isTagged(type)) {
+            return true;
+        }
+
+
         switch (type) {
             case CHEST:
             case TRAPPED_CHEST:
@@ -55,28 +60,13 @@ final class CargoUtils {
             case DROPPER:
             case HOPPER:
             case BREWING_STAND:
-            case SHULKER_BOX:
+            case BARREL:
+            case BLAST_FURNACE:
+            case SMOKER:
                 return true;
             default:
-                break;
+                return false;
         }
-
-        if (type.name().endsWith("_SHULKER_BOX")) {
-            return true;
-        }
-
-        if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_14)) {
-            switch (type) {
-                case BARREL:
-                case BLAST_FURNACE:
-                case SMOKER:
-                    return true;
-                default:
-                    break;
-            }
-        }
-
-        return false;
     }
 
     static int[] getInputSlotRange(@Nonnull Inventory inv, @Nullable ItemStack item) {

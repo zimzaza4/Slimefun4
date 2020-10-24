@@ -7,7 +7,7 @@ website: https://github.com/TheBusyBiscuit/Slimefun4
 main: io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin
 softdepend: [ CS-CoreLib, PlaceholderAPI, Residence, PlotSquared, EmeraldEnchants, WorldEdit, mcMMO ]
 
-api-version: 1.13
+api-version: '1.14'
 
 commands:
   slimefun:

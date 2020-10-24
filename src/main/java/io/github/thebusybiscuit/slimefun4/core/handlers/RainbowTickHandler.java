@@ -1,7 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.core.handlers;
 
 import io.github.thebusybiscuit.cscorelib2.collections.LoopIterator;
-import io.github.thebusybiscuit.cscorelib2.materials.MaterialCollection;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.RainbowBlock;
@@ -15,7 +14,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.GlassPane;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This is a {@link BlockTicker} that is exclusively used for Rainbow blocks.
@@ -23,7 +24,9 @@ import java.util.Arrays;
  * and sets itself to that.
  *
  * @author TheBusyBiscuit
+ *
  * @see RainbowBlock
+ *
  */
 public class RainbowTickHandler extends BlockTicker {
 
@@ -31,16 +34,20 @@ public class RainbowTickHandler extends BlockTicker {
     private final boolean glassPanes;
     private Material material;
 
-    public RainbowTickHandler(Material... materials) {
+    public RainbowTickHandler(@Nonnull List<Material> materials) {
         Validate.noNullElements(materials, "A RainbowTicker cannot have a Material that is null!");
 
-        if (materials.length == 0) {
+        if (materials.isEmpty()) {
             throw new IllegalArgumentException("A RainbowTicker must have at least one Material associated with it!");
         }
 
         glassPanes = containsGlassPanes(materials);
-        iterator = new LoopIterator<>(Arrays.asList(materials));
+        iterator = new LoopIterator<>(materials);
         material = iterator.next();
+    }
+
+    public RainbowTickHandler(Material... materials) {
+        this(Arrays.asList(materials));
     }
 
     /**
@@ -49,12 +56,10 @@ public class RainbowTickHandler extends BlockTicker {
      * This is done to save performance, so we don't have to validate {@link BlockData} at
      * runtime.
      *
-     * @param materials
-     *            The {@link Material} Array to check
-     *
+     * @param materials The {@link Material} Array to check
      * @return Whether the array contained any {@link GlassPane} materials
      */
-    private boolean containsGlassPanes(Material[] materials) {
+    private boolean containsGlassPanes(@Nonnull List<Material> materials) {
         if (SlimefunPlugin.getMinecraftVersion() == MinecraftVersion.UNIT_TEST) {
             // BlockData is not available to us during Unit Tests :/
             return false;
@@ -70,10 +75,6 @@ public class RainbowTickHandler extends BlockTicker {
         }
 
         return false;
-    }
-
-    public RainbowTickHandler(MaterialCollection collection) {
-        this(collection.getAsArray());
     }
 
     @Override

@@ -414,11 +414,8 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new AnvilListener(this);
         new BrewingStandListener(this);
         new CauldronListener(this);
-
-        if (minecraftVersion.isAtLeast(MinecraftVersion.MINECRAFT_1_14)) {
-            new GrindstoneListener(this);
-            new CartographyTableListener(this);
-        }
+        new GrindstoneListener(this);
+        new CartographyTableListener(this);
 
         if (minecraftVersion.isAtLeast(MinecraftVersion.MINECRAFT_1_15)) {
             new BeeListener(this);
@@ -447,9 +444,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
             new SoulboundListener(this);
         }
 
-        if (config.getBoolean("items.backpacks")) {
-            backpackListener.register(this);
-        }
+        backpackListener.register(this);
 
         // Handle Slimefun Guide being given on Join
         new SlimefunGuideListener(this, config.getBoolean("guide.receive-on-first-join"));
