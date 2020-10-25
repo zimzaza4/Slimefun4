@@ -1,7 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.seasonal;
 
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
-import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.utils.FireworkUtils;
@@ -21,11 +20,9 @@ import java.util.concurrent.ThreadLocalRandom;
  * gift when being placed down.
  *
  * @author TheBusyBiscuit
- *
  * @see EasterEgg
- *
  */
-public class ChristmasPresent extends SimpleSlimefunItem<BlockPlaceHandler> implements NotPlaceable {
+public class ChristmasPresent extends SimpleSlimefunItem<BlockPlaceHandler> {
 
     private final ItemStack[] gifts;
 
