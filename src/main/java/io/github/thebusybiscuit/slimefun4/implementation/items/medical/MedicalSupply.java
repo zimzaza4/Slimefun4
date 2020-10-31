@@ -1,5 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.medical;
 
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
@@ -33,7 +35,10 @@ public abstract class MedicalSupply<T extends ItemHandler> extends SimpleSlimefu
         curedEffects.add(PotionEffectType.WEAKNESS);
         curedEffects.add(PotionEffectType.CONFUSION);
         curedEffects.add(PotionEffectType.BLINDNESS);
-        curedEffects.add(PotionEffectType.BAD_OMEN);
+
+        if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_14)) {
+            curedEffects.add(PotionEffectType.BAD_OMEN);
+        }
     }
 
     /**
