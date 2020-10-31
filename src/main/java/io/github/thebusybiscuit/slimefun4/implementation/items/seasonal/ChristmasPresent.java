@@ -1,7 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.seasonal;
 
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
+import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockUseHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.utils.FireworkUtils;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
@@ -9,8 +10,7 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.GameMode;
-import org.bukkit.block.Block;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -22,7 +22,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author TheBusyBiscuit
  * @see EasterEgg
  */
-public class ChristmasPresent extends SimpleSlimefunItem<BlockPlaceHandler> {
+public class ChristmasPresent extends SimpleSlimefunItem<BlockUseHandler> implements NotPlaceable {
 
     private final ItemStack[] gifts;
 
@@ -33,24 +33,18 @@ public class ChristmasPresent extends SimpleSlimefunItem<BlockPlaceHandler> {
     }
 
     @Override
-    public BlockPlaceHandler getItemHandler() {
-        return new BlockPlaceHandler(false) {
+    public BlockUseHandler getItemHandler() {
+        return e -> {
+            Player p = e.getPlayer();
 
-            @Override
-            public void onPlayerPlace(BlockPlaceEvent e) {
-                e.setCancelled(true);
-
-                if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
-                    ItemUtils.consumeItem(e.getItemInHand(), false);
-                }
-
-                FireworkUtils.launchRandom(e.getPlayer(), 3);
-
-                Block b = e.getBlock();
-                ItemStack gift = gifts[ThreadLocalRandom.current().nextInt(gifts.length)].clone();
-                b.getWorld().dropItemNaturally(b.getLocation(), gift);
+            if (p.getGameMode() != GameMode.CREATIVE) {
+                ItemUtils.consumeItem(e.getItem(), false);
             }
 
+            FireworkUtils.launchRandom(p, 3);
+
+            ItemStack gift = gifts[ThreadLocalRandom.current().nextInt(gifts.length)].clone();
+            p.getWorld().dropItemNaturally(p.getLocation(), gift);
         };
     }
 
