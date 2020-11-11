@@ -20,7 +20,9 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -28,6 +30,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -234,32 +237,30 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
         BlockMenu inv = BlockStorage.getInventory(b);
 
         if (isProcessing(b)) {
-            int timeleft = progress.get(b);
 
-            if (timeleft > 0) {
-                ChestMenuUtils.updateProgressbar(inv, 22, timeleft, processing.get(b).getTicks(), getProgressBar());
+            if (takeCharge(b.getLocation())) {
 
-                if (isChargeable()) {
-                    if (getCharge(b.getLocation()) < getEnergyConsumption()) {
-                        return;
+                int timeleft = progress.get(b);
+
+                if (timeleft > 0) {
+                    ChestMenuUtils.updateProgressbar(inv, 22, timeleft, processing.get(b).getTicks(), getProgressBar());
+
+                    progress.put(b, timeleft - 1);
+                } else {
+
+                    inv.replaceExistingItem(22, new CustomItem(Material.BLACK_STAINED_GLASS_PANE, " "));
+
+                    for (ItemStack output : processing.get(b).getOutput()) {
+                        inv.pushItem(output.clone(), getOutputSlots());
                     }
 
-                    removeCharge(b.getLocation(), getEnergyConsumption());
+                    Bukkit.getPluginManager().callEvent(new AsyncMachineProcessCompleteEvent(b.getLocation(), AContainer.this, getProcessing(b)));
+
+                    progress.remove(b);
+                    processing.remove(b);
                 }
-                progress.put(b, timeleft - 1);
             }
-            else {
-                inv.replaceExistingItem(22, new CustomItem(Material.BLACK_STAINED_GLASS_PANE, " "));
 
-                for (ItemStack output : processing.get(b).getOutput()) {
-                    inv.pushItem(output.clone(), getOutputSlots());
-                }
-
-                Bukkit.getPluginManager().callEvent(new AsyncMachineProcessCompleteEvent(b.getLocation(), AContainer.this, getProcessing(b)));
-
-                progress.remove(b);
-                processing.remove(b);
-            }
         } else {
             MachineRecipe next = findNextRecipe(inv);
 
@@ -268,6 +269,25 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
                 progress.put(b, next.getTicks());
             }
         }
+    }
+
+    /**
+     * This method will remove charge from a location if it is chargeable.
+     *
+     * @param l location to try to remove charge from
+     * @return Whether charge was taken if its chargeable
+     */
+    protected boolean takeCharge(@Nonnull Location l) {
+        Validate.notNull(l, "Can't attempt to take charge from a null location!");
+
+        if (isChargeable()) {
+            if (getCharge(l) < getEnergyConsumption()) {
+                return false;
+            }
+
+            removeCharge(l, getEnergyConsumption());
+        }
+        return true;
     }
 
     protected MachineRecipe findNextRecipe(BlockMenu inv) {

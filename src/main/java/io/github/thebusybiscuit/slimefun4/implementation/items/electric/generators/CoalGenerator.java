@@ -53,7 +53,7 @@ public abstract class CoalGenerator extends AGenerator {
         }
 
         // Wooden Fences
-        for (Material mat : Tag.WOODEN_FENCES.getValues()) {
+        for (Material mat : Material._FE) {
             registerFuel(new MachineFuel(1, new ItemStack(mat)));
         }
 

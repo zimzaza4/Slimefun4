@@ -2,6 +2,7 @@ package io.github.thebusybiscuit.slimefun4.core.services;
 
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -9,6 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -17,13 +20,23 @@ import java.util.Optional;
  * {@link ItemStack} at all times.
  *
  * @author TheBusyBiscuit
+ *
  * @see SlimefunItemStack
+ *
  */
 public class CustomItemDataService implements PersistentDataService, Keyed {
 
     private final NamespacedKey namespacedKey;
 
-    public CustomItemDataService(Plugin plugin, String key) {
+    /**
+     * This creates a new {@link CustomItemDataService} for the given {@link Plugin} and the
+     * provided data key.
+     *
+     * @param plugin The {@link Plugin} for this service to use
+     * @param key    The key under which to store data
+     */
+    public CustomItemDataService(@Nonnull Plugin plugin, @Nonnull String key) {
+        // Null-Validation is performed in the NamespacedKey constructor
         namespacedKey = new NamespacedKey(plugin, key);
     }
 
@@ -32,24 +45,65 @@ public class CustomItemDataService implements PersistentDataService, Keyed {
         return namespacedKey;
     }
 
-    public void setItemData(ItemStack item, String id) {
+    /**
+     * This method stores the given id on the provided {@link ItemStack} via
+     * persistent data.
+     *
+     * @param item The {@link ItemStack} to store data on
+     * @param id   The id to store on the {@link ItemStack}
+     */
+    public void setItemData(@Nonnull ItemStack item, @Nonnull String id) {
+        Validate.notNull(item, "The Item cannot be null!");
+        Validate.notNull(id, "Cannot store null on an Item!");
+
         ItemMeta im = item.getItemMeta();
         setItemData(im, id);
         item.setItemMeta(im);
     }
 
-    public void setItemData(ItemMeta im, String id) {
+    /**
+     * This method stores the given id on the provided {@link ItemMeta} via
+     * persistent data.
+     *
+     * @param im The {@link ItemMeta} to store data on
+     * @param id The id to store on the {@link ItemMeta}
+     */
+    public void setItemData(@Nonnull ItemMeta im, @Nonnull String id) {
+        Validate.notNull(im, "The ItemMeta cannot be null!");
+        Validate.notNull(id, "Cannot store null on an ItemMeta!");
+
         setString(im, namespacedKey, id);
     }
 
-    public Optional<String> getItemData(ItemStack item) {
+    /**
+     * This method returns an {@link Optional} holding the data stored on the given {@link ItemStack}.
+     * The {@link Optional} will be empty if the given {@link ItemStack} is null, doesn't have any {@link ItemMeta}
+     * or if the requested data simply does not exist on that {@link ItemStack}.
+     *
+     * @param item The {@link ItemStack} to check
+     * @return An {@link Optional} describing the result
+     */
+    @Nonnull
+    public Optional<String> getItemData(@Nullable ItemStack item) {
         if (item == null || item.getType() == Material.AIR || !item.hasItemMeta()) {
             return Optional.empty();
         }
+
         return getItemData(item.getItemMeta());
     }
 
-    public Optional<String> getItemData(ItemMeta meta) {
+    /**
+     * This method returns an {@link Optional}, either empty or holding the data stored
+     * on the given {@link ItemMeta}.
+     *
+     * @param meta The {@link ItemMeta} to check
+     * @return An {@link Optional} describing the result
+     */
+    @Nonnull
+    public Optional<String> getItemData(@Nonnull ItemMeta meta) {
+        Validate.notNull(meta, "Cannot read data from null!");
+
         return getString(meta, namespacedKey);
     }
+
 }

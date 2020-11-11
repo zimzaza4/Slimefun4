@@ -103,16 +103,17 @@ public final class Script {
 
     ItemStack getAsItemStack(ProgrammableAndroid android, Player p) {
         List<String> lore = new LinkedList<>();
-        lore.add("&7作者: &r" + getAuthor());
+        lore.add("&7作者: &f" + getAuthor());
         lore.add("");
-        lore.add("&7下载量: &r" + getDownloads());
+        lore.add("&7下载量: &f" + getDownloads());
         lore.add("&7评分: " + getScriptRatingPercentage());
         lore.add("&a" + getUpvotes() + " \u263A &7| &4\u2639 " + getDownvotes());
         lore.add("");
-        lore.add("&e左键 &r立即下载");
+        lore.add("&e左键 &f立即下载");
         lore.add("&4(这将会覆盖你正在用的脚本)");
 
         if (canRate(p)) {
+            lore.add("");
             lore.add("&eShift + 左键 &r好评");
             lore.add("&eShift + 右键 &r差评");
         }

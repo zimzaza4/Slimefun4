@@ -7,6 +7,8 @@ import me.mrCookieSlime.Slimefun.api.Slimefun;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 class GitHubIssuesConnector extends GitHubConnector {
@@ -49,8 +51,15 @@ class GitHubIssuesConnector extends GitHubConnector {
     }
 
     @Override
-    public String getURLSuffix() {
-        return "/issues?per_page=100";
+    public String getEndpoint() {
+        return "/issues";
+    }
+
+    @Override
+    public Map<String, Object> getParameters() {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("per_page", 100);
+        return parameters;
     }
 
 }
