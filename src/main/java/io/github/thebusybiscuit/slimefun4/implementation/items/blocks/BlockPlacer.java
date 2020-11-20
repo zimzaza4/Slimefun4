@@ -1,5 +1,21 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.blocks;
 
+import java.util.List;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Nameable;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
+import org.bukkit.block.Dispenser;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.events.BlockPlacerPlaceEvent;
@@ -17,16 +33,6 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.block.Dispenser;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.List;
-import java.util.UUID;
 
 /**
  * The {@link BlockPlacer} is a machine which can place {@link Block Blocks}, as the name
@@ -45,8 +51,6 @@ public class BlockPlacer extends SlimefunItem {
 
     public BlockPlacer(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
-        
-        SlimefunItem.registerBlockHandler(getId(), (p, b, tool, reason) -> !b.isBlockIndirectlyPowered() && !b.isBlockPowered());
 
         addItemSetting(blacklist);
         addItemHandler(onPlace(), onBlockDispense());
@@ -89,7 +93,7 @@ public class BlockPlacer extends SlimefunItem {
                 return;
             }
 
-            if (facedBlock.isEmpty() && e.getItem().getType().isBlock() && !isBlacklisted(e.getItem().getType())) {
+            if (facedBlock.isEmpty() && !isBlacklisted(material) && dispenser.getInventory().getViewers().isEmpty()) {
                 SlimefunItem item = SlimefunItem.getByItem(e.getItem());
 
                 if (item != null) {
@@ -97,8 +101,7 @@ public class BlockPlacer extends SlimefunItem {
                     if (!(item instanceof NotPlaceable)) {
                         placeSlimefunBlock(item, e.getItem(), facedBlock, dispenser);
                     }
-                }
-                else {
+                } else {
                     placeBlock(e.getItem(), facedBlock, dispenser);
                 }
             }
@@ -143,11 +146,7 @@ public class BlockPlacer extends SlimefunItem {
     private void placeSlimefunBlock(SlimefunItem sfItem, ItemStack item, Block block, Dispenser dispenser) {
         BlockPlacerPlaceEvent e = new BlockPlacerPlaceEvent(dispenser.getBlock(), item, block);
         Bukkit.getPluginManager().callEvent(e);
-        
-        if(!dispenser.getInventory().getViewers().isEmpty()){
-        	e.setCancelled(true);
-        }
-        
+
         if (!e.isCancelled()) {
             boolean hasItemHandler = sfItem.callItemHandler(BlockPlaceHandler.class, handler -> {
                 if (handler.isBlockPlacerAllowed()) {
@@ -159,8 +158,7 @@ public class BlockPlacer extends SlimefunItem {
 
                     if (dispenser.getInventory().containsAtLeast(item, 2)) {
                         dispenser.getInventory().removeItem(new CustomItem(item, 1));
-                    }
-                    else {
+                    } else {
                         SlimefunPlugin.runSync(() -> dispenser.getInventory().removeItem(item), 2L);
                     }
                 }
@@ -174,8 +172,7 @@ public class BlockPlacer extends SlimefunItem {
 
                 if (dispenser.getInventory().containsAtLeast(item, 2)) {
                     dispenser.getInventory().removeItem(new CustomItem(item, 1));
-                }
-                else {
+                } else {
                     SlimefunPlugin.runSync(() -> dispenser.getInventory().removeItem(item), 2L);
                 }
             }
@@ -185,11 +182,7 @@ public class BlockPlacer extends SlimefunItem {
     private void placeBlock(ItemStack item, Block facedBlock, Dispenser dispenser) {
         BlockPlacerPlaceEvent e = new BlockPlacerPlaceEvent(dispenser.getBlock(), item, facedBlock);
         Bukkit.getPluginManager().callEvent(e);
-        
-        if(!dispenser.getInventory().getViewers().isEmpty()){
-        	e.setCancelled(true);
-        }
-        
+
         if (!e.isCancelled()) {
             facedBlock.setType(item.getType());
 
@@ -216,8 +209,7 @@ public class BlockPlacer extends SlimefunItem {
 
             if (dispenser.getInventory().containsAtLeast(item, 2)) {
                 dispenser.getInventory().removeItem(new CustomItem(item, 1));
-            }
-            else {
+            } else {
                 SlimefunPlugin.runSync(() -> dispenser.getInventory().removeItem(item), 2L);
             }
         }
