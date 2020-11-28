@@ -11,7 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class ElectrifiedCrucible extends AContainer {
+public class ElectrifiedCrucible extends AContainer {
 
     public ElectrifiedCrucible(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);

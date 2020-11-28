@@ -99,7 +99,7 @@ public class ProtectionChecker implements Listener {
                 case PLACE_BLOCK:
                     // move 是为了机器人而检查的, 防止机器人跑进别人领地然后还出不来
                     return perms.playerHas(p, Flags.place, true) || perms.playerHas(p, Flags.build, true) || !perms.playerHas(p, Flags.move, true);
-                case ACCESS_INVENTORIES:
+                case INTERACT_BLOCK:
                     if (!perms.playerHas(p, Flags.use, true)) {
                         SlimefunPlugin.getLocalization().sendMessage(p, "inventory.no-access");
                         return false;

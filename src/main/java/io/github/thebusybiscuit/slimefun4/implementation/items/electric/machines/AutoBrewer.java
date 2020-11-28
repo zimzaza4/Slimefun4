@@ -13,17 +13,16 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
+import javax.annotation.Nonnull;
 import java.util.EnumMap;
 import java.util.Map;
 
 /**
- *
  * The {@link AutoBrewer} machine with most if not all potion recipes.
  *
  * @author Linox
- *
  */
-public abstract class AutoBrewer extends AContainer {
+public class AutoBrewer extends AContainer {
 
     private static final Map<Material, PotionType> potionRecipes = new EnumMap<>(Material.class);
     private static final Map<PotionType, PotionType> fermentations = new EnumMap<>(PotionType.class);
@@ -142,7 +141,7 @@ public abstract class AutoBrewer extends AContainer {
      *
      * @return Whether this {@link Material} is a valid potion
      */
-    private boolean isPotion(Material mat) {
+    private boolean isPotion(@Nonnull Material mat) {
         return mat == Material.POTION || mat == Material.SPLASH_POTION || mat == Material.LINGERING_POTION;
     }
 
@@ -152,17 +151,7 @@ public abstract class AutoBrewer extends AContainer {
     }
 
     @Override
-    public int getEnergyConsumption() {
-        return 6;
-    }
-
-    @Override
     public String getMachineIdentifier() {
         return "AUTO_BREWER";
-    }
-
-    @Override
-    public int getCapacity() {
-        return 128;
     }
 }

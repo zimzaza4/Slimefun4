@@ -49,16 +49,6 @@ public class AutoDisenchanter extends AContainer {
     }
 
     @Override
-    public int getEnergyConsumption() {
-        return 9;
-    }
-
-    @Override
-    public int getCapacity() {
-        return 128;
-    }
-
-    @Override
     protected MachineRecipe findNextRecipe(BlockMenu menu) {
         Map<Enchantment, Integer> enchantments = new HashMap<>();
         Set<ItemEnchantment> emeraldEnchantments = new HashSet<>();
@@ -163,11 +153,6 @@ public class AutoDisenchanter extends AContainer {
         }
     }
 
-
-    @Override
-    public int getSpeed() {
-        return 1;
-    }
 
     @Override
     public String getMachineIdentifier() {

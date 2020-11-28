@@ -11,6 +11,8 @@ import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,11 +28,9 @@ import java.util.logging.Level;
  * It is used for managing the {@link Language} of a {@link Player} and the entire {@link Server}.
  *
  * @author TheBusyBiscuit
- *
  * @see Language
- *
  */
-public class LocalizationService extends SlimefunLocalization implements PersistentDataService {
+public class LocalizationService extends SlimefunLocalization {
 
     private static final String LANGUAGE_PATH = "language";
 
@@ -67,10 +67,10 @@ public class LocalizationService extends SlimefunLocalization implements Persist
                 setLanguage(serverDefaultLanguage, !serverDefaultLanguage.equals(language));
             } else {
                 setLanguage("en", false);
-                plugin.getLogger().log(Level.WARNING, "无法识别设定的语言: \"{0}\", 已重置为使用英语 (美国)", serverDefaultLanguage);
+                plugin.getLogger().log(Level.WARNING, "Could not recognize the given language: \"{0}\"", serverDefaultLanguage);
             }
 
-            Slimefun.getLogger().log(Level.INFO, "可用的语言: {0}", String.join(", ", languages.keySet()));
+            Slimefun.getLogger().log(Level.INFO, "Available languages: {0}", String.join(", ", languages.keySet()));
             save();
         } else {
             translationsEnabled = false;
@@ -121,7 +121,9 @@ public class LocalizationService extends SlimefunLocalization implements Persist
     /**
      * This returns whether the given {@link Language} is loaded or not.
      *
-     * @param id The id of that {@link Language}
+     * @param id
+     *            The id of that {@link Language}
+     *
      * @return Whether or not this {@link Language} is loaded
      */
     public boolean isLanguageLoaded(@Nonnull String id) {
@@ -142,10 +144,12 @@ public class LocalizationService extends SlimefunLocalization implements Persist
     @Override
     public Language getLanguage(@Nonnull Player p) {
         Validate.notNull("Player cannot be null!");
-        Optional<String> language = getString(p, languageKey);
 
-        if (language.isPresent()) {
-            Language lang = languages.get(language.get());
+        PersistentDataContainer container = p.getPersistentDataContainer();
+        String language = container.get(languageKey, PersistentDataType.STRING);
+
+        if (language != null) {
+            Language lang = languages.get(language);
 
             if (lang != null) {
                 return lang;
@@ -155,7 +159,7 @@ public class LocalizationService extends SlimefunLocalization implements Persist
         return getDefaultLanguage();
     }
 
-    private void setLanguage(String language, boolean reset) {
+    private void setLanguage(@Nonnull String language, boolean reset) {
         // Clearing out the old Language (if necessary)
         if (reset) {
             getConfig().clear();

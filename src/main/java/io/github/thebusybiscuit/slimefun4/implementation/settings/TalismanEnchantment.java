@@ -17,7 +17,7 @@ public class TalismanEnchantment extends ItemSetting<Boolean> {
     private final int level;
 
     public TalismanEnchantment(Enchantment enchantment, int level) {
-        super("allow-enchantments." + enchantment.getKey().getKey() + ".level." + level, true);
+        super("allow-enchantments." + enchantment.getKey().getNamespace() + "." + enchantment.getKey().getKey() + ".level." + level, true);
 
         this.enchantment = enchantment;
         this.level = level;

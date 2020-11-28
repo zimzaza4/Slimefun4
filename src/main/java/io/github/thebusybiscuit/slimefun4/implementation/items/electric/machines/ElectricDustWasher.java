@@ -13,7 +13,7 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class ElectricDustWasher extends AContainer {
+public class ElectricDustWasher extends AContainer {
 
     private OreWasher oreWasher;
     private final boolean legacyMode;

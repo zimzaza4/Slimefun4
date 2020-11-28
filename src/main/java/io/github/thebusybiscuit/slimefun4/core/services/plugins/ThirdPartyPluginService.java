@@ -164,7 +164,7 @@ public class ThirdPartyPluginService {
      * @return Whether this is a fake event
      */
     public boolean isEventFaked(@Nonnull Event event) {
-        // TODO: Change this to FakeEvent once the new mcMMO build was released
+        // This can be changed to "FakeEvent" in a later version
         return isMcMMOInstalled && event instanceof FakeBlockBreakEvent;
     }
 

@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
@@ -16,10 +17,11 @@ import javax.annotation.Nonnull;
 
 /**
  * This {@link Listener} prevents any {@link SlimefunItem} from being used in a
- * {@link BrewingStand}.
+ * brewing stand.
  *
  * @author VoidAngel
  * @author SoSeDiK
+ * @author CURVX
  */
 public class BrewingStandListener implements SlimefunCraftingListener {
 
@@ -47,6 +49,13 @@ public class BrewingStandListener implements SlimefunCraftingListener {
             if (e.getResult() == Result.DENY) {
                 SlimefunPlugin.getLocalization().sendMessage((Player) e.getWhoClicked(), "brewing_stand.not-working", true);
             }
+        }
+    }
+
+    @EventHandler
+    public void hopperOnBrew(InventoryMoveItemEvent e) {
+        if (e.getDestination().getType() == InventoryType.BREWING && isUnallowed(e.getItem())) {
+            e.setCancelled(true);
         }
     }
 

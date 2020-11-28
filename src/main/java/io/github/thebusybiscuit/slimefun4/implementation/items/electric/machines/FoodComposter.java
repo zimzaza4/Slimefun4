@@ -10,7 +10,7 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class FoodComposter extends AContainer implements RecipeDisplayItem {
+public class FoodComposter extends AContainer implements RecipeDisplayItem {
 
     public FoodComposter(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);

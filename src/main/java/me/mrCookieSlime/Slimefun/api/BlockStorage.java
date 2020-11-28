@@ -4,7 +4,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
-import io.github.thebusybiscuit.cscorelib2.blocks.BlockPosition;
 import io.github.thebusybiscuit.cscorelib2.math.DoubleHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
@@ -667,18 +666,18 @@ public class BlockStorage {
         }
     }
 
-    public static SlimefunItem check(Block block) {
-        return check(block.getLocation());
+    @Nullable
+    public static SlimefunItem check(@Nonnull Block b) {
+        String id = checkID(b);
+        return id == null ? null : SlimefunItem.getByID(id);
     }
 
     public static SlimefunItem check(Location l) {
-        if (!hasBlockInfo(l)) {
-            return null;
-        }
-
-        return SlimefunItem.getByID(getLocationInfo(l, "id"));
+        String id = checkID(l);
+        return id == null ? null : SlimefunItem.getByID(id);
     }
 
+    @Nullable
     public static String checkID(Block b) {
         if (SlimefunPlugin.getBlockDataService().isTileEntity(b.getType())) {
             Optional<String> blockData = SlimefunPlugin.getBlockDataService().getBlockData(b);
@@ -704,18 +703,13 @@ public class BlockStorage {
         return getLocationInfo(l, "id");
     }
 
-    public static boolean check(Location l, String slimefunItem) {
-        if (slimefunItem == null || !hasBlockInfo(l)) {
+    public static boolean check(@Nonnull Location l, @Nullable String slimefunItem) {
+        if (slimefunItem == null) {
             return false;
         }
 
-        try {
-            String id = getLocationInfo(l, "id");
-            return id != null && id.equalsIgnoreCase(slimefunItem);
-        } catch (Exception x) {
-            Slimefun.getLogger().log(Level.SEVERE, x, () -> "An Exception occurred while checking " + new BlockPosition(l) + " for: \"" + slimefunItem + "\"");
-            return false;
-        }
+        String id = checkID(l);
+        return id != null && id.equals(slimefunItem);
     }
 
     public static boolean isWorldRegistered(String name) {

@@ -269,17 +269,7 @@ public class ChestSlimefunGuide implements SlimefunGuideImplementation {
                 menu.addItem(index, new CustomItem(ChestMenuUtils.getNoPermissionItem(), "&f" + ItemUtils.getItemName(sfitem.getItem()), "&7" + sfitem.getId(), "&4&l" + SlimefunPlugin.getLocalization().getMessage(p, "guide.locked"), "", "&a> 单击解锁", "", "&7需要 &b" + research.getCost() + " 级经验"));
             }
             menu.addMenuClickHandler(index, (pl, slot, item, action) -> {
-                if (!SlimefunPlugin.getRegistry().getCurrentlyResearchingPlayers().contains(pl.getUniqueId())) {
-                    if (research.canUnlock(pl)) {
-                        if (profile.hasUnlocked(research)) {
-                            openCategory(profile, category, page);
-                        } else {
-                            unlockItem(pl, sfitem, player -> openCategory(profile, category, page));
-                        }
-                    } else {
-                        SlimefunPlugin.getLocalization().sendMessage(pl, "messages.not-enough-xp", true);
-                    }
-                }
+                research.unlockFromGuide(this, p, profile, sfitem, category, page);
 
                 return false;
             });

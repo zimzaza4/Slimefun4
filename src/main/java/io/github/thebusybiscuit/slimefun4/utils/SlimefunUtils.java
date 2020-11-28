@@ -1,7 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.utils;
 
 import io.github.thebusybiscuit.cscorelib2.item.ImmutableItemMeta;
-import io.github.thebusybiscuit.cscorelib2.skull.SkullBlock;
 import io.github.thebusybiscuit.cscorelib2.skull.SkullItem;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.exceptions.PrematureCodeException;
@@ -9,6 +8,7 @@ import io.github.thebusybiscuit.slimefun4.core.attributes.Radioactive;
 import io.github.thebusybiscuit.slimefun4.core.attributes.Soulbound;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientPedestal;
+import io.github.thebusybiscuit.slimefun4.implementation.tasks.CapacitorTextureUpdateTask;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import me.mrCookieSlime.EmeraldEnchants.EmeraldEnchants;
 import me.mrCookieSlime.EmeraldEnchants.ItemEnchantment;
@@ -19,7 +19,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -335,23 +334,7 @@ public final class SlimefunUtils {
         Validate.notNull(l, "Cannot update a texture for null");
         Validate.isTrue(capacity > 0, "Capacity must be greater than zero!");
 
-        SlimefunPlugin.runSync(() -> {
-            Block b = l.getBlock();
-
-            if (b.getType() == Material.PLAYER_HEAD || b.getType() == Material.PLAYER_WALL_HEAD) {
-                double level = (double) charge / capacity;
-
-                if (level <= 0.25) {
-                    SkullBlock.setFromHash(b, HeadTexture.CAPACITOR_25.getTexture());
-                } else if (level <= 0.5) {
-                    SkullBlock.setFromHash(b, HeadTexture.CAPACITOR_50.getTexture());
-                } else if (level <= 0.75) {
-                    SkullBlock.setFromHash(b, HeadTexture.CAPACITOR_75.getTexture());
-                } else {
-                    SkullBlock.setFromHash(b, HeadTexture.CAPACITOR_100.getTexture());
-                }
-            }
-        });
+        SlimefunPlugin.runSync(new CapacitorTextureUpdateTask(l, charge, capacity));
     }
 
 }

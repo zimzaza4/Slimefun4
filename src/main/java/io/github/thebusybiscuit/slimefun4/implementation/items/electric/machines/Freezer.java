@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Freezer extends AContainer implements RecipeDisplayItem {
+public class Freezer extends AContainer implements RecipeDisplayItem {
 
     public Freezer(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
@@ -49,11 +49,6 @@ public abstract class Freezer extends AContainer implements RecipeDisplayItem {
     @Override
     public String getMachineIdentifier() {
         return "FREEZER";
-    }
-
-    @Override
-    public int getCapacity() {
-        return 256;
     }
 
 }

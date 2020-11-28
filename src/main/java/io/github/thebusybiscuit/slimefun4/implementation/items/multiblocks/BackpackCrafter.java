@@ -31,6 +31,7 @@ import java.util.UUID;
  * @author TheBusyBiscuit
  * @see EnhancedCraftingTable
  * @see MagicWorkbench
+ * @see ArmorForge
  */
 abstract class BackpackCrafter extends MultiBlockMachine {
 

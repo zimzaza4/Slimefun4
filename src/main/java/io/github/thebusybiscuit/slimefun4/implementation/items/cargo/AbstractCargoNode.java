@@ -61,7 +61,8 @@ abstract class AbstractCargoNode extends SlimefunItem {
             @Override
             public boolean canOpen(Block b, Player p) {
                 return p.hasPermission("slimefun.cargo.bypass")
-                        || (SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.ACCESS_INVENTORIES) && ProtectionChecker.canInteract(p, b, ProtectableAction.ACCESS_INVENTORIES));
+                        || (SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK)
+                        && ProtectionChecker.canInteract(p, b, ProtectableAction.INTERACT_BLOCK));
             }
 
             @Override
@@ -96,7 +97,7 @@ abstract class AbstractCargoNode extends SlimefunItem {
             menu.replaceExistingItem(slotCurrent, new CustomItem(HeadTexture.CHEST_TERMINAL.getAsItemStack(), "&b信道 ID: &3" + (channel + 1)));
             menu.addMenuClickHandler(slotCurrent, ChestMenuUtils.getEmptyClickHandler());
         } else {
-            menu.replaceExistingItem(slotCurrent, new CustomItem(ColoredMaterials.WOOL.get(channel), "&b信道 ID: &3" + (channel + 1)));
+            menu.replaceExistingItem(slotCurrent, new CustomItem(ColoredMaterial.WOOL.get(channel), "&b信道 ID: &3" + (channel + 1)));
             menu.addMenuClickHandler(slotCurrent, ChestMenuUtils.getEmptyClickHandler());
         }
 

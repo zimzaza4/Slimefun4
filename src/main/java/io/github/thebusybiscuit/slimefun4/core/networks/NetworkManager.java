@@ -27,17 +27,32 @@ import java.util.Optional;
 public class NetworkManager {
 
     private final int maxNodes;
+    private final boolean enableVisualizer;
+    private final boolean deleteExcessItems;
     private final List<Network> networks = new LinkedList<>();
 
     /**
      * This creates a new {@link NetworkManager} with the given capacity.
      *
-     * @param maxStepSize
-     *            The maximum amount of nodes a {@link Network} can have
+     * @param maxStepSize       The maximum amount of nodes a {@link Network} can have
+     * @param enableVisualizer  Whether the {@link Network} visualizer is enabled
+     * @param deleteExcessItems Whether excess items from a {@link CargoNet} should be voided
+     */
+    public NetworkManager(int maxStepSize, boolean enableVisualizer, boolean deleteExcessItems) {
+        Validate.isTrue(maxStepSize > 0, "The maximal Network size must be above zero!");
+
+        this.enableVisualizer = enableVisualizer;
+        this.deleteExcessItems = deleteExcessItems;
+        maxNodes = maxStepSize;
+    }
+
+    /**
+     * This creates a new {@link NetworkManager} with the given capacity.
+     *
+     * @param maxStepSize The maximum amount of nodes a {@link Network} can have
      */
     public NetworkManager(int maxStepSize) {
-        Validate.isTrue(maxStepSize > 0, "The maximal Network size must be above zero!");
-        maxNodes = maxStepSize;
+        this(maxStepSize, true, false);
     }
 
     /**
@@ -48,6 +63,25 @@ public class NetworkManager {
      */
     public int getMaxSize() {
         return maxNodes;
+    }
+
+    /**
+     * This returns whether the {@link Network} visualizer is enabled.
+     *
+     * @return Whether the {@link Network} visualizer is enabled
+     */
+    public boolean isVisualizerEnabled() {
+        return enableVisualizer;
+    }
+
+    /**
+     * This returns whether excess items from a {@link CargoNet} should be voided
+     * instead of being dropped to the ground.
+     *
+     * @return Whether to delete excess items
+     */
+    public boolean isItemDeletionEnabled() {
+        return deleteExcessItems;
     }
 
     /**

@@ -125,11 +125,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     public void onEnable() {
         instance = this;
         if (minecraftVersion == MinecraftVersion.UNIT_TEST) {
-            local = new LocalizationService(this, "", null);
-            gpsNetwork = new GPSNetwork();
-            networkManager = new NetworkManager(200);
-            command.register();
-            registry.load(config);
+            onUnitTestStart();
         } else if (getServer().getPluginManager().isPluginEnabled("CS-CoreLib")) {
             getLogger().log(Level.INFO, "发现前置 CS-CoreLib 已正常安装!");
             long timestamp = System.nanoTime();
@@ -173,7 +169,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
                 networkSize = 1;
             }
 
-            networkManager = new NetworkManager(networkSize);
+            networkManager = new NetworkManager(networkSize, config.getBoolean("networks.enable-visualizer"), config.getBoolean("networks.delete-excess-items"));
 
             // Setting up bStats
             new Thread(metricsService::start, "Slimefun Metrics").start();
@@ -258,6 +254,14 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
                 return true;
             });
         }
+    }
+
+    private void onUnitTestStart() {
+        local = new LocalizationService(this, "", null);
+        gpsNetwork = new GPSNetwork();
+        networkManager = new NetworkManager(200);
+        command.register();
+        registry.load(config);
     }
 
     @Nonnull

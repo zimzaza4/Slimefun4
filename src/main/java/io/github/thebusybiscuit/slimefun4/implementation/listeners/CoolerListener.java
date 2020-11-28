@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
+import io.github.thebusybiscuit.slimefun4.api.events.CoolerFeedPlayerEvent;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
@@ -22,8 +23,10 @@ import org.bukkit.potion.PotionEffect;
 import javax.annotation.Nonnull;
 
 /**
- * This {@link Listener} listens for a {@link FoodLevelChangeEvent} or an {@link EntityDamageEvent} for starvation damage
- * and consumes a {@link Juice} from any {@link Cooler} that can be found in the {@link Inventory} of the given {@link Player}.
+ * This {@link Listener} listens for a {@link FoodLevelChangeEvent} or an {@link EntityDamageEvent} for starvation
+ * damage
+ * and consumes a {@link Juice} from any {@link Cooler} that can be found in the {@link Inventory} of the given
+ * {@link Player}.
  *
  * @author TheBusyBiscuit
  * @author Linox
@@ -32,11 +35,13 @@ import javax.annotation.Nonnull;
  */
 public class CoolerListener implements Listener {
 
+    private final SlimefunPlugin plugin;
     private final Cooler cooler;
 
     public CoolerListener(@Nonnull SlimefunPlugin plugin, @Nonnull Cooler cooler) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
+        this.plugin = plugin;
         this.cooler = cooler;
     }
 
@@ -80,18 +85,20 @@ public class CoolerListener implements Listener {
      * This takes a {@link Juice} from the given {@link Cooler} and consumes it in order
      * to restore hunger for the given {@link Player}.
      *
-     * @param p      The {@link Player}
-     * @param cooler The {@link Cooler} {@link ItemStack} to take the {@link Juice} from
+     * @param p
+     *            The {@link Player}
+     * @param cooler
+     *            The {@link Cooler} {@link ItemStack} to take the {@link Juice} from
      */
     private void takeJuiceFromCooler(@Nonnull Player p, @Nonnull ItemStack cooler) {
         PlayerProfile.getBackpack(cooler, backpack -> {
             if (backpack != null) {
-                SlimefunPlugin.runSync(() -> consumeJuice(p, backpack));
+                SlimefunPlugin.runSync(() -> consumeJuice(p, cooler, backpack));
             }
         });
     }
 
-    private boolean consumeJuice(@Nonnull Player p, @Nonnull PlayerBackpack backpack) {
+    private boolean consumeJuice(@Nonnull Player p, @Nonnull ItemStack coolerItem, @Nonnull PlayerBackpack backpack) {
         Inventory inv = backpack.getInventory();
         int slot = -1;
 
@@ -105,17 +112,26 @@ public class CoolerListener implements Listener {
         }
 
         if (slot >= 0) {
-            PotionMeta im = (PotionMeta) inv.getItem(slot).getItemMeta();
+            ItemStack item = inv.getItem(slot);
+            CoolerFeedPlayerEvent event = new CoolerFeedPlayerEvent(p, cooler, coolerItem, item);
+            plugin.getServer().getPluginManager().callEvent(event);
 
-            for (PotionEffect effect : im.getCustomEffects()) {
-                p.addPotionEffect(effect);
+            if (!event.isCancelled()) {
+                PotionMeta im = (PotionMeta) event.getConsumedItem().getItemMeta();
+
+                for (PotionEffect effect : im.getCustomEffects()) {
+                    p.addPotionEffect(effect);
+                }
+
+                p.setSaturation(6F);
+                p.playSound(p.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1F, 1F);
+                inv.setItem(slot, null);
+                backpack.markDirty();
+
+                return true;
+            } else {
+                return false;
             }
-
-            p.setSaturation(6F);
-            p.playSound(p.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1F, 1F);
-            inv.setItem(slot, null);
-            backpack.markDirty();
-            return true;
         }
 
         return false;

@@ -1,4 +1,4 @@
-package io.github.thebusybiscuit.slimefun4.implementation.items.magical;
+package io.github.thebusybiscuit.slimefun4.implementation.items.magical.staves;
 
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
@@ -64,7 +64,7 @@ public class StormStaff extends SimpleSlimefunItem<ItemUseHandler> {
                 Location loc = p.getTargetBlock(null, 30).getLocation();
 
                 if (loc.getWorld() != null && loc.getChunk().isLoaded()) {
-                    if (loc.getWorld().getPVP() && SlimefunPlugin.getProtectionManager().hasPermission(p, loc, ProtectableAction.PVP)) {
+                    if (loc.getWorld().getPVP() && SlimefunPlugin.getProtectionManager().hasPermission(p, loc, ProtectableAction.ATTACK_PLAYER)) {
                         e.cancel();
                         useItem(p, item, loc);
                     } else {

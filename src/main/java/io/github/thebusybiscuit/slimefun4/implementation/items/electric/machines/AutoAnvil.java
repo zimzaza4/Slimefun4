@@ -19,7 +19,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  *
  * @author TheBusyBiscuit
  */
-public abstract class AutoAnvil extends AContainer {
+public class AutoAnvil extends AContainer {
 
     private final int repairFactor;
 
@@ -32,11 +32,6 @@ public abstract class AutoAnvil extends AContainer {
     @Override
     public ItemStack getProgressBar() {
         return new ItemStack(Material.IRON_PICKAXE);
-    }
-
-    @Override
-    public int getSpeed() {
-        return 1;
     }
 
     @Override

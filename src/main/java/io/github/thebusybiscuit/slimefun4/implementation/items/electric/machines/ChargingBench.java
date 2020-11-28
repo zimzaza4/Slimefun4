@@ -24,16 +24,6 @@ public class ChargingBench extends AContainer {
     }
 
     @Override
-    public int getEnergyConsumption() {
-        return 10;
-    }
-
-    @Override
-    public int getCapacity() {
-        return 128;
-    }
-
-    @Override
     protected void tick(Block b) {
         if (getCharge(b.getLocation()) < getEnergyConsumption()) {
             return;
@@ -70,11 +60,6 @@ public class ChargingBench extends AContainer {
         }
 
         return false;
-    }
-
-    @Override
-    public int getSpeed() {
-        return 1;
     }
 
     @Override

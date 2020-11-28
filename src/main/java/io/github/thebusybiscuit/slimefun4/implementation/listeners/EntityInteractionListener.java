@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
+import io.github.thebusybiscuit.slimefun4.api.items.ItemState;
 import io.github.thebusybiscuit.slimefun4.core.handlers.EntityInteractHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
@@ -15,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import javax.annotation.Nonnull;
 
 /**
- * The Listener class responsible for a {@link Player} interacting with an {@link Entity}.
+ * The {@link Listener} responsible for a {@link Player} interacting with an {@link Entity}.
  *
  * @author Linox
  * @see EntityInteractHandler
@@ -42,8 +43,17 @@ public class EntityInteractionListener implements Listener {
 
         SlimefunItem sfItem = SlimefunItem.getByItem(itemStack);
 
-        if (sfItem != null && Slimefun.hasUnlocked(e.getPlayer(), sfItem, true)) {
-            sfItem.callItemHandler(EntityInteractHandler.class, handler -> handler.onInteract(e, itemStack, e.getHand() == EquipmentSlot.OFF_HAND));
+        if (sfItem != null) {
+            if (Slimefun.hasUnlocked(e.getPlayer(), sfItem, true)) {
+                sfItem.callItemHandler(EntityInteractHandler.class, handler -> handler.onInteract(e, itemStack, e.getHand() == EquipmentSlot.OFF_HAND));
+            } else if (sfItem.getState() != ItemState.VANILLA_FALLBACK) {
+                /**
+                 * If an Item is disabled, we don't want it to fallback to the vanilla behaviour
+                 * unless it is a Vanilla Item of course.
+                 * Related to Issue #2446
+                 */
+                e.setCancelled(true);
+            }
         }
     }
 }

@@ -204,7 +204,11 @@ public class BookSlimefunGuide implements SlimefunGuideImplementation {
             } else {
                 component.setHoverEvent(new HoverEvent(ChatColor.RESET + item.getItemName(), ChatColor.DARK_RED.toString() + ChatColor.BOLD + SlimefunPlugin.getLocalization().getMessage(p, "guide.locked"), "", ChatColor.GREEN + "> 单击解锁", "", ChatColor.GRAY + "需要 " + ChatColor.AQUA.toString() + research.getCost() + " 级经验"));
             }
-            component.setClickEvent(new ClickEvent(key, player -> research(player, profile, item, research, category, page)));
+            component.setClickEvent(new ClickEvent(key, player ->
+                    SlimefunPlugin.runSync(() ->
+                            research.unlockFromGuide(this, player, profile, item, category, page)
+                    )
+            ));
 
             items.add(component);
         } else {
@@ -221,22 +225,6 @@ public class BookSlimefunGuide implements SlimefunGuideImplementation {
             component.setClickEvent(new ClickEvent(key, player -> SlimefunPlugin.runSync(() -> displayItem(profile, item, true))));
             items.add(component);
         }
-    }
-
-    private void research(Player p, PlayerProfile profile, SlimefunItem item, Research research, Category category, int page) {
-        SlimefunPlugin.runSync(() -> {
-            if (!SlimefunPlugin.getRegistry().getCurrentlyResearchingPlayers().contains(p.getUniqueId())) {
-                if (research.canUnlock(p)) {
-                    if (profile.hasUnlocked(research)) {
-                        openCategory(profile, category, page);
-                    } else {
-                        unlockItem(p, item, pl -> openCategory(profile, category, page));
-                    }
-                } else {
-                    SlimefunPlugin.getLocalization().sendMessage(p, "messages.not-enough-xp", true);
-                }
-            }
-        });
     }
 
     @Override

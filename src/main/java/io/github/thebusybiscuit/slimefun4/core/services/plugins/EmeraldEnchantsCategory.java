@@ -11,6 +11,11 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 
+/**
+ * This is the EmeraldEnchants {@link Category}
+ *
+ * @deprecated Support for EmeraldEnchants is being faded out
+ */
 @Deprecated
 class EmeraldEnchantsCategory extends FlexCategory {
 

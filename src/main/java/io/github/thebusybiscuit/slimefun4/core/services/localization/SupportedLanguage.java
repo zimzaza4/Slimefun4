@@ -71,11 +71,22 @@ enum SupportedLanguage {
         this.textureHash = textureHash;
     }
 
+    /**
+     * This returns the id of this {@link Language}.
+     *
+     * @return Language ID
+     */
     @Nonnull
     public String getLanguageId() {
         return id;
     }
 
+    /**
+     * This returns whether this {@link SupportedLanguage} is "release-ready".
+     * A release-ready {@link Language} will be available in RC builds of Slimefun.
+     *
+     * @return Whether this {@link Language} is "release-ready"
+     */
     public boolean isReadyForRelease() {
         return releaseReady;
     }

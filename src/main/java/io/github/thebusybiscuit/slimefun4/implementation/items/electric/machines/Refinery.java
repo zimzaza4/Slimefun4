@@ -9,7 +9,7 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class Refinery extends AContainer implements RecipeDisplayItem {
+public class Refinery extends AContainer implements RecipeDisplayItem {
 
     public Refinery(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);

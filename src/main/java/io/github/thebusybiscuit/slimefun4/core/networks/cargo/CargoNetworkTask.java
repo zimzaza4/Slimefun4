@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.core.networks.cargo;
 
+import io.github.thebusybiscuit.slimefun4.core.networks.NetworkManager;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
@@ -28,6 +29,7 @@ import java.util.*;
  */
 class CargoNetworkTask implements Runnable {
 
+    private final NetworkManager manager;
     private final CargoNet network;
     private final Map<Location, Inventory> inventories = new HashMap<>();
 
@@ -40,6 +42,7 @@ class CargoNetworkTask implements Runnable {
     @ParametersAreNonnullByDefault
     CargoNetworkTask(CargoNet network, Map<Location, Integer> inputs, Map<Integer, List<Location>> outputs, Set<Location> chestTerminalInputs, Set<Location> chestTerminalOutputs) {
         this.network = network;
+        this.manager = SlimefunPlugin.getNetworkManager();
 
         this.inputs = inputs;
         this.outputs = outputs;
@@ -106,7 +109,7 @@ class CargoNetworkTask implements Runnable {
                     // Try to add the item into another available slot then
                     ItemStack rest = inv.addItem(stack).get(0);
 
-                    if (rest != null) {
+                    if (rest != null && !manager.isItemDeletionEnabled()) {
                         // If the item still couldn't be inserted, simply drop it on the ground
                         inputTarget.getWorld().dropItem(inputTarget.getLocation().add(0, 1, 0), rest);
                     }
@@ -118,7 +121,7 @@ class CargoNetworkTask implements Runnable {
                     // Check if the original slot hasn't been occupied in the meantime
                     if (menu.getItemInSlot(previousSlot) == null) {
                         menu.replaceExistingItem(previousSlot, stack);
-                    } else {
+                    } else if (!manager.isItemDeletionEnabled()) {
                         ItemStack rest = inv.addItem(stack).get(0);
 
                         if (rest != null) {

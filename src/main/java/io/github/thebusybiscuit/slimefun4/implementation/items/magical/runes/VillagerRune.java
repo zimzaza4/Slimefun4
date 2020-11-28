@@ -1,7 +1,9 @@
-package io.github.thebusybiscuit.slimefun4.implementation.items.magical;
+package io.github.thebusybiscuit.slimefun4.implementation.items.magical.runes;
 
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
+import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.core.handlers.EntityInteractHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
@@ -31,6 +33,11 @@ public class VillagerRune extends SimpleSlimefunItem<EntityInteractHandler> {
     @Override
     public EntityInteractHandler getItemHandler() {
         return (e, item, offhand) -> {
+            if (e.isCancelled() || !SlimefunPlugin.getProtectionManager().hasPermission(e.getPlayer(), e.getRightClicked().getLocation(), ProtectableAction.INTERACT_ENTITY)) {
+                // They don't have permission to use it in this area
+                return;
+            }
+
             if (e.getRightClicked() instanceof Villager) {
                 Villager v = (Villager) e.getRightClicked();
 

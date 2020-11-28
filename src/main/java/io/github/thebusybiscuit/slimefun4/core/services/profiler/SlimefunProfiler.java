@@ -136,8 +136,6 @@ public class SlimefunProfiler {
             return;
         }
 
-        // Since we got more than one Thread in our pool,
-        // blocking this one is (hopefully) completely fine
         executor.execute(this::finishReport);
     }
 
@@ -148,6 +146,10 @@ public class SlimefunProfiler {
         // Wait for all timing results to come in
         while (!running.get() && queued.get() > 0) {
             try {
+                /**
+                 * Since we got more than one Thread in our pool,
+                 * blocking this one is (hopefully) completely fine
+                 */
                 Thread.sleep(1);
                 iterations--;
 

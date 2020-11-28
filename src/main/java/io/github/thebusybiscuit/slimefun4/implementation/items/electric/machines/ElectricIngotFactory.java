@@ -8,7 +8,7 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class ElectricIngotFactory extends AContainer implements RecipeDisplayItem {
+public class ElectricIngotFactory extends AContainer implements RecipeDisplayItem {
 
     public ElectricIngotFactory(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);

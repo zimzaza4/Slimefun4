@@ -12,7 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class BioGenerator extends AGenerator {
+public class BioGenerator extends AGenerator {
 
     public BioGenerator(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);

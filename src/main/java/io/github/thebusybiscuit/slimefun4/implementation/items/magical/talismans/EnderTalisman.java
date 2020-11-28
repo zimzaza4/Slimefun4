@@ -9,6 +9,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.EnderChest;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An {@link EnderTalisman} is a special version of {@link Talisman}
  * that works while it is in your {@link EnderChest}.
@@ -19,13 +21,14 @@ class EnderTalisman extends Talisman {
 
     private static final LockedCategory ENDER_TALISMANS_CATEGORY = new LockedCategory(new NamespacedKey(SlimefunPlugin.instance(), "ender_talismans"), new CustomItem(SlimefunItems.ENDER_TALISMAN, "&7护身符 - &a等级 II"), 3, Talisman.TALISMANS_CATEGORY.getKey());
 
+    @ParametersAreNonnullByDefault
     public EnderTalisman(Talisman parent, SlimefunItemStack item) {
         super(ENDER_TALISMANS_CATEGORY, item, new ItemStack[]{SlimefunItems.ENDER_LUMP_3, null, SlimefunItems.ENDER_LUMP_3, null, parent.getItem(), null, SlimefunItems.ENDER_LUMP_3, null, SlimefunItems.ENDER_LUMP_3}, parent.isConsumable(), parent.isEventCancelled(), parent.getMessageSuffix(), parent.getChance(), parent.getEffects());
     }
 
 
     @Override
-    public void createEnderTalisman() {
+    void loadEnderTalisman() {
         // Let's override that, otherwise we would be creating Ender Talismans
         // for every Ender Talisman
     }

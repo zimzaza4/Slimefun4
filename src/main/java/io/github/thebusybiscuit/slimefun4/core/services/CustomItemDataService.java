@@ -8,6 +8,8 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 
 import javax.annotation.Nonnull;
@@ -20,11 +22,9 @@ import java.util.Optional;
  * {@link ItemStack} at all times.
  *
  * @author TheBusyBiscuit
- *
  * @see SlimefunItemStack
- *
  */
-public class CustomItemDataService implements PersistentDataService, Keyed {
+public class CustomItemDataService implements Keyed {
 
     private final NamespacedKey namespacedKey;
 
@@ -32,8 +32,10 @@ public class CustomItemDataService implements PersistentDataService, Keyed {
      * This creates a new {@link CustomItemDataService} for the given {@link Plugin} and the
      * provided data key.
      *
-     * @param plugin The {@link Plugin} for this service to use
-     * @param key    The key under which to store data
+     * @param plugin
+     *            The {@link Plugin} for this service to use
+     * @param key
+     *            The key under which to store data
      */
     public CustomItemDataService(@Nonnull Plugin plugin, @Nonnull String key) {
         // Null-Validation is performed in the NamespacedKey constructor
@@ -49,8 +51,10 @@ public class CustomItemDataService implements PersistentDataService, Keyed {
      * This method stores the given id on the provided {@link ItemStack} via
      * persistent data.
      *
-     * @param item The {@link ItemStack} to store data on
-     * @param id   The id to store on the {@link ItemStack}
+     * @param item
+     *            The {@link ItemStack} to store data on
+     * @param id
+     *            The id to store on the {@link ItemStack}
      */
     public void setItemData(@Nonnull ItemStack item, @Nonnull String id) {
         Validate.notNull(item, "The Item cannot be null!");
@@ -65,14 +69,17 @@ public class CustomItemDataService implements PersistentDataService, Keyed {
      * This method stores the given id on the provided {@link ItemMeta} via
      * persistent data.
      *
-     * @param im The {@link ItemMeta} to store data on
-     * @param id The id to store on the {@link ItemMeta}
+     * @param meta
+     *            The {@link ItemMeta} to store data on
+     * @param id
+     *            The id to store on the {@link ItemMeta}
      */
-    public void setItemData(@Nonnull ItemMeta im, @Nonnull String id) {
-        Validate.notNull(im, "The ItemMeta cannot be null!");
+    public void setItemData(@Nonnull ItemMeta meta, @Nonnull String id) {
+        Validate.notNull(meta, "The ItemMeta cannot be null!");
         Validate.notNull(id, "Cannot store null on an ItemMeta!");
 
-        setString(im, namespacedKey, id);
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        container.set(namespacedKey, PersistentDataType.STRING, id);
     }
 
     /**
@@ -80,7 +87,9 @@ public class CustomItemDataService implements PersistentDataService, Keyed {
      * The {@link Optional} will be empty if the given {@link ItemStack} is null, doesn't have any {@link ItemMeta}
      * or if the requested data simply does not exist on that {@link ItemStack}.
      *
-     * @param item The {@link ItemStack} to check
+     * @param item
+     *            The {@link ItemStack} to check
+     *
      * @return An {@link Optional} describing the result
      */
     @Nonnull
@@ -96,14 +105,17 @@ public class CustomItemDataService implements PersistentDataService, Keyed {
      * This method returns an {@link Optional}, either empty or holding the data stored
      * on the given {@link ItemMeta}.
      *
-     * @param meta The {@link ItemMeta} to check
+     * @param meta
+     *            The {@link ItemMeta} to check
+     *
      * @return An {@link Optional} describing the result
      */
     @Nonnull
     public Optional<String> getItemData(@Nonnull ItemMeta meta) {
         Validate.notNull(meta, "Cannot read data from null!");
 
-        return getString(meta, namespacedKey);
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        return Optional.ofNullable(container.get(namespacedKey, PersistentDataType.STRING));
     }
 
 }

@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
 
-public abstract class LavaGenerator extends AGenerator {
+public class LavaGenerator extends AGenerator {
 
     public LavaGenerator(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);

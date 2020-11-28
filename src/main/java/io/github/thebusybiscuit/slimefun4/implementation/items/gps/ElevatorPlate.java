@@ -35,6 +35,7 @@ public class ElevatorPlate extends SimpleSlimefunItem<BlockUseHandler> {
 
     private final Set<UUID> users = new HashSet<>();
 
+    @ParametersAreNonnullByDefault
     public ElevatorPlate(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
         super(category, item, recipeType, recipe, recipeOutput);
 
@@ -47,15 +48,10 @@ public class ElevatorPlate extends SimpleSlimefunItem<BlockUseHandler> {
             @Override
             public void onPlayerPlace(BlockPlaceEvent e) {
                 Block b = e.getBlock();
-                BlockStorage.addBlockInfo(b, DATA_KEY, "&f一楼");
+                BlockStorage.addBlockInfo(b, DATA_KEY, ChatColor.WHITE + "一楼");
                 BlockStorage.addBlockInfo(b, "owner", e.getPlayer().getUniqueId().toString());
             }
         };
-    }
-
-    @Nonnull
-    public Set<UUID> getUsers() {
-        return users;
     }
 
     @Override
@@ -169,7 +165,7 @@ public class ElevatorPlate extends SimpleSlimefunItem<BlockUseHandler> {
     public void openEditor(Player p, Block b) {
         ChestMenu menu = new ChestMenu("电梯设置");
 
-        menu.addItem(4, new CustomItem(Material.NAME_TAG, "&7楼层名 &e(单击编辑)", "", "&r" + ChatColors.color(BlockStorage.getLocationInfo(b.getLocation(), DATA_KEY))));
+        menu.addItem(4, new CustomItem(Material.NAME_TAG, "&7楼层名 &e(单击编辑)", "", ChatColor.WHITE + ChatColors.color(BlockStorage.getLocationInfo(b.getLocation(), DATA_KEY))));
         menu.addMenuClickHandler(4, (pl, slot, item, action) -> {
             pl.closeInventory();
             pl.sendMessage("");

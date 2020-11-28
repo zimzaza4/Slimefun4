@@ -204,14 +204,14 @@ public class EnergyNet extends Network {
             SlimefunItem item = (SlimefunItem) provider;
 
             try {
-                Config config = BlockStorage.getLocationInfo(loc);
-                int energy = provider.getGeneratedOutput(loc, config);
+                Config data = BlockStorage.getLocationInfo(loc);
+                int energy = provider.getGeneratedOutput(loc, data);
 
                 if (provider.isChargeable()) {
                     energy += provider.getCharge(loc);
                 }
 
-                if (provider.willExplode(loc, config)) {
+                if (provider.willExplode(loc, data)) {
                     explodedBlocks.add(loc);
                     BlockStorage.clearBlockInfo(loc);
 
@@ -222,9 +222,9 @@ public class EnergyNet extends Network {
                 } else {
                     supply += energy;
                 }
-            } catch (Exception | LinkageError t) {
+            } catch (Exception | LinkageError throwable) {
                 explodedBlocks.add(loc);
-                new ErrorReport<>(t, loc, item);
+                new ErrorReport<>(throwable, loc, item);
             }
 
             long time = SlimefunPlugin.getProfiler().closeEntry(loc, item, timestamp);
