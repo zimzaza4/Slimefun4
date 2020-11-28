@@ -24,9 +24,9 @@ import java.util.Optional;
  * @author Seggan
  * @see ElytraCap
  */
-public class ElytraCrashListener implements Listener {
+public class ElytraImpactListener implements Listener {
 
-    public ElytraCrashListener(@Nonnull SlimefunPlugin plugin) {
+    public ElytraImpactListener(@Nonnull SlimefunPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

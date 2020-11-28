@@ -61,6 +61,7 @@ public final class ChatUtils {
      * @param string The {@link String} to convert
      * @return A human-friendly version of the given {@link String}
      */
+    @Nonnull
     public static String humanize(@Nonnull String string) {
         StringBuilder builder = new StringBuilder();
         String[] segments = PatternUtils.UNDERSCORE.split(string.toLowerCase(Locale.ROOT));

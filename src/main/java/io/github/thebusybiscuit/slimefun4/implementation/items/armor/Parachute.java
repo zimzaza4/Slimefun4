@@ -8,6 +8,8 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * The {@link Parachute} is a {@link SlimefunItem} that can be equipped as a chestplate.
  * It allows you slowly glide to the ground while holding shift.
@@ -21,6 +23,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Parachute extends SlimefunItem {
 
+    @ParametersAreNonnullByDefault
     public Parachute(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, RecipeType.ENHANCED_CRAFTING_TABLE, recipe);
     }

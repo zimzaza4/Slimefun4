@@ -129,7 +129,11 @@ public abstract class Network {
      * @return Whether the given {@link Location} is part of this {@link Network}
      */
     public boolean connectsTo(@Nonnull Location l) {
-        return connectedLocations.contains(l);
+        if (regulator.equals(l)) {
+            return true;
+        } else {
+            return connectedLocations.contains(l);
+        }
     }
 
     @Nullable

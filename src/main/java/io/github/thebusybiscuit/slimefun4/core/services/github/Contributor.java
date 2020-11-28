@@ -31,7 +31,7 @@ public class Contributor {
     private final ComputedOptional<String> headTexture = ComputedOptional.createNew();
 
     private Optional<UUID> uuid = Optional.empty();
-    private boolean locked = false;
+    private boolean immutable = false;
 
     /**
      * This creates a new {@link Contributor} with the given ingame name and GitHub profile.
@@ -72,7 +72,7 @@ public class Contributor {
         Validate.notNull(role, "The role cannot be null!");
         Validate.isTrue(commits >= 0, "Contributions cannot be negative");
 
-        if (!locked || role.startsWith("translator,")) {
+        if (!immutable || role.startsWith("translator,")) {
             contributions.put(role, commits);
         }
     }
@@ -125,6 +125,7 @@ public class Contributor {
      * @return The amount of contributions this {@link Contributor} submitted as the given role
      */
     public int getContributions(@Nonnull String role) {
+        Validate.notNull(role, "The role cannot be null!");
         return contributions.getOrDefault(role, 0);
     }
 
@@ -210,7 +211,23 @@ public class Contributor {
         return ChatColor.GRAY + githubUsername + (!githubUsername.equals(minecraftUsername) ? ChatColor.DARK_GRAY + " (MC: " + minecraftUsername + ")" : "");
     }
 
+    /**
+     * This returns the position on where to order this {@link Contributor}.
+     * This is just a convenience method for a {@link Comparator}, it is equivalent to
+     * {@link #getTotalContributions()} multiplied by minus one.
+     *
+     * @return The position of this {@link Contributor} in terms for positioning and ordering.
+     */
+    public int getPosition() {
+        return -getTotalContributions();
+    }
+
+    /**
+     * This marks this {@link Contributor} as immutable.
+     * Immutable {@link Contributor Contributors} will no longer be assigned any contributions.
+     * This is useful when you want to prevent some commits from counting twice.
+     */
     public void lock() {
-        locked = true;
+        immutable = true;
     }
 }

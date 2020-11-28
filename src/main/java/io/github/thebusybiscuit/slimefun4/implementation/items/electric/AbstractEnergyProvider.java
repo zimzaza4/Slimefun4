@@ -80,7 +80,7 @@ public abstract class AbstractEnergyProvider extends SlimefunItem implements Inv
 
     @Override
     @Nonnull
-    public EnergyNetComponentType getEnergyComponentType() {
+    public final EnergyNetComponentType getEnergyComponentType() {
         return EnergyNetComponentType.GENERATOR;
     }
 

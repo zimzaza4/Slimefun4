@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This Service is responsible for grabbing every {@link Contributor} to this project
@@ -55,9 +56,10 @@ public class GitHubService {
     }
 
     public void start(@Nonnull SlimefunPlugin plugin) {
+        long period = TimeUnit.HOURS.toMillis(1);
         GitHubTask task = new GitHubTask(this);
 
-        plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, task, 80L, 60 * 60 * 20L);
+        plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, task, 80L, period);
     }
 
     /**
@@ -214,8 +216,14 @@ public class GitHubService {
         texturesCache.save();
     }
 
+    /**
+     * This returns the cached skin texture for a given username.
+     *
+     * @param username The minecraft username
+     * @return The cached skin texture for that user (or null)
+     */
     @Nullable
-    protected String getCachedTexture(@Nonnull String name) {
-        return texturesCache.getString(name);
+    protected String getCachedTexture(@Nonnull String username) {
+        return texturesCache.getString(username);
     }
 }

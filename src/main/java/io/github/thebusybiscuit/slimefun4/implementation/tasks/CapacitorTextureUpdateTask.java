@@ -3,6 +3,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.tasks;
 import io.github.thebusybiscuit.cscorelib2.skull.SkullBlock;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.Capacitor;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
+import io.papermc.lib.PaperLib;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -32,18 +33,24 @@ public class CapacitorTextureUpdateTask implements Runnable {
     @Override
     public void run() {
         Block b = l.getBlock();
+        Material type = b.getType();
 
-        if (b.getType() == Material.PLAYER_HEAD || b.getType() == Material.PLAYER_WALL_HEAD) {
+        if (type == Material.PLAYER_HEAD || type == Material.PLAYER_WALL_HEAD) {
             if (filledPercentage <= 0.25) {
-                SkullBlock.setFromHash(b, HeadTexture.CAPACITOR_25.getTexture());
+                setTexture(b, HeadTexture.CAPACITOR_25);
             } else if (filledPercentage <= 0.5) {
-                SkullBlock.setFromHash(b, HeadTexture.CAPACITOR_50.getTexture());
+                setTexture(b, HeadTexture.CAPACITOR_50);
             } else if (filledPercentage <= 0.75) {
-                SkullBlock.setFromHash(b, HeadTexture.CAPACITOR_75.getTexture());
+                setTexture(b, HeadTexture.CAPACITOR_75);
             } else {
-                SkullBlock.setFromHash(b, HeadTexture.CAPACITOR_100.getTexture());
+                setTexture(b, HeadTexture.CAPACITOR_100);
             }
         }
+    }
+
+    private void setTexture(@Nonnull Block b, @Nonnull HeadTexture texture) {
+        SkullBlock.setFromHash(b, texture.getUniqueId(), texture.getTexture(), false);
+        PaperLib.getBlockState(b, false).getState().update(true, false);
     }
 
 }

@@ -2,7 +2,6 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.tools;
 
 import io.github.thebusybiscuit.cscorelib2.collections.RandomizedSet;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.handlers.EntityInteractHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
@@ -11,6 +10,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.ElectricGoldPan;
 import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.AutomatedPanningMachine;
+import io.github.thebusybiscuit.slimefun4.implementation.settings.GoldPanDrop;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
@@ -30,9 +30,11 @@ import java.util.*;
  * resources from Gravel.
  *
  * @author TheBusyBiscuit
+ *
  * @see NetherGoldPan
  * @see AutomatedPanningMachine
  * @see ElectricGoldPan
+ *
  */
 public class GoldPan extends SimpleSlimefunItem<ItemUseHandler> implements RecipeDisplayItem {
 
@@ -58,13 +60,14 @@ public class GoldPan extends SimpleSlimefunItem<ItemUseHandler> implements Recip
         return Material.GRAVEL;
     }
 
+    @Nonnull
     protected Set<GoldPanDrop> getGoldPanDrops() {
         Set<GoldPanDrop> settings = new HashSet<>();
 
-        settings.add(new GoldPanDrop("chance.FLINT", 40, new ItemStack(Material.FLINT)));
-        settings.add(new GoldPanDrop("chance.CLAY", 20, new ItemStack(Material.CLAY_BALL)));
-        settings.add(new GoldPanDrop("chance.SIFTED_ORE", 35, SlimefunItems.SIFTED_ORE));
-        settings.add(new GoldPanDrop("chance.IRON_NUGGET", 5, new ItemStack(Material.IRON_NUGGET)));
+        settings.add(new GoldPanDrop(this, "chance.FLINT", 40, new ItemStack(Material.FLINT)));
+        settings.add(new GoldPanDrop(this, "chance.CLAY", 20, new ItemStack(Material.CLAY_BALL)));
+        settings.add(new GoldPanDrop(this, "chance.SIFTED_ORE", 35, SlimefunItems.SIFTED_ORE));
+        settings.add(new GoldPanDrop(this, "chance.IRON_NUGGET", 5, new ItemStack(Material.IRON_NUGGET)));
 
         return settings;
     }
@@ -75,7 +78,13 @@ public class GoldPan extends SimpleSlimefunItem<ItemUseHandler> implements Recip
         updateRandomizer();
     }
 
-    protected void updateRandomizer() {
+    /**
+     * <strong>Do not call this method directly</strong>.
+     * <p>
+     * This method is for internal purposes only.
+     * It will update and re-calculate all weights in our {@link RandomizedSet}.
+     */
+    public void updateRandomizer() {
         randomizer.clear();
 
         for (GoldPanDrop setting : drops) {
@@ -153,34 +162,6 @@ public class GoldPan extends SimpleSlimefunItem<ItemUseHandler> implements Recip
         }
 
         return recipes;
-    }
-
-    public class GoldPanDrop extends ItemSetting<Integer> {
-
-        private final ItemStack output;
-
-        protected GoldPanDrop(String key, int defaultValue, ItemStack output) {
-            super(key, defaultValue);
-
-            this.output = output;
-        }
-
-        @Override
-        public boolean validateInput(Integer input) {
-            return super.validateInput(input) && input >= 0;
-        }
-
-
-        public ItemStack getOutput() {
-            return output;
-        }
-
-        @Override
-        public void update(Integer newValue) {
-            super.update(newValue);
-            updateRandomizer();
-        }
-
     }
 
 }

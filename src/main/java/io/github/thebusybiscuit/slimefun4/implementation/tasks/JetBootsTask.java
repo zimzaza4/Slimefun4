@@ -2,7 +2,6 @@ package io.github.thebusybiscuit.slimefun4.implementation.tasks;
 
 import io.github.thebusybiscuit.cscorelib2.math.DoubleHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets.JetBoots;
-import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -12,7 +11,7 @@ import org.bukkit.util.Vector;
 import javax.annotation.Nonnull;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class JetBootsTask extends PlayerTask {
+public class JetBootsTask extends AbstractPlayerTask {
 
     private static final float COST = 0.075F;
 
@@ -41,7 +40,7 @@ public class JetBootsTask extends PlayerTask {
 
             p.setVelocity(vector);
         } else {
-            Bukkit.getScheduler().cancelTask(id);
+            cancel();
         }
     }
 }

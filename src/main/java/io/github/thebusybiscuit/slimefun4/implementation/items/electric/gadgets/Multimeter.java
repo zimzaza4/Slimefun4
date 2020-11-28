@@ -1,11 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets;
 
-import io.github.thebusybiscuit.cscorelib2.math.DoubleHandler;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNet;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
@@ -46,8 +46,8 @@ public class Multimeter extends SimpleSlimefunItem<ItemUseHandler> {
                         e.cancel();
 
                         Location l = e.getClickedBlock().get().getLocation();
-                        String stored = DoubleHandler.getFancyDouble(component.getCharge(l)) + " J";
-                        String capacity = DoubleHandler.getFancyDouble(component.getCapacity()) + " J";
+                        String stored = NumberUtils.getCompactDouble(component.getCharge(l)) + " J";
+                        String capacity = NumberUtils.getCompactDouble(component.getCapacity()) + " J";
 
                         Player p = e.getPlayer();
                         p.sendMessage("");

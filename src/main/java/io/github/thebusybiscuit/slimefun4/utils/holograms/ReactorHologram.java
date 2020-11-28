@@ -8,6 +8,7 @@ import org.bukkit.entity.Entity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collection;
 
 public final class ReactorHologram {
 
@@ -15,11 +16,12 @@ public final class ReactorHologram {
     }
 
     @Nullable
-    public static ArmorStand getArmorStand(Location reactor, boolean createIfNoneExists) {
+    public static ArmorStand getArmorStand(@Nonnull Location reactor, boolean createIfNoneExists) {
         Location l = new Location(reactor.getWorld(), reactor.getX() + 0.5, reactor.getY() + 0.7, reactor.getZ() + 0.5);
+        Collection<Entity> holograms = l.getWorld().getNearbyEntities(l, 0.2, 0.2, 0.2, ReactorHologram::isPossibleHologram);
 
-        for (Entity n : l.getChunk().getEntities()) {
-            if (n instanceof ArmorStand && l.distanceSquared(n.getLocation()) < 0.4D) {
+        for (Entity n : holograms) {
+            if (n instanceof ArmorStand) {
                 return (ArmorStand) n;
             }
         }
@@ -34,10 +36,21 @@ public final class ReactorHologram {
         return hologram;
     }
 
-    public static void update(@Nonnull Location l, String name) {
+    private static boolean isPossibleHologram(@Nonnull Entity n) {
+        if (n instanceof ArmorStand) {
+            ArmorStand armorstand = (ArmorStand) n;
+            return armorstand.isValid() && armorstand.isSilent() && armorstand.isMarker() && !armorstand.hasGravity();
+        } else {
+            return false;
+        }
+
+    }
+
+    public static void update(@Nonnull Location l, @Nonnull String name) {
         SlimefunPlugin.runSync(() -> {
             ArmorStand hologram = getArmorStand(l, true);
-            if (!hologram.isCustomNameVisible()) hologram.setCustomNameVisible(true);
+
+            hologram.setCustomNameVisible(true);
             hologram.setCustomName(ChatColors.color(name));
         });
     }

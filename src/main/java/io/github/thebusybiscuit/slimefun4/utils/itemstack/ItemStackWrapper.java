@@ -41,6 +41,11 @@ public final class ItemStackWrapper extends ItemStack {
         }
     }
 
+    public ItemStackWrapper(@Nonnull Material material) {
+        this(new ItemStack(material));
+    }
+
+
     @Override
     public boolean hasItemMeta() {
         return hasItemMeta;

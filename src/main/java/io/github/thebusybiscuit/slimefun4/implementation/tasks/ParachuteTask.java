@@ -1,12 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.implementation.tasks;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import javax.annotation.Nonnull;
 
-public class ParachuteTask extends PlayerTask {
+public class ParachuteTask extends AbstractPlayerTask {
 
     public ParachuteTask(@Nonnull Player p) {
         super(p);
@@ -20,7 +19,7 @@ public class ParachuteTask extends PlayerTask {
         p.setFallDistance(0F);
 
         if (!p.isSneaking()) {
-            Bukkit.getScheduler().cancelTask(id);
+            cancel();
         }
     }
 

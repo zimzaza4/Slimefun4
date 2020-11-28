@@ -44,8 +44,6 @@ public class BlockInfoConfig extends Config {
             throw new UnsupportedOperationException("Can't set \"" + path + "\" to \"" + value + "\" (type: " + value.getClass().getSimpleName() + ") because BlockInfoConfig only supports Strings");
         }
 
-        checkPath(path);
-
         if (value == null) {
             data.remove(path);
         } else {
@@ -53,15 +51,8 @@ public class BlockInfoConfig extends Config {
         }
     }
 
-    private void checkPath(String path) {
-        if (path.indexOf('.') != -1) {
-            throw new UnsupportedOperationException("BlockInfoConfig only supports Map<String,String> (path: " + path + ")");
-        }
-    }
-
     @Override
     public boolean contains(String path) {
-        checkPath(path);
         return data.containsKey(path);
     }
 
@@ -72,7 +63,6 @@ public class BlockInfoConfig extends Config {
 
     @Override
     public String getString(String path) {
-        checkPath(path);
         return data.get(path);
     }
 

@@ -21,6 +21,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 /**
@@ -37,6 +39,7 @@ public class SeismicAxe extends SimpleSlimefunItem<ItemUseHandler> implements No
     private static final float DAMAGE = 6;
     private static final int RANGE = 10;
 
+    @ParametersAreNonnullByDefault
     public SeismicAxe(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
     }
@@ -91,6 +94,7 @@ public class SeismicAxe extends SimpleSlimefunItem<ItemUseHandler> implements No
         }
     }
 
+    @Nonnull
     private Block findGround(Block b) {
         if (b.getType() == Material.AIR) {
             for (int y = 0; y < b.getY(); y++) {

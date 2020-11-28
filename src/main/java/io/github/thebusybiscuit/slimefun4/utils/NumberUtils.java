@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -16,13 +17,14 @@ import java.util.Locale;
  *
  * @author TheBusyBiscuit
  * @author Walshy
+ *
  */
 public final class NumberUtils {
 
     /**
      * This is our {@link DecimalFormat} for decimal values.
      */
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##", DecimalFormatSymbols.getInstance(Locale.ROOT));
 
     /**
      * We do not want any instance of this to be created.
@@ -46,13 +48,39 @@ public final class NumberUtils {
         return NumberFormat.getNumberInstance(Locale.US).format(number);
     }
 
+    @Nonnull
+    public static String getCompactDouble(double value) {
+        if (value < 0) {
+            // Negative numbers are a special case
+            return '-' + getCompactDouble(-value);
+        }
+
+        if (value < 1000.0) {
+            // Below 1K
+            return DECIMAL_FORMAT.format(value);
+        } else if (value < 1000000.0) {
+            // Thousands
+            return DECIMAL_FORMAT.format(value / 1000.0) + 'K';
+        } else if (value < 1000000000.0) {
+            // Million
+            return DECIMAL_FORMAT.format(value / 1000000.0) + 'M';
+        } else if (value < 1000000000000.0) {
+            // Billion
+            return DECIMAL_FORMAT.format(value / 1000000000.0) + 'B';
+        } else if (value < 1000000000000000.0) {
+            // Trillion
+            return DECIMAL_FORMAT.format(value / 1000000000000.0) + 'T';
+        } else {
+            // Quadrillion
+            return DECIMAL_FORMAT.format(value / 1000000000000000.0) + 'Q';
+        }
+    }
+
     /**
      * This method transforms a String representation of a {@link LocalDateTime}
      * from GitHub's API back into a {@link LocalDateTime} object
      *
-     * @param date
-     *            The formatted String version of a date from GitHub
-     *
+     * @param date The formatted String version of a date from GitHub
      * @return The {@link LocalDateTime} for the given input
      */
     @Nonnull
@@ -92,18 +120,41 @@ public final class NumberUtils {
      * This returns the elapsed time since the given {@link LocalDateTime}.
      * The output will be nicely formatted based on the elapsed hours or days since the
      * given {@link LocalDateTime}.
-     * <p>
+     *
      * If a {@link LocalDateTime} from yesterday was passed it will return {@code "1d"}.
      * One hour later it will read {@code "1d 1h"}. For values smaller than an hour {@code "< 1h"}
      * will be returned instead.
      *
-     * @param date The {@link LocalDateTime}.
+     * @param date
+     *            The {@link LocalDateTime}.
+     *
      * @return The elapsed time as a {@link String}
      */
     @Nonnull
     public static String getElapsedTime(@Nonnull LocalDateTime date) {
-        Validate.notNull(date, "Provided date was null");
-        long hours = Duration.between(date, LocalDateTime.now()).toHours();
+        return getElapsedTime(LocalDateTime.now(), date);
+    }
+
+    /**
+     * This returns the elapsed time between the two given {@link LocalDateTime LocalDateTimes}.
+     * The output will be nicely formatted based on the elapsed hours or days between the
+     * given {@link LocalDateTime LocalDateTime}.
+     * <p>
+     * If a {@link LocalDateTime} from today and yesterday (exactly 24h apart) was passed it
+     * will return {@code "1d"}.
+     * One hour later it will read {@code "1d 1h"}. For values smaller than an hour {@code "< 1h"}
+     * will be returned instead.
+     *
+     * @param current   The current {@link LocalDateTime}.
+     * @param priorDate The {@link LocalDateTime} in the past.
+     * @return The elapsed time as a {@link String}
+     */
+    @Nonnull
+    public static String getElapsedTime(@Nonnull LocalDateTime current, @Nonnull LocalDateTime priorDate) {
+        Validate.notNull(current, "Provided current date was null");
+        Validate.notNull(priorDate, "Provided past date was null");
+
+        long hours = Duration.between(priorDate, current).toHours();
 
         if (hours == 0) {
             return "< 1h";
@@ -130,12 +181,21 @@ public final class NumberUtils {
         return timeleft + seconds + "s";
     }
 
+    /**
+     * This method parses a {@link String} into an {@link Integer}.
+     * If the {@link String} could not be parsed correctly, the provided
+     * default value will be returned instead.
+     *
+     * @param str          The {@link String} to parse
+     * @param defaultValue The default value for when the {@link String} could not be parsed
+     * @return The resulting {@link Integer}
+     */
     public static int getInt(@Nonnull String str, int defaultValue) {
         if (PatternUtils.NUMERIC.matcher(str).matches()) {
             return Integer.parseInt(str);
+        } else {
+            return defaultValue;
         }
-
-        return defaultValue;
     }
 
     @Nonnull
@@ -180,12 +240,16 @@ public final class NumberUtils {
      *            The value to clamp
      * @param max
      *            The maximum value
+     *
+     * @return The clamped value
      */
     public static int clamp(int min, int value, int max) {
         if (value < min) {
             return min;
+        } else if (value > max) {
+            return max;
         } else {
-            return Math.min(value, max);
+            return value;
         }
     }
 }

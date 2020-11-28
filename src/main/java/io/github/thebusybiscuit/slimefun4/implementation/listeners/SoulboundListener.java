@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
+import io.github.thebusybiscuit.slimefun4.core.attributes.Soulbound;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import org.bukkit.entity.Player;
@@ -10,11 +11,18 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * This {@link Listener} is responsible for handling any {@link Soulbound} items.
+ * A {@link Soulbound} {@link ItemStack} will not drop upon a {@link Player Player's} death.
+ * Instead the {@link ItemStack} is saved and given back to the {@link Player} when they respawn.
+ *
+ * @author TheBusyBiscuit
+ */
 public class SoulboundListener implements Listener {
 
     private final Map<UUID, Map<Integer, ItemStack>> soulbound = new HashMap<>();
@@ -25,6 +33,7 @@ public class SoulboundListener implements Listener {
 
     @EventHandler
     public void onDamage(PlayerDeathEvent e) {
+        Map<Integer, ItemStack> items = new HashMap<>();
         Player p = e.getEntity();
 
         for (int slot = 0; slot < p.getInventory().getSize(); slot++) {
@@ -32,26 +41,36 @@ public class SoulboundListener implements Listener {
 
             // Store soulbound items for later retrieval
             if (SlimefunUtils.isSoulbound(item)) {
-                storeItem(p.getUniqueId(), slot, item);
+                items.put(slot, item);
             }
         }
 
+        // There shouldn't even be any items in there, but let's be extra safe!
+        Map<Integer, ItemStack> existingItems = soulbound.get(p.getUniqueId());
+
+        if (existingItems == null) {
+            soulbound.put(p.getUniqueId(), items);
+        } else {
+            existingItems.putAll(items);
+        }
+
         // Remove soulbound items from our drops
-        e.getDrops().removeIf(SlimefunUtils::isSoulbound);
+        Iterator<ItemStack> drops = e.getDrops().iterator();
+        while (drops.hasNext()) {
+            ItemStack item = drops.next();
+
+            if (SlimefunUtils.isSoulbound(item)) {
+                drops.remove();
+            }
+        }
     }
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent e) {
-        retrieveItems(e.getPlayer());
+        returnSoulboundItems(e.getPlayer());
     }
 
-    @ParametersAreNonnullByDefault
-    private void storeItem(UUID uuid, int slot, ItemStack item) {
-        Map<Integer, ItemStack> items = soulbound.computeIfAbsent(uuid, uid -> new HashMap<>());
-        items.put(slot, item);
-    }
-
-    private void retrieveItems(@Nonnull Player p) {
+    private void returnSoulboundItems(@Nonnull Player p) {
         Map<Integer, ItemStack> items = soulbound.remove(p.getUniqueId());
 
         if (items != null) {

@@ -4,6 +4,8 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 /**
  * This enum holds all currently used Head textures in Slimefun.
@@ -113,11 +115,13 @@ public enum HeadTexture {
     public static final HeadTexture[] valuesCache = values();
 
     private final String texture;
+    private final UUID uuid;
 
     HeadTexture(@Nonnull String texture) {
         Validate.notNull(texture, "Texture cannot be null");
         Validate.isTrue(PatternUtils.HEXADECIMAL.matcher(texture).matches(), "Textures must be in hexadecimal.");
         this.texture = texture;
+        this.uuid = UUID.nameUUIDFromBytes(texture.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -129,6 +133,19 @@ public enum HeadTexture {
     public String getTexture() {
         return texture;
     }
+
+    /**
+     * This returns the {@link UUID} for this {@link HeadTexture}.
+     * The {@link UUID} is generated from the texture and cached for
+     * performance reasons.
+     *
+     * @return The {@link UUID} for this {@link HeadTexture}
+     */
+    @Nonnull
+    public UUID getUniqueId() {
+        return uuid;
+    }
+
 
     /**
      * This method returns an {@link ItemStack} with the given texture assigned to it.

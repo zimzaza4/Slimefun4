@@ -18,7 +18,7 @@ import java.util.*;
 /**
  * The {@link CargoNetworkTask} is the actual {@link Runnable} responsible for moving {@link ItemStack ItemStacks}
  * around the {@link CargoNet}.
- * <p>
+ *
  * Inbefore this was just a method in the {@link CargoNet} class.
  * However for aesthetic reasons but mainly to prevent the Cargo Task from showing up as
  * "lambda:xyz-123" in timing reports... this was moved.
@@ -26,6 +26,7 @@ import java.util.*;
  * @see CargoNet
  * @see CargoUtils
  * @see ChestTerminalNetwork
+ *
  */
 class CargoNetworkTask implements Runnable {
 
@@ -59,8 +60,10 @@ class CargoNetworkTask implements Runnable {
             network.handleItemRequests(inventories, chestTerminalInputs, chestTerminalOutputs);
         }
 
-        // All operations happen here: Everything gets iterated from the Input Nodes.
-        // (Apart from ChestTerminal Buses)
+        /**
+         * All operations happen here: Everything gets iterated from the Input Nodes.
+         * (Apart from ChestTerminal Buses)
+         */
         SlimefunItem inputNode = SlimefunItems.CARGO_INPUT_NODE.getItem();
         for (Map.Entry<Location, Integer> entry : inputs.entrySet()) {
             long nodeTimestamp = System.nanoTime();
@@ -83,6 +86,7 @@ class CargoNetworkTask implements Runnable {
         SlimefunPlugin.getProfiler().closeEntry(network.getRegulator(), SlimefunItems.CARGO_MANAGER.getItem(), timestamp);
     }
 
+    @ParametersAreNonnullByDefault
     private void routeItems(Location inputNode, Block inputTarget, int frequency, Map<Integer, List<Location>> outputNodes) {
         ItemStackAndInteger slot = CargoUtils.withdraw(inventories, inputNode.getBlock(), inputTarget);
 
@@ -99,36 +103,35 @@ class CargoNetworkTask implements Runnable {
         }
 
         if (stack != null) {
-            Inventory inv = inventories.get(inputTarget.getLocation());
+            insertItem(inputTarget, previousSlot, stack);
+        }
+    }
 
-            if (inv != null) {
-                // Check if the original slot hasn't been occupied in the meantime
-                if (inv.getItem(previousSlot) == null) {
-                    inv.setItem(previousSlot, stack);
-                } else {
-                    // Try to add the item into another available slot then
-                    ItemStack rest = inv.addItem(stack).get(0);
+    @ParametersAreNonnullByDefault
+    private void insertItem(Block inputTarget, int previousSlot, ItemStack item) {
+        Inventory inv = inventories.get(inputTarget.getLocation());
 
-                    if (rest != null && !manager.isItemDeletionEnabled()) {
-                        // If the item still couldn't be inserted, simply drop it on the ground
-                        inputTarget.getWorld().dropItem(inputTarget.getLocation().add(0, 1, 0), rest);
-                    }
-                }
+        if (inv != null) {
+            // Check if the original slot hasn't been occupied in the meantime
+            if (inv.getItem(previousSlot) == null) {
+                inv.setItem(previousSlot, item);
             } else {
-                DirtyChestMenu menu = CargoUtils.getChestMenu(inputTarget);
+                // Try to add the item into another available slot then
+                ItemStack rest = inv.addItem(item).get(0);
 
-                if (menu != null) {
-                    // Check if the original slot hasn't been occupied in the meantime
-                    if (menu.getItemInSlot(previousSlot) == null) {
-                        menu.replaceExistingItem(previousSlot, stack);
-                    } else if (!manager.isItemDeletionEnabled()) {
-                        ItemStack rest = inv.addItem(stack).get(0);
+                if (rest != null && !manager.isItemDeletionEnabled()) {
+                    // If the item still couldn't be inserted, simply drop it on the ground
+                    inputTarget.getWorld().dropItem(inputTarget.getLocation().add(0, 1, 0), rest);
+                }
+            }
+        } else {
+            DirtyChestMenu menu = CargoUtils.getChestMenu(inputTarget);
 
-                        if (rest != null) {
-                            // If the item still couldn't be inserted, simply drop it on the ground
-                            inputTarget.getWorld().dropItem(inputTarget.getLocation().add(0, 1, 0), rest);
-                        }
-                    }
+            if (menu != null) {
+                if (menu.getItemInSlot(previousSlot) == null) {
+                    menu.replaceExistingItem(previousSlot, item);
+                } else if (!manager.isItemDeletionEnabled()) {
+                    inputTarget.getWorld().dropItem(inputTarget.getLocation().add(0, 1, 0), item);
                 }
             }
         }

@@ -4,7 +4,6 @@
 #    enable-armor-effects - 护甲效果的开关
 #    chat-prefix - 粘液科技所有消息的前缀
 #    auto-save-delay-in-minutes - 自动保存数据的周期, 单位为分钟
-#    emerald-enchantment-limit - 粘液科技物品可附魔的绿宝石附魔数量上限 (EmeraldEnchantment 扩展插件的附魔)
 #    research-give-fireworks - 是否在解锁时给玩家烟花让玩家自己放
 #    legacy-ore-washer - 是否使用旧版的洗矿机机制
 #    legacy-dust-washer - 是否使用旧版的除尘机机制
@@ -22,7 +21,6 @@ options:
   enable-armor-effects: true
   chat-prefix: '&a&lSlimefun 4 &7> '
   auto-save-delay-in-minutes: 10
-  emerald-enchantment-limit: 2
   research-give-fireworks: true
   legacy-ore-washer: false
   legacy-dust-washer: false

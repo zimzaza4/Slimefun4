@@ -10,6 +10,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -17,12 +18,24 @@ import org.bukkit.inventory.ItemStack;
 import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public class PlayerRightClickEvent extends Event {
+/**
+ * The {@link PlayerRightClickEvent} is our custom version of the {@link PlayerInteractEvent}.
+ * But it is only triggered on right click.
+ * The main and (almost) sole purpose of this {@link Event} is to cache the {@link SlimefunItem}
+ * of the {@link ItemStack} and/or {@link Block} involved.
+ * This allows us (and addons) to efficiently check the used {@link SlimefunItem} without the need
+ * to do a heavy lookup or item comparison.
+ *
+ * @author TheBusyBiscuit
+ */
+public class PlayerRightClickEvent extends PlayerEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
+    /**
+     * The original {@link PlayerInteractEvent}.
+     */
     private final PlayerInteractEvent event;
-    private final Player player;
 
     private final Optional<ItemStack> itemStack;
     private final Optional<Block> clickedBlock;
@@ -33,31 +46,43 @@ public class PlayerRightClickEvent extends Event {
     private ComputedOptional<SlimefunItem> slimefunItem = ComputedOptional.createNew();
     private ComputedOptional<SlimefunItem> slimefunBlock = ComputedOptional.createNew();
 
-    private Result itemResult = Result.DEFAULT;
-    private Result blockResult = Result.DEFAULT;
+    private Result itemResult;
+    private Result blockResult;
 
-    public PlayerRightClickEvent(@Nonnull PlayerInteractEvent e) {
-        event = e;
-        player = e.getPlayer();
-        clickedBlock = Optional.ofNullable(e.getClickedBlock());
-        face = e.getBlockFace();
-        hand = e.getHand();
+    /**
+     * This constructs a new {@link PlayerRightClickEvent} based on the original {@link PlayerInteractEvent}.
+     * The {@link Result} of the original {@link PlayerInteractEvent} will be copied.
+     *
+     * @param originalEvent
+     *            The original {@link PlayerInteractEvent}
+     */
+    public PlayerRightClickEvent(@Nonnull PlayerInteractEvent originalEvent) {
+        super(originalEvent.getPlayer());
 
-        if (e.getItem() == null || e.getItem().getType() == Material.AIR || e.getItem().getAmount() == 0) {
+        event = originalEvent;
+        clickedBlock = Optional.ofNullable(originalEvent.getClickedBlock());
+        face = originalEvent.getBlockFace();
+        hand = originalEvent.getHand();
+
+        itemResult = originalEvent.useItemInHand();
+        blockResult = originalEvent.useInteractedBlock();
+
+        if (originalEvent.getItem() == null || originalEvent.getItem().getType() == Material.AIR || originalEvent.getItem().getAmount() == 0) {
             itemStack = Optional.empty();
         } else {
-            itemStack = Optional.of(e.getItem());
+            itemStack = Optional.of(originalEvent.getItem());
         }
     }
 
+    /**
+     * This returns the original {@link PlayerInteractEvent} that triggered this
+     * {@link PlayerRightClickEvent}.
+     *
+     * @return The original {@link PlayerInteractEvent}
+     */
     @Nonnull
     public PlayerInteractEvent getInteractEvent() {
         return event;
-    }
-
-    @Nonnull
-    public Player getPlayer() {
-        return player;
     }
 
     /**
@@ -119,6 +144,10 @@ public class PlayerRightClickEvent extends Event {
         return slimefunBlock.getAsOptional();
     }
 
+    /**
+     * This method cancels the {@link PlayerRightClickEvent}.
+     * This will deny the item and block usage.
+     */
     public void cancel() {
         itemResult = Result.DENY;
         blockResult = Result.DENY;

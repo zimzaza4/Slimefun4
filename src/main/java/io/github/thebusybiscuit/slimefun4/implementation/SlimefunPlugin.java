@@ -38,7 +38,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.tasks.SlimefunStartupTa
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.TickerTask;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import io.papermc.lib.PaperLib;
-import me.mrCookieSlime.CSCoreLibPlugin.CSCoreLib;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AGenerator;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
@@ -56,6 +55,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
@@ -111,12 +111,26 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     private final BackpackListener backpackListener = new BackpackListener();
     private final SlimefunBowListener bowListener = new SlimefunBowListener();
 
+    /**
+     * Our default constructor for {@link SlimefunPlugin}.
+     */
     public SlimefunPlugin() {
         super();
     }
 
+    /**
+     * This constructor is invoked in Unit Test environments only.
+     *
+     * @param loader      Our {@link JavaPluginLoader}
+     * @param description A {@link PluginDescriptionFile}
+     * @param dataFolder  The data folder
+     * @param file        A {@link File} for this {@link Plugin}
+     */
+    @ParametersAreNonnullByDefault
     public SlimefunPlugin(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
         super(loader, description, dataFolder, file);
+
+        // This is only invoked during a Unit Test
         minecraftVersion = MinecraftVersion.UNIT_TEST;
     }
 
@@ -256,65 +270,22 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         }
     }
 
+    /**
+     * This is our start method for a Unit Test environment.
+     */
     private void onUnitTestStart() {
         local = new LocalizationService(this, "", null);
         gpsNetwork = new GPSNetwork();
         networkManager = new NetworkManager(200);
         command.register();
         registry.load(config);
+        loadTags();
     }
 
-    @Nonnull
-    private String getStartupTime(long timestamp) {
-        long ms = (System.nanoTime() - timestamp) / 1000000;
-
-        if (ms > 1000) {
-            return DoubleHandler.fixDouble(ms / 1000.0) + "s";
-        } else {
-            return DoubleHandler.fixDouble(ms) + "ms";
-        }
-    }
-
-    private boolean isVersionUnsupported() {
-        String currentVersion = ReflectionUtils.getVersion();
-
-        if (currentVersion.startsWith("v")) {
-            for (MinecraftVersion version : MinecraftVersion.valuesCache) {
-                if (version.matches(currentVersion)) {
-                    minecraftVersion = version;
-                    return false;
-                }
-            }
-
-            // Looks like you are using an unsupported Minecraft Version
-            getLogger().log(Level.SEVERE, "#############################################");
-            getLogger().log(Level.SEVERE, "### Slimefun 未被正确安装!");
-            getLogger().log(Level.SEVERE, "### 你正在使用不支持的 Minecraft 版本!");
-            getLogger().log(Level.SEVERE, "###");
-            getLogger().log(Level.SEVERE, "### 你正在使用 Minecraft {0}", ReflectionUtils.getVersion());
-            getLogger().log(Level.SEVERE, "### 但 Slimefun v{0} 只支持", getDescription().getVersion());
-            getLogger().log(Level.SEVERE, "### Minecraft {0}", String.join(" / ", getSupportedVersions()));
-            getLogger().log(Level.SEVERE, "#############################################");
-            return true;
-        }
-
-        getLogger().log(Level.WARNING, "We could not determine the version of Minecraft you were using ({0})", currentVersion);
-        return false;
-    }
-
-    @Nonnull
-    private Collection<String> getSupportedVersions() {
-        List<String> list = new ArrayList<>();
-
-        for (MinecraftVersion version : MinecraftVersion.valuesCache) {
-            if (version != MinecraftVersion.UNKNOWN) {
-                list.add(version.getName());
-            }
-        }
-
-        return list;
-    }
-
+    /**
+     * This method gets called when the {@link Plugin} gets disabled.
+     * Most often it is called when the {@link Server} is shutting down or reloading.
+     */
     @Override
     public void onDisable() {
         // Slimefun never loaded successfully, so we don't even bother doing stuff here
@@ -373,6 +344,62 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         }
     }
 
+    @Nonnull
+    private String getStartupTime(long timestamp) {
+        long ms = (System.nanoTime() - timestamp) / 1000000;
+
+        if (ms > 1000) {
+            return DoubleHandler.fixDouble(ms / 1000.0) + "s";
+        } else {
+            return DoubleHandler.fixDouble(ms) + "ms";
+        }
+    }
+
+    /**
+     * This method checks for the {@link MinecraftVersion} of the {@link Server}.
+     * If the version is unsupported, a warning will be printed to the console.
+     *
+     * @return Whether the {@link MinecraftVersion} is unsupported
+     */
+    private boolean isVersionUnsupported() {
+        String currentVersion = ReflectionUtils.getVersion();
+
+        if (currentVersion.startsWith("v")) {
+            for (MinecraftVersion version : MinecraftVersion.valuesCache) {
+                if (version.matches(currentVersion)) {
+                    minecraftVersion = version;
+                    return false;
+                }
+            }
+
+            getLogger().log(Level.SEVERE, "#############################################");
+            getLogger().log(Level.SEVERE, "### Slimefun 未被正确安装!");
+            getLogger().log(Level.SEVERE, "### 你正在使用不支持的 Minecraft 版本!");
+            getLogger().log(Level.SEVERE, "###");
+            getLogger().log(Level.SEVERE, "### 你正在使用 Minecraft {0}", currentVersion);
+            getLogger().log(Level.SEVERE, "### 但 Slimefun v{0} 只支持", getDescription().getVersion());
+            getLogger().log(Level.SEVERE, "### Minecraft {0}", String.join(" / ", getSupportedVersions()));
+            getLogger().log(Level.SEVERE, "#############################################");
+            return true;
+        }
+
+        getLogger().log(Level.WARNING, "We could not determine the version of Minecraft you were using ({0})", currentVersion);
+        return false;
+    }
+
+    @Nonnull
+    private Collection<String> getSupportedVersions() {
+        List<String> list = new ArrayList<>();
+
+        for (MinecraftVersion version : MinecraftVersion.valuesCache) {
+            if (version.isVirtual()) {
+                list.add(version.getName());
+            }
+        }
+
+        return list;
+    }
+
     private void createDirectories() {
         String[] storageFolders = {"Players", "blocks", "stored-blocks", "stored-inventories", "stored-chunks", "universal-inventories", "waypoints", "block-backups"};
         String[] pluginFolders = {"scripts", "error-reports", "cache/github", "world-settings"};
@@ -394,16 +421,18 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
     private void registerListeners() {
         new SlimefunBootsListener(this);
-        new SlimefunItemListener(this);
+        new SlimefunItemInteractListener(this);
         new SlimefunItemConsumeListener(this);
         new BlockPhysicsListener(this);
         new CargoNodeListener(this);
+
         new MultiBlockListener(this);
         new GadgetsListener(this);
         new DispenserListener(this);
         new BlockListener(this);
         new EnhancedFurnaceListener(this);
         new ItemPickupListener(this);
+        new ItemDropListener(this);
         new DeathpointListener(this);
         new ExplosionsListener(this);
         new DebugFishListener(this);
@@ -413,13 +442,14 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new EntityInteractionListener(this);
         new MobDropListener(this);
         new VillagerTradingListener(this);
-        new ElytraCrashListener(this);
+        new ElytraImpactListener(this);
         new CraftingTableListener(this);
         new AnvilListener(this);
         new BrewingStandListener(this);
         new CauldronListener(this);
         new GrindstoneListener(this);
         new CartographyTableListener(this);
+        new NetworkListener(this, networkManager);
 
         if (minecraftVersion.isAtLeast(MinecraftVersion.MINECRAFT_1_15)) {
             new BeeListener(this);
@@ -463,7 +493,10 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     private void loadTags() {
         for (SlimefunTag tag : SlimefunTag.valuesCache) {
             try {
-                tag.reload();
+                // Only reload "empty" (or unloaded) Tags
+                if (tag.isEmpty()) {
+                    tag.reload();
+                }
             } catch (TagMisconfigurationException e) {
                 getLogger().log(Level.SEVERE, e, () -> "Failed to load Tag: " + tag.name());
             }
@@ -650,8 +683,15 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         return instance.isNewlyInstalled;
     }
 
+    @Nonnull
     public static String getCSCoreLibVersion() {
-        return CSCoreLib.getLib().getDescription().getVersion();
+        Plugin cscorelib = instance.getServer().getPluginManager().getPlugin("CS-CoreLib");
+
+        if (cscorelib == null) {
+            throw new IllegalStateException("CS-CoreLib is not installed.");
+        } else {
+            return cscorelib.getDescription().getVersion();
+        }
     }
 
     @Override

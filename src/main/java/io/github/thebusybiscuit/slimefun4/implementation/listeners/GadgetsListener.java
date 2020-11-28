@@ -6,9 +6,9 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.armor.Parachute;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets.JetBoots;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets.Jetpack;
 import io.github.thebusybiscuit.slimefun4.implementation.items.magical.InfusedMagnet;
+import io.github.thebusybiscuit.slimefun4.implementation.tasks.InfusedMagnetTask;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.JetBootsTask;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.JetpackTask;
-import io.github.thebusybiscuit.slimefun4.implementation.tasks.MagnetTask;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.ParachuteTask;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
  * @see JetpackTask
  * @see JetBootsTask
  * @see ParachuteTask
- * @see MagnetTask
+ * @see InfusedMagnetTask
  */
 public class GadgetsListener implements Listener {
 
@@ -56,7 +56,7 @@ public class GadgetsListener implements Listener {
                 InfusedMagnet magnet = (InfusedMagnet) SlimefunItems.INFUSED_MAGNET.getItem();
 
                 if (Slimefun.hasUnlocked(p, magnet, true)) {
-                    new MagnetTask(p, magnet.getRadius()).scheduleRepeating(0, 8);
+                    new InfusedMagnetTask(p, magnet.getRadius()).scheduleRepeating(0, 8);
                 }
             }
         }

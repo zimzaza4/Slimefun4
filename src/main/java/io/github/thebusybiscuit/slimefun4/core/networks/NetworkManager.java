@@ -156,8 +156,11 @@ public class NetworkManager {
      * @param l The {@link Location} to update
      */
     public void updateAllNetworks(@Nonnull Location l) {
-        for (Network network : getNetworksFromLocation(l, Network.class)) {
-            network.markDirty(l);
+        // No need to create a sublist and loop through it if there are no Networks
+        if (!networks.isEmpty()) {
+            for (Network network : getNetworksFromLocation(l, Network.class)) {
+                network.markDirty(l);
+            }
         }
     }
 

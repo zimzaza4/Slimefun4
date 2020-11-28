@@ -2,10 +2,8 @@ package io.github.thebusybiscuit.slimefun4.core.services.plugins;
 
 import com.gmail.nossr50.events.fake.FakeBlockBreakEvent;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.core.categories.FlexCategory;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
@@ -35,7 +33,7 @@ public class ThirdPartyPluginService {
     private boolean initialized = false;
     private boolean isExoticGardenInstalled = false;
     private boolean isChestTerminalInstalled = false;
-    private boolean isEmeraldEnchantsInstalled = false;
+
     private boolean isMcMMOInstalled = false;
 
     /**
@@ -72,13 +70,6 @@ public class ThirdPartyPluginService {
                 Slimefun.getLogger().log(Level.WARNING, "Maybe consider updating PlaceholderAPI or Slimefun?");
                 Slimefun.getLogger().log(Level.WARNING, x, () -> "Failed to hook into PlaceholderAPI v" + version);
             }
-        }
-
-        if (isPluginInstalled("EmeraldEnchants")) {
-            isEmeraldEnchantsInstalled = true;
-            Plugin emeraldEnchants = plugin.getServer().getPluginManager().getPlugin("EmeraldEnchants");
-            FlexCategory category = new EmeraldEnchantsCategory(new NamespacedKey(emeraldEnchants, "enchantment_guide"));
-            category.register();
         }
 
         // WorldEdit Hook to clear Slimefun Data upon //set 0 //cut or any other equivalent
@@ -146,10 +137,6 @@ public class ThirdPartyPluginService {
 
     public boolean isChestTerminalInstalled() {
         return isChestTerminalInstalled;
-    }
-
-    public boolean isEmeraldEnchantsInstalled() {
-        return isEmeraldEnchantsInstalled;
     }
 
     public Optional<ItemStack> harvestExoticGardenPlant(Block block) {

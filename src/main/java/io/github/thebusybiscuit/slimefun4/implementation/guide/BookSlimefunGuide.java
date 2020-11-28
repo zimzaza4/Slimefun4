@@ -204,11 +204,7 @@ public class BookSlimefunGuide implements SlimefunGuideImplementation {
             } else {
                 component.setHoverEvent(new HoverEvent(ChatColor.RESET + item.getItemName(), ChatColor.DARK_RED.toString() + ChatColor.BOLD + SlimefunPlugin.getLocalization().getMessage(p, "guide.locked"), "", ChatColor.GREEN + "> 单击解锁", "", ChatColor.GRAY + "需要 " + ChatColor.AQUA.toString() + research.getCost() + " 级经验"));
             }
-            component.setClickEvent(new ClickEvent(key, player ->
-                    SlimefunPlugin.runSync(() ->
-                            research.unlockFromGuide(this, player, profile, item, category, page)
-                    )
-            ));
+            component.setClickEvent(new ClickEvent(key, player -> SlimefunPlugin.runSync(() -> research.unlockFromGuide(this, player, profile, item, category, page))));
 
             items.add(component);
         } else {
