@@ -8,7 +8,7 @@
 
     <!-- Our default version will be UNOFFICIAL, this will prevent the auto updater -->
     <!-- from overriding our local test file -->
-    <version>4.8-nightly</version>
+    <version>4.8-monthly-201128</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
