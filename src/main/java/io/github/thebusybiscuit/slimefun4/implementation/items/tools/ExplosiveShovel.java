@@ -1,6 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.tools;
 
-import io.github.starwishsama.extra.ProtectionChecker;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
@@ -31,8 +30,7 @@ public class ExplosiveShovel extends ExplosiveTool {
         } else if (SlimefunTag.EXPLOSIVE_SHOVEL_BLOCKS.isTagged(b.getType())) {
             return false;
         } else {
-            return SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.BREAK_BLOCK)
-                    && ProtectionChecker.canInteract(p, b, ProtectableAction.BREAK_BLOCK);
+            return SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.BREAK_BLOCK);
         }
     }
 }
