@@ -61,7 +61,7 @@ public class ChestSlimefunGuide implements SlimefunGuideImplementation {
 
     public ChestSlimefunGuide(boolean showVanillaRecipes) {
         this.showVanillaRecipes = showVanillaRecipes;
-        item = new SlimefunGuideItem(this, "&aSlimefun Guide &7(Chest GUI)");
+        item = new SlimefunGuideItem(this, "&aSlimefun 指南 &7(箱子界面)");
     }
 
     @Override
