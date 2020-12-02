@@ -2,7 +2,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.seasonal;
 
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockUseHandler;
+import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.utils.FireworkUtils;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
@@ -10,9 +10,10 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.GameMode;
-import org.bukkit.entity.Player;
+import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -22,10 +23,11 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author TheBusyBiscuit
  * @see EasterEgg
  */
-public class ChristmasPresent extends SimpleSlimefunItem<BlockUseHandler> implements NotPlaceable {
+public class ChristmasPresent extends SimpleSlimefunItem<ItemUseHandler> implements NotPlaceable {
 
     private final ItemStack[] gifts;
 
+    @ParametersAreNonnullByDefault
     public ChristmasPresent(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack... gifts) {
         super(category, item, recipeType, recipe);
 
@@ -33,18 +35,21 @@ public class ChristmasPresent extends SimpleSlimefunItem<BlockUseHandler> implem
     }
 
     @Override
-    public BlockUseHandler getItemHandler() {
+    public ItemUseHandler getItemHandler() {
         return e -> {
-            Player p = e.getPlayer();
+            e.cancel();
 
-            if (p.getGameMode() != GameMode.CREATIVE) {
-                ItemUtils.consumeItem(e.getItem(), false);
-            }
+            e.getClickedBlock().ifPresent(block -> {
+                if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
+                    ItemUtils.consumeItem(e.getItem(), false);
+                }
 
-            FireworkUtils.launchRandom(p, 3);
+                FireworkUtils.launchRandom(e.getPlayer(), 3);
 
-            ItemStack gift = gifts[ThreadLocalRandom.current().nextInt(gifts.length)].clone();
-            p.getWorld().dropItemNaturally(p.getLocation(), gift);
+                Block b = block.getRelative(e.getClickedFace());
+                ItemStack gift = gifts[ThreadLocalRandom.current().nextInt(gifts.length)].clone();
+                b.getWorld().dropItemNaturally(b.getLocation(), gift);
+            });
         };
     }
 
