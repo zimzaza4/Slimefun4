@@ -1,9 +1,12 @@
-# Slimefun 
+# Slimefun
+
 Looking for English Version? [**Click here**](https://github.com/Slimefun/Slimefun4/)
 
 想要直接下载吗? [**单击此处**](https://github.com/StarWishsama/Slimefun4/blob/master/README.md#%e4%b8%8b%e8%bd%bd-Slimefun4)
 
 MCBBS 链接: https://www.mcbbs.net/thread-827594-1-1.html
+
+交流群：807302496
 
 ![目前版本](https://img.shields.io/github/v/release/StarWishSama/Slimefun4?include_prereleases)
 ![编译状态](https://github.com/StarWishsama/Slimefun4/workflows/Java%20CI/badge.svg)
@@ -20,14 +23,14 @@ MCBBS 链接: https://www.mcbbs.net/thread-827594-1-1.html
 * 支持自定义附/祛魔机可使用的附魔等级上限
 * 修复了部分官方未修复的 Bug
 
-Slimefun 是一个致力于提供模组般体验的插件. 它提供了你能想到的一切, 从背包到喷气背包!
+Slimefun 是一个致力于提供模组般体验的插件. 它提供了你能想到的一切, 无论是喷气背包还是魔法祭坛!
 Slimefun 让每个玩家可以自己决定在魔法或科技方面发展<br>
 从魔杖到核反应堆, 我们应有尽有.<br>
 不仅如此, 我们还有魔法祭坛, 能源网络甚至物品运输系统.
 
 该项目从2013年开始开发，此后一直发展.<br>
 从那时一个人开发插件到发展成一个拥有数千名参与者和一百多位贡献者的社区.<br>
-它目前添加了超过 **500 种新物品/合成配方** 
+它目前添加了超过 **500 种新物品/合成配方**
 ([查看关于 Slimefun 的历史](https://github.com/Slimefun/Slimefun4/wiki/Slimefun-in-a-nutshell)).
 
 与此同时, Slimefun 还有种类繁多的扩展插件可供选择!<br>
