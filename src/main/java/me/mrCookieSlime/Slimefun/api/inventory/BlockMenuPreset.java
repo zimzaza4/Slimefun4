@@ -293,7 +293,7 @@ public abstract class BlockMenuPreset extends ChestMenu {
     }
 
     @Nullable
-    public static BlockMenuPreset getPreset(String id) {
+    public static BlockMenuPreset getPreset(@Nullable String id) {
         return id == null ? null : SlimefunPlugin.getRegistry().getMenuPresets().get(id);
     }
 

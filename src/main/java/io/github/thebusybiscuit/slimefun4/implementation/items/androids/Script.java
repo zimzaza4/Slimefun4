@@ -123,7 +123,7 @@ public final class Script {
 
     private String getScriptRatingPercentage() {
         float percentage = getRating();
-        return NumberUtils.getColorFromPercentage(percentage) + String.valueOf(percentage) + ChatColor.RESET + "% ";
+        return NumberUtils.getColorFromPercentage(percentage) + String.valueOf(percentage) + ChatColor.WHITE + "% ";
     }
 
     /**

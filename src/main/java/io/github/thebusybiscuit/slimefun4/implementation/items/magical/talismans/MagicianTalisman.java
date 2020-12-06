@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 /**
  * The {@link MagicianTalisman} is a special kind of {@link Talisman} which awards a {@link Player}
- * with an extra {@link Enchantment} when they enchant their {@link ItemStack}.
+ * with an sfmagic {@link Enchantment} when they enchant their {@link ItemStack}.
  *
  * @author TheBusyBiscuit
  */

@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.core.guide;
 
-import io.github.starwishsama.extra.VaultHelper;
+import io.github.starwishsama.sfmagic.VaultHelper;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.researching.Research;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;

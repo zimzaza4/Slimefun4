@@ -1,4 +1,4 @@
-package io.github.starwishsama.extra;
+package io.github.starwishsama.sfmagic;
 
 import io.papermc.lib.PaperLib;
 import org.bukkit.plugin.Plugin;
@@ -6,7 +6,12 @@ import org.bukkit.plugin.Plugin;
 import javax.annotation.Nonnull;
 import java.util.logging.Logger;
 
-public class StarWishUtil {
+/**
+ * LangUtil
+ * <p>
+ * 将部分无法直接汉化的方法提取出来
+ */
+public class LangUtil {
     /**
      * 推荐你使用 Paper 服务端
      *

@@ -51,7 +51,7 @@ public class BlockPhysicsListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPistonExtend(BlockPistonExtendEvent e) {
         if (BlockStorage.hasBlockInfo(e.getBlock())) {
             e.setCancelled(true);
@@ -65,7 +65,7 @@ public class BlockPhysicsListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPistonRetract(BlockPistonRetractEvent e) {
         if (BlockStorage.hasBlockInfo(e.getBlock())) {
             e.setCancelled(true);
@@ -83,8 +83,20 @@ public class BlockPhysicsListener implements Listener {
     public void onLiquidFlow(BlockFromToEvent e) {
         Block block = e.getToBlock();
 
-        if (SlimefunTag.FLUID_SENSITIVE_MATERIALS.isTagged(block.getType()) && BlockStorage.hasBlockInfo(block)) {
-            e.setCancelled(true);
+        // Check if this Material can be destroyed by fluids
+
+        if (SlimefunTag.FLUID_SENSITIVE_MATERIALS.isTagged(block.getType())) {
+            // Check if this Block holds any data
+            if (BlockStorage.hasBlockInfo(block)) {
+                e.setCancelled(true);
+            } else {
+                Location loc = block.getLocation();
+
+                // Fixes #2496 - Make sure it is not a moving block
+                if (SlimefunPlugin.getTickerTask().isReserved(loc)) {
+                    e.setCancelled(true);
+                }
+            }
         }
     }
 

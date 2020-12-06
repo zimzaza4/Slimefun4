@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.guide;
 
-import io.github.starwishsama.extra.VaultHelper;
+import io.github.starwishsama.sfmagic.VaultHelper;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatInput;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;

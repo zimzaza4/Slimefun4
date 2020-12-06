@@ -24,13 +24,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 /**
- * The {@link TickerTask} is responsible for ticking every {@link BlockTicker}, synchronous
- * or not.
+ * The {@link TickerTask} is responsible for ticking every {@link BlockTicker},
+ * synchronous or not.
  *
  * @author TheBusyBiscuit
- *
  * @see BlockTicker
- *
  */
 public class TickerTask implements Runnable {
 
@@ -56,7 +54,8 @@ public class TickerTask implements Runnable {
     /**
      * This method starts the {@link TickerTask} on an asynchronous schedule.
      *
-     * @param plugin The instance of our {@link SlimefunPlugin}
+     * @param plugin
+     *            The instance of our {@link SlimefunPlugin}
      */
     public void start(@Nonnull SlimefunPlugin plugin) {
         this.tickRate = SlimefunPlugin.getCfg().getInt("URID.custom-ticker-delay");
@@ -68,7 +67,7 @@ public class TickerTask implements Runnable {
     /**
      * This method resets this {@link TickerTask} to run again.
      */
-    public void reset() {
+    private void reset() {
         running = false;
     }
 
@@ -84,6 +83,7 @@ public class TickerTask implements Runnable {
             SlimefunPlugin.getProfiler().start();
             Set<BlockTicker> tickers = new HashSet<>();
 
+            // Remove any deleted blocks
             Iterator<Map.Entry<Location, Boolean>> removals = deletionQueue.entrySet().iterator();
             while (removals.hasNext()) {
                 Map.Entry<Location, Boolean> entry = removals.next();
@@ -91,12 +91,24 @@ public class TickerTask implements Runnable {
                 removals.remove();
             }
 
+            // Fixes #2576 - Remove any deleted instances of BlockStorage
+            Iterator<BlockStorage> worlds = SlimefunPlugin.getRegistry().getWorlds().values().iterator();
+            while (worlds.hasNext()) {
+                BlockStorage storage = worlds.next();
+
+                if (storage.isMarkedForRemoval()) {
+                    worlds.remove();
+                }
+            }
+
+            // Run our ticker code
             if (!halted) {
                 for (Map.Entry<ChunkPosition, Set<Location>> entry : tickingLocations.entrySet()) {
                     tickChunk(entry.getKey(), tickers, entry.getValue());
                 }
             }
 
+            // Move any moved block data
             Iterator<Map.Entry<Location, Location>> moves = movingQueue.entrySet().iterator();
             while (moves.hasNext()) {
                 Map.Entry<Location, Location> entry = moves.next();
@@ -207,12 +219,30 @@ public class TickerTask implements Runnable {
 
     @ParametersAreNonnullByDefault
     public void queueMove(Location from, Location to) {
+        Validate.notNull(from, "Source Location cannot be null!");
+        Validate.notNull(to, "Target Location cannot be null!");
         movingQueue.put(from, to);
     }
 
     @ParametersAreNonnullByDefault
     public void queueDelete(Location l, boolean destroy) {
+        Validate.notNull(l, "Location must not be null!");
         deletionQueue.put(l, destroy);
+    }
+
+    /**
+     * This method checks if the given {@link Location} has been reserved
+     * by this {@link TickerTask}.
+     * A reserved {@link Location} does not currently hold any data but will
+     * be occupied upon the next tick.
+     * Checking this ensures that our {@link Location} does not get treated like a normal
+     * {@link Location} as it is theoretically "moving".
+     *
+     * @param l The {@link Location} to check
+     * @return Whether this {@link Location} has been reserved and will be filled upon the next tick
+     */
+    public boolean isReserved(@Nonnull Location l) {
+        return movingQueue.containsValue(l);
     }
 
     /**
@@ -228,7 +258,7 @@ public class TickerTask implements Runnable {
      * This method returns a <strong>read-only</strong> {@link Map}
      * representation of every {@link ChunkPosition} and its corresponding
      * {@link Set} of ticking {@link Location Locations}.
-     * <p>
+     *
      * This does include any {@link Location} from an unloaded {@link Chunk} too!
      *
      * @return A {@link Map} representation of all ticking {@link Location Locations}
@@ -244,7 +274,9 @@ public class TickerTask implements Runnable {
      * The {@link Chunk} does not have to be loaded.
      * If no {@link Location} is present, the returned {@link Set} will be empty.
      *
-     * @param chunk The {@link Chunk}
+     * @param chunk
+     *            The {@link Chunk}
+     *
      * @return A {@link Set} of all ticking {@link Location Locations}
      */
     @Nonnull
@@ -258,7 +290,8 @@ public class TickerTask implements Runnable {
     /**
      * This enables the ticker at the given {@link Location} and adds it to our "queue".
      *
-     * @param l The {@link Location} to activate
+     * @param l
+     *            The {@link Location} to activate
      */
     public void enableTicker(@Nonnull Location l) {
         Validate.notNull(l, "Location cannot be null!");
@@ -282,7 +315,8 @@ public class TickerTask implements Runnable {
      * This method disables the ticker at the given {@link Location} and removes it from our internal
      * "queue".
      *
-     * @param l The {@link Location} to remove
+     * @param l
+     *            The {@link Location} to remove
      */
     public void disableTicker(@Nonnull Location l) {
         Validate.notNull(l, "Location cannot be null!");

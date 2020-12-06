@@ -10,8 +10,17 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+/**
+ * The {@link ElectricPress} is a pretty simple electrical machine.
+ * It allows you to compact items into their block variant, e.g. 9 diamonds into a diamond block.
+ *
+ * @author TheBusyBiscuit
+ */
 public class ElectricPress extends AContainer implements RecipeDisplayItem {
 
+    @ParametersAreNonnullByDefault
     public ElectricPress(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
     }
@@ -27,6 +36,7 @@ public class ElectricPress extends AContainer implements RecipeDisplayItem {
         addRecipe(3, new ItemStack(Material.DRIED_KELP, 9), new ItemStack(Material.DRIED_KELP_BLOCK));
         addRecipe(3, new ItemStack(Material.BONE_MEAL, 9), new ItemStack(Material.BONE_BLOCK));
         addRecipe(3, new ItemStack(Material.CLAY_BALL, 4), new ItemStack(Material.CLAY));
+        addRecipe(3, new ItemStack(Material.BRICK, 4), new ItemStack(Material.BRICKS));
 
         addRecipe(6, SlimefunItems.COPPER_INGOT, new SlimefunItemStack(SlimefunItems.COPPER_WIRE, 3));
         addRecipe(16, new SlimefunItemStack(SlimefunItems.STEEL_INGOT, 8), SlimefunItems.STEEL_PLATE);
@@ -60,6 +70,7 @@ public class ElectricPress extends AContainer implements RecipeDisplayItem {
         addRecipe(8, new ItemStack(Material.DIAMOND, 9), new ItemStack(Material.DIAMOND_BLOCK));
     }
 
+    @ParametersAreNonnullByDefault
     private void addRecipe(int seconds, ItemStack input, ItemStack output) {
         registerRecipe(seconds, new ItemStack[]{input}, new ItemStack[]{output});
     }

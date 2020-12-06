@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,14 +53,24 @@ public class BlockStorage {
     private final Map<String, Config> blocksCache = new ConcurrentHashMap<>();
 
     private static int chunkChanges = 0;
-    private int changes = 0;
 
+    private int changes = 0;
+    private AtomicBoolean isMarkedForRemoval = new AtomicBoolean(false);
+
+    @Nullable
     public static BlockStorage getStorage(@Nonnull World world) {
         return SlimefunPlugin.getRegistry().getWorlds().get(world.getName());
     }
 
-    public static BlockStorage getForcedStorage(@Nonnull World world) {
-        return isWorldRegistered(world.getName()) ? SlimefunPlugin.getRegistry().getWorlds().get(world.getName()) : new BlockStorage(world);
+    @Nonnull
+    public static BlockStorage getOrCreate(@Nonnull World world) {
+        BlockStorage storage = SlimefunPlugin.getRegistry().getWorlds().get(world.getName());
+
+        if (storage == null) {
+            return new BlockStorage(world);
+        } else {
+            return storage;
+        }
     }
 
     private static String serializeLocation(Location l) {
@@ -274,7 +285,7 @@ public class BlockStorage {
             return;
         }
 
-        Slimefun.getLogger().log(Level.INFO, "Saving block data for world \"{0}\" ({1} change(s) queued)", new Object[]{world.getName(), changes});
+        Slimefun.getLogger().log(Level.INFO, "正在保存世界 \"{0}\" 中的方块更改 ({1} 个更改在队列中)", new Object[]{world.getName(), changes});
         Map<String, Config> cache = new HashMap<>(blocksCache);
 
         for (Map.Entry<String, Config> entry : cache.entrySet()) {
@@ -298,7 +309,7 @@ public class BlockStorage {
                 try {
                     Files.move(tmpFile.toPath(), cfg.getFile().toPath(), StandardCopyOption.ATOMIC_MOVE);
                 } catch (IOException x) {
-                    Slimefun.getLogger().log(Level.SEVERE, x, () -> "An Error occurred while copying a temporary File for Slimefun " + SlimefunPlugin.getVersion());
+                    Slimefun.getLogger().log(Level.SEVERE, x, () -> "在复制临时文件时出现了意外, Slimefun 版本 " + SlimefunPlugin.getVersion());
                 }
             }
         }
@@ -318,7 +329,11 @@ public class BlockStorage {
 
     public void saveAndRemove() {
         save();
-        SlimefunPlugin.getRegistry().getWorlds().remove(world.getName());
+        isMarkedForRemoval.set(true);
+    }
+
+    public boolean isMarkedForRemoval() {
+        return isMarkedForRemoval.get();
     }
 
     public static void saveChunks() {
@@ -410,10 +425,10 @@ public class BlockStorage {
         } catch (Exception x) {
             Logger logger = Slimefun.getLogger();
             logger.log(Level.WARNING, x.getClass().getName());
-            logger.log(Level.WARNING, "Failed to parse BlockInfo for Block @ {0}, {1}, {2}", new Object[]{l.getBlockX(), l.getBlockY(), l.getBlockZ()});
+            logger.log(Level.WARNING, "无法解析方块 @ {0}, {1}, {2} 的信息", new Object[]{l.getBlockX(), l.getBlockY(), l.getBlockZ()});
             logger.log(Level.WARNING, json);
             logger.log(Level.WARNING, "");
-            logger.log(Level.WARNING, "IGNORE THIS ERROR UNLESS IT IS SPAMMING");
+            logger.log(Level.WARNING, "如果没有刷屏就不要管我");
             logger.log(Level.WARNING, "");
             logger.log(Level.SEVERE, x, () -> "An Error occurred while parsing Block Info for Slimefun " + SlimefunPlugin.getVersion());
             return null;
@@ -491,15 +506,13 @@ public class BlockStorage {
 
         storage.storage.put(l, cfg);
         String id = cfg.getString("id");
+        BlockMenuPreset preset = BlockMenuPreset.getPreset(id);
 
-        if (BlockMenuPreset.isInventory(id)) {
+        if (preset != null) {
             if (BlockMenuPreset.isUniversalInventory(id)) {
-                if (!SlimefunPlugin.getRegistry().getUniversalInventories().containsKey(id)) {
-                    storage.loadUniversalInventory(BlockMenuPreset.getPreset(id));
-                }
+                SlimefunPlugin.getRegistry().getUniversalInventories().computeIfAbsent(id, key -> new UniversalBlockMenu(preset));
             } else if (!storage.hasInventory(l)) {
                 File file = new File(PATH_INVENTORIES + serializeLocation(l) + ".sfi");
-                BlockMenuPreset preset = BlockMenuPreset.getPreset(id);
 
                 if (file.exists()) {
                     BlockMenu inventory = new BlockMenu(preset, l, new io.github.thebusybiscuit.cscorelib2.config.Config(file));
@@ -554,6 +567,10 @@ public class BlockStorage {
      */
     public static void deleteLocationInfoUnsafely(Location l, boolean destroy) {
         BlockStorage storage = getStorage(l.getWorld());
+
+        if (storage == null) {
+            throw new IllegalStateException("世界 \"" + l.getWorld().getName() + "\" 似乎已经被删除了. 请不要直接调用该不安全方法!");
+        }
 
         if (hasBlockInfo(l)) {
             refreshCache(storage, l, getLocationInfo(l).getString("id"), null, destroy);
@@ -681,8 +698,8 @@ public class BlockStorage {
         return id != null && id.equals(slimefunItem);
     }
 
-    public static boolean isWorldRegistered(String name) {
-        return SlimefunPlugin.getRegistry().getWorlds().containsKey(name);
+    public static boolean isWorldLoaded(World world) {
+        return SlimefunPlugin.getRegistry().getWorlds().containsKey(world.getName());
     }
 
     public BlockMenu loadInventory(Location l, BlockMenuPreset preset) {
@@ -708,11 +725,6 @@ public class BlockStorage {
         if (menu != null) {
             menu.reload();
         }
-    }
-
-    public void loadUniversalInventory(BlockMenuPreset preset) {
-        UniversalBlockMenu inventory = new UniversalBlockMenu(preset);
-        SlimefunPlugin.getRegistry().getUniversalInventories().put(preset.getID(), inventory);
     }
 
     public void clearInventory(Location l) {
@@ -783,7 +795,7 @@ public class BlockStorage {
 
     public static Config getChunkInfo(World world, int x, int z) {
         try {
-            if (!isWorldRegistered(world.getName())) {
+            if (!isWorldLoaded(world)) {
                 return emptyBlockData;
             }
 

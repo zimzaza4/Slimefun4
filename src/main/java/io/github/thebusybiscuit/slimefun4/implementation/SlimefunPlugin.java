@@ -1,8 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation;
 
-import io.github.starwishsama.extra.NUpdater;
-import io.github.starwishsama.extra.ProtectionChecker;
-import io.github.starwishsama.extra.StarWishUtil;
+import io.github.starwishsama.sfmagic.LangUtil;
+import io.github.starwishsama.sfmagic.NUpdater;
+import io.github.starwishsama.sfmagic.ProtectionChecker;
 import io.github.thebusybiscuit.cscorelib2.config.Config;
 import io.github.thebusybiscuit.cscorelib2.math.DoubleHandler;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectionManager;
@@ -144,7 +144,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
             getLogger().log(Level.INFO, "发现前置 CS-CoreLib 已正常安装!");
             long timestamp = System.nanoTime();
 
-            StarWishUtil.suggestPaper(this);
+            LangUtil.suggestPaper(this);
 
             if (PaperLib.isPaper()) {
                 getLogger().log(Level.INFO, "检测到 Paper 服务端! 性能优化已应用.");
@@ -299,6 +299,9 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         // Finishes all started movements/removals of block data
         ticker.halt();
         ticker.run();
+
+        // Kill our Profiler Threads
+        profiler.kill();
 
         PlayerProfile.iterator().forEachRemaining(profile -> {
             if (profile.isDirty()) {

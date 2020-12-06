@@ -1,4 +1,4 @@
-package io.github.starwishsama.extra;
+package io.github.starwishsama.sfmagic;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.containers.Flags;
@@ -31,7 +31,7 @@ public class ProtectionChecker implements Listener {
     @EventHandler
     public void onAndroidMine(AndroidMineEvent e) {
         if (e != null) {
-            Player p = Bukkit.getPlayer(getOwnerByJson(BlockStorage.getBlockInfoAsJson(e.getAndroid().getBlock())));
+            Player p = Bukkit.getPlayer(parseOwnerByJson(BlockStorage.getBlockInfoAsJson(e.getAndroid().getBlock())));
 
             if (!canInteract(p, e.getBlock(), ProtectableAction.BREAK_BLOCK)) {
                 e.setCancelled(true);
@@ -111,7 +111,7 @@ public class ProtectionChecker implements Listener {
         return true;
     }
 
-    public static UUID getOwnerByJson(String json) {
+    public static UUID parseOwnerByJson(String json) {
         if (json != null) {
             JsonElement element = new JsonParser().parse(json);
             if (!element.isJsonNull()) {

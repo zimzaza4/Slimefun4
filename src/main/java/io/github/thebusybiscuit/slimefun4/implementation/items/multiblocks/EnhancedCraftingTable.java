@@ -22,7 +22,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class EnhancedCraftingTable extends BackpackCrafter {
+public class EnhancedCraftingTable extends AbstractCraftingTable {
 
     public EnhancedCraftingTable(Category category, SlimefunItemStack item) {
         super(category, item, new ItemStack[]{null, null, null, null, new ItemStack(Material.CRAFTING_TABLE), null, null, new ItemStack(Material.DISPENSER), null}, BlockFace.SELF);
