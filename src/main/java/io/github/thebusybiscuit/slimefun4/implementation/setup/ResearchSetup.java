@@ -276,6 +276,8 @@ public final class ResearchSetup {
         register("caveman_talisman", 267, "Talisman of the Caveman", 20, SlimefunItems.TALISMAN_CAVEMAN);
         register("elytra_cap", 268, "Crash Gear", 20, SlimefunItems.ELYTRA_CAP);
         register("energy_connectors", 269, "Wired Connections", 12, SlimefunItems.ENERGY_CONNECTOR);
+
+        register("overlock_machine", 270, "超频机器", 50, SlimefunItems.OVERCLOCK_MODULE);
     }
 
     private static void register(String key, int id, String name, int defaultCost, ItemStack... items) {

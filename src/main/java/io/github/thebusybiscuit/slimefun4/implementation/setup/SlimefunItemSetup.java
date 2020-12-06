@@ -2410,6 +2410,10 @@ public final class SlimefunItemSetup {
                 new ItemStack[]{new ItemStack(Material.SLIME_BALL), new ItemStack(Material.SLIME_BALL), new ItemStack(Material.SLIME_BALL), SlimefunItems.ELYTRA_SCALE, SlimefunItems.ELYTRA_SCALE, SlimefunItems.ELYTRA_SCALE, new ItemStack(Material.SLIME_BALL), new ItemStack(Material.LEATHER_HELMET), new ItemStack(Material.SLIME_BALL)})
                 .register(plugin);
 
+        new OverclockModule(categories.technicalGadgets, SlimefunItems.OVERCLOCK_MODULE, RecipeType.ENHANCED_CRAFTING_TABLE,
+                new ItemStack[]{SlimefunItems.NETHER_ICE_COOLANT_CELL, null, SlimefunItems.NETHER_ICE_COOLANT_CELL, null, SlimefunItems.ELECTRIC_MOTOR, null, SlimefunItems.NETHER_ICE_COOLANT_CELL, null, SlimefunItems.NETHER_ICE_COOLANT_CELL})
+                .register(plugin);
+
         // @formatter:on
     }
 
