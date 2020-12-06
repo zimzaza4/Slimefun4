@@ -20,7 +20,7 @@ public class WorldListener implements Listener {
     @EventHandler
     public void onWorldLoad(WorldLoadEvent e) {
         SlimefunPlugin.getWorldSettingsService().load(e.getWorld());
-        BlockStorage.getForcedStorage(e.getWorld());
+        BlockStorage.getOrCreate(e.getWorld());
     }
 
     @EventHandler
