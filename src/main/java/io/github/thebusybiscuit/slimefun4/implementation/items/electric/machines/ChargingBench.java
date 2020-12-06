@@ -12,6 +12,12 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * The {@link ChargingBench} is a powered machine that can be used to charge any {@link Rechargeable} item.
+ *
+ * @author TheBusyBiscuit
+ * @see Rechargeable
+ */
 public class ChargingBench extends AContainer {
 
     public ChargingBench(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {

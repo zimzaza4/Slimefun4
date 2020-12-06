@@ -114,7 +114,7 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
     /**
      * This method returns the title that is used for the {@link Inventory} of an
      * {@link AContainer} that has been opened by a Player.
-     * <p>
+     *
      * Override this method to set the title.
      *
      * @return The title of the {@link Inventory} of this {@link AContainer}
@@ -127,7 +127,7 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
     /**
      * This method returns the {@link ItemStack} that this {@link AContainer} will
      * use as a progress bar.
-     * <p>
+     *
      * Override this method to set the progress bar.
      *
      * @return The {@link ItemStack} to use as the progress bar
@@ -185,7 +185,9 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
     /**
      * This sets the speed of this machine.
      *
-     * @param speed The speed multiplier for this machine, must be above zero
+     * @param speed
+     *            The speed multiplier for this machine, must be above zero
+     *
      * @return This method will return the current instance of {@link AContainer}, so that can be chained.
      */
     public final AContainer setProcessingSpeed(int speed) {
@@ -198,7 +200,9 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
     /**
      * This method sets the energy consumed by this machine per tick.
      *
-     * @param energyConsumption The energy consumed per tick
+     * @param energyConsumption
+     *            The energy consumed per tick
+     *
      * @return This method will return the current instance of {@link AContainer}, so that can be chained.
      */
     public final AContainer setEnergyConsumption(int energyConsumption) {
@@ -212,7 +216,6 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
 
     @Override
     public void register(@Nonnull SlimefunAddon addon) {
-
         this.addon = addon;
 
         if (getCapacity() <= 0) {
@@ -229,7 +232,7 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
             warn("The processing speed has not been configured correctly. The Item was disabled.");
             warn("Make sure to call '" + getClass().getSimpleName() + "#setProcessingSpeed(...)' before registering!");
         }
-        
+
         registerDefaultRecipes();
 
         if (getCapacity() > 0 && getEnergyConsumption() > 0 && getSpeed() > 0) {
@@ -244,6 +247,8 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
      * When adding recipes to an {@link AContainer} we will use this identifier to
      * identify all instances of the same {@link AContainer}.
      * This way we can add the recipes to all instances of the same machine.
+     *
+     * <strong>This method will be deprecated and replaced in the future</strong>
      *
      * @return The identifier of this machine
      */
@@ -265,7 +270,9 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
         List<ItemStack> displayRecipes = new ArrayList<>(recipes.size() * 2);
 
         for (MachineRecipe recipe : recipes) {
-            if (recipe.getInput().length != 1) continue;
+            if (recipe.getInput().length != 1) {
+                continue;
+            }
 
             displayRecipes.add(recipe.getInput()[0]);
             displayRecipes.add(recipe.getOutput()[0]);
@@ -276,12 +283,12 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
 
     @Override
     public int[] getInputSlots() {
-        return new int[]{19, 20};
+        return new int[] { 19, 20};
     }
 
     @Override
     public int[] getOutputSlots() {
-        return new int[]{24, 25};
+        return new int[] { 24, 25};
     }
 
     @Override
@@ -367,7 +374,8 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
     /**
      * This method will remove charge from a location if it is chargeable.
      *
-     * @param l location to try to remove charge from
+     * @param l
+     *            location to try to remove charge from
      * @return Whether charge was taken if its chargeable
      */
     protected boolean takeCharge(@Nonnull Location l) {
@@ -381,9 +389,10 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
             }
 
             setCharge(l, charge - getEnergyConsumption());
-
+            return true;
+        } else {
+            return true;
         }
-        return true;
     }
 
     protected MachineRecipe findNextRecipe(BlockMenu inv) {
