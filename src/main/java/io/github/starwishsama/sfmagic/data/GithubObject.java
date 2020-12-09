@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @author Nameless
  */
-public class GithubBean {
+public class GithubObject {
     @SerializedName("html_url")
     private String htmlUrl;
     private int id;

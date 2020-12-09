@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import io.github.starwishsama.sfmagic.data.GithubBean;
+import io.github.starwishsama.sfmagic.data.GithubObject;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunBranch;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
@@ -30,7 +30,7 @@ import java.util.logging.Level;
  */
 public class NUpdater {
 
-    private GithubBean updateInfoCache;
+    private GithubObject updateInfoCache;
     private final Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
     private static final String downloadDir = SlimefunPlugin.instance().getServer().getUpdateFolder();
     private static final String browserUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36";
@@ -89,7 +89,7 @@ public class NUpdater {
      *
      * @return Github Beans
      */
-    private List<GithubBean> getReleaseBean() {
+    private List<GithubObject> getReleaseBean() {
         try {
             URL url = new URL("https://api.github.com/repos/StarWishsama/Slimefun4/releases");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -111,7 +111,7 @@ public class NUpdater {
 
                 conn.disconnect();
 
-                return gson.fromJson(result.toString().trim(), new TypeToken<List<GithubBean>>() {
+                return gson.fromJson(result.toString().trim(), new TypeToken<List<GithubObject>>() {
                 }.getType());
             } else {
                 conn.disconnect();
@@ -131,15 +131,15 @@ public class NUpdater {
      *
      * @return 最新的 Bean
      */
-    private GithubBean getGithubBean() {
-        List<GithubBean> beans = getReleaseBean();
+    private GithubObject getGithubBean() {
+        List<GithubObject> beans = getReleaseBean();
 
         if (!beans.isEmpty()) {
             if (branch == SlimefunBranch.DEVELOPMENT) {
                 updateInfoCache = beans.get(0);
                 return beans.get(0);
             } else if (branch == SlimefunBranch.STABLE) {
-                for (GithubBean bean : beans) {
+                for (GithubObject bean : beans) {
                     if (!bean.isPreRelease()) {
                         updateInfoCache = bean;
                         return bean;
@@ -155,7 +155,7 @@ public class NUpdater {
      * 检查更新
      */
     public void checkUpdate() {
-        GithubBean bean = getCache();
+        GithubObject bean = getCache();
 
         if (bean != null) {
             try {
@@ -187,7 +187,7 @@ public class NUpdater {
         }
     }
 
-    private GithubBean getCache() {
+    private GithubObject getCache() {
         return updateInfoCache == null ? getGithubBean() : updateInfoCache;
     }
 
