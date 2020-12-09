@@ -50,11 +50,10 @@ public abstract class AbstractMonsterSpawner extends SlimefunItem {
 
         // We may want to update this in the future to also make use of the BlockStateMeta
         for (String line : meta.getLore()) {
-            if (ChatColor.stripColor(line).startsWith("类型: ") && !line.contains("<类型>")) {
-                EntityType type = EntityType.valueOf(ChatColor.stripColor(line).replace("类型: ", "").replace(' ', '_').toUpperCase(Locale.ROOT));
-                return Optional.of(type);
-            } else if (ChatColor.stripColor(line).startsWith("Type: ") && !line.contains("<Type>")) {
-                EntityType type = EntityType.valueOf(ChatColor.stripColor(line).replace("Type: ", "").replace(' ', '_').toUpperCase(Locale.ROOT));
+            String stripColor = ChatColor.stripColor(line);
+
+            if ((stripColor.startsWith("类型: ") || stripColor.startsWith("Type:")) && (!line.contains("<类型>") || line.contains("<Type>"))) {
+                EntityType type = EntityType.valueOf(ChatColor.stripColor(line).replace("类型: ", "").replace("Type: ", "").replace(' ', '_').toUpperCase(Locale.ROOT));
                 return Optional.of(type);
             }
         }
@@ -93,8 +92,10 @@ public abstract class AbstractMonsterSpawner extends SlimefunItem {
         List<String> lore = meta.getLore();
 
         for (int i = 0; i < lore.size(); i++) {
-            if (lore.get(i).contains("<Type>")) {
-                lore.set(i, lore.get(i).replace("<Type>", ChatUtils.humanize(type.name())));
+            String currentLine = lore.get(i);
+            if (currentLine.contains("<Type>") || currentLine.contains("<类型>")) {
+                String typeName = ChatUtils.humanize(type.name());
+                lore.set(i, currentLine.replace("<Type>", typeName).replace("<类型>", typeName));
                 break;
             }
         }

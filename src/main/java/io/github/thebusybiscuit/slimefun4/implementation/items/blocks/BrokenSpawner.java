@@ -18,7 +18,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Without repairing, the block will be unplaceable.
  *
  * @author TheBusyBiscuit
+ *
  * @see RepairedSpawner
+ *
  */
 public class BrokenSpawner extends AbstractMonsterSpawner implements NotPlaceable {
 
