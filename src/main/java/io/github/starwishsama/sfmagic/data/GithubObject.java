@@ -22,7 +22,7 @@ public class GithubObject {
     private String publishTime;
     @SerializedName("body")
     private String changeLog;
-    private List<AssetsBean> assets;
+    private List<Assets> assets;
 
     public boolean isPreRelease() {
         return isPreRelease;
@@ -32,11 +32,11 @@ public class GithubObject {
         return tagName;
     }
 
-    public List<AssetsBean> getAssets() {
+    public List<Assets> getAssets() {
         return assets;
     }
 
-    public static class AssetsBean {
+    public static class Assets {
         private String url;
         private String name;
         @SerializedName("content_type")
