@@ -7,6 +7,7 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -37,4 +38,8 @@ public class CargoOutputNode extends AbstractCargoNode {
         addChannelSelector(b, menu, 12, 13, 14);
     }
 
+    @Override
+    protected void markDirty(Location loc) {
+        // No need to mark anything as dirty, there is no item filter.
+    }
 }

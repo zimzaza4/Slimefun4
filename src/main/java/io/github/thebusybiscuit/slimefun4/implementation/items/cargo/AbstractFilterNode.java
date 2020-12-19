@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.cargo;
 
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.core.networks.cargo.CargoNet;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
@@ -8,10 +9,13 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
 
 /**
  * This abstract super class represents all filtered Cargo nodes.
@@ -62,7 +66,9 @@ abstract class AbstractFilterNode extends AbstractCargoNode {
 
     @Override
     protected void updateBlockMenu(BlockMenu menu, Block b) {
-        String filterType = BlockStorage.getLocationInfo(b.getLocation(), FILTER_TYPE);
+        Location loc = b.getLocation();
+
+        String filterType = BlockStorage.getLocationInfo(loc, FILTER_TYPE);
 
         if (!BlockStorage.hasBlockInfo(b) || filterType == null || filterType.equals("whitelist")) {
             menu.replaceExistingItem(15, new CustomItem(Material.WHITE_WOOL, "&7模式: &r白名单", "", "&e> 单击切换至黑名单"));
@@ -99,6 +105,16 @@ abstract class AbstractFilterNode extends AbstractCargoNode {
         }
 
         addChannelSelector(b, menu, 41, 42, 43);
+        markDirty(loc);
+    }
+
+    @Override
+    protected void markDirty(@Nonnull Location loc) {
+        CargoNet network = CargoNet.getNetworkFromLocation(loc);
+
+        if (network != null) {
+            network.markCargoNodeConfigurationDirty(loc);
+        }
     }
 
 }
