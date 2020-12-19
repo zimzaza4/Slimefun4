@@ -24,6 +24,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAlta
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientPedestal;
 import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.Cooler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.reactors.Reactor;
+import io.github.thebusybiscuit.slimefun4.implementation.items.magical.BeeWings;
 import io.github.thebusybiscuit.slimefun4.implementation.items.tools.GrapplingHook;
 import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.SeismicAxe;
 import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.VampireBlade;

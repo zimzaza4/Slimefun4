@@ -201,7 +201,7 @@ public final class SlimefunItemSetup {
                 new ItemStack[]{SlimefunItems.ENDER_LUMP_1, new ItemStack(Material.ENDER_EYE), SlimefunItems.ENDER_LUMP_1, new ItemStack(Material.OBSIDIAN), null, new ItemStack(Material.OBSIDIAN), new ItemStack(Material.OBSIDIAN), null, new ItemStack(Material.OBSIDIAN)})
                 .register(plugin);
 
-        new SlimefunItem(categories.magicalArmor, SlimefunItems.ENDER_BOOTS, RecipeType.ARMOR_FORGE,
+        new EnderBoots(categories.magicalArmor, SlimefunItems.ENDER_BOOTS, RecipeType.ARMOR_FORGE,
                 new ItemStack[]{null, null, null, SlimefunItems.ENDER_LUMP_1, null, SlimefunItems.ENDER_LUMP_1, new ItemStack(Material.OBSIDIAN), null, new ItemStack(Material.OBSIDIAN)})
                 .register(plugin);
 
@@ -230,7 +230,7 @@ public final class SlimefunItemSetup {
                 new PotionEffect[]{new PotionEffect(PotionEffectType.SPEED, 300, 2)})
                 .register(plugin);
 
-        new SlimefunArmorPiece(categories.magicalArmor, SlimefunItems.SLIME_BOOTS, RecipeType.ARMOR_FORGE,
+        new LongFallBoots(categories.magicalArmor, SlimefunItems.SLIME_BOOTS, RecipeType.ARMOR_FORGE,
                 new ItemStack[]{null, null, null, new ItemStack(Material.SLIME_BALL), null, new ItemStack(Material.SLIME_BALL), new ItemStack(Material.IRON_INGOT), null, new ItemStack(Material.IRON_INGOT)},
                 new PotionEffect[]{new PotionEffect(PotionEffectType.JUMP, 300, 5)})
                 .register(plugin);
@@ -893,7 +893,7 @@ public final class SlimefunItemSetup {
                 new PotionEffect[]{new PotionEffect(PotionEffectType.SPEED, 300, 2)})
                 .register(plugin);
 
-        new SlimefunArmorPiece(categories.magicalArmor, SlimefunItems.SLIME_BOOTS_STEEL, RecipeType.ARMOR_FORGE,
+        new LongFallBoots(categories.magicalArmor, SlimefunItems.SLIME_BOOTS_STEEL, RecipeType.ARMOR_FORGE,
                 new ItemStack[]{null, null, null, new ItemStack(Material.SLIME_BALL), null, new ItemStack(Material.SLIME_BALL), new ItemStack(Material.SLIME_BALL), SlimefunItems.STEEL_PLATE, new ItemStack(Material.SLIME_BALL)},
                 new PotionEffect[]{new PotionEffect(PotionEffectType.JUMP, 300, 5)})
                 .register(plugin);
@@ -2410,7 +2410,7 @@ public final class SlimefunItemSetup {
                     new ItemStack[]{SlimefunItems.GOLD_8K, new ItemStack(Material.HONEY_BLOCK), SlimefunItems.GOLD_8K, new ItemStack(Material.HONEYCOMB_BLOCK), null, new ItemStack(Material.HONEYCOMB_BLOCK), new ItemStack(Material.HONEYCOMB_BLOCK), null, new ItemStack(Material.HONEYCOMB_BLOCK)})
                     .register(plugin);
 
-            new SlimefunArmorPiece(categories.magicalArmor, SlimefunItems.BEE_BOOTS, RecipeType.ARMOR_FORGE,
+            new LongFallBoots(categories.magicalArmor, SlimefunItems.BEE_BOOTS, RecipeType.ARMOR_FORGE,
                     new ItemStack[]{null, null, null, SlimefunItems.GOLD_8K, null, SlimefunItems.GOLD_8K, new ItemStack(Material.HONEY_BLOCK), null, new ItemStack(Material.HONEY_BLOCK)},
                     new PotionEffect[]{new PotionEffect(PotionEffectType.JUMP, 300, 2)})
                     .register(plugin);

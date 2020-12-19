@@ -1,12 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.items.armor.FarmerShoes;
-import io.github.thebusybiscuit.slimefun4.implementation.items.armor.SlimefunArmorPiece;
-import io.github.thebusybiscuit.slimefun4.implementation.items.armor.StomperBoots;
+import io.github.thebusybiscuit.slimefun4.implementation.items.armor.*;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
@@ -49,7 +48,7 @@ public class SlimefunBootsListener implements Listener {
             Player p = (Player) e.getEntity();
             SlimefunItem boots = SlimefunItem.getByItem(p.getInventory().getBoots());
 
-            if (boots != null && boots.getId().equals("ENDER_BOOTS") && Slimefun.hasUnlocked(p, boots, true)) {
+            if (boots instanceof EnderBoots && Slimefun.hasUnlocked(p, boots, true)) {
                 e.setCancelled(true);
             }
         }
@@ -70,9 +69,11 @@ public class SlimefunBootsListener implements Listener {
                 ((StomperBoots) boots).stomp(e);
             } else if (boots.getId().equals("SLIME_BOOTS") || boots.getId().equals("SLIME_STEEL_BOOTS")) {
                 e.setCancelled(true);
-            } else if (boots.getId().equals("BEE_BOOTS")) {
+            } else if (boots instanceof LongFallBoots) {
                 e.setCancelled(true);
-                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.BLOCK_HONEY_BLOCK_FALL, 1f, 2f);
+                if (boots.getId().equals("BEE_BOOTS")) {
+                    e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.BLOCK_HONEY_BLOCK_FALL, 1f, 2f);
+                }
             }
         }
     }
