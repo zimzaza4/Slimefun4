@@ -457,6 +457,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
         if (minecraftVersion.isAtLeast(MinecraftVersion.MINECRAFT_1_15)) {
             new BeeListener(this);
+            new BeeWingsListener(this, (BeeWings) SlimefunItems.BEE_WINGS.getItem());
         }
 
         if (minecraftVersion.isAtLeast(MinecraftVersion.MINECRAFT_1_16)) {

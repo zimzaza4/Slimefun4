@@ -45,13 +45,9 @@ public class GrapplingHookListener implements Listener {
         this.grapplingHook = grapplingHook;
     }
 
-    private boolean isEnabled() {
-        return grapplingHook != null && !grapplingHook.isDisabled();
-    }
-
     @EventHandler
     public void onArrowHitEntity(EntityDamageByEntityEvent e) {
-        if (!isEnabled()) {
+        if (grapplingHook.isDisabled()) {
             return;
         }
 
@@ -62,7 +58,7 @@ public class GrapplingHookListener implements Listener {
 
     @EventHandler
     public void onArrowHitSurface(ProjectileHitEvent e) {
-        if (!isEnabled()) {
+        if (grapplingHook.isDisabled()) {
             return;
         }
 
@@ -75,7 +71,7 @@ public class GrapplingHookListener implements Listener {
 
     @EventHandler
     public void onArrowHitHanging(HangingBreakByEntityEvent e) {
-        if (!isEnabled()) {
+        if (grapplingHook.isDisabled()) {
             return;
         }
 
@@ -87,7 +83,7 @@ public class GrapplingHookListener implements Listener {
 
     @EventHandler
     public void onLeave(PlayerQuitEvent e) {
-        if (!isEnabled()) {
+        if (grapplingHook.isDisabled()) {
             return;
         }
 
@@ -98,7 +94,7 @@ public class GrapplingHookListener implements Listener {
 
     @EventHandler
     public void onLeave(PlayerKickEvent e) {
-        if (!isEnabled()) {
+        if (grapplingHook.isDisabled()) {
             return;
         }
 
@@ -109,7 +105,7 @@ public class GrapplingHookListener implements Listener {
 
     @EventHandler
     public void onFallDamage(EntityDamageEvent e) {
-        if (!isEnabled()) {
+        if (grapplingHook.isDisabled()) {
             return;
         }
 
@@ -120,7 +116,7 @@ public class GrapplingHookListener implements Listener {
 
     @EventHandler
     public void onPortalEnter(EntityPortalEnterEvent e) {
-        if (!isEnabled()) {
+        if (grapplingHook.isDisabled()) {
             return;
         }
 
@@ -132,7 +128,7 @@ public class GrapplingHookListener implements Listener {
     // Fixing Issue #2351
     @EventHandler
     public void onLeash(PlayerLeashEntityEvent e) {
-        if (!isEnabled()) {
+        if (grapplingHook.isDisabled()) {
             return;
         }
 

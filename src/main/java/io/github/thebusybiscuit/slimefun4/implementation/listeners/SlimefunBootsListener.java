@@ -70,6 +70,9 @@ public class SlimefunBootsListener implements Listener {
                 ((StomperBoots) boots).stomp(e);
             } else if (boots.getId().equals("SLIME_BOOTS") || boots.getId().equals("SLIME_STEEL_BOOTS")) {
                 e.setCancelled(true);
+            } else if (boots.getId().equals("BEE_BOOTS")) {
+                e.setCancelled(true);
+                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.BLOCK_HONEY_BLOCK_FALL, 1f, 2f);
             }
         }
     }
