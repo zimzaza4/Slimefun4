@@ -1,4 +1,4 @@
-package io.github.thebusybiscuit.slimefun4.core.services.plugins;
+package io.github.thebusybiscuit.slimefun4.integrations;
 
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.researching.Research;

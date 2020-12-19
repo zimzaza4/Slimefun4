@@ -1,4 +1,4 @@
-package io.github.thebusybiscuit.slimefun4.core.services.plugins;
+package io.github.thebusybiscuit.slimefun4.integrations;
 
 import com.gmail.nossr50.events.skills.salvage.McMMOPlayerSalvageCheckEvent;
 import com.gmail.nossr50.mcMMO;

@@ -53,9 +53,11 @@ public class BlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockPlaceExisting(BlockPlaceEvent e) {
-        // This prevents Players from placing a block where another block already exists
-        // While this can cause ghost blocks it also prevents them from replacing grass
-        // or saplings etc...
+        /**
+         * This prevents Players from placing a block where another block already exists.
+         * While this can cause ghost blocks it also prevents them from replacing grass
+         * or saplings etc...
+         */
         if (BlockStorage.hasBlockInfo(e.getBlock())) {
             e.setCancelled(true);
         }
@@ -82,8 +84,13 @@ public class BlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent e) {
+        // Simply ignore any events that were faked by other plugins
         if (SlimefunPlugin.getThirdPartySupportService().isEventFaked(e)) {
             // This is a "fake" event, we can ignore it.
+            return;
+        }
+        // Also ignore custom blocks which were placed by other plugins
+        if (SlimefunPlugin.getThirdPartySupportService().isCustomBlock(e.getBlock())) {
             return;
         }
 
