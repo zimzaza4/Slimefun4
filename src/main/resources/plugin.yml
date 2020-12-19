@@ -1,10 +1,17 @@
+# Name and version
 name: Slimefun
 version: ${project.version}
+
+# Project metadata
 author: The Slimefun 4 Community
 description: Slimefun basically turns your entire Server into a FTB modpack without installing a single mod
 website: https://github.com/TheBusyBiscuit/Slimefun4
 
+# Technical settings
 main: io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin
+api-version: '1.14'
+
+# (Soft) dependencies of Slimefun, we hook into these plugins.
 softdepend:
   - CS-CoreLib
   - PlaceholderAPI
@@ -13,13 +20,19 @@ softdepend:
   - mcMMO
   - ItemsAdder
 
-api-version: '1.14'
+# We hook into these plugins too, but they depend on Slimefun.
+loadBefore:
+  - ChestTerminal
+  - ExoticGarden
 
+# Our commands
 commands:
   slimefun:
     description: basic Slimefun command
     aliases: sf
     usage: '你没有安装前置 CS-CoreLib 或者你安装的版本服务器不支持.'
+
+# Default permissions
 permissions:
   slimefun.cheat.items:
     description: Allows you to cheat Items

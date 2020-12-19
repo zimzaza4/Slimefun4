@@ -39,11 +39,10 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author TheBusyBiscuit
  * @author Linox
- *
+ * @author Patbox
  * @see BlockPlaceHandler
  * @see BlockBreakHandler
  * @see ToolUseHandler
- *
  */
 public class BlockListener implements Listener {
 
@@ -58,7 +57,21 @@ public class BlockListener implements Listener {
          * While this can cause ghost blocks it also prevents them from replacing grass
          * or saplings etc...
          */
-        if (BlockStorage.hasBlockInfo(e.getBlock())) {
+
+        Block block = e.getBlock();
+
+        if (e.getBlockReplacedState().getType().isAir()) {
+            SlimefunItem sfItem = BlockStorage.check(block);
+
+            if (sfItem != null) {
+                for (ItemStack item : sfItem.getDrops()) {
+                    if (item != null && !item.getType().isAir()) {
+                        block.getWorld().dropItemNaturally(block.getLocation(), item);
+                    }
+                }
+                BlockStorage.clearBlockInfo(block);
+            }
+        } else if (BlockStorage.hasBlockInfo(e.getBlock())) {
             e.setCancelled(true);
         }
     }
@@ -85,12 +98,12 @@ public class BlockListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent e) {
         // Simply ignore any events that were faked by other plugins
-        if (SlimefunPlugin.getThirdPartySupportService().isEventFaked(e)) {
+        if (SlimefunPlugin.getIntegrations().isEventFaked(e)) {
             // This is a "fake" event, we can ignore it.
             return;
         }
         // Also ignore custom blocks which were placed by other plugins
-        if (SlimefunPlugin.getThirdPartySupportService().isCustomBlock(e.getBlock())) {
+        if (SlimefunPlugin.getIntegrations().isCustomBlock(e.getBlock())) {
             return;
         }
 

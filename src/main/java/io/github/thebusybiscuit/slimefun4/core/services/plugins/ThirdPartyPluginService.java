@@ -8,21 +8,20 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.function.Function;
 
 /**
  * This Service holds all interactions and hooks with third-party {@link Plugin Plugins}
  * that are not necessarily a dependency or a {@link SlimefunAddon}.
- *
+ * <p>
  * Integration with these plugins happens inside Slimefun itself.
  *
  * @author TheBusyBiscuit
- *
  * @see SlimefunPlugin
- *
+ * @deprecated Renamed to {@link IntegrationsManager}
  */
+@Deprecated
 public class ThirdPartyPluginService extends IntegrationsManager {
 
     /**
@@ -30,41 +29,25 @@ public class ThirdPartyPluginService extends IntegrationsManager {
      */
     private Function<Block, Optional<ItemStack>> exoticGardenIntegration = b -> Optional.empty();
 
-    private boolean isChestTerminalInstalled = false;
-    private boolean isExoticGardenInstalled = false;
-
     /**
      * This initializes the {@link ThirdPartyPluginService}
      *
-     * @param plugin Our instance of {@link SlimefunPlugin}
+     * @param plugin
+     *            Our instance of {@link SlimefunPlugin}
      */
     public ThirdPartyPluginService(@Nonnull SlimefunPlugin plugin) {
         super(plugin);
     }
 
-    @Override
-    public void start() {
-        super.start();
-
-        plugin.getServer().getScheduler().runTask(plugin, () -> isChestTerminalInstalled = isPluginInstalled("ChestTerminal"));
-    }
-
-    @ParametersAreNonnullByDefault
+    @Deprecated
     public void loadExoticGarden(Plugin plugin, Function<Block, Optional<ItemStack>> method) {
+        // TODO: Move this method to IntegrationsManager and think of a better way to handle this
         if (plugin.getName().equals("ExoticGarden")) {
-            isExoticGardenInstalled = true;
             exoticGardenIntegration = method;
         }
     }
 
-    public boolean isExoticGardenInstalled() {
-        return isExoticGardenInstalled;
-    }
-
-    public boolean isChestTerminalInstalled() {
-        return isChestTerminalInstalled;
-    }
-
+    @Deprecated
     public Optional<ItemStack> harvestExoticGardenPlant(Block block) {
         return exoticGardenIntegration.apply(block);
     }

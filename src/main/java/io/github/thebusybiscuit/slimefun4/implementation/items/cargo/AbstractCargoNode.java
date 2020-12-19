@@ -83,7 +83,7 @@ abstract class AbstractCargoNode extends SimpleSlimefunItem<BlockPlaceHandler> {
 
     @ParametersAreNonnullByDefault
     protected void addChannelSelector(Block b, BlockMenu menu, int slotPrev, int slotCurrent, int slotNext) {
-        boolean isChestTerminalInstalled = SlimefunPlugin.getThirdPartySupportService().isChestTerminalInstalled();
+        boolean isChestTerminalInstalled = SlimefunPlugin.getIntegrations().isChestTerminalInstalled();
         int channel = getSelectedChannel(b);
 
         menu.replaceExistingItem(slotPrev, new CustomItem(HeadTexture.CARGO_ARROW_LEFT.getAsItemStack(), "&b上一信道", "", "&e> 单击将信道ID减一"));

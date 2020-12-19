@@ -36,6 +36,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.setup.SlimefunItemSetup
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.ArmorTask;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.SlimefunStartupTask;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.TickerTask;
+import io.github.thebusybiscuit.slimefun4.integrations.IntegrationsManager;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
@@ -589,12 +590,30 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         return instance.blockDataService;
     }
 
-    public static ThirdPartyPluginService getThirdPartySupportService() {
+    public static PerWorldSettingsService getWorldSettingsService() {
+        return instance.worldSettingsService;
+    }
+
+    /**
+     * This returns our instance of {@link IntegrationsManager}.
+     * This is responsible for managing any integrations with third party {@link Plugin plugins}.
+     *
+     * @return Our instance of {@link IntegrationsManager}
+     */
+    @Nonnull
+    public static IntegrationsManager getIntegrations() {
         return instance.thirdPartySupportService;
     }
 
-    public static PerWorldSettingsService getWorldSettingsService() {
-        return instance.worldSettingsService;
+    /**
+     * This method has been renamed.
+     *
+     * @return the {@link ThirdPartyPluginService}
+     * @deprecated Please use {@link #getIntegrations()} instead.
+     */
+    @Deprecated
+    public static ThirdPartyPluginService getThirdPartyPluginService() {
+        return instance.thirdPartySupportService;
     }
 
     /**

@@ -17,8 +17,13 @@ import javax.annotation.Nonnull;
  * @author TheBusyBiscuit
  */
 class ClearLagIntegration implements Listener {
+    private final SlimefunPlugin plugin;
 
     ClearLagIntegration(@Nonnull SlimefunPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    public void register() {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

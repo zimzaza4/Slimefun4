@@ -20,7 +20,13 @@ import javax.annotation.Nonnull;
  */
 class McMMOIntegration implements Listener {
 
+    private final SlimefunPlugin plugin;
+
     McMMOIntegration(@Nonnull SlimefunPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    public void register() {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -44,7 +50,9 @@ class McMMOIntegration implements Listener {
      * We basically don't want players to salvage any {@link SlimefunItem} unless
      * it is a {@link VanillaItem}.
      *
-     * @param item The {@link ItemStack} to check
+     * @param item
+     *            The {@link ItemStack} to check
+     *
      * @return Whether this item can be safely salvaged
      */
     private boolean isSalvageable(@Nonnull ItemStack item) {
