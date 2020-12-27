@@ -70,8 +70,6 @@ public class HeatedPressureChamber extends AContainer {
                 }
             }
         };
-
-        this.registerDefaultRecipes();
     }
 
     private Comparator<Integer> compareSlots(DirtyChestMenu menu) {
