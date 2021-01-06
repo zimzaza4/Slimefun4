@@ -84,10 +84,9 @@ Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 不遵守以上规则的人可能会被从服务器中踢出甚至封禁.
 
 <p align="center">
-  <a href="https://discord.gg/fsD4Bkh">
-    <img src="https://img.shields.io/discord/565557184348422174?color=7289DA&label=Discord&style=for-the-badge" alt="Discord Invite"/>
-  </a><br>
-  (单击加入服务器)
+  <a href="https://discord.gg/slimefun">
+    <img src="https://discordapp.com/api/guilds/565557184348422174/widget.png?style=banner3" alt="Discord Invite"/>
+  </a>
 </p>
 
 ## Wiki
