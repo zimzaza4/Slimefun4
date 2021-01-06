@@ -102,8 +102,6 @@ public class ElectricSmeltery extends AContainer {
             processing.remove(b);
             return true;
         });
-
-        this.registerDefaultRecipes();
     }
 
     private Comparator<Integer> compareSlots(DirtyChestMenu menu) {
