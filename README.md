@@ -1,6 +1,6 @@
 # Slimefun
 
-Looking for English Version? [**Click here**](https://github.com/Slimefun/Slimefun4/)
+Looking for English (or Original) Version? [**Click here**](https://github.com/Slimefun/Slimefun4/)
 
 想要直接下载吗? [**单击此处**](https://github.com/StarWishsama/Slimefun4/blob/master/README.md#%e4%b8%8b%e8%bd%bd-Slimefun4)
 
