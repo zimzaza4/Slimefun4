@@ -1,4 +1,4 @@
-package io.github.thebusybiscuit.slimefun4.implementation.listeners;
+package io.github.thebusybiscuit.slimefun4.implementation.listeners.entity;
 
 import io.github.thebusybiscuit.slimefun4.core.attributes.RandomMobDrop;
 import io.github.thebusybiscuit.slimefun4.core.handlers.EntityKillHandler;

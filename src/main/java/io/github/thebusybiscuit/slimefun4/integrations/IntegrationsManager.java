@@ -70,13 +70,27 @@ public class IntegrationsManager {
     /**
      * This method initializes all third party integrations.
      */
-    public void start() {
+    public final void start() {
         if (isEnabled) {
             // Prevent double-registration
             throw new UnsupportedOperationException("All integrations have already been loaded.");
         } else {
             isEnabled = true;
         }
+
+        // Load any soft dependencies
+        onServerLoad();
+
+        // Load any integrations which aren't dependencies (loadBefore)
+        plugin.getServer().getScheduler().runTask(plugin, this::onServerStart);
+    }
+
+    /**
+     * This method is called when the {@link Server} loaded its {@link Plugin Plugins}.
+     * We can safely assume that any {@link Plugin} which is a soft dependency of Slimefun
+     * to be enabled at this point.
+     */
+    private void onServerLoad() {
 
         // PlaceholderAPI hook to provide playerholders from Slimefun.
         load("PlaceholderAPI", integration -> {
@@ -110,7 +124,7 @@ public class IntegrationsManager {
     }
 
     /**
-     * This method is called when the {@link Server} has finished loading its plugins.
+     * This method is called when the {@link Server} has finished loading all its {@link Plugin Plugins}.
      */
     private void onServerStart() {
         isChestTerminalInstalled = isAddonInstalled("ChestTerminal");

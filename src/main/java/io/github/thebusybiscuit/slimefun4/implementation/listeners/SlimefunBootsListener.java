@@ -72,7 +72,7 @@ public class SlimefunBootsListener implements Listener {
             } else if (boots instanceof LongFallBoots) {
                 e.setCancelled(true);
                 if (boots.getId().equals("BEE_BOOTS")) {
-                    e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.BLOCK_HONEY_BLOCK_FALL, 1f, 2f);
+                    e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.BLOCK_HONEY_BLOCK_FALL, 1, 2);
                 }
             }
         }

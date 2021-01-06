@@ -4,13 +4,13 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Server;
 
+import javax.annotation.Nonnull;
+
 /**
  * This enum holds all versions of Minecraft that we currently support.
  *
  * @author TheBusyBiscuit
- *
  * @see SlimefunPlugin
- *
  */
 public enum MinecraftVersion {
 
@@ -57,7 +57,7 @@ public enum MinecraftVersion {
      *
      * @param name The display name of this {@link MinecraftVersion}
      */
-    MinecraftVersion(String name) {
+    MinecraftVersion(@Nonnull String name) {
         this(name, false);
     }
 
@@ -69,7 +69,7 @@ public enum MinecraftVersion {
      * @param name    The display name of this {@link MinecraftVersion}
      * @param virtual Whether this {@link MinecraftVersion} is virtual
      */
-    MinecraftVersion(String name, boolean virtual) {
+    MinecraftVersion(@Nonnull String name, boolean virtual) {
         this.name = name;
         this.virtual = virtual;
         this.prefix = name().replace("MINECRAFT_", "v") + '_';
@@ -80,6 +80,7 @@ public enum MinecraftVersion {
      *
      * @return The name of this {@link MinecraftVersion}
      */
+    @Nonnull
     public String getName() {
         return name;
     }
@@ -104,7 +105,7 @@ public enum MinecraftVersion {
      * @param version The version to compare
      * @return Whether the version matches with this one
      */
-    public boolean matches(String version) {
+    public boolean matches(@Nonnull String version) {
         Validate.notNull(version, "The input version must not be null!");
         return version.startsWith(prefix);
     }
@@ -120,7 +121,7 @@ public enum MinecraftVersion {
      *
      * @return Whether this {@link MinecraftVersion} is newer or equal to the given {@link MinecraftVersion}
      */
-    public boolean isAtLeast(MinecraftVersion version) {
+    public boolean isAtLeast(@Nonnull MinecraftVersion version) {
         Validate.notNull(version, "A Minecraft version cannot be null!");
 
         if (this == UNKNOWN) {
@@ -140,7 +141,7 @@ public enum MinecraftVersion {
      *
      * @return Whether this {@link MinecraftVersion} is older than the given one
      */
-    public boolean isBefore(MinecraftVersion version) {
+    public boolean isBefore(@Nonnull MinecraftVersion version) {
         Validate.notNull(version, "A Minecraft version cannot be null!");
 
         if (this == UNKNOWN) {

@@ -24,7 +24,7 @@ final class CargoUtils {
     /**
      * These are the slots where our filter items sit.
      */
-    static final int[] FILTER_SLOTS = {19, 20, 21, 28, 29, 30, 37, 38, 39};
+    private static final int[] FILTER_SLOTS = {19, 20, 21, 28, 29, 30, 37, 38, 39};
 
     private CargoUtils() {
     }
@@ -366,8 +366,20 @@ final class CargoUtils {
      * in the cargo (without hardcoding the slots in case of change) then you can use this method.
      *
      * @return The slot indexes for the whitelist/blacklist section.
+     * @deprecated Renamed to {@link #getFilteringSlots()}
      */
+    @Deprecated
     public static int[] getWhitelistBlacklistSlots() {
+        return FILTER_SLOTS;
+    }
+
+    /**
+     * Gets the {@link ItemFilter} slots for a Cargo Node. If you wish to access the items
+     * in the cargo (without hardcoding the slots in case of change) then you can use this method.
+     *
+     * @return The slots where the {@link ItemFilter} section for a cargo node sits
+     */
+    public static int[] getFilteringSlots() {
         return FILTER_SLOTS;
     }
 }

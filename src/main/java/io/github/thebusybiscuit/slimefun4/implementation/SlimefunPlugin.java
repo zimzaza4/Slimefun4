@@ -30,6 +30,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.SeismicAx
 import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.VampireBlade;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.*;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.crafting.*;
+import io.github.thebusybiscuit.slimefun4.implementation.listeners.entity.*;
 import io.github.thebusybiscuit.slimefun4.implementation.resources.GEOResourcesSetup;
 import io.github.thebusybiscuit.slimefun4.implementation.setup.PostSetup;
 import io.github.thebusybiscuit.slimefun4.implementation.setup.ResearchSetup;

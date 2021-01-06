@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.core.attributes;
 
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.PiglinListener;
+import io.github.thebusybiscuit.slimefun4.implementation.listeners.entity.PiglinListener;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import org.bukkit.entity.Piglin;

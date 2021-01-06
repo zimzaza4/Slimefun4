@@ -183,9 +183,12 @@ public class BlockStorage {
             Config blockInfo = parseBlockInfo(l, json);
 
             if (blockInfo != null && blockInfo.contains("id")) {
-                if (storage.containsKey(l)) {
-                    // It should not be possible to have two blocks on the same location. Ignore the
-                    // new entry if a block is already present and print an error to the console.
+                if (storage.putIfAbsent(l, blockInfo) != null) {
+                    /*
+                     * It should not be possible to have two blocks on the same location.
+                     * Ignore the new entry if a block is already present and print an
+                     * error to the console (if enabled).
+                     */
                     if (SlimefunPlugin.getRegistry().logDuplicateBlockEntries()) {
                         Slimefun.getLogger().log(Level.INFO, "Ignoring duplicate block @ {0}, {1}, {2} ({3} -> {4})", new Object[]{l.getBlockX(), l.getBlockY(), l.getBlockZ(), blockInfo.getString("id"), storage.get(l).getString("id")});
                     }
@@ -193,9 +196,9 @@ public class BlockStorage {
                     return;
                 }
 
-                storage.put(l, blockInfo);
+                String fileName = file.getName().replace(".sfb", "");
 
-                if (SlimefunPlugin.getRegistry().getTickerBlocks().contains(file.getName().replace(".sfb", ""))) {
+                if (SlimefunPlugin.getRegistry().getTickerBlocks().contains(fileName)) {
                     SlimefunPlugin.getTickerTask().enableTicker(l);
                 }
             }

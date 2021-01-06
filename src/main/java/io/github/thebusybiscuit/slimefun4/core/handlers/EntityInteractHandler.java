@@ -1,7 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.core.handlers;
 
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.EntityInteractionListener;
+import io.github.thebusybiscuit.slimefun4.implementation.listeners.entity.EntityInteractionListener;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.handlers.ItemHandler;
 import org.bukkit.entity.Entity;
