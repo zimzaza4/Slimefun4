@@ -94,7 +94,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     private final BackupService backupService = new BackupService();
     private final PermissionsService permissionsService = new PermissionsService(this);
     private final PerWorldSettingsService worldSettingsService = new PerWorldSettingsService(this);
-    private final ThirdPartyPluginService thirdPartySupportService = new ThirdPartyPluginService(this);
+    private final IntegrationsManager integrations = new ThirdPartyPluginService(this);
     private final MinecraftRecipeService recipeService = new MinecraftRecipeService(this);
     private final SlimefunProfiler profiler = new SlimefunProfiler();
     private LocalizationService local;
@@ -140,123 +140,24 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
     @Override
     public void onEnable() {
-        instance = this;
         if (minecraftVersion == MinecraftVersion.UNIT_TEST) {
+            // We handle Unit Tests seperately.
+            setInstance(this);
+            getLogger().log(Level.INFO, "This is a UNIT TEST Environment.");
             onUnitTestStart();
+        } else if (isVersionUnsupported()) {
+            // We wanna ensure that the Server uses a compatible version of Minecraft.
+            setInstance(this);
+            getLogger().log(Level.WARNING, "Slimefun was not installed properly! Disabling...");
+            getServer().getPluginManager().disablePlugin(this);
         } else if (getServer().getPluginManager().isPluginEnabled("CS-CoreLib")) {
+            // The Environment and dependencies have been validated.
+            setInstance(this);
             getLogger().log(Level.INFO, "发现前置 CS-CoreLib 已正常安装!");
-            long timestamp = System.nanoTime();
-
-            LangUtil.suggestPaper(this);
-
-            if (PaperLib.isPaper()) {
-                getLogger().log(Level.INFO, "检测到 Paper 服务端! 性能优化已应用.");
-            }
-
-            // We wanna ensure that the Server uses a compatible version of Minecraft
-            if (isVersionUnsupported()) {
-                getServer().getPluginManager().disablePlugin(this);
-                return;
-            }
-
-            // Disabling backwards-compatibility for fresh Slimefun installs
-            if (!new File("data-storage/Slimefun").exists()) {
-                config.setValue("options.backwards-compatibility", false);
-                config.save();
-
-                isNewlyInstalled = true;
-            }
-
-            // Creating all necessary Folders
-            getLogger().log(Level.INFO, "正在创建文件夹...");
-            createDirectories();
-            registry.load(config);
-
-            // Set up localization
-            getLogger().log(Level.INFO, "正在加载语言文件...");
-            local = new LocalizationService(this, config.getString("options.chat-prefix"), config.getString("options.language"));
-
-            // Setting up Networks
-            gpsNetwork = new GPSNetwork();
-
-            int networkSize = config.getInt("networks.max-size");
-
-            if (networkSize < 1) {
-                getLogger().log(Level.WARNING, "'networks.max-size' 大小设置错误! 它必须大于1, 而你设置的是: {0}", networkSize);
-                networkSize = 1;
-            }
-
-            networkManager = new NetworkManager(networkSize, config.getBoolean("networks.enable-visualizer"), config.getBoolean("networks.delete-excess-items"));
-
-            // Setting up bStats
-            new Thread(metricsService::start, "Slimefun Metrics").start();
-
-            // 魔改的自动更新服务
-            // 自动选择分支
-            NUpdater.autoSelectBranch(this);
-
-            // Registering all GEO Resources
-            getLogger().log(Level.INFO, "加载矿物资源...");
-            GEOResourcesSetup.setup();
-
-            getLogger().log(Level.INFO, "加载自定义标签...");
-            loadTags();
-
-            getLogger().log(Level.INFO, "加载物品...");
-            loadItems();
-
-            getLogger().log(Level.INFO, "加载研究项目...");
-            loadResearches();
-
-            registry.setResearchingEnabled(getResearchCfg().getBoolean("enable-researching"));
-            PostSetup.setupWiki();
-
-            // All Slimefun Listeners
-            getLogger().log(Level.INFO, "正在注册监听器...");
-            registerListeners();
-
-            // Initiating various Stuff and all items with a slight delay (0ms after the Server finished loading)
-            runSync(new SlimefunStartupTask(this, () -> {
-                protections = new ProtectionManager(getServer());
-                textureService.register(registry.getAllSlimefunItems(), true);
-                permissionsService.register(registry.getAllSlimefunItems(), true);
-
-                // This try/catch should prevent buggy Spigot builds from blocking item loading
-                try {
-                    recipeService.refresh();
-                } catch (Exception | LinkageError x) {
-                    getLogger().log(Level.SEVERE, x, () -> "An Exception occured while iterating through the Recipe list on Minecraft Version " + minecraftVersion.getName() + " (Slimefun v" + getVersion() + ")");
-                }
-            }), 0);
-
-            // Setting up the command /sf and all subcommands
-            command.register();
-
-            // Armor Update Task
-            if (config.getBoolean("options.enable-armor-effects")) {
-                boolean radioactiveFire = config.getBoolean("options.burn-players-when-radioactive");
-                getServer().getScheduler().runTaskTimerAsynchronously(this, new ArmorTask(radioactiveFire), 0L, config.getInt("options.armor-update-interval") * 20L);
-            }
-
-            autoSavingService.start(this, config.getInt("options.auto-save-delay-in-minutes"));
-            ticker.start(this);
-
-            getLogger().log(Level.INFO, "正在加载第三方插件支持...");
-            thirdPartySupportService.start();
-            gitHubService.start(this);
-
-            // Hooray!
-            getLogger().log(Level.INFO, "Slimefun 完成加载, 耗时 {0}", getStartupTime(timestamp));
-
-            if (config.getBoolean("options.auto-update") || config.getBoolean("options.update-check")) {
-                if (NUpdater.getBranch() == SlimefunBranch.DEVELOPMENT || NUpdater.getBranch() == SlimefunBranch.STABLE) {
-                    updater = new NUpdater();
-                    Bukkit.getServer().getScheduler().runTaskAsynchronously(instance, updater::checkUpdate);
-                }
-            }
-
+            onPluginStart();
         } else {
-            instance = null;
+            // Terminate our Plugin instance
+            setInstance(null);
 
             getLogger().log(Level.INFO, "#################### - INFO - ####################");
             getLogger().log(Level.INFO, " ");
@@ -273,9 +174,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         }
     }
 
-    /**
-     * This is our start method for a Unit Test environment.
-     */
     private void onUnitTestStart() {
         local = new LocalizationService(this, "", null);
         gpsNetwork = new GPSNetwork();
@@ -283,6 +181,115 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         command.register();
         registry.load(config);
         loadTags();
+    }
+
+    /**
+     * This is our start method for a correct Slimefun installation.
+     */
+    private void onPluginStart() {
+        long timestamp = System.nanoTime();
+
+        LangUtil.suggestPaper(this);
+
+        if (PaperLib.isPaper()) {
+            getLogger().log(Level.INFO, "检测到 Paper 服务端! 性能优化已应用.");
+        }
+
+        // Disabling backwards-compatibility for fresh Slimefun installs
+        if (!new File("data-storage/Slimefun").exists()) {
+            config.setValue("options.backwards-compatibility", false);
+            config.save();
+
+            isNewlyInstalled = true;
+        }
+
+        // Creating all necessary Folders
+        getLogger().log(Level.INFO, "正在创建文件夹...");
+        createDirectories();
+        registry.load(config);
+
+        // Set up localization
+        getLogger().log(Level.INFO, "正在加载语言文件...");
+        local = new LocalizationService(this, config.getString("options.chat-prefix"), config.getString("options.language"));
+
+        // Setting up Networks
+        gpsNetwork = new GPSNetwork();
+
+        int networkSize = config.getInt("networks.max-size");
+
+        if (networkSize < 1) {
+            getLogger().log(Level.WARNING, "'networks.max-size' 大小设置错误! 它必须大于1, 而你设置的是: {0}", networkSize);
+            networkSize = 1;
+        }
+
+        networkManager = new NetworkManager(networkSize, config.getBoolean("networks.enable-visualizer"), config.getBoolean("networks.delete-excess-items"));
+
+        // Setting up bStats
+        new Thread(metricsService::start, "Slimefun Metrics").start();
+
+        // 魔改的自动更新服务
+        // 自动选择分支
+        NUpdater.autoSelectBranch(this);
+
+        // Registering all GEO Resources
+        getLogger().log(Level.INFO, "加载矿物资源...");
+        GEOResourcesSetup.setup();
+
+        getLogger().log(Level.INFO, "加载自定义标签...");
+        loadTags();
+
+        getLogger().log(Level.INFO, "加载物品...");
+        loadItems();
+
+        getLogger().log(Level.INFO, "加载研究项目...");
+        loadResearches();
+
+        registry.setResearchingEnabled(getResearchCfg().getBoolean("enable-researching"));
+        PostSetup.setupWiki();
+
+        // All Slimefun Listeners
+        getLogger().log(Level.INFO, "正在注册监听器...");
+        registerListeners();
+
+        // Initiating various Stuff and all items with a slight delay (0ms after the Server finished loading)
+        runSync(new SlimefunStartupTask(this, () -> {
+            protections = new ProtectionManager(getServer());
+            textureService.register(registry.getAllSlimefunItems(), true);
+            permissionsService.register(registry.getAllSlimefunItems(), true);
+
+            // This try/catch should prevent buggy Spigot builds from blocking item loading
+            try {
+                recipeService.refresh();
+            } catch (Exception | LinkageError x) {
+                getLogger().log(Level.SEVERE, x, () -> "An Exception occured while iterating through the Recipe list on Minecraft Version " + minecraftVersion.getName() + " (Slimefun v" + getVersion() + ")");
+            }
+        }), 0);
+
+        // Setting up the command /sf and all subcommands
+        command.register();
+
+        // Armor Update Task
+        if (config.getBoolean("options.enable-armor-effects")) {
+            boolean radioactiveFire = config.getBoolean("options.burn-players-when-radioactive");
+            getServer().getScheduler().runTaskTimerAsynchronously(this, new ArmorTask(radioactiveFire), 0L, config.getInt("options.armor-update-interval") * 20L);
+        }
+
+        autoSavingService.start(this, config.getInt("options.auto-save-delay-in-minutes"));
+        ticker.start(this);
+
+        getLogger().log(Level.INFO, "正在加载第三方插件支持...");
+        integrations.start();
+        gitHubService.start(this);
+
+        // Hooray!
+        getLogger().log(Level.INFO, "Slimefun 完成加载, 耗时 {0}", getStartupTime(timestamp));
+
+        if (config.getBoolean("options.auto-update") || config.getBoolean("options.update-check")) {
+            if (NUpdater.getBranch() == SlimefunBranch.DEVELOPMENT || NUpdater.getBranch() == SlimefunBranch.STABLE) {
+                updater = new NUpdater();
+                Bukkit.getServer().getScheduler().runTaskAsynchronously(instance, updater::checkUpdate);
+            }
+        }
     }
 
     /**
@@ -328,10 +335,40 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         // Create a new backup zip
         backupService.run();
 
+        // Close all inventories on the server to prevent item dupes
+        // (Incase some idiot uses /reload)
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            p.closeInventory();
+        }
+
         metricsService.cleanUp();
 
-        // Prevent Memory Leaks
-        // These static Maps should be removed at some point...
+        // Terminate our Plugin instance
+        setInstance(null);
+
+        // Clean up any static fields
+        cleanUp();
+    }
+
+    /**
+     * This is a private internal method to set the de-facto instance of {@link SlimefunPlugin}.
+     * Having this as a seperate method ensures the seperation between static and non-static fields.
+     * It also makes sonarcloud happy :)
+     * Only ever use it during {@link #onEnable()} or {@link #onDisable()}.
+     *
+     * @param pluginInstance Our instance of {@link SlimefunPlugin} or null
+     */
+    private static final void setInstance(@Nullable SlimefunPlugin pluginInstance) {
+        instance = pluginInstance;
+    }
+
+    /**
+     * Cleaning up our static fields prevents memory leaks from a reload.
+     *
+     * @deprecated These static Maps should really be removed at some point...
+     */
+    @Deprecated
+    private static final void cleanUp() {
         AContainer.processing = null;
         AContainer.progress = null;
 
@@ -340,14 +377,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
         Reactor.processing = null;
         Reactor.progress = null;
-
-        instance = null;
-
-        // Close all inventories on the server to prevent item dupes
-        // (Incase some idiot uses /reload)
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            p.closeInventory();
-        }
     }
 
     @Nonnull
@@ -368,29 +397,49 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
      * @return Whether the {@link MinecraftVersion} is unsupported
      */
     private boolean isVersionUnsupported() {
-        String currentVersion = ReflectionUtils.getVersion();
+        try {
+            // First check if they still use the unsupported CraftBukkit software.
+            if (!PaperLib.isSpigot() && Bukkit.getName().equals("CraftBukkit")) {
+                getLogger().log(Level.SEVERE, "###############################################");
+                getLogger().log(Level.SEVERE, "### Slimefun 未被正确安装!");
+                getLogger().log(Level.SEVERE, "### 我们不再支持 CraftBukkit 服务端了!");
+                getLogger().log(Level.SEVERE, "###");
+                getLogger().log(Level.SEVERE, "### Slimefun 需要你使用 Spigot, Paper");
+                getLogger().log(Level.SEVERE, "### 或者 Spigot/Paper 分支的任意服务端.");
+                getLogger().log(Level.SEVERE, "### (我们推荐 Paper)");
+                getLogger().log(Level.SEVERE, "###############################################");
 
-        if (currentVersion.startsWith("v")) {
-            for (MinecraftVersion version : MinecraftVersion.valuesCache) {
-                if (version.matches(currentVersion)) {
-                    minecraftVersion = version;
-                    return false;
-                }
+                return true;
             }
 
-            getLogger().log(Level.SEVERE, "#############################################");
-            getLogger().log(Level.SEVERE, "### Slimefun 未被正确安装!");
-            getLogger().log(Level.SEVERE, "### 你正在使用不支持的 Minecraft 版本!");
-            getLogger().log(Level.SEVERE, "###");
-            getLogger().log(Level.SEVERE, "### 你正在使用 Minecraft {0}", currentVersion);
-            getLogger().log(Level.SEVERE, "### 但 Slimefun v{0} 只支持", getDescription().getVersion());
-            getLogger().log(Level.SEVERE, "### Minecraft {0}", String.join(" / ", getSupportedVersions()));
-            getLogger().log(Level.SEVERE, "#############################################");
+            String currentVersion = ReflectionUtils.getVersion();
+
+            if (currentVersion.startsWith("v")) {
+                for (MinecraftVersion version : MinecraftVersion.valuesCache) {
+                    if (version.matches(currentVersion)) {
+                        minecraftVersion = version;
+                        return false;
+                    }
+                }
+
+                getLogger().log(Level.SEVERE, "#############################################");
+                getLogger().log(Level.SEVERE, "### Slimefun 未被正确安装!");
+                getLogger().log(Level.SEVERE, "### 你正在使用不支持的 Minecraft 版本!");
+                getLogger().log(Level.SEVERE, "###");
+                getLogger().log(Level.SEVERE, "### 你正在使用 Minecraft {0}", currentVersion);
+                getLogger().log(Level.SEVERE, "### 但 Slimefun v{0} 只支持", getDescription().getVersion());
+                getLogger().log(Level.SEVERE, "### Minecraft {0}", String.join(" / ", getSupportedVersions()));
+                getLogger().log(Level.SEVERE, "#############################################");
+                return true;
+            }
+
+            getLogger().log(Level.WARNING, "We could not determine the version of Minecraft you were using ({0})", currentVersion);
+            return false;
+        } catch (Exception | LinkageError x) {
+            getLogger().log(Level.SEVERE, x, () -> "Error: Could not determine Environment or version of Minecraft for Slimefun v" + getDescription().getVersion());
+            // We assume "unsupported" if something went wrong.
             return true;
         }
-
-        getLogger().log(Level.WARNING, "We could not determine the version of Minecraft you were using ({0})", currentVersion);
-        return false;
     }
 
     @Nonnull
@@ -605,7 +654,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
      */
     @Nonnull
     public static IntegrationsManager getIntegrations() {
-        return instance.thirdPartySupportService;
+        return instance.integrations;
     }
 
     /**
@@ -616,7 +665,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
      */
     @Deprecated
     public static ThirdPartyPluginService getThirdPartyPluginService() {
-        return instance.thirdPartySupportService;
+        return (ThirdPartyPluginService) instance.integrations;
     }
 
     /**
