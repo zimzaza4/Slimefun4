@@ -664,7 +664,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
      * @deprecated Please use {@link #getIntegrations()} instead.
      */
     @Deprecated
-    public static ThirdPartyPluginService getThirdPartyPluginService() {
+    public static ThirdPartyPluginService getThirdPartySupportService() {
         return (ThirdPartyPluginService) instance.integrations;
     }
 

@@ -36,7 +36,7 @@ public class AdvancedFarmerAndroid extends FarmerAndroid {
         farm(menu, block);
 
         if (SlimefunPlugin.getIntegrations().isExoticGardenInstalled()) {
-            Optional<ItemStack> result = SlimefunPlugin.getThirdPartyPluginService().harvestExoticGardenPlant(block);
+            Optional<ItemStack> result = SlimefunPlugin.getThirdPartySupportService().harvestExoticGardenPlant(block);
 
             if (result.isPresent()) {
                 ItemStack drop = result.get();
