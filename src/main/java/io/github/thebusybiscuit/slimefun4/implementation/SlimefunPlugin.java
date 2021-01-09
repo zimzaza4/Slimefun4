@@ -227,10 +227,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         // Setting up bStats
         new Thread(metricsService::start, "Slimefun Metrics").start();
 
-        // 魔改的自动更新服务
-        // 自动选择分支
-        NUpdater.autoSelectBranch(this);
-
         // Registering all GEO Resources
         getLogger().log(Level.INFO, "加载矿物资源...");
         GEOResourcesSetup.setup();
@@ -250,6 +246,10 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         // All Slimefun Listeners
         getLogger().log(Level.INFO, "正在注册监听器...");
         registerListeners();
+
+        // 魔改的自动更新服务
+        // 自动选择分支
+        NUpdater.autoSelectBranch(this);
 
         // Initiating various Stuff and all items with a slight delay (0ms after the Server finished loading)
         runSync(new SlimefunStartupTask(this, () -> {

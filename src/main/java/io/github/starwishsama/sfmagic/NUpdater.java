@@ -34,7 +34,7 @@ public class NUpdater {
     private final Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
     private static final String downloadDir = SlimefunPlugin.instance().getServer().getUpdateFolder();
     private static final String browserUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36";
-    private static SlimefunBranch branch;
+    private static SlimefunBranch branch = SlimefunBranch.NIGHTLY;
     private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyMMdd");
 
     /**
