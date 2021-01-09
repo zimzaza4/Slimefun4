@@ -547,7 +547,7 @@ public class SlimefunItem implements Placeable {
      *            The {@link Class} from which to start this operation.
      */
     private void checkForDeprecations(@Nullable Class<?> c) {
-        if (SlimefunPlugin.getUpdater().getBranch() == SlimefunBranch.DEVELOPMENT) {
+        if (SlimefunPlugin.getUpdater().getBranch() == SlimefunBranch.DEVELOPMENT || SlimefunPlugin.getUpdater().getBranch() == SlimefunBranch.NIGHTLY) {
             // This method is currently way too spammy with all the restructuring going on...
             // Since DEV builds are anyway under "development", things may be relocated.
             // So we fire these only for stable versions, since devs should update then, so
@@ -560,13 +560,13 @@ public class SlimefunItem implements Placeable {
         if (c != null) {
             // Check if this Class is deprecated
             if (c.isAnnotationPresent(Deprecated.class)) {
-                warn("The inherited Class \"" + c.getName() + "\" has been deprecated. Check the documentation for more details!");
+                warn("\"" + c.getName() + "\"  类已弃用. 查看文档以了解更多!");
             }
 
             for (Class<?> parent : c.getInterfaces()) {
                 // Check if this Interface is deprecated
                 if (parent.isAnnotationPresent(Deprecated.class)) {
-                    warn("The implemented Interface \"" + parent.getName() + "\" has been deprecated. Check the documentation for more details!");
+                    warn("\"" + parent.getName() + "\" 实现的接口已弃用. 查看文档以了解更多!");
                 }
             }
 

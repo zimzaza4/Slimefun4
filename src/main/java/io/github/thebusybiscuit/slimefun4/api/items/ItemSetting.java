@@ -123,7 +123,7 @@ public class ItemSetting<T> {
      */
     @Nonnull
     protected String getErrorMessage() {
-        return "Only '" + defaultValue.getClass().getSimpleName() + "' values are allowed!";
+        return "请使用在 '" + defaultValue.getClass().getSimpleName() + "' 范围内的值!";
     }
 
     /**
@@ -146,19 +146,19 @@ public class ItemSetting<T> {
             if (validateInput(newValue)) {
                 this.value = newValue;
             } else {
-                Slimefun.getLogger().log(Level.WARNING, "Slimefun has found an invalid config setting in your Items.yml!");
-                Slimefun.getLogger().log(Level.WARNING, "  at \"{0}.{1}\"", new Object[]{item.getId(), getKey()});
-                Slimefun.getLogger().log(Level.WARNING, "{0} is not a valid input!", configuredValue);
+                Slimefun.getLogger().log(Level.WARNING, "Slimefun 在 Items.yml 中发现有无效的物品设置!");
+                Slimefun.getLogger().log(Level.WARNING, "  在 \"{0}.{1}\"", new Object[]{item.getId(), getKey()});
+                Slimefun.getLogger().log(Level.WARNING, "{0} 不是一个有效值!", configuredValue);
                 Slimefun.getLogger().log(Level.WARNING, getErrorMessage());
             }
         } else {
             this.value = defaultValue;
             String found = configuredValue == null ? "null" : configuredValue.getClass().getSimpleName();
 
-            Slimefun.getLogger().log(Level.WARNING, "Slimefun has found an invalid config setting in your Items.yml!");
-            Slimefun.getLogger().log(Level.WARNING, "Please only use settings that are valid.");
+            Slimefun.getLogger().log(Level.WARNING, "Slimefun 在 Items.yml 中发现有无效的物品设置!");
+            Slimefun.getLogger().log(Level.WARNING, "请只设置有效的值.");
             Slimefun.getLogger().log(Level.WARNING, "  at \"{0}.{1}\"", new Object[]{item.getId(), getKey()});
-            Slimefun.getLogger().log(Level.WARNING, "Expected \"{0}\" but found: \"{1}\"", new Object[]{defaultValue.getClass().getSimpleName(), found});
+            Slimefun.getLogger().log(Level.WARNING, "期望 \"{0}\" 但找到了: \"{1}\"", new Object[]{defaultValue.getClass().getSimpleName(), found});
         }
     }
 

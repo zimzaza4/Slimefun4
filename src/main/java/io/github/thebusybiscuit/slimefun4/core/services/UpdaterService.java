@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.core.services;
 
+import io.github.starwishsama.sfmagic.NUpdater;
 import io.github.thebusybiscuit.cscorelib2.config.Config;
 import io.github.thebusybiscuit.cscorelib2.updater.Updater;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunBranch;
@@ -36,7 +37,7 @@ public class UpdaterService {
         Updater autoUpdater = null;
 
         // This Server is using a modified build that is not a public release.
-        branch = SlimefunBranch.UNOFFICIAL;
+        branch = NUpdater.getBranch();
 
         this.updater = autoUpdater;
     }
