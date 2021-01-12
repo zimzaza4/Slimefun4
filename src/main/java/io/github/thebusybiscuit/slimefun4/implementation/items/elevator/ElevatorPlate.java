@@ -93,7 +93,7 @@ public class ElevatorPlate extends SimpleSlimefunItem<BlockUseHandler> {
         for (int y = 0; y < b.getWorld().getMaxHeight(); y++) {
             if (y == b.getY()) {
                 String name = ChatColors.color(BlockStorage.getLocationInfo(b.getLocation(), DATA_KEY));
-                floors.addLast(new ElevatorFloor(name, index, b));
+                floors.addFirst(new ElevatorFloor(name, index, b));
                 index++;
                 continue;
             }
@@ -102,7 +102,7 @@ public class ElevatorPlate extends SimpleSlimefunItem<BlockUseHandler> {
 
             if (block.getType() == getItem().getType() && BlockStorage.check(block, getId())) {
                 String name = ChatColors.color(BlockStorage.getLocationInfo(block.getLocation(), DATA_KEY));
-                floors.addLast(new ElevatorFloor(name, index, block));
+                floors.addFirst(new ElevatorFloor(name, index, block));
                 index++;
             }
         }
@@ -130,7 +130,6 @@ public class ElevatorPlate extends SimpleSlimefunItem<BlockUseHandler> {
         ChestMenu menu = new ChestMenu(SlimefunPlugin.getLocalization().getMessage(p, "machines.ELEVATOR.pick-a-floor"));
         menu.setEmptySlotsClickable(false);
 
-        int pages = 1 + (floors.size() / GUI_SIZE);
         int index = GUI_SIZE * (page - 1);
 
         for (int i = 0; i < Math.min(GUI_SIZE, floors.size() - index); i++) {
@@ -155,6 +154,8 @@ public class ElevatorPlate extends SimpleSlimefunItem<BlockUseHandler> {
             }
             // @formatter:on
         }
+
+        int pages = 1 + (floors.size() / GUI_SIZE);
 
         // 0 index so size is the first slot of the last row.
         for (int i = GUI_SIZE; i < GUI_SIZE + 9; i++) {
