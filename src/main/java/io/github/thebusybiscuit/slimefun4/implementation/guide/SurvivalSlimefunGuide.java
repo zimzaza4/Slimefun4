@@ -5,6 +5,7 @@ import io.github.thebusybiscuit.cscorelib2.chat.ChatInput;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.recipes.MinecraftRecipe;
+import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.categories.FlexCategory;
@@ -12,7 +13,7 @@ import io.github.thebusybiscuit.slimefun4.core.categories.LockedCategory;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideLayout;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlock;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
@@ -41,7 +42,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 /**
- * The {@link ChestSlimefunGuide} is the standard version of our {@link SlimefunGuide}.
+ * The {@link SurvivalSlimefunGuide} is the standard version of our {@link SlimefunGuide}.
  * It uses an {@link Inventory} to display {@link SlimefunGuide} contents.
  *
  * @author TheBusyBiscuit
@@ -50,7 +51,7 @@ import java.util.logging.Level;
  * @see BookSlimefunGuide
  * @see CheatSheetSlimefunGuide
  */
-public class ChestSlimefunGuide implements SlimefunGuideImplementation {
+public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
 
     private static final int CATEGORY_SIZE = 36;
     private static final Sound sound = Sound.ITEM_BOOK_PAGE_TURN;
@@ -59,24 +60,25 @@ public class ChestSlimefunGuide implements SlimefunGuideImplementation {
     private final ItemStack item;
     private final boolean showVanillaRecipes;
 
-    public ChestSlimefunGuide(boolean showVanillaRecipes) {
+    public SurvivalSlimefunGuide(boolean showVanillaRecipes) {
         this.showVanillaRecipes = showVanillaRecipes;
         item = new SlimefunGuideItem(this, "&aSlimefun 指南 &7(箱子界面)");
     }
 
+    @Nonnull
     @Override
-    public SlimefunGuideLayout getLayout() {
-        return SlimefunGuideLayout.CHEST;
+    public SlimefunGuideMode getMode() {
+        return SlimefunGuideMode.SURVIVAL_MODE;
     }
 
+    @Nonnull
     @Override
     public ItemStack getItem() {
         return item;
     }
 
-    @Override
-    public boolean isSurvivalMode() {
-        return true;
+    protected boolean isSurvivalMode() {
+        return getMode() != SlimefunGuideMode.CHEAT_MODE;
     }
 
     /**
@@ -93,8 +95,18 @@ public class ChestSlimefunGuide implements SlimefunGuideImplementation {
         List<Category> categories = new LinkedList<>();
 
         for (Category category : SlimefunPlugin.getRegistry().getCategories()) {
-            if (!category.isHidden(p) && (!(category instanceof FlexCategory) || ((FlexCategory) category).isVisible(p, profile, getLayout()))) {
-                categories.add(category);
+            try {
+                if (!category.isHidden(p) && (!(category instanceof FlexCategory) || ((FlexCategory) category).isVisible(p, profile, getMode()))) {
+                    categories.add(category);
+                }
+            } catch (Exception | LinkageError x) {
+                SlimefunAddon addon = category.getAddon();
+
+                if (addon != null) {
+                    addon.getLogger().log(Level.SEVERE, x, () -> "Could not display Category: " + category);
+                } else {
+                    SlimefunPlugin.logger().log(Level.SEVERE, x, () -> "Could not display Category: " + category);
+                }
             }
         }
 
@@ -192,7 +204,7 @@ public class ChestSlimefunGuide implements SlimefunGuideImplementation {
         }
 
         if (category instanceof FlexCategory) {
-            ((FlexCategory) category).open(p, profile, getLayout());
+            ((FlexCategory) category).open(p, profile, getMode());
             return;
         }
 
@@ -692,7 +704,7 @@ public class ChestSlimefunGuide implements SlimefunGuideImplementation {
 
     private void printErrorMessage(Player p, Throwable x) {
         p.sendMessage(ChatColor.DARK_RED + "服务器发生了一个内部错误. 请联系管理员处理.");
-        Slimefun.getLogger().log(Level.SEVERE, "在打开指南书里的 Slimefun 物品时发生了意外!", x);
+        SlimefunPlugin.logger().log(Level.SEVERE, "在打开指南书里的 Slimefun 物品时发生了意外!", x);
     }
 
 }

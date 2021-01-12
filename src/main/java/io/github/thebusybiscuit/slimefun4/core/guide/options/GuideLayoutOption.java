@@ -2,7 +2,7 @@ package io.github.thebusybiscuit.slimefun4.core.guide.options;
 
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideLayout;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
@@ -13,34 +13,36 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-class GuideLayoutOption implements SlimefunGuideOption<SlimefunGuideLayout> {
+class GuideLayoutOption implements SlimefunGuideOption<SlimefunGuideMode> {
 
     @Override
     public SlimefunAddon getAddon() {
         return SlimefunPlugin.instance();
     }
 
+    @Nonnull
     @Override
     public NamespacedKey getKey() {
         return new NamespacedKey(SlimefunPlugin.instance(), "guide_layout");
     }
 
+    @Nonnull
     @Override
-    public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
-        Optional<SlimefunGuideLayout> current = getSelectedOption(p, guide);
+    public Optional<ItemStack> getDisplayItem(@Nonnull Player p, @Nonnull ItemStack guide) {
+        Optional<SlimefunGuideMode> current = getSelectedOption(p, guide);
 
         if (current.isPresent()) {
-            SlimefunGuideLayout layout = current.get();
+            SlimefunGuideMode layout = current.get();
             ItemStack item = new ItemStack(Material.AIR);
 
-            if (layout == SlimefunGuideLayout.CHEST) {
+            if (layout == SlimefunGuideMode.SURVIVAL_MODE) {
                 item.setType(Material.CHEST);
-            } else if (layout == SlimefunGuideLayout.BOOK) {
-                item.setType(Material.BOOK);
             } else {
                 item.setType(Material.COMMAND_BLOCK);
             }
@@ -49,11 +51,10 @@ class GuideLayoutOption implements SlimefunGuideOption<SlimefunGuideLayout> {
             meta.setDisplayName(ChatColor.GRAY + "Slimefun 指南样式: " + ChatColor.YELLOW + ChatUtils.humanize(layout.name()));
             List<String> lore = new ArrayList<>();
             lore.add("");
-            lore.add((layout == SlimefunGuideLayout.CHEST ? ChatColor.GREEN : ChatColor.GRAY) + "箱子界面");
-            lore.add((layout == SlimefunGuideLayout.BOOK ? ChatColor.GREEN : ChatColor.GRAY) + "书与笔界面");
+            lore.add((layout == SlimefunGuideMode.SURVIVAL_MODE ? ChatColor.GREEN : ChatColor.GRAY) + "箱子界面");
 
             if (p.hasPermission("slimefun.cheat.items")) {
-                lore.add((layout == SlimefunGuideLayout.CHEAT_SHEET ? ChatColor.GREEN : ChatColor.GRAY) + "作弊界面");
+                lore.add((layout == SlimefunGuideMode.CHEAT_MODE ? ChatColor.GREEN : ChatColor.GRAY) + "作弊界面");
             }
 
             lore.add("");
@@ -68,36 +69,28 @@ class GuideLayoutOption implements SlimefunGuideOption<SlimefunGuideLayout> {
     }
 
     @Override
-    public void onClick(Player p, ItemStack guide) {
-        Optional<SlimefunGuideLayout> current = getSelectedOption(p, guide);
+    public void onClick(@Nonnull Player p, @Nonnull ItemStack guide) {
+        Optional<SlimefunGuideMode> current = getSelectedOption(p, guide);
 
         if (current.isPresent()) {
-            SlimefunGuideLayout next = getNextLayout(p, current.get());
+            SlimefunGuideMode next = getNextLayout(p, current.get());
             setSelectedOption(p, guide, next);
         }
 
         SlimefunGuideSettings.openSettings(p, guide);
     }
 
-    private SlimefunGuideLayout getNextLayout(Player p, SlimefunGuideLayout layout) {
-        if (p.hasPermission("slimefun.cheat.items")) {
-            if (layout == SlimefunGuideLayout.CHEST) {
-                return SlimefunGuideLayout.BOOK;
-            }
-
-            if (layout == SlimefunGuideLayout.BOOK) {
-                return SlimefunGuideLayout.CHEAT_SHEET;
-            }
-
-            return SlimefunGuideLayout.CHEST;
-        } else {
-            return layout == SlimefunGuideLayout.CHEST ? SlimefunGuideLayout.BOOK : SlimefunGuideLayout.CHEST;
+    @Nonnull
+    private SlimefunGuideMode getNextLayout(Player p, SlimefunGuideMode layout) {
+        if (p.hasPermission("slimefun.cheat.items") && layout == SlimefunGuideMode.SURVIVAL_MODE) {
+            return SlimefunGuideMode.CHEAT_MODE;
         }
+        return SlimefunGuideMode.SURVIVAL_MODE;
     }
 
     @Override
-    public Optional<SlimefunGuideLayout> getSelectedOption(Player p, ItemStack guide) {
-        for (SlimefunGuideLayout layout : SlimefunGuideLayout.valuesCache) {
+    public Optional<SlimefunGuideMode> getSelectedOption(@Nonnull Player p, @Nonnull ItemStack guide) {
+        for (SlimefunGuideMode layout : SlimefunGuideMode.valuesCache) {
             if (SlimefunUtils.isItemSimilar(guide, SlimefunGuide.getItem(layout), true, false)) {
                 return Optional.of(layout);
             }
@@ -107,7 +100,8 @@ class GuideLayoutOption implements SlimefunGuideOption<SlimefunGuideLayout> {
     }
 
     @Override
-    public void setSelectedOption(Player p, ItemStack guide, SlimefunGuideLayout value) {
+    @ParametersAreNonnullByDefault
+    public void setSelectedOption(Player p, ItemStack guide, SlimefunGuideMode value) {
         guide.setItemMeta(SlimefunGuide.getItem(value).getItemMeta());
     }
 

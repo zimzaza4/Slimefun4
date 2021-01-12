@@ -214,6 +214,7 @@ public final class NumberUtils {
         }
     }
 
+    @Nonnull
     public static String roundDecimalNumber(double number) {
         return DECIMAL_FORMAT.format(number);
     }

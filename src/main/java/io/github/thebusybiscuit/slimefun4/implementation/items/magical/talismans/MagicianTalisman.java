@@ -1,8 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.settings.TalismanEnchantment;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.apache.commons.lang.Validate;
 import org.bukkit.enchantments.Enchantment;
@@ -39,7 +39,7 @@ public class MagicianTalisman extends Talisman {
                     enchantments.add(new TalismanEnchantment(enchantment, i));
                 }
             } catch (Exception x) {
-                Slimefun.getLogger().log(Level.SEVERE, x, () -> "The following Exception occured while trying to register the following Enchantment: " + enchantment);
+                SlimefunPlugin.logger().log(Level.SEVERE, x, () -> "The following Exception occured while trying to register the following Enchantment: " + enchantment);
             }
         }
 

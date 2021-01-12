@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
  */
 final class RechargeableHelper {
 
-    private static final NamespacedKey CHARGE_KEY = new NamespacedKey(SlimefunPlugin.instance(), "item_charge");
     private static final String LORE_PREFIX = ChatColors.color("&8\u21E8 &e\u26A1 &7");
     private static final Pattern REGEX = Pattern.compile(ChatColors.color("(&c&o)?" + LORE_PREFIX) + "[0-9.]+ / [0-9.]+ J");
 
@@ -37,7 +36,9 @@ final class RechargeableHelper {
         BigDecimal decimal = BigDecimal.valueOf(charge).setScale(2, RoundingMode.HALF_UP);
         float value = decimal.floatValue();
 
-        meta.getPersistentDataContainer().set(CHARGE_KEY, PersistentDataType.FLOAT, value);
+        NamespacedKey key = SlimefunPlugin.getRegistry().getItemChargeDataKey();
+
+        meta.getPersistentDataContainer().set(key, PersistentDataType.FLOAT, value);
 
         List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
         for (int i = 0; i < lore.size(); i++) {
@@ -55,7 +56,9 @@ final class RechargeableHelper {
     }
 
     static float getCharge(@Nonnull ItemMeta meta) {
-        Float value = meta.getPersistentDataContainer().get(CHARGE_KEY, PersistentDataType.FLOAT);
+        NamespacedKey key = SlimefunPlugin.getRegistry().getItemChargeDataKey();
+
+        Float value = meta.getPersistentDataContainer().get(key, PersistentDataType.FLOAT);
 
         // If persistent data is available, we just return this value
         if (value != null) {

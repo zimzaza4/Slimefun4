@@ -3,7 +3,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.guide;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.categories.FlexCategory;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideLayout;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.SlimefunGuideItem;
@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CheatSheetSlimefunGuide extends ChestSlimefunGuide {
+public class CheatSheetSlimefunGuide extends SurvivalSlimefunGuide {
 
     private final ItemStack item;
 
@@ -52,11 +52,13 @@ public class CheatSheetSlimefunGuide extends ChestSlimefunGuide {
         return categories;
     }
 
+    @Nonnull
     @Override
-    public SlimefunGuideLayout getLayout() {
-        return SlimefunGuideLayout.CHEAT_SHEET;
+    public SlimefunGuideMode getMode() {
+        return SlimefunGuideMode.CHEAT_MODE;
     }
 
+    @Nonnull
     @Override
     public ItemStack getItem() {
         return item;

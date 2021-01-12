@@ -8,7 +8,6 @@ import io.github.thebusybiscuit.cscorelib2.scheduling.TaskQueue;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -190,7 +189,7 @@ class ActiveMiner implements Runnable {
 
                 nextColumn();
             } catch (Exception e) {
-                Slimefun.getLogger().log(Level.SEVERE, e, () -> "An Error occurred while running an Industrial Miner at " + new BlockPosition(chest));
+                SlimefunPlugin.logger().log(Level.SEVERE, e, () -> "An Error occurred while running an Industrial Miner at " + new BlockPosition(chest));
                 stop();
             }
         });
@@ -340,7 +339,7 @@ class ActiveMiner implements Runnable {
                 stop("machines.INDUSTRIAL_MINER.destroyed");
             }
         } catch (Exception e) {
-            Slimefun.getLogger().log(Level.SEVERE, e, () -> "An Error occurred while moving a Piston for an Industrial Miner at " + new BlockPosition(block));
+            SlimefunPlugin.logger().log(Level.SEVERE, e, () -> "An Error occurred while moving a Piston for an Industrial Miner at " + new BlockPosition(block));
             stop();
         }
     }

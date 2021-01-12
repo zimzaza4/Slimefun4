@@ -3,7 +3,6 @@ package io.github.thebusybiscuit.slimefun4.api.items;
 import io.github.thebusybiscuit.cscorelib2.config.Config;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.apache.commons.lang.Validate;
 
 import javax.annotation.Nonnull;
@@ -146,19 +145,19 @@ public class ItemSetting<T> {
             if (validateInput(newValue)) {
                 this.value = newValue;
             } else {
-                Slimefun.getLogger().log(Level.WARNING, "Slimefun 在 Items.yml 中发现有无效的物品设置!");
-                Slimefun.getLogger().log(Level.WARNING, "  在 \"{0}.{1}\"", new Object[]{item.getId(), getKey()});
-                Slimefun.getLogger().log(Level.WARNING, "{0} 不是一个有效值!", configuredValue);
-                Slimefun.getLogger().log(Level.WARNING, getErrorMessage());
+                SlimefunPlugin.logger().log(Level.WARNING, "Slimefun 在 Items.yml 中发现有无效的物品设置!");
+                SlimefunPlugin.logger().log(Level.WARNING, "  在 \"{0}.{1}\"", new Object[]{item.getId(), getKey()});
+                SlimefunPlugin.logger().log(Level.WARNING, "{0} 不是一个有效值!", configuredValue);
+                SlimefunPlugin.logger().log(Level.WARNING, getErrorMessage());
             }
         } else {
             this.value = defaultValue;
             String found = configuredValue == null ? "null" : configuredValue.getClass().getSimpleName();
 
-            Slimefun.getLogger().log(Level.WARNING, "Slimefun 在 Items.yml 中发现有无效的物品设置!");
-            Slimefun.getLogger().log(Level.WARNING, "请只设置有效的值.");
-            Slimefun.getLogger().log(Level.WARNING, "  at \"{0}.{1}\"", new Object[]{item.getId(), getKey()});
-            Slimefun.getLogger().log(Level.WARNING, "期望 \"{0}\" 但找到了: \"{1}\"", new Object[]{defaultValue.getClass().getSimpleName(), found});
+            SlimefunPlugin.logger().log(Level.WARNING, "Slimefun 在 Items.yml 中发现有无效的物品设置!");
+            SlimefunPlugin.logger().log(Level.WARNING, "请只设置有效的值.");
+            SlimefunPlugin.logger().log(Level.WARNING, "  at \"{0}.{1}\"", new Object[]{item.getId(), getKey()});
+            SlimefunPlugin.logger().log(Level.WARNING, "期望 \"{0}\" 但找到了: \"{1}\"", new Object[]{defaultValue.getClass().getSimpleName(), found});
         }
     }
 

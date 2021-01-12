@@ -5,7 +5,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.listeners.TeleporterLis
 import io.github.thebusybiscuit.slimefun4.implementation.setup.PostSetup;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -48,7 +47,7 @@ public class SlimefunStartupTask implements Runnable {
             try {
                 new BlockStorage(world);
             } catch (Exception x) {
-                Slimefun.getLogger().log(Level.SEVERE, x, () -> "An Error occured while trying to load World \"" + world.getName() + "\" for Slimefun v" + SlimefunPlugin.getVersion());
+                SlimefunPlugin.logger().log(Level.SEVERE, x, () -> "An Error occured while trying to load World \"" + world.getName() + "\" for Slimefun v" + SlimefunPlugin.getVersion());
             }
         }
 

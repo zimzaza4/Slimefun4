@@ -3,7 +3,6 @@ package io.github.thebusybiscuit.slimefun4.core.services;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -62,7 +61,7 @@ public class AutoSavingService {
         }
 
         if (players > 0) {
-            Slimefun.getLogger().log(Level.INFO, "成功保存了 {0} 个玩家的数据!", players);
+            SlimefunPlugin.logger().log(Level.INFO, "成功保存了 {0} 个玩家的数据!", players);
         }
     }
 
@@ -84,7 +83,7 @@ public class AutoSavingService {
         }
 
         if (!worlds.isEmpty()) {
-            Slimefun.getLogger().log(Level.INFO, "正在自动保存方块数据... (下一次保存在 {0} 分钟后)", interval);
+            SlimefunPlugin.logger().log(Level.INFO, "正在自动保存方块数据... (下一次保存在 {0} 分钟后)", interval);
 
             for (BlockStorage storage : worlds) {
                 storage.save();

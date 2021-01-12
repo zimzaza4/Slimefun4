@@ -1,6 +1,7 @@
 package me.mrCookieSlime.Slimefun.Objects;
 
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.categories.LockedCategory;
 import io.github.thebusybiscuit.slimefun4.core.categories.SeasonalCategory;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
@@ -30,6 +32,8 @@ import java.util.*;
  *
  */
 public class Category implements Keyed {
+
+    private SlimefunAddon addon;
 
     protected final List<SlimefunItem> items = new ArrayList<>();
     protected final NamespacedKey key;
@@ -87,10 +91,37 @@ public class Category implements Keyed {
      * Registers this category.
      * <p>
      * By default, a category is automatically registered when a {@link SlimefunItem} was added to it.
+     *
+     * @param addon The {@link SlimefunAddon} that wants to register this {@link Category}
      */
+    public void register(@Nonnull SlimefunAddon addon) {
+        Validate.notNull(addon, "The Addon cannot be null");
+        this.addon = addon;
+
+        SlimefunPlugin.getRegistry().getCategories().add(this);
+        Collections.sort(SlimefunPlugin.getRegistry().getCategories(), Comparator.comparingInt(Category::getTier));
+    }
+
+    /**
+     * Old way of registering categories, do not call this manually.
+     *
+     * @deprecated Please use {@link #register(SlimefunAddon)} instead.
+     */
+    @Deprecated
     public void register() {
         SlimefunPlugin.getRegistry().getCategories().add(this);
         Collections.sort(SlimefunPlugin.getRegistry().getCategories(), Comparator.comparingInt(Category::getTier));
+    }
+
+    /**
+     * This returns the {@link SlimefunAddon} which has registered this {@link Category}.
+     * Or null if it has not been registered yet.
+     *
+     * @return The {@link SlimefunAddon} or null if unregistered
+     */
+    @Nullable
+    public final SlimefunAddon getAddon() {
+        return addon;
     }
 
     /**

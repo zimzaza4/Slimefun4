@@ -3,7 +3,7 @@ package io.github.thebusybiscuit.slimefun4.core.commands.subcommands;
 import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideLayout;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,7 +18,7 @@ class GuideCommand extends SubCommand {
     public void onExecute(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             if (sender.hasPermission("slimefun.command.guide")) {
-                SlimefunGuideLayout design = SlimefunGuide.getDefaultLayout();
+                SlimefunGuideMode design = SlimefunGuide.getDefaultLayout();
 
                 ((Player) sender).getInventory().addItem(SlimefunGuide.getItem(design).clone());
             } else {

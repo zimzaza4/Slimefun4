@@ -1,7 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.core.services;
 
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.apache.commons.lang.Validate;
 
 import javax.annotation.Nonnull;
@@ -40,7 +39,7 @@ public class BackupService implements Runnable {
             try {
                 purgeBackups(backups);
             } catch (IOException e) {
-                Slimefun.getLogger().log(Level.WARNING, "无法删除旧的备份文件", e);
+                SlimefunPlugin.logger().log(Level.WARNING, "无法删除旧的备份文件", e);
             }
         }
 
@@ -53,12 +52,12 @@ public class BackupService implements Runnable {
                         createBackup(output);
                     }
 
-                    Slimefun.getLogger().log(Level.INFO, "已备份 Slimefun 数据到: {0}", file.getName());
+                    SlimefunPlugin.logger().log(Level.INFO, "已备份 Slimefun 数据到: {0}", file.getName());
                 } else {
-                    Slimefun.getLogger().log(Level.WARNING, "无法创建备份文件: {0}", file.getName());
+                    SlimefunPlugin.logger().log(Level.WARNING, "无法创建备份文件: {0}", file.getName());
                 }
             } catch (IOException x) {
-                Slimefun.getLogger().log(Level.SEVERE, x, () -> "An Error occurred while creating a backup for Slimefun " + SlimefunPlugin.getVersion());
+                SlimefunPlugin.logger().log(Level.SEVERE, x, () -> "An Error occurred while creating a backup for Slimefun " + SlimefunPlugin.getVersion());
             }
         }
     }

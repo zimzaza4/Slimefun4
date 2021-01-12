@@ -47,8 +47,7 @@ public final class SlimefunUtils {
     private static final String EMERALDENCHANTS_LORE = ChatColor.YELLOW.toString() + ChatColor.YELLOW.toString() + ChatColor.GRAY.toString();
     private static final String NO_PICKUP_METADATA = "no_pickup";
 
-    private static final NamespacedKey SOULBOUND_KEY = new NamespacedKey(SlimefunPlugin.instance(), "soulbound");
-    private static final String SOULBOUND_LORE = ChatColor.GRAY + "灵魂绑定";
+     private static final String SOULBOUND_LORE = ChatColor.GRAY + "灵魂绑定";
 
     private SlimefunUtils() {
     }
@@ -109,8 +108,9 @@ public final class SlimefunUtils {
     private static boolean hasSoulboundFlag(@Nullable ItemMeta meta) {
         if (meta != null) {
             PersistentDataContainer container = meta.getPersistentDataContainer();
+            NamespacedKey key = SlimefunPlugin.getRegistry().getSoulboundDataKey();
 
-            if (container.has(SOULBOUND_KEY, PersistentDataType.BYTE)) {
+            if (container.has(key, PersistentDataType.BYTE)) {
                 return true;
             }
         }
@@ -141,13 +141,14 @@ public final class SlimefunUtils {
         ItemMeta meta = item.getItemMeta();
 
         PersistentDataContainer container = meta.getPersistentDataContainer();
+        NamespacedKey key = SlimefunPlugin.getRegistry().getSoulboundDataKey();
 
         if (makeSoulbound && !isSoulbound) {
-            container.set(SOULBOUND_KEY, PersistentDataType.BYTE, (byte) 1);
+            container.set(key, PersistentDataType.BYTE, (byte) 1);
         }
 
         if (!makeSoulbound && isSoulbound) {
-            container.remove(SOULBOUND_KEY);
+            container.remove(key);
         }
 
         List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();

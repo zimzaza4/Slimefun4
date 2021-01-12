@@ -18,12 +18,11 @@ import java.util.Map;
 /**
  * A {@link RecipeChoiceTask} is an asynchronously repeating task that cycles
  * through the different variants of {@link Material} that a {@link MaterialChoice} or {@link Tag} can represent.
- *
- * It is used in the {@link ChestSlimefunGuide} for any {@link ItemStack} from Minecraft
+ * <p>
+ * It is used in the {@link SurvivalSlimefunGuide} for any {@link ItemStack} from Minecraft
  * that accepts more than one {@link Material} in its {@link Recipe}.
  *
  * @author TheBusyBiscuit
- *
  */
 class RecipeChoiceTask implements Runnable {
 

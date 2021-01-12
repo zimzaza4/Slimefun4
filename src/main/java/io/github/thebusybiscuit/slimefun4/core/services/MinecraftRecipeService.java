@@ -2,7 +2,7 @@ package io.github.thebusybiscuit.slimefun4.core.services;
 
 import io.github.thebusybiscuit.cscorelib2.recipes.MinecraftRecipe;
 import io.github.thebusybiscuit.cscorelib2.recipes.RecipeSnapshot;
-import io.github.thebusybiscuit.slimefun4.implementation.guide.ChestSlimefunGuide;
+import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Server;
 import org.bukkit.inventory.*;
@@ -20,11 +20,10 @@ import java.util.function.Consumer;
  * This Service is responsible for accessing a {@link RecipeSnapshot}.
  * This snapshot contains a compiled list of all recipes that could be found on the
  * Server at the time the Service was loaded.
- *
- * This Service is primarily used by the {@link ChestSlimefunGuide}.
+ * <p>
+ * This Service is primarily used by the {@link SurvivalSlimefunGuide}.
  *
  * @author TheBusyBiscuit
- *
  */
 public class MinecraftRecipeService {
 

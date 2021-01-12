@@ -18,6 +18,7 @@ import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
+// This class will be deprecated, relocated and rewritten in a future version.
 public abstract class BlockMenuPreset extends ChestMenu {
 
     private final Set<Integer> occupiedSlots = new HashSet<>();
@@ -29,8 +30,6 @@ public abstract class BlockMenuPreset extends ChestMenu {
 
     private final boolean universal;
     private boolean locked;
-
-    private ItemManipulationEvent event;
 
     public BlockMenuPreset(@Nonnull String id, @Nonnull String title) {
         this(id, title, false);
@@ -69,19 +68,6 @@ public abstract class BlockMenuPreset extends ChestMenu {
     public abstract boolean canOpen(@Nonnull Block b, @Nonnull Player p);
 
     public abstract int[] getSlotsAccessedByItemTransport(ItemTransportFlow flow);
-
-    /**
-     * This method is deprecated.
-     *
-     * @deprecated Override {@link #onItemStackChange(DirtyChestMenu, int, ItemStack, ItemStack)} instead
-     *
-     * @param event
-     *            The event
-     */
-    @Deprecated
-    public void registerEvent(ItemManipulationEvent event) {
-        this.event = event;
-    }
 
     /**
      * This method is called whenever an {@link ItemStack} changes.
@@ -163,8 +149,7 @@ public abstract class BlockMenuPreset extends ChestMenu {
         if (size % 9 == 0 && size >= 0 && size < 55) {
             this.size = size;
             return this;
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("The size of a BlockMenuPreset must be a multiple of 9 and within the bounds 0-54, received: " + size);
         }
     }
@@ -252,7 +237,6 @@ public abstract class BlockMenuPreset extends ChestMenu {
 
         menu.addMenuOpeningHandler(getMenuOpeningHandler());
         menu.addMenuCloseHandler(getMenuCloseHandler());
-        menu.registerEvent(event);
     }
 
     public void newInstance(@Nonnull BlockMenu menu, @Nonnull Location l) {

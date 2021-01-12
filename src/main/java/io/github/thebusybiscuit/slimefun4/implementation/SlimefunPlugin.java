@@ -4,7 +4,6 @@ import io.github.starwishsama.sfmagic.LangUtil;
 import io.github.starwishsama.sfmagic.NUpdater;
 import io.github.starwishsama.sfmagic.ProtectionChecker;
 import io.github.thebusybiscuit.cscorelib2.config.Config;
-import io.github.thebusybiscuit.cscorelib2.math.DoubleHandler;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectionManager;
 import io.github.thebusybiscuit.cscorelib2.reflection.ReflectionUtils;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
@@ -39,6 +38,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.tasks.ArmorTask;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.SlimefunStartupTask;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.TickerTask;
 import io.github.thebusybiscuit.slimefun4.integrations.IntegrationsManager;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
@@ -62,6 +62,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -97,12 +98,11 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     private final IntegrationsManager integrations = new ThirdPartyPluginService(this);
     private final MinecraftRecipeService recipeService = new MinecraftRecipeService(this);
     private final SlimefunProfiler profiler = new SlimefunProfiler();
-    private LocalizationService local;
     private NUpdater updater;
 
+    private LocalizationService local;
     private GPSNetwork gpsNetwork;
     private NetworkManager networkManager;
-    private ProtectionManager protections;
 
     // Important config files for Slimefun
     private final Config config = new Config(this);
@@ -179,7 +179,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         gpsNetwork = new GPSNetwork();
         networkManager = new NetworkManager(200);
         command.register();
-        registry.load(config);
+        registry.load(this, config);
         loadTags();
     }
 
@@ -206,7 +206,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         // Creating all necessary Folders
         getLogger().log(Level.INFO, "正在创建文件夹...");
         createDirectories();
-        registry.load(config);
+        registry.load(this, config);
 
         // Set up localization
         getLogger().log(Level.INFO, "正在加载语言文件...");
@@ -253,7 +253,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
         // Initiating various Stuff and all items with a slight delay (0ms after the Server finished loading)
         runSync(new SlimefunStartupTask(this, () -> {
-            protections = new ProtectionManager(getServer());
             textureService.register(registry.getAllSlimefunItems(), true);
             permissionsService.register(registry.getAllSlimefunItems(), true);
 
@@ -358,8 +357,19 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
      *
      * @param pluginInstance Our instance of {@link SlimefunPlugin} or null
      */
-    private static final void setInstance(@Nullable SlimefunPlugin pluginInstance) {
+    private static void setInstance(@Nullable SlimefunPlugin pluginInstance) {
         instance = pluginInstance;
+    }
+
+    @Nonnull
+    private String getStartupTime(long timestamp) {
+        long ms = (System.nanoTime() - timestamp) / 1000000;
+
+        if (ms > 1000) {
+            return NumberUtils.roundDecimalNumber(ms / 1000.0) + "s";
+        } else {
+            return NumberUtils.roundDecimalNumber(ms) + "ms";
+        }
     }
 
     /**
@@ -368,7 +378,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
      * @deprecated These static Maps should really be removed at some point...
      */
     @Deprecated
-    private static final void cleanUp() {
+    private static void cleanUp() {
         AContainer.processing = null;
         AContainer.progress = null;
 
@@ -377,17 +387,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
         Reactor.processing = null;
         Reactor.progress = null;
-    }
-
-    @Nonnull
-    private String getStartupTime(long timestamp) {
-        long ms = (System.nanoTime() - timestamp) / 1000000;
-
-        if (ms > 1000) {
-            return DoubleHandler.fixDouble(ms / 1000.0) + "s";
-        } else {
-            return DoubleHandler.fixDouble(ms) + "ms";
-        }
     }
 
     /**
@@ -442,12 +441,24 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         }
     }
 
+    /**
+     * This private method gives us a {@link Collection} of every {@link MinecraftVersion}
+     * that Slimefun is compatible with (as a {@link String} representation).
+     * <p>
+     * Example:
+     *
+     * <pre>
+     * { 1.14.x, 1.15.x, 1.16.x }
+     * </pre>
+     *
+     * @return A {@link Collection} of all compatible minecraft versions as strings
+     */
     @Nonnull
     private Collection<String> getSupportedVersions() {
         List<String> list = new ArrayList<>();
 
         for (MinecraftVersion version : MinecraftVersion.valuesCache) {
-            if (version.isVirtual()) {
+            if (!version.isVirtual()) {
                 list.add(version.getName());
             }
         }
@@ -455,12 +466,16 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         return list;
     }
 
+    /**
+     * This method creates all necessary directories (and sub directories) for Slimefun.
+     */
     private void createDirectories() {
         String[] storageFolders = {"Players", "blocks", "stored-blocks", "stored-inventories", "stored-chunks", "universal-inventories", "waypoints", "block-backups"};
         String[] pluginFolders = {"scripts", "error-reports", "cache/github", "world-settings"};
 
         for (String folder : storageFolders) {
             File file = new File("data-storage/Slimefun", folder);
+
             if (!file.exists()) {
                 file.mkdirs();
             }
@@ -468,6 +483,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
         for (String folder : pluginFolders) {
             File file = new File("plugins/Slimefun", folder);
+
             if (!file.exists()) {
                 file.mkdirs();
             }
@@ -546,6 +562,9 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new PlayerProfileListener(this);
     }
 
+    /**
+     * This (re)loads every {@link SlimefunTag}.
+     */
     private void loadTags() {
         for (SlimefunTag tag : SlimefunTag.valuesCache) {
             try {
@@ -559,20 +578,52 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         }
     }
 
+    /**
+     * This loads all of our items.
+     */
     private void loadItems() {
         try {
             SlimefunItemSetup.setup(this);
         } catch (Exception | LinkageError x) {
-            getLogger().log(Level.SEVERE, x, () -> "An Error occured while initializing SlimefunItems for Slimefun " + getVersion());
+            getLogger().log(Level.SEVERE, x, () -> "An Error occurred while initializing SlimefunItems for Slimefun " + getVersion());
         }
     }
 
+    /**
+     * This loads our researches.
+     */
     private void loadResearches() {
         try {
             ResearchSetup.setupResearches();
         } catch (Exception | LinkageError x) {
-            getLogger().log(Level.SEVERE, x, () -> "An Error occured while initializing Slimefun Researches for Slimefun " + getVersion());
+            getLogger().log(Level.SEVERE, x, () -> "An Error occurred while initializing Slimefun Researches for Slimefun " + getVersion());
         }
+    }
+
+    /**
+     * This private static method allows us to throw a proper {@link Exception}
+     * whenever someone tries to access a static method while the instance is null.
+     * This happens when the method is invoked before {@link #onEnable()} or after {@link #onDisable()}.
+     * <p>
+     * Use it whenever a null check is needed to avoid a non-descriptive {@link NullPointerException}.
+     */
+    private static void validateInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("Cannot invoke static method, Slimefun instance is null.");
+        }
+    }
+
+    /**
+     * This returns the {@link Logger} instance that Slimefun uses.
+     * <p>
+     * <strong>Any {@link SlimefunAddon} should use their own {@link Logger} instance!</strong>
+     *
+     * @return Our {@link Logger} instance
+     */
+    @Nonnull
+    public static Logger logger() {
+        validateInstance();
+        return instance.getLogger();
     }
 
     @Nullable
@@ -609,8 +660,15 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         return instance.getDescription().getVersion();
     }
 
+    /**
+     * This returns out instance of the {@link ProtectionManager}.
+     * This bridge is used to hook into any third-party protection {@link Plugin}.
+     *
+     * @return Our instanceof of the {@link ProtectionManager}
+     */
+    @Nonnull
     public static ProtectionManager getProtectionManager() {
-        return instance.protections;
+        return getIntegrations().getProtectionManager();
     }
 
     /**
@@ -722,7 +780,15 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
      */
     @Nonnull
     public static Set<Plugin> getInstalledAddons() {
-        return Arrays.stream(instance.getServer().getPluginManager().getPlugins()).filter(plugin -> plugin.getDescription().getDepend().contains(instance.getName()) || plugin.getDescription().getSoftDepend().contains(instance.getName())).collect(Collectors.toSet());
+        String pluginName = instance.getName();
+
+        // @formatter:off
+        return Arrays.stream(instance.getServer().getPluginManager().getPlugins())
+                .filter(plugin -> {
+                    PluginDescriptionFile description = plugin.getDescription();
+                    return description.getDepend().contains(pluginName) || description.getSoftDepend().contains(pluginName);
+                }).collect(Collectors.toSet());
+        // @formatter:on
     }
 
     /**

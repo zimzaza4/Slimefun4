@@ -18,10 +18,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
+// This class will be deprecated, relocated and rewritten in a future version.
 public class DirtyChestMenu extends ChestMenu {
 
     protected final BlockMenuPreset preset;
-    protected ItemManipulationEvent event;
     protected int changes = 1;
 
     public DirtyChestMenu(@Nonnull BlockMenuPreset preset) {
@@ -61,28 +61,17 @@ public class DirtyChestMenu extends ChestMenu {
         return preset.canOpen(b, p) && ProtectionChecker.canInteract(p, b, ProtectableAction.INTERACT_BLOCK);
     }
 
+    @Override
+    public void open(Player... players) {
+        super.open(players);
+
+        // The Inventory will likely be modified soon
+        markDirty();
+    }
+
     public void close() {
         for (HumanEntity human : new ArrayList<>(toInventory().getViewers())) {
             human.closeInventory();
-        }
-    }
-
-    /**
-     * This method has been deprecated.
-     *
-     * @param event deprecated class
-     * @deprecated The {@link ItemManipulationEvent} has been deprecated.
-     */
-    public void registerEvent(ItemManipulationEvent event) {
-        this.event = event;
-    }
-
-    @Override
-    public ChestMenu addMenuOpeningHandler(MenuOpeningHandler handler) {
-        if (handler instanceof SaveHandler) {
-            return super.addMenuOpeningHandler(new SaveHandler(this, ((SaveHandler) handler).getOpeningHandler()));
-        } else {
-            return super.addMenuOpeningHandler(new SaveHandler(this, handler));
         }
     }
 
@@ -123,7 +112,6 @@ public class DirtyChestMenu extends ChestMenu {
 
                 if (ItemUtils.canStack(wrapper, stack)) {
                     amount -= (stack.getMaxStackSize() - stack.getAmount());
-
                     stack.setAmount(Math.min(stack.getAmount() + item.getAmount(), stack.getMaxStackSize()));
                     item.setAmount(amount);
                 }
@@ -158,39 +146,11 @@ public class DirtyChestMenu extends ChestMenu {
     public void replaceExistingItem(int slot, ItemStack item, boolean event) {
         if (event) {
             ItemStack previous = getItemInSlot(slot);
-
-            if (this.event != null) {
-                item = this.event.onEvent(slot, previous, item);
-            }
-
             item = preset.onItemStackChange(this, slot, previous, item);
         }
 
         super.replaceExistingItem(slot, item);
         markDirty();
     }
-
-    public static class SaveHandler implements MenuOpeningHandler {
-
-        private final DirtyChestMenu menu;
-        private final MenuOpeningHandler handler;
-
-        public SaveHandler(DirtyChestMenu menu, MenuOpeningHandler handler) {
-            this.menu = menu;
-            this.handler = handler;
-        }
-
-        @Override
-        public void onOpen(Player p) {
-            handler.onOpen(p);
-            menu.markDirty();
-        }
-
-        public MenuOpeningHandler getOpeningHandler() {
-            return handler;
-        }
-
-    }
-
 
 }

@@ -3,7 +3,6 @@ package io.github.thebusybiscuit.slimefun4.core.services.github;
 import kong.unirest.JsonNode;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -83,7 +82,7 @@ class ContributionsConnector extends GitHubConnector {
         if (response.isArray()) {
             computeContributors(response.getArray());
         } else {
-            Slimefun.getLogger().log(Level.WARNING, "Received an unusual answer from GitHub, possibly a timeout? ({0})", response);
+            SlimefunPlugin.logger().log(Level.WARNING, "Received an unusual answer from GitHub, possibly a timeout? ({0})", response);
         }
     }
 
