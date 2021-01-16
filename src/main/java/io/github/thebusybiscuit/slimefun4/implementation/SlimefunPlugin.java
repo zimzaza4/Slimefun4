@@ -1,8 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation;
 
-import io.github.starwishsama.sfmagic.LangUtil;
-import io.github.starwishsama.sfmagic.NUpdater;
-import io.github.starwishsama.sfmagic.ProtectionChecker;
+import io.github.starwishsama.utils.LangUtil;
+import io.github.starwishsama.utils.NUpdater;
+import io.github.starwishsama.utils.ProtectionChecker;
 import io.github.thebusybiscuit.cscorelib2.config.Config;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectionManager;
 import io.github.thebusybiscuit.cscorelib2.reflection.ReflectionUtils;

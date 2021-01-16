@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.androids;
 
-import io.github.starwishsama.sfmagic.ProtectionChecker;
+import io.github.starwishsama.utils.ProtectionChecker;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatInput;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
@@ -860,7 +860,7 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
     }
 
     protected void move(Block b, BlockFace face, Block block) {
-        Player p = Bukkit.getPlayer(ProtectionChecker.parseOwnerByJson(BlockStorage.getBlockInfoAsJson(b.getLocation())));
+        Player p = Bukkit.getPlayer(ProtectionChecker.getOwnerFromJson(BlockStorage.getBlockInfoAsJson(b.getLocation())));
 
         if (p != null && !ProtectionChecker.canInteract(p, block, ProtectableAction.PLACE_BLOCK)) {
             BlockStorage.addBlockInfo(b, "paused", "false");

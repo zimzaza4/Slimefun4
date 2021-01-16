@@ -1,4 +1,4 @@
-package io.github.starwishsama.sfmagic;
+package io.github.starwishsama.utils;
 
 import io.papermc.lib.PaperLib;
 import org.bukkit.plugin.Plugin;

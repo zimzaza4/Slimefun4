@@ -1,7 +1,6 @@
-package io.github.starwishsama.sfmagic;
+package io.github.starwishsama.utils;
 
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -17,10 +16,10 @@ public class VaultHelper {
         if (SlimefunPlugin.instance() != null) {
             RegisteredServiceProvider<Economy> rsp = SlimefunPlugin.instance().getServer().getServicesManager().getRegistration(Economy.class);
             if (rsp != null) {
-                Slimefun.getLogger().log(Level.INFO, "成功接入 Vault");
+                SlimefunPlugin.logger().log(Level.INFO, "成功接入 Vault");
                 econ = rsp.getProvider();
             } else {
-                Slimefun.getLogger().log(Level.SEVERE, "无法接入 Vault. 如果你是 CMI 用户, 请至配置文件启用经济系统");
+                SlimefunPlugin.logger().log(Level.SEVERE, "无法接入 Vault. 如果你是 CMI 用户, 请至配置文件启用经济系统");
             }
         }
     }

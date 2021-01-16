@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.reactors;
 
-import io.github.starwishsama.sfmagic.ProtectionChecker;
+import io.github.starwishsama.utils.ProtectionChecker;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.events.AsyncReactorProcessCompleteEvent;

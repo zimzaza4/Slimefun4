@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.core.researching;
 
-import io.github.starwishsama.sfmagic.VaultHelper;
+import io.github.starwishsama.utils.VaultHelper;
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerPreResearchEvent;
 import io.github.thebusybiscuit.slimefun4.api.events.ResearchUnlockEvent;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;

@@ -37,7 +37,7 @@ public enum SlimefunBranch {
     /**
      * 这是汉化版自动打包编译后出现的版本
      */
-    NIGHTLY("Nightly build", true);
+    NIGHTLY("Nightly build", false);
 
     private final String name;
     private final boolean official;

@@ -63,7 +63,7 @@ items:
   soulbound: true
 
 metrics:
-  auto-update: true
+  auto-update: false
 
 research-ranks:
   - Chicken

@@ -242,7 +242,7 @@ public class SlimefunItemStack extends CustomItem {
     @Nullable
     public String getDisplayName() {
         if (immutableMeta == null) {
-            // Just to be sfmagic safe
+            // Just to be utils safe
             return null;
         }
 

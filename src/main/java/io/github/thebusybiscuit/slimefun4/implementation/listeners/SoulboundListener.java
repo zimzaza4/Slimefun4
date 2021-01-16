@@ -45,7 +45,7 @@ public class SoulboundListener implements Listener {
             }
         }
 
-        // There shouldn't even be any items in there, but let's be sfmagic safe!
+        // There shouldn't even be any items in there, but let's be utils safe!
         Map<Integer, ItemStack> existingItems = soulbound.get(p.getUniqueId());
 
         if (existingItems == null) {

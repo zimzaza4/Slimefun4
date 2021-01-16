@@ -1,4 +1,4 @@
-package io.github.starwishsama.sfmagic.data;
+package io.github.starwishsama.utils.data;
 
 import com.google.gson.annotations.SerializedName;
 

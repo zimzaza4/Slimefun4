@@ -1,10 +1,10 @@
-package io.github.starwishsama.sfmagic;
+package io.github.starwishsama.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import io.github.starwishsama.sfmagic.data.GithubObject;
+import io.github.starwishsama.utils.data.GithubObject;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunBranch;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;

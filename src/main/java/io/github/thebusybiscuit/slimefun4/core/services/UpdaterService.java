@@ -21,7 +21,7 @@ public class UpdaterService {
 
     private final SlimefunPlugin plugin;
     private final Updater updater;
-    private final SlimefunBranch branch;
+    private final SlimefunBranch branch = SlimefunBranch.UNOFFICIAL;
 
     /**
      * This will create a new {@link UpdaterService} for the given {@link SlimefunPlugin}.
@@ -34,8 +34,6 @@ public class UpdaterService {
     public UpdaterService(SlimefunPlugin plugin, String version, File file) {
         this.plugin = plugin;
         Updater autoUpdater = null;
-
-        branch = SlimefunBranch.NIGHTLY;
 
         this.updater = autoUpdater;
     }
