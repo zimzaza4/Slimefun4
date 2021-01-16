@@ -72,7 +72,7 @@ public final class SlimefunRegistry {
     private final Map<UUID, PlayerProfile> profiles = new ConcurrentHashMap<>();
     private final Map<String, BlockStorage> worlds = new ConcurrentHashMap<>();
     private final Map<String, BlockInfoConfig> chunks = new HashMap<>();
-    private final Map<SlimefunGuideMode, SlimefunGuideImplementation> layouts = new EnumMap<>(SlimefunGuideMode.class);
+    private final Map<SlimefunGuideMode, SlimefunGuideImplementation> guides = new EnumMap<>(SlimefunGuideMode.class);
     private final Map<EntityType, Set<ItemStack>> mobDrops = new EnumMap<>(EntityType.class);
     private final Map<String, BlockMenuPreset> blockMenuPresets = new HashMap<>();
     private final Map<String, UniversalBlockMenu> universalInventories = new HashMap<>();
@@ -89,8 +89,8 @@ public final class SlimefunRegistry {
 
         boolean showVanillaRecipes = cfg.getBoolean("guide.show-vanilla-recipes");
 
-        layouts.put(SlimefunGuideMode.SURVIVAL_MODE, new SurvivalSlimefunGuide(showVanillaRecipes));
-        layouts.put(SlimefunGuideMode.CHEAT_MODE, new CheatSheetSlimefunGuide());
+        guides.put(SlimefunGuideMode.SURVIVAL_MODE, new SurvivalSlimefunGuide(showVanillaRecipes));
+        guides.put(SlimefunGuideMode.CHEAT_MODE, new CheatSheetSlimefunGuide());
 
         researchRanks.addAll(cfg.getStringList("research-ranks"));
 
@@ -190,8 +190,24 @@ public final class SlimefunRegistry {
         return multiblocks;
     }
 
-    public SlimefunGuideImplementation getGuideLayout(SlimefunGuideMode layout) {
-        return layouts.get(layout);
+    /**
+     * This returns the corresponding {@link SlimefunGuideImplementation} for a certain
+     * {@link SlimefunGuideMode}.
+     *
+     * @param mode The {@link SlimefunGuideMode}
+     * @return The corresponding {@link SlimefunGuideImplementation}
+     */
+    @Nonnull
+    public SlimefunGuideImplementation getSlimefunGuide(@Nonnull SlimefunGuideMode mode) {
+        Validate.notNull(mode, "The Guide mode cannot be null");
+
+        SlimefunGuideImplementation guide = guides.get(mode);
+
+        if (guide == null) {
+            throw new IllegalStateException("Slimefun Guide '" + mode + "' has no registered implementation.");
+        }
+
+        return guide;
     }
 
     /**

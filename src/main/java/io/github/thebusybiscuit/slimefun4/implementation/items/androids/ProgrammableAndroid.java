@@ -859,6 +859,7 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
         }
     }
 
+    @ParametersAreNonnullByDefault
     protected void move(Block b, BlockFace face, Block block) {
         Player p = Bukkit.getPlayer(ProtectionChecker.getOwnerFromJson(BlockStorage.getBlockInfoAsJson(b.getLocation())));
 

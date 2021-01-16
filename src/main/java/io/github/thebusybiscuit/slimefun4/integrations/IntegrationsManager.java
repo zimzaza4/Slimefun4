@@ -52,7 +52,6 @@ public class IntegrationsManager {
 
     // Addon support
     private boolean isChestTerminalInstalled = false;
-    private boolean isExoticGardenInstalled = false;
 
     /**
      * This initializes the {@link IntegrationsManager}
@@ -141,7 +140,6 @@ public class IntegrationsManager {
 
 
         isChestTerminalInstalled = isAddonInstalled("ChestTerminal");
-        isExoticGardenInstalled = isAddonInstalled("ExoticGarden");
     }
 
     private boolean isAddonInstalled(@Nonnull String addon) {
@@ -236,10 +234,6 @@ public class IntegrationsManager {
 
     public boolean isChestTerminalInstalled() {
         return isChestTerminalInstalled;
-    }
-
-    public boolean isExoticGardenInstalled() {
-        return isExoticGardenInstalled;
     }
 
 }

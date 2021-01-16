@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.core.services.github;
 
-import io.github.thebusybiscuit.cscorelib2.data.ComputedOptional;
+import io.github.thebusybiscuit.cscorelib2.data.TriStateOptional;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import org.apache.commons.lang.Validate;
@@ -28,7 +28,7 @@ public class Contributor {
     private final String profileLink;
 
     private final ConcurrentMap<String, Integer> contributions = new ConcurrentHashMap<>();
-    private final ComputedOptional<String> headTexture = ComputedOptional.createNew();
+    private final TriStateOptional<String> headTexture = TriStateOptional.createNew();
 
     private Optional<UUID> uuid = Optional.empty();
     private boolean immutable = false;

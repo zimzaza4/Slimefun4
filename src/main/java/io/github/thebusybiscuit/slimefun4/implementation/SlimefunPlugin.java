@@ -17,7 +17,6 @@ import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.networks.NetworkManager;
 import io.github.thebusybiscuit.slimefun4.core.services.*;
 import io.github.thebusybiscuit.slimefun4.core.services.github.GitHubService;
-import io.github.thebusybiscuit.slimefun4.core.services.plugins.ThirdPartyPluginService;
 import io.github.thebusybiscuit.slimefun4.core.services.profiler.SlimefunProfiler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAltar;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientPedestal;
@@ -95,7 +94,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     private final BackupService backupService = new BackupService();
     private final PermissionsService permissionsService = new PermissionsService(this);
     private final PerWorldSettingsService worldSettingsService = new PerWorldSettingsService(this);
-    private final IntegrationsManager integrations = new ThirdPartyPluginService(this);
+    private final IntegrationsManager integrations = new IntegrationsManager(this);
     private final MinecraftRecipeService recipeService = new MinecraftRecipeService(this);
     private final SlimefunProfiler profiler = new SlimefunProfiler();
     private NUpdater updater;
@@ -713,17 +712,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     @Nonnull
     public static IntegrationsManager getIntegrations() {
         return instance.integrations;
-    }
-
-    /**
-     * This method has been renamed.
-     *
-     * @return the {@link ThirdPartyPluginService}
-     * @deprecated Please use {@link #getIntegrations()} instead.
-     */
-    @Deprecated
-    public static ThirdPartyPluginService getThirdPartySupportService() {
-        return (ThirdPartyPluginService) instance.integrations;
     }
 
     /**
