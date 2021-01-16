@@ -97,7 +97,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     private final IntegrationsManager integrations = new IntegrationsManager(this);
     private final MinecraftRecipeService recipeService = new MinecraftRecipeService(this);
     private final SlimefunProfiler profiler = new SlimefunProfiler();
-    private NUpdater updater;
+    private NUpdater customUpdater;
 
     private LocalizationService local;
     private GPSNetwork gpsNetwork;
@@ -284,8 +284,8 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
         if (config.getBoolean("options.auto-update") || config.getBoolean("options.update-check")) {
             if (NUpdater.getBranch() == CustomBranch.STABLE) {
-                updater = new NUpdater();
-                Bukkit.getServer().getScheduler().runTaskAsynchronously(instance, updater::checkUpdate);
+                customUpdater = new NUpdater();
+                Bukkit.getServer().getScheduler().runTaskAsynchronously(instance, customUpdater::checkUpdate);
             }
         }
     }
@@ -727,6 +727,10 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
      */
     public static UpdaterService getUpdater() {
         return instance.updaterService;
+    }
+
+    public static NUpdater getCustomUpdater() {
+        return instance.customUpdater;
     }
 
     /**

@@ -4,7 +4,6 @@ import io.github.thebusybiscuit.cscorelib2.collections.OptionalMap;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.api.SlimefunBranch;
 import io.github.thebusybiscuit.slimefun4.api.exceptions.*;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemState;
@@ -572,13 +571,7 @@ public class SlimefunItem implements Placeable {
      *            The {@link Class} from which to start this operation.
      */
     private void checkForDeprecations(@Nullable Class<?> c) {
-        if (SlimefunPlugin.getUpdater().getBranch() == SlimefunBranch.DEVELOPMENT || SlimefunPlugin.getUpdater().getBranch() == SlimefunBranch.NIGHTLY) {
-            // This method is currently way too spammy with all the restructuring going on...
-            // Since DEV builds are anyway under "development", things may be relocated.
-            // So we fire these only for stable versions, since devs should update then, so
-            // it's the perfect moment to tell them to act.
-            return;
-        }
+        if (SlimefunPlugin.getCustomUpdater().isStable()) return;
 
         // We do not wanna throw an Exception here since this could also mean that
         // we have reached the end of the Class hierarchy

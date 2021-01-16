@@ -204,4 +204,8 @@ public class NUpdater {
     public static CustomBranch getBranch() {
         return branch;
     }
+
+    public boolean isStable() {
+        return branch == CustomBranch.STABLE;
+    }
 }
