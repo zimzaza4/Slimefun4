@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation;
 
+import io.github.starwishsama.utils.CustomBranch;
 import io.github.starwishsama.utils.LangUtil;
 import io.github.starwishsama.utils.NUpdater;
 import io.github.starwishsama.utils.ProtectionChecker;
@@ -8,7 +9,6 @@ import io.github.thebusybiscuit.cscorelib2.protection.ProtectionManager;
 import io.github.thebusybiscuit.cscorelib2.reflection.ReflectionUtils;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.api.SlimefunBranch;
 import io.github.thebusybiscuit.slimefun4.api.exceptions.TagMisconfigurationException;
 import io.github.thebusybiscuit.slimefun4.api.gps.GPSNetwork;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
@@ -283,7 +283,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         getLogger().log(Level.INFO, "Slimefun 完成加载, 耗时 {0}", getStartupTime(timestamp));
 
         if (config.getBoolean("options.auto-update") || config.getBoolean("options.update-check")) {
-            if (NUpdater.getBranch() == SlimefunBranch.DEVELOPMENT || NUpdater.getBranch() == SlimefunBranch.STABLE) {
+            if (NUpdater.getBranch() == CustomBranch.STABLE) {
                 updater = new NUpdater();
                 Bukkit.getServer().getScheduler().runTaskAsynchronously(instance, updater::checkUpdate);
             }
@@ -520,6 +520,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new GrindstoneListener(this);
         new CartographyTableListener(this);
         new NetworkListener(this, networkManager);
+        new HopperListener(this);
 
         if (minecraftVersion.isAtLeast(MinecraftVersion.MINECRAFT_1_15)) {
             new BeeListener(this);

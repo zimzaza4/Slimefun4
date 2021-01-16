@@ -1,9 +1,9 @@
 package io.github.thebusybiscuit.slimefun4.core.services;
 
-import io.github.thebusybiscuit.cscorelib2.math.DoubleHandler;
 import io.github.thebusybiscuit.slimefun4.core.services.localization.Language;
 import io.github.thebusybiscuit.slimefun4.core.services.localization.SlimefunLocalization;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
@@ -236,7 +236,7 @@ public class LocalizationService extends SlimefunLocalization {
             }
         }
 
-        return Math.min(DoubleHandler.fixDouble(100.0 * (matches / (double) defaultKeys.size())), 100.0);
+        return Math.min(NumberUtils.reparseDouble(100.0 * (matches / (double) defaultKeys.size())), 100.0);
     }
 
     private Set<String> getTotalKeys(@Nonnull Language lang) {

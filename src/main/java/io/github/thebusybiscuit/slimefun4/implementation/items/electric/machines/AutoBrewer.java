@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines;
 
 import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
+import io.github.thebusybiscuit.slimefun4.core.attributes.NotHopperable;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
@@ -22,7 +23,7 @@ import java.util.Map;
  *
  * @author Linox
  */
-public class AutoBrewer extends AContainer {
+public class AutoBrewer extends AContainer implements NotHopperable {
 
     private static final Map<Material, PotionType> potionRecipes = new EnumMap<>(Material.class);
     private static final Map<PotionType, PotionType> fermentations = new EnumMap<>(PotionType.class);

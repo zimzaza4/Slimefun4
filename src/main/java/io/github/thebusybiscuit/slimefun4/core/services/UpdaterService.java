@@ -21,7 +21,6 @@ public class UpdaterService {
 
     private final SlimefunPlugin plugin;
     private final Updater updater;
-    private final SlimefunBranch branch = SlimefunBranch.UNOFFICIAL;
 
     /**
      * This will create a new {@link UpdaterService} for the given {@link SlimefunPlugin}.
@@ -33,9 +32,7 @@ public class UpdaterService {
      */
     public UpdaterService(SlimefunPlugin plugin, String version, File file) {
         this.plugin = plugin;
-        Updater autoUpdater = null;
-
-        this.updater = autoUpdater;
+        this.updater = null;
     }
 
     /**
@@ -46,7 +43,7 @@ public class UpdaterService {
      * @return The branch this build of Slimefun is on.
      */
     public SlimefunBranch getBranch() {
-        return branch;
+        return SlimefunBranch.UNOFFICIAL;
     }
 
     /**
@@ -78,7 +75,7 @@ public class UpdaterService {
      * @return Whether the {@link Updater} is enabled
      */
     public boolean isEnabled() {
-        return SlimefunPlugin.getCfg().getBoolean("options.auto-update") && updater != null;
+        return false;
     }
 
     /**

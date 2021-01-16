@@ -8,7 +8,7 @@
 
     <!-- Our default version will be UNOFFICIAL, this will prevent the auto updater -->
     <!-- from overriding our local test file -->
-    <version>4.8-dev-210112</version>
+    <version>4.8-nightly</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -182,7 +182,7 @@
         <dependency>
             <groupId>com.github.TheBusyBiscuit</groupId>
             <artifactId>CS-CoreLib2</artifactId>
-            <version>0.29.1</version>
+            <version>0.29.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

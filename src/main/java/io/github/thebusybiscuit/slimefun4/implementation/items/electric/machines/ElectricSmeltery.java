@@ -2,6 +2,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machine
 
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
+import io.github.thebusybiscuit.slimefun4.core.attributes.NotHopperable;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
@@ -26,7 +27,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ElectricSmeltery extends AContainer {
+public class ElectricSmeltery extends AContainer implements NotHopperable {
 
     private static final int[] border = {4, 5, 6, 7, 8, 13, 31, 40, 41, 42, 43, 44};
     private static final int[] inputBorder = {0, 1, 2, 3, 9, 12, 18, 21, 27, 30, 36, 37, 38, 39};

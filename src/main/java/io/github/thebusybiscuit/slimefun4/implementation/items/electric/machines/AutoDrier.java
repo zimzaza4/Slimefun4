@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines;
 
+import io.github.thebusybiscuit.slimefun4.core.attributes.NotHopperable;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
@@ -19,9 +20,8 @@ import java.util.List;
  * It also allows you to convert Rotten Flesh into Leather.
  *
  * @author Linox
- *
  */
-public class AutoDrier extends AContainer implements RecipeDisplayItem {
+public class AutoDrier extends AContainer implements RecipeDisplayItem, NotHopperable {
 
     private List<ItemStack> recipeList;
 

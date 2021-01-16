@@ -4,8 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
-import io.github.thebusybiscuit.cscorelib2.math.DoubleHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
@@ -165,7 +165,7 @@ public class BlockStorage {
             SlimefunPlugin.logger().log(Level.INFO, "Loaded a total of {0} Blocks for World \"{1}\"", new Object[]{totalBlocks, world.getName()});
 
             if (totalBlocks > 0) {
-                SlimefunPlugin.logger().log(Level.INFO, "Avg: {0}ms/Block", DoubleHandler.fixDouble((double) time / (double) totalBlocks, 3));
+                SlimefunPlugin.logger().log(Level.INFO, "Avg: {0}ms/Block", NumberUtils.roundDecimalNumber((double) time / (double) totalBlocks));
             }
         }
     }
@@ -668,7 +668,9 @@ public class BlockStorage {
 
     @Nullable
     public static String checkID(@Nonnull Block b) {
-        if (SlimefunPlugin.getBlockDataService().isTileEntity(b.getType())) {
+        // Only access the BlockState when on the main thread
+
+        if (Bukkit.isPrimaryThread() && SlimefunPlugin.getBlockDataService().isTileEntity(b.getType())) {
             Optional<String> blockData = SlimefunPlugin.getBlockDataService().getBlockData(b);
 
             if (blockData.isPresent()) {

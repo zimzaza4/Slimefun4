@@ -35,6 +35,7 @@ import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -115,6 +116,7 @@ public class SlimefunItem implements Placeable {
      * @param recipeType the {@link RecipeType} that determines how this {@link SlimefunItem} is crafted
      * @param recipe     An Array representing the recipe of this {@link SlimefunItem}
      */
+    @ParametersAreNonnullByDefault
     public SlimefunItem(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         this(category, item, recipeType, recipe, null);
     }
@@ -133,7 +135,8 @@ public class SlimefunItem implements Placeable {
      * @param recipeOutput
      *            The result of crafting this item
      */
-    public SlimefunItem(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
+    @ParametersAreNonnullByDefault
+    public SlimefunItem(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, @Nullable ItemStack recipeOutput) {
         Validate.notNull(category, "'category' is not allowed to be null!");
         Validate.notNull(item, "'item' is not allowed to be null!");
         Validate.notNull(recipeType, "'recipeType' is not allowed to be null!");
@@ -147,6 +150,7 @@ public class SlimefunItem implements Placeable {
     }
 
     // Previously deprecated constructor, now only for internal purposes
+    @ParametersAreNonnullByDefault
     protected SlimefunItem(Category category, ItemStack item, String id, RecipeType recipeType, ItemStack[] recipe) {
         Validate.notNull(category, "'category' is not allowed to be null!");
         Validate.notNull(item, "'item' is not allowed to be null!");
@@ -244,8 +248,19 @@ public class SlimefunItem implements Placeable {
      * @return The linked {@link Research} or null
      */
     @Nullable
-    public Research getResearch() {
+    public final Research getResearch() {
         return research;
+    }
+
+    /**
+     * This returns whether this {@link SlimefunItem} has a {@link Research}
+     * assigned to it.
+     * It is equivalent to a null check performed on {@link #getResearch()}.
+     *
+     * @return Whether this {@link SlimefunItem} has a {@link Research}
+     */
+    public final boolean hasResearch() {
+        return research != null;
     }
 
     /**
@@ -356,7 +371,7 @@ public class SlimefunItem implements Placeable {
      * @return The {@link SlimefunAddon} that registered this {@link SlimefunItem}
      */
     @Nonnull
-    public SlimefunAddon getAddon() {
+    public final SlimefunAddon getAddon() {
         if (addon == null) {
             throw new UnregisteredItemException(this);
         }
@@ -466,6 +481,16 @@ public class SlimefunItem implements Placeable {
 
         // Send out deprecation warnings for any classes or interfaces
         checkForDeprecations(getClass());
+
+        // Check for an illegal stack size
+        if (itemStackTemplate.getAmount() != 1) {
+            // @formatter:off
+            warn("This item has an illegal stack size: " + itemStackTemplate.getAmount()
+                    + ". An Item size of 1 is recommended. Please inform the author(s) of " + addon.getName()
+                    + " to fix this. Crafting Results with amounts of higher should be handled"
+                    + " via the recipeOutput parameter!");
+            // @formatter:on
+        }
 
         // Add it to the list of enabled items
         SlimefunPlugin.getRegistry().getEnabledSlimefunItems().add(this);

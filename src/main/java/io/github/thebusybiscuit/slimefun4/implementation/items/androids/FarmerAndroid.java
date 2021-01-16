@@ -1,7 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.androids;
 
 import io.github.thebusybiscuit.slimefun4.api.events.AndroidFarmEvent;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
@@ -12,11 +11,9 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -47,8 +44,6 @@ public class FarmerAndroid extends ProgrammableAndroid {
         AndroidFarmEvent event = new AndroidFarmEvent(block, instance, isAdvanced, drop);
         Bukkit.getPluginManager().callEvent(event);
 
-        handleExoticGarden(event);
-
         if (!event.isCancelled()) {
             drop = event.getDrop();
 
@@ -60,20 +55,6 @@ public class FarmerAndroid extends ProgrammableAndroid {
                     block.setBlockData(data);
                 }
             }
-        }
-    }
-
-    /**
-     * Deprecated method.
-     *
-     * @param event the event
-     * @deprecated This will be moved into an {@link EventHandler} inside exoticgarden itself on the next update.
-     */
-    @Deprecated
-    private void handleExoticGarden(AndroidFarmEvent event) {
-        if (event.isAdvanced() && SlimefunPlugin.getIntegrations().isExoticGardenInstalled()) {
-            Optional<ItemStack> result = SlimefunPlugin.getThirdPartySupportService().harvestExoticGardenPlant(event.getBlock());
-            result.ifPresent(event::setDrop);
         }
     }
 

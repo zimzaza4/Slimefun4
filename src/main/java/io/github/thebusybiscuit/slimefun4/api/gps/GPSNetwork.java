@@ -3,7 +3,6 @@ package io.github.thebusybiscuit.slimefun4.api.gps;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatInput;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
-import io.github.thebusybiscuit.cscorelib2.math.DoubleHandler;
 import io.github.thebusybiscuit.slimefun4.api.events.WaypointCreateEvent;
 import io.github.thebusybiscuit.slimefun4.api.geo.GEOResource;
 import io.github.thebusybiscuit.slimefun4.api.geo.ResourceManager;
@@ -14,6 +13,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.gps.GPSTransmitte
 import io.github.thebusybiscuit.slimefun4.implementation.items.gps.Teleporter;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
@@ -136,7 +136,7 @@ public class GPSNetwork {
             if (sfi instanceof GPSTransmitter) {
                 int slot = inventory[index];
 
-                menu.addItem(slot, new CustomItem(SlimefunItems.GPS_TRANSMITTER, "&bGPS 发射器", "&8\u21E8 &7世界: &f" + l.getWorld().getName(), "&8\u21E8 &7X: &f" + l.getX(), "&8\u21E8 &7Y: &f" + l.getY(), "&8\u21E8 &7Z: &f" + l.getZ(), "", "&8\u21E8 &7信号强度: &f" + ((GPSTransmitter) sfi).getMultiplier(l.getBlockY()), "&8\u21E8 &7延迟: &f" + DoubleHandler.fixDouble(1000D / l.getY()) + "ms"));
+                menu.addItem(slot, new CustomItem(SlimefunItems.GPS_TRANSMITTER, "&bGPS 发射器", "&8\u21E8 &7世界: &f" + l.getWorld().getName(), "&8\u21E8 &7X: &f" + l.getX(), "&8\u21E8 &7Y: &f" + l.getY(), "&8\u21E8 &7Z: &f" + l.getZ(), "", "&8\u21E8 &7信号强度: &f" + ((GPSTransmitter) sfi).getMultiplier(l.getBlockY()), "&8\u21E8 &7延迟: &f" + NumberUtils.reparseDouble(1000D / l.getY()) + "ms"));
                 menu.addMenuClickHandler(slot, ChestMenuUtils.getEmptyClickHandler());
 
                 index++;

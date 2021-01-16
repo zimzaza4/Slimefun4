@@ -1,7 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric;
 
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
-import io.github.thebusybiscuit.cscorelib2.math.DoubleHandler;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
@@ -109,7 +108,7 @@ public abstract class AbstractEnergyProvider extends SlimefunItem implements Inv
             List<String> lore = new ArrayList<>();
             lore.add(ChatColors.color("&8\u21E8 &7持续时间 " + NumberUtils.getTimeLeft(fuel.getTicks() / 2)));
             lore.add(ChatColors.color("&8\u21E8 &e\u26A1 &7" + getEnergyProduction() * 2) + " J/s");
-            lore.add(ChatColors.color("&8\u21E8 &e\u26A1 &7最大储存量: " + DoubleHandler.getFancyDouble((double) fuel.getTicks() * getEnergyProduction()) + " J"));
+            lore.add(ChatColors.color("&8\u21E8 &e\u26A1 &7最大储存量: " + NumberUtils.reparseDouble((double) fuel.getTicks() * getEnergyProduction()) + " J"));
             im.setLore(lore);
             item.setItemMeta(im);
             list.add(item);

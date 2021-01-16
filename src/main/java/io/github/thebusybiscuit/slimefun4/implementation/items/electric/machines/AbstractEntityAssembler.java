@@ -1,7 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines;
 
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
-import io.github.thebusybiscuit.cscorelib2.math.DoubleHandler;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.events.BlockPlacerPlaceEvent;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
@@ -10,6 +9,7 @@ import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponen
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
@@ -163,7 +163,7 @@ public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSl
 
         menu.replaceExistingItem(31, new CustomItem(Material.PISTON, "&7生成高度: &3" + offset + " 格方块高", "", "&f左键: &7+0.1", "&f右键: &7-0.1"));
         menu.addMenuClickHandler(31, (p, slot, item, action) -> {
-            double offsetv = DoubleHandler.fixDouble(Double.parseDouble(BlockStorage.getLocationInfo(b.getLocation(), "offset")) + (action.isRightClicked() ? -0.1F : 0.1F));
+            double offsetv = NumberUtils.reparseDouble(Double.parseDouble(BlockStorage.getLocationInfo(b.getLocation(), "offset")) + (action.isRightClicked() ? -0.1F : 0.1F));
             BlockStorage.addBlockInfo(b, "offset", String.valueOf(offsetv));
             updateBlockInventory(menu, b);
             return false;
