@@ -13,7 +13,6 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -36,9 +35,13 @@ import java.util.Map;
  */
 public class AutoDisenchanter extends AContainer {
 
+    private final int limit;
+
     @ParametersAreNonnullByDefault
     public AutoDisenchanter(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
+
+        limit = SlimefunPlugin.getCfg().getInt("options.enchanter-level-limit");
     }
 
     @Override
@@ -71,13 +74,12 @@ public class AutoDisenchanter extends AContainer {
                 int amount = 0;
 
                 for (Map.Entry<Enchantment, Integer> entry : item.getEnchantments().entrySet()) {
-                    if (entry.getValue() <= SlimefunPlugin.getCfg().getInt("options.enchanter-level-limit") || SlimefunPlugin.getCfg().getInt("options.enchanter-level-limit") == 0) {
+                    if (entry.getValue() <= limit || limit < 1) {
                         enchantments.put(entry.getKey(), entry.getValue());
                         amount++;
                     } else {
                         if (!menu.toInventory().getViewers().isEmpty()) {
-                            HumanEntity p = menu.toInventory().getViewers().get(0);
-                            SlimefunPlugin.getLocalization().sendMessage(p, "messages.above-limit-level", true);
+                            menu.toInventory().getViewers().forEach(p -> SlimefunPlugin.getLocalization().sendMessage(p, "messages.above-limit-level", true));
                         }
                         return null;
                     }

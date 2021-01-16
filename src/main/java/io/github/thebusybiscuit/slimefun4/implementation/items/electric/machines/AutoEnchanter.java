@@ -11,7 +11,6 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
@@ -21,8 +20,6 @@ import java.util.Map;
 
 public class AutoEnchanter extends AContainer {
 
-    private final int emeraldEnchantsLimit;
-
     private final int limit;
 
     @ParametersAreNonnullByDefault
@@ -30,7 +27,6 @@ public class AutoEnchanter extends AContainer {
         super(category, item, recipeType, recipe);
 
         limit = SlimefunPlugin.getCfg().getInt("options.enchanter-level-limit");
-        emeraldEnchantsLimit = SlimefunPlugin.getCfg().getInt("options.emerald-enchantment-limit");
     }
 
     @Override
@@ -52,20 +48,17 @@ public class AutoEnchanter extends AContainer {
 
             if (item != null && item.getType() == Material.ENCHANTED_BOOK && target != null) {
                 Map<Enchantment, Integer> enchantments = new HashMap<>();
-
                 int amount = 0;
-
                 EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
 
                 for (Map.Entry<Enchantment, Integer> e : meta.getStoredEnchants().entrySet()) {
                     if (e.getKey().canEnchantItem(target)) {
-                        if (e.getValue() <= limit || limit == 0) {
+                        if (e.getValue() <= limit || limit < 1) {
                             amount++;
                             enchantments.put(e.getKey(), e.getValue());
                         } else {
                             if (!menu.toInventory().getViewers().isEmpty()) {
-                                HumanEntity p = menu.toInventory().getViewers().get(0);
-                                SlimefunPlugin.getLocalization().sendMessage(p, "messages.above-limit-level", true);
+                                menu.toInventory().getViewers().forEach(p -> SlimefunPlugin.getLocalization().sendMessage(p, "messages.above-limit-level", true));
                             }
                         }
                     }
