@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.utils.holograms;
 
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
+import io.github.thebusybiscuit.slimefun4.core.attributes.HologramOwner;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -16,7 +17,9 @@ import java.util.Collection;
  * This utility class provides a few static methods for modifying a simple Text-based Hologram.
  *
  * @author TheBusyBiscuit
+ * @deprecated Please use the interface {@link HologramOwner} instead
  */
+@Deprecated
 public final class SimpleHologram {
 
     private SimpleHologram() {

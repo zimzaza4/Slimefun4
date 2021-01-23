@@ -169,18 +169,12 @@
             <version>${spigot.version}-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.github.TheBusyBiscuit</groupId>
-            <artifactId>CS-CoreLib</artifactId>
-            <version>1.7</version>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- Shaded packages -->
         <dependency>
             <groupId>com.github.TheBusyBiscuit</groupId>
             <artifactId>CS-CoreLib2</artifactId>
-            <version>0.29.3</version>
+            <version>0.29.6</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -206,7 +200,7 @@
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
-            <version>7.2.1</version>
+            <version>7.2.2</version>
             <scope>provided</scope>
             <exclusions>
                 <!-- This one is ignored because it pops up everytime -->

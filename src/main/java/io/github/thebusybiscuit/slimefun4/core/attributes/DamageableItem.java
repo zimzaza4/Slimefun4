@@ -22,7 +22,6 @@ import javax.annotation.Nullable;
  *
  * @author TheBusyBiscuit
  */
-@FunctionalInterface
 public interface DamageableItem extends ItemAttribute {
 
     /**

@@ -1,7 +1,7 @@
 package me.mrCookieSlime.Slimefun.api;
 
 import me.mrCookieSlime.CSCoreLibPlugin.PlayerRunnable;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
+import me.mrCookieSlime.CSCoreLibPlugin.general.ChestMenu;
 import org.bukkit.entity.Player;
 
 import java.util.List;

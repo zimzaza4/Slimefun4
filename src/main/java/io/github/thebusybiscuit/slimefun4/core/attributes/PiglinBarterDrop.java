@@ -13,7 +13,6 @@ import org.bukkit.entity.Piglin;
  * @see PiglinListener
  * @see RandomMobDrop
  */
-@FunctionalInterface
 public interface PiglinBarterDrop extends ItemAttribute {
 
     /**

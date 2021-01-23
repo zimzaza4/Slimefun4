@@ -41,6 +41,7 @@ import io.github.thebusybiscuit.slimefun4.integrations.IntegrationsManager;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import io.papermc.lib.PaperLib;
+import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.MenuListener;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AGenerator;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
@@ -99,10 +100,11 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     private final MinecraftRecipeService recipeService = new MinecraftRecipeService(this);
     private final HologramsService hologramsService = new HologramsService(this);
     private final SlimefunProfiler profiler = new SlimefunProfiler();
+    private final GPSNetwork gpsNetwork = new GPSNetwork(this);
+
     private NUpdater customUpdater;
 
     private LocalizationService local;
-    private GPSNetwork gpsNetwork;
     private NetworkManager networkManager;
 
     // Important config files for Slimefun
@@ -151,33 +153,16 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
             setInstance(this);
             getLogger().log(Level.WARNING, "Slimefun was not installed properly! Disabling...");
             getServer().getPluginManager().disablePlugin(this);
-        } else if (getServer().getPluginManager().isPluginEnabled("CS-CoreLib")) {
+        } else {
             // The Environment and dependencies have been validated.
             setInstance(this);
             getLogger().log(Level.INFO, "发现前置 CS-CoreLib 已正常安装!");
             onPluginStart();
-        } else {
-            // Terminate our Plugin instance
-            setInstance(null);
-
-            getLogger().log(Level.INFO, "#################### - INFO - ####################");
-            getLogger().log(Level.INFO, " ");
-            getLogger().log(Level.INFO, "Slimefun 未被加载.");
-            getLogger().log(Level.INFO, "你没有安装前置 CS-CoreLib.");
-            getLogger().log(Level.INFO, "请到以下链接手动下载安装:");
-            getLogger().log(Level.INFO, "https://thebusybiscuit.github.io/builds/TheBusyBiscuit/CS-CoreLib/master/");
-
-            getCommand("slimefun").setExecutor((sender, cmd, label, args) -> {
-                sender.sendMessage("你没有安装前置 CS-CoreLib, Slimefun 已被禁用.");
-                sender.sendMessage("https://thebusybiscuit.github.io/builds/TheBusyBiscuit/CS-CoreLib/master/");
-                return true;
-            });
         }
     }
 
     private void onUnitTestStart() {
         local = new LocalizationService(this, "", null);
-        gpsNetwork = new GPSNetwork();
         networkManager = new NetworkManager(200);
         command.register();
         registry.load(this, config);
@@ -212,9 +197,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         // Set up localization
         getLogger().log(Level.INFO, "正在加载语言文件...");
         local = new LocalizationService(this, config.getString("options.chat-prefix"), config.getString("options.language"));
-
-        // Setting up Networks
-        gpsNetwork = new GPSNetwork();
 
         int networkSize = config.getInt("networks.max-size");
 
@@ -417,7 +399,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
             String currentVersion = ReflectionUtils.getVersion();
 
             if (currentVersion.startsWith("v")) {
-                for (MinecraftVersion version : MinecraftVersion.valuesCache) {
+                for (MinecraftVersion version : MinecraftVersion.values()) {
                     if (version.matches(currentVersion)) {
                         minecraftVersion = version;
                         return false;
@@ -460,7 +442,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     private Collection<String> getSupportedVersions() {
         List<String> list = new ArrayList<>();
 
-        for (MinecraftVersion version : MinecraftVersion.valuesCache) {
+        for (MinecraftVersion version : MinecraftVersion.values()) {
             if (!version.isVirtual()) {
                 list.add(version.getName());
             }
@@ -494,6 +476,9 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     }
 
     private void registerListeners() {
+        // Old deprecated CS-CoreLib Listener
+        new MenuListener(this);
+
         new SlimefunBootsListener(this);
         new SlimefunItemInteractListener(this);
         new SlimefunItemConsumeListener(this);
@@ -824,17 +809,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
      */
     public static boolean isNewlyInstalled() {
         return instance.isNewlyInstalled;
-    }
-
-    @Nonnull
-    public static String getCSCoreLibVersion() {
-        Plugin cscorelib = instance.getServer().getPluginManager().getPlugin("CS-CoreLib");
-
-        if (cscorelib == null) {
-            throw new IllegalStateException("CS-CoreLib is not installed.");
-        } else {
-            return cscorelib.getDescription().getVersion();
-        }
     }
 
     @Override

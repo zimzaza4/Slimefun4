@@ -12,9 +12,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * The {@link CargoConnectorNode} connects a {@link CargoNode} with a {@link CargoNet}.
+ * It has no further functionality.
+ *
+ * @author TheBusyBiscuit
+ * @see CargoNode
+ * @see CargoNet
+ */
 public class CargoConnectorNode extends SimpleSlimefunItem<BlockUseHandler> {
 
+    @ParametersAreNonnullByDefault
     public CargoConnectorNode(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
         super(category, item, recipeType, recipe, recipeOutput);
     }

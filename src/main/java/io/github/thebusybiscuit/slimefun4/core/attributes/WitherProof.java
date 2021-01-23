@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
  * @author TheBusyBiscuit
  * @see WitherProofBlock
  */
-@FunctionalInterface
+
 public interface WitherProof extends ItemAttribute {
 
     /**

@@ -5,12 +5,22 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+/**
+ * The {@link IcyBow} is a special kind of bow which slows down any
+ * {@link LivingEntity} it hits.
+ *
+ * @author TheBusyBiscuit
+ */
 public class IcyBow extends SlimefunBow {
 
+    @ParametersAreNonnullByDefault
     public IcyBow(Category category, SlimefunItemStack item, ItemStack[] recipe) {
         super(category, item, recipe);
     }

@@ -18,7 +18,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
  * @see MobDropListener
  * @see PiglinBarterDrop
  */
-@FunctionalInterface
 public interface RandomMobDrop extends ItemAttribute {
 
     /**

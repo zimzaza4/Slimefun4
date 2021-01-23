@@ -26,12 +26,14 @@ import java.util.stream.Collectors;
  * The {@link TagParser} is responsible for parsing a JSON input into a {@link SlimefunTag}.
  *
  * @author TheBusyBiscuit
- *
  * @see SlimefunTag
- *
  */
 public class TagParser implements Keyed {
 
+    /**
+     * Every {@link Tag} has a {@link NamespacedKey}.
+     * This is the {@link NamespacedKey} for the resulting {@link Tag}.
+     */
     private final NamespacedKey key;
 
     /**

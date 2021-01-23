@@ -21,7 +21,6 @@ import org.bukkit.inventory.meta.ItemMeta;
  * @see Jetpack
  * @see MultiTool
  */
-@FunctionalInterface
 public interface Rechargeable extends ItemAttribute {
 
     /**

@@ -18,6 +18,8 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,11 +35,13 @@ public class Juice extends SimpleSlimefunItem<ItemConsumptionHandler> {
 
     private final List<PotionEffect> effects;
 
+    @ParametersAreNonnullByDefault
     public Juice(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         this(category, item, recipeType, recipe, null);
     }
 
-    public Juice(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
+    @ParametersAreNonnullByDefault
+    public Juice(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, @Nullable ItemStack recipeOutput) {
         super(category, item, recipeType, recipe, recipeOutput);
 
         ItemMeta meta = item.getItemMeta();
@@ -72,6 +76,7 @@ public class Juice extends SimpleSlimefunItem<ItemConsumptionHandler> {
      * @param p    The {@link Player} that triggered this
      * @param item The {@link ItemStack} in question
      */
+    @ParametersAreNonnullByDefault
     private void removeGlassBottle(Player p, ItemStack item) {
         if (SlimefunUtils.isItemSimilar(item, p.getInventory().getItemInMainHand(), true)) {
             if (p.getInventory().getItemInMainHand().getAmount() == 1) {

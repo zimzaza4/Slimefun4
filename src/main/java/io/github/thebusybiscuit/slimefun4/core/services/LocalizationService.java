@@ -66,10 +66,10 @@ public class LocalizationService extends SlimefunLocalization {
                 setLanguage(serverDefaultLanguage, !serverDefaultLanguage.equals(language));
             } else {
                 setLanguage("en", false);
-                plugin.getLogger().log(Level.WARNING, "Could not recognize the given language: \"{0}\"", serverDefaultLanguage);
+                plugin.getLogger().log(Level.WARNING, "无法识别设定的语言, 可能不存在: \"{0}\"", serverDefaultLanguage);
             }
 
-            SlimefunPlugin.logger().log(Level.INFO, "Available languages: {0}", String.join(", ", languages.keySet()));
+            SlimefunPlugin.logger().log(Level.INFO, "可用的语言: {0}", String.join(", ", languages.keySet()));
             save();
         } else {
             translationsEnabled = false;

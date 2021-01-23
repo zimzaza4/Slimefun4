@@ -2,12 +2,12 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.geo;
 
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.slimefun4.api.geo.GEOResource;
+import io.github.thebusybiscuit.slimefun4.core.attributes.HologramOwner;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
-import io.github.thebusybiscuit.slimefun4.utils.holograms.SimpleHologram;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu.AdvancedMenuClickHandler;
+import me.mrCookieSlime.CSCoreLibPlugin.general.ChestMenu.AdvancedMenuClickHandler;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
@@ -29,7 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.OptionalInt;
 
-public class GEOMiner extends AContainer implements RecipeDisplayItem {
+public class GEOMiner extends AContainer implements RecipeDisplayItem, HologramOwner {
 
     private static final int[] BORDER = {0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 26, 27, 35, 36, 44, 45, 53};
     private static final int[] OUTPUT_BORDER = {19, 20, 21, 22, 23, 24, 25, 28, 34, 37, 43, 46, 47, 48, 49, 50, 51, 52};
@@ -41,7 +41,7 @@ public class GEOMiner extends AContainer implements RecipeDisplayItem {
 
         addItemHandler(onPlace());
         registerBlockHandler(getId(), (p, b, stack, reason) -> {
-            SimpleHologram.remove(b);
+            removeHologram(b);
 
             BlockMenu inv = BlockStorage.getInventory(b);
 
@@ -60,7 +60,7 @@ public class GEOMiner extends AContainer implements RecipeDisplayItem {
 
             @Override
             public void onPlayerPlace(BlockPlaceEvent e) {
-                SimpleHologram.update(e.getBlock(), "&7待机中...");
+                updateHologram(e.getBlock(), "&7待机中...");
             }
         };
     }
@@ -154,14 +154,14 @@ public class GEOMiner extends AContainer implements RecipeDisplayItem {
                 processing.remove(b);
             }
         } else if (!BlockStorage.hasChunkInfo(b.getWorld(), b.getX() >> 4, b.getZ() >> 4)) {
-            SimpleHologram.update(b, "&4GEO-Scan required!");
+            updateHologram(b, "&4GEO-Scan required!");
         } else {
             for (GEOResource resource : SlimefunPlugin.getRegistry().getGEOResources().values()) {
                 if (resource.isObtainableFromGEOMiner()) {
                     OptionalInt optional = SlimefunPlugin.getGPSNetwork().getResourceManager().getSupplies(resource, b.getWorld(), b.getX() >> 4, b.getZ() >> 4);
 
                     if (!optional.isPresent()) {
-                        SimpleHologram.update(b, "&4需要先进行地形扫描!");
+                        updateHologram(b, "&4需要先进行地形扫描!");
                         return;
                     } else {
                         int supplies = optional.getAsInt();
@@ -173,7 +173,7 @@ public class GEOMiner extends AContainer implements RecipeDisplayItem {
                             processing.put(b, r);
                             progress.put(b, r.getTicks());
                             SlimefunPlugin.getGPSNetwork().getResourceManager().setSupplies(resource, b.getWorld(), b.getX() >> 4, b.getZ() >> 4, supplies - 1);
-                            SimpleHologram.update(b, "&7正在开采 &r" + resource.getName());
+                            updateHologram(b, "&7正在开采 &r" + resource.getName());
                             return;
                         }
                     }
@@ -181,7 +181,7 @@ public class GEOMiner extends AContainer implements RecipeDisplayItem {
                 }
             }
 
-            SimpleHologram.update(b, "&7完成");
+            updateHologram(b, "&7完成");
         }
     }
 

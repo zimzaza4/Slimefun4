@@ -8,6 +8,9 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.entity.Arrow;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * This class represents a {@link SlimefunItem} that is a Bow.
  * It comes with a {@link BowShootHandler} to handle actions that shall be performed
@@ -17,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public abstract class SlimefunBow extends SlimefunItem {
 
+    @ParametersAreNonnullByDefault
     public SlimefunBow(Category category, SlimefunItemStack item, ItemStack[] recipe) {
         super(category, item, RecipeType.MAGIC_WORKBENCH, recipe);
     }
@@ -27,6 +31,7 @@ public abstract class SlimefunBow extends SlimefunItem {
         addItemHandler(onShoot());
     }
 
+    @Nonnull
     public abstract BowShootHandler onShoot();
 
 }

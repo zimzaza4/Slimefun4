@@ -77,6 +77,7 @@ public class SeismicAxe extends SimpleSlimefunItem<ItemUseHandler> implements No
         };
     }
 
+    @ParametersAreNonnullByDefault
     private void pushEntity(Player p, Entity entity) {
         if (entity.getType() != EntityType.PLAYER || p.getWorld().getPVP()) {
             EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(p, entity, DamageCause.ENTITY_ATTACK, DAMAGE);

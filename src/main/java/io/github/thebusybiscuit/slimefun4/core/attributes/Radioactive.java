@@ -13,7 +13,6 @@ import javax.annotation.Nonnull;
  *
  * @author TheBusyBiscuit
  */
-@FunctionalInterface
 public interface Radioactive extends ItemAttribute {
 
     /**

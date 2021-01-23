@@ -14,8 +14,17 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+/**
+ * {@link MagicSugar} is one of the oldest items in Slimefun, it is a special
+ * kind of sugar which gives you the Speed {@link PotionEffect} when right clicked.
+ *
+ * @author TheBusyBiscuit
+ */
 public class MagicSugar extends SimpleSlimefunItem<ItemUseHandler> {
 
+    @ParametersAreNonnullByDefault
     public MagicSugar(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
     }
