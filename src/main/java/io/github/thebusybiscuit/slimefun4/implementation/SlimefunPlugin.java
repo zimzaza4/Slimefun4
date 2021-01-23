@@ -210,6 +210,11 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         // Setting up bStats
         new Thread(metricsService::start, "Slimefun Metrics").start();
 
+        // 魔改的自动更新服务
+        // 自动选择分支
+        customUpdater = new NUpdater(this);
+        customUpdater.autoSelectBranch();
+
         // Registering all GEO Resources
         getLogger().log(Level.INFO, "加载矿物资源...");
         GEOResourcesSetup.setup();
@@ -229,12 +234,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         // All Slimefun Listeners
         getLogger().log(Level.INFO, "正在注册监听器...");
         registerListeners();
-
-        customUpdater = new NUpdater();
-
-        // 魔改的自动更新服务
-        // 自动选择分支
-        NUpdater.autoSelectBranch(this);
 
         // Initiating various Stuff and all items with a slight delay (0ms after the Server finished loading)
         runSync(new SlimefunStartupTask(this, () -> {
@@ -270,7 +269,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         getLogger().log(Level.INFO, "Slimefun 完成加载, 耗时 {0}", getStartupTime(timestamp));
 
         if (config.getBoolean("options.auto-update") || config.getBoolean("options.update-check")) {
-            if (NUpdater.getBranch() == CustomBranch.STABLE) {
+            if (customUpdater.isStable()) {
                 Bukkit.getServer().getScheduler().runTaskAsynchronously(instance, customUpdater::checkUpdate);
             }
         }

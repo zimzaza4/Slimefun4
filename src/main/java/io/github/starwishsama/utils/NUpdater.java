@@ -30,18 +30,24 @@ public class NUpdater {
 
     private GithubObject updateInfoCache;
     private final Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
-    private static final String downloadDir = SlimefunPlugin.instance().getServer().getUpdateFolder();
+    private static String downloadDir;
     private static final String browserUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36";
     private static CustomBranch branch = CustomBranch.NIGHTLY;
     private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyMMdd");
-
+    private final SlimefunPlugin plugin;
+    
+    public NUpdater(SlimefunPlugin plugin) {
+        this.plugin = plugin;
+        downloadDir = plugin.getServer().getUpdateFolder();
+    }
+    
     /**
      * 下载文件
      *
      * @param address  下载地址
      * @param fileName 下载文件的名称
      */
-    public static void downloadUpdate(String address, String fileName) {
+    public void downloadUpdate(String address, String fileName) {
         File file = new File(downloadDir.replace("update", "plugins"), fileName);
 
         try {
@@ -66,7 +72,7 @@ public class NUpdater {
             in.close();
             fos.close();
 
-            SlimefunPlugin.instance().getFile().deleteOnExit();
+            plugin.getFile().deleteOnExit();
             SlimefunPlugin.logger().info(ChatColors.color("&a自动更新已完成, 重启服务端后即可更新到最新版本"));
         } catch (Exception e) {
             if (!file.delete()) {
@@ -189,7 +195,7 @@ public class NUpdater {
         return updateInfoCache == null ? getGithubBean() : updateInfoCache;
     }
 
-    public static void autoSelectBranch(JavaPlugin plugin) {
+    public void autoSelectBranch() {
         String version = plugin.getDescription().getVersion().toLowerCase(Locale.ROOT);
 
         if (version.contains("stable")) {
@@ -201,7 +207,7 @@ public class NUpdater {
         }
     }
 
-    public static CustomBranch getBranch() {
+    public CustomBranch getBranch() {
         return branch;
     }
 

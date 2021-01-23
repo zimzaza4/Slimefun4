@@ -571,7 +571,7 @@ public class SlimefunItem implements Placeable {
      *            The {@link Class} from which to start this operation.
      */
     private void checkForDeprecations(@Nullable Class<?> c) {
-        if (SlimefunPlugin.getCustomUpdater().isStable()) return;
+        if (!SlimefunPlugin.getCustomUpdater().isStable()) return;
 
         // We do not wanna throw an Exception here since this could also mean that
         // we have reached the end of the Class hierarchy
