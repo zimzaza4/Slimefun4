@@ -48,7 +48,7 @@ public final class SlimefunRegistry {
 
     private final List<Research> researches = new LinkedList<>();
     private final List<String> researchRanks = new ArrayList<>();
-    private final Set<UUID> researchingPlayers = new HashSet<>();
+    private final Set<UUID> researchingPlayers = Collections.synchronizedSet(new HashSet<>());
 
     private boolean backwardsCompatibility;
     private boolean automaticallyLoadItems;

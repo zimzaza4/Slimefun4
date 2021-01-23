@@ -5,15 +5,16 @@ import io.github.thebusybiscuit.slimefun4.api.events.PlayerPreResearchEvent;
 import io.github.thebusybiscuit.slimefun4.api.events.ResearchUnlockEvent;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
-import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import io.github.thebusybiscuit.slimefun4.core.services.localization.Language;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.setup.ResearchSetup;
-import io.github.thebusybiscuit.slimefun4.utils.FireworkUtils;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import org.apache.commons.lang.Validate;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Keyed;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -37,9 +38,6 @@ import java.util.function.Consumer;
  *
  */
 public class Research implements Keyed {
-
-    private static final int[] RESEARCH_PROGRESS = {23, 44, 57, 92};
-    private static final String PLACEHOLDER_RESEARCH = "%research%";
 
     private final NamespacedKey key;
     private final int id;
@@ -245,68 +243,18 @@ public class Research implements Keyed {
      * @param instant Whether to unlock it instantly
      */
     public void unlock(@Nonnull Player p, boolean instant) {
-        unlock(p, instant, pl -> {
-        });
+        unlock(p, instant, null);
     }
 
     /**
      * Unlocks this {@link Research} for the specified {@link Player}.
      *
-     * @param p        The {@link Player} for which to unlock this {@link Research}
-     * @param instant  Whether to unlock this {@link Research} instantly
-     * @param callback A callback which will be run when the {@link Research} animation completed
+     * @param p         The {@link Player} for which to unlock this {@link Research}
+     * @param isInstant Whether to unlock this {@link Research} instantly
+     * @param callback  A callback which will be run when the {@link Research} animation completed
      */
-    public void unlock(@Nonnull Player p, boolean instant, @Nonnull Consumer<Player> callback) {
-        if (!instant) {
-            SlimefunPlugin.runSync(() -> {
-                p.playSound(p.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 0.7F, 1F);
-                SlimefunPlugin.getLocalization().sendMessage(p, "messages.research.progress", true, msg -> msg.replace(PLACEHOLDER_RESEARCH, getName(p)).replace("%progress%", "0%"));
-            }, 10L);
-        }
-
-        PlayerProfile.get(p, profile -> {
-            if (!profile.hasUnlocked(this)) {
-                SlimefunPlugin.runSync(() -> {
-                    ResearchUnlockEvent event = new ResearchUnlockEvent(p, this);
-                    Bukkit.getPluginManager().callEvent(event);
-
-                    if (!event.isCancelled()) {
-                        if (instant) {
-                            finishResearch(p, profile, callback);
-                        } else if (SlimefunPlugin.getRegistry().getCurrentlyResearchingPlayers().add(p.getUniqueId())) {
-                            SlimefunPlugin.getLocalization().sendMessage(p, "messages.research.start", true, msg -> msg.replace(PLACEHOLDER_RESEARCH, getName(p)));
-                            playResearchAnimation(p);
-
-                            SlimefunPlugin.runSync(() -> {
-                                finishResearch(p, profile, callback);
-                                SlimefunPlugin.getRegistry().getCurrentlyResearchingPlayers().remove(p.getUniqueId());
-                            }, (RESEARCH_PROGRESS.length + 1) * 20L);
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    private void finishResearch(@Nonnull Player p, @Nonnull PlayerProfile profile, @Nonnull Consumer<Player> callback) {
-        profile.setResearched(this, true);
-        SlimefunPlugin.getLocalization().sendMessage(p, "messages.unlocked", true, msg -> msg.replace(PLACEHOLDER_RESEARCH, getName(p)));
-        callback.accept(p);
-
-        if (SlimefunPlugin.getRegistry().isResearchFireworkEnabled() && SlimefunGuideSettings.hasFireworksEnabled(p)) {
-            FireworkUtils.launchRandom(p, 1);
-        }
-    }
-
-    private void playResearchAnimation(@Nonnull Player p) {
-        for (int i = 1; i < RESEARCH_PROGRESS.length + 1; i++) {
-            int j = i;
-
-            SlimefunPlugin.runSync(() -> {
-                p.playSound(p.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 0.7F, 1F);
-                SlimefunPlugin.getLocalization().sendMessage(p, "messages.research.progress", true, msg -> msg.replace(PLACEHOLDER_RESEARCH, getName(p)).replace("%progress%", RESEARCH_PROGRESS[j - 1] + "%"));
-            }, i * 20L);
-        }
+    public void unlock(@Nonnull Player p, boolean isInstant, @Nullable Consumer<Player> callback) {
+        PlayerProfile.get(p, new PlayerResearchTask(this, isInstant, callback));
     }
 
     /**

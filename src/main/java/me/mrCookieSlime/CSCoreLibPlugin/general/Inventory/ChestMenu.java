@@ -1,6 +1,5 @@
-package me.mrCookieSlime.CSCoreLibPlugin.general;
+package me.mrCookieSlime.CSCoreLibPlugin.general.Inventory;
 
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -130,9 +129,9 @@ public class ChestMenu {
      * Adds an Item to the Inventory in that Slot
      * as well as a Click Handler
      *
-     * @param slot    The Slot in the Inventory
-     * @param item    The Item for that Slot
-     * @param handler The MenuClickHandler for that Slot
+     * @param slot         The Slot in the Inventory
+     * @param item         The Item for that Slot
+     * @param clickHandler The MenuClickHandler for that Slot
      * @return The ChestMenu Instance
      */
     public ChestMenu addItem(int slot, ItemStack item, MenuClickHandler clickHandler) {

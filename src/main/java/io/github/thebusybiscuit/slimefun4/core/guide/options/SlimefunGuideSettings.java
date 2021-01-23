@@ -5,11 +5,12 @@ import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.skull.SkullItem;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
+import io.github.thebusybiscuit.slimefun4.core.researching.Research;
 import io.github.thebusybiscuit.slimefun4.core.services.github.Contributor;
 import io.github.thebusybiscuit.slimefun4.core.services.localization.Language;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.*;
-import me.mrCookieSlime.CSCoreLibPlugin.general.ChestMenu;
+import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,6 +19,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
 /**
@@ -45,10 +48,11 @@ public final class SlimefunGuideSettings {
     private SlimefunGuideSettings() {
     }
 
-    public static <T> void addOption(SlimefunGuideOption<T> option) {
+    public static <T> void addOption(@Nonnull SlimefunGuideOption<T> option) {
         options.add(option);
     }
 
+    @ParametersAreNonnullByDefault
     public static void openSettings(Player p, ItemStack guide) {
         ChestMenu menu = new ChestMenu(SlimefunPlugin.getLocalization().getMessage(p, "guide.title.settings"));
 
@@ -63,6 +67,7 @@ public final class SlimefunGuideSettings {
         menu.open(p);
     }
 
+    @ParametersAreNonnullByDefault
     private static void addHeader(Player p, ChestMenu menu, ItemStack guide) {
         menu.addItem(0, new CustomItem(SlimefunGuide.getItem(SlimefunGuideMode.SURVIVAL_MODE), "&e\u21E6 " + SlimefunPlugin.getLocalization().getMessage(p, "guide.back.title"), "", "&7" + SlimefunPlugin.getLocalization().getMessage(p, "guide.back.guide")), (pl, slot, item, action) -> {
             SlimefunGuide.openGuide(pl, guide);
@@ -114,6 +119,7 @@ public final class SlimefunGuideSettings {
         });
     }
 
+    @ParametersAreNonnullByDefault
     private static void addConfigurableOptions(Player p, ChestMenu menu, ItemStack guide) {
         int i = 19;
 
@@ -172,6 +178,14 @@ public final class SlimefunGuideSettings {
         return skull;
     }
 
+    /**
+     * This method checks if the given {@link Player} has enabled the {@link FireworksOption}
+     * in their {@link SlimefunGuide}.
+     * If they enabled this setting, they will see fireworks when they unlock a {@link Research}.
+     *
+     * @param p The {@link Player}
+     * @return Whether this {@link Player} wants to see fireworks when unlocking a {@link Research}
+     */
     public static boolean hasFireworksEnabled(Player p) {
         for (SlimefunGuideOption<?> option : options) {
             if (option instanceof FireworksOption) {
