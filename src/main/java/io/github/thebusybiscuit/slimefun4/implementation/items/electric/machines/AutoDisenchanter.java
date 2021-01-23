@@ -2,6 +2,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machine
 
 import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
 import io.github.thebusybiscuit.slimefun4.api.events.AutoDisenchantEvent;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
@@ -35,13 +36,13 @@ import java.util.Map;
  */
 public class AutoDisenchanter extends AContainer {
 
-    private final int limit;
+    private final ItemSetting<Integer> enchantLevelLimit = new ItemSetting<>("enchant-level-limit", 5);
 
     @ParametersAreNonnullByDefault
     public AutoDisenchanter(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
-        limit = SlimefunPlugin.getCfg().getInt("options.enchanter-level-limit");
+        addItemSetting(enchantLevelLimit);
     }
 
     @Override
@@ -74,7 +75,7 @@ public class AutoDisenchanter extends AContainer {
                 int amount = 0;
 
                 for (Map.Entry<Enchantment, Integer> entry : item.getEnchantments().entrySet()) {
-                    if (entry.getValue() <= limit || limit < 1) {
+                    if (entry.getValue() <= enchantLevelLimit.getValue() || enchantLevelLimit.getValue() < 1) {
                         enchantments.put(entry.getKey(), entry.getValue());
                         amount++;
                     } else {
