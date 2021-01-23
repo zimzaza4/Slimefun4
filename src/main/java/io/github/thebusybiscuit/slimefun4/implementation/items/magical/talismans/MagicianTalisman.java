@@ -5,6 +5,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.settings.TalismanEnchantment;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -62,10 +63,11 @@ public class MagicianTalisman extends Talisman {
 
         // @formatter:off
         List<TalismanEnchantment> enabled = enchantments.stream()
-                .filter(e -> e.getEnchantment().canEnchantItem(item))
+                .filter(e -> item.getType() == Material.BOOK || e.getEnchantment().canEnchantItem(item))
                 .filter(e -> hasConflicts(existingEnchantments, e))
                 .filter(TalismanEnchantment::getValue)
                 .collect(Collectors.toList());
+
         // @formatter:on
 
         return enabled.isEmpty() ? null : enabled.get(ThreadLocalRandom.current().nextInt(enabled.size()));
