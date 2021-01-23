@@ -246,6 +246,8 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         getLogger().log(Level.INFO, "正在注册监听器...");
         registerListeners();
 
+        customUpdater = new NUpdater();
+
         // 魔改的自动更新服务
         // 自动选择分支
         NUpdater.autoSelectBranch(this);
@@ -284,7 +286,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
         if (config.getBoolean("options.auto-update") || config.getBoolean("options.update-check")) {
             if (NUpdater.getBranch() == CustomBranch.STABLE) {
-                customUpdater = new NUpdater();
                 Bukkit.getServer().getScheduler().runTaskAsynchronously(instance, customUpdater::checkUpdate);
             }
         }
