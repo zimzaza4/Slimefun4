@@ -6,7 +6,7 @@
     <groupId>com.github.thebusybiscuit</groupId>
     <artifactId>Slimefun</artifactId>
 
-    <version>4.8-nightly</version>
+    <version>4.9-nightly</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
