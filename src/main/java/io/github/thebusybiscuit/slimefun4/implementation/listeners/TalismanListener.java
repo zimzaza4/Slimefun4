@@ -218,8 +218,6 @@ public class TalismanListener implements Listener {
         Random random = ThreadLocalRandom.current();
         Map<Enchantment, Integer> enchantments = e.getEnchantsToAdd();
 
-        System.out.println(e.getEnchanter());
-
         // Magician Talisman
         if (Talisman.checkFor(e, SlimefunItems.TALISMAN_MAGICIAN)) {
             MagicianTalisman talisman = (MagicianTalisman) SlimefunItems.TALISMAN_MAGICIAN.getItem();
