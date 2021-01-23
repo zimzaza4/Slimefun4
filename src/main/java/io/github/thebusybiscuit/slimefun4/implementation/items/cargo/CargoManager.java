@@ -1,8 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.cargo;
 
+import io.github.thebusybiscuit.slimefun4.core.attributes.HologramOwner;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockUseHandler;
 import io.github.thebusybiscuit.slimefun4.core.networks.cargo.CargoNet;
-import io.github.thebusybiscuit.slimefun4.utils.holograms.SimpleHologram;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
@@ -17,13 +17,13 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
 
-public class CargoManager extends SlimefunItem {
+public class CargoManager extends SlimefunItem implements HologramOwner {
 
     public CargoManager(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
         registerBlockHandler(getId(), (p, b, tool, reason) -> {
-            SimpleHologram.remove(b);
+            removeHologram(b);
             return true;
         });
     }

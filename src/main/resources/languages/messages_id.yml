@@ -165,7 +165,7 @@ machines:
     obstructed: "&4Tumpuan terhalangi! &Hancurkan semua yang berada di atas tumpuan!"
   HOLOGRAM_PROJECTOR:
     enter-text: "&7Masukan teks sesuai yang anda inginkan. &r(Mendukung warna teks!)"
-    inventory-title: Pengedit hologram
+    inventory-title: Pengedit holograms
   ELEVATOR:
     no-destinations: "&4Tujuan tidak ditemukan"
     pick-a-floor: "&3- Pilih Lantai -"

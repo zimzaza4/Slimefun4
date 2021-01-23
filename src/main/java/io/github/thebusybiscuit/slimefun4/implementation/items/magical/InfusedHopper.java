@@ -27,10 +27,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * The {@link InfusedHopper} is a special kind of {@link Hopper} which teleports any
- * neaby {@link Item} to itself.
+ * nearby {@link Item} to itself.
  * The radius can be configured in the config.
  *
  * @author TheBusyBiscuit
+ * @author Walshy
  * @see InfusedMagnet
  */
 public class InfusedHopper extends SimpleSlimefunItem<BlockTicker> {
@@ -101,7 +102,10 @@ public class InfusedHopper extends SimpleSlimefunItem<BlockTicker> {
     private boolean isValidItem(@Nonnull Location l, @Nonnull Entity entity) {
         if (entity instanceof Item && entity.isValid()) {
             Item item = (Item) entity;
-            return !SlimefunUtils.hasNoPickupFlag(item) && item.getLocation().distanceSquared(l) > 0.25;
+            // Check if the item cannot be picked up or has the "no pickup" metadata
+            return item.getPickupDelay() <= 0
+                    && !SlimefunUtils.hasNoPickupFlag(item)
+                    && item.getLocation().distanceSquared(l) > 0.25;
         }
 
         return false;

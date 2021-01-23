@@ -17,6 +17,7 @@ import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.networks.NetworkManager;
 import io.github.thebusybiscuit.slimefun4.core.services.*;
 import io.github.thebusybiscuit.slimefun4.core.services.github.GitHubService;
+import io.github.thebusybiscuit.slimefun4.core.services.holograms.HologramsService;
 import io.github.thebusybiscuit.slimefun4.core.services.profiler.SlimefunProfiler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAltar;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientPedestal;
@@ -96,6 +97,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     private final PerWorldSettingsService worldSettingsService = new PerWorldSettingsService(this);
     private final IntegrationsManager integrations = new IntegrationsManager(this);
     private final MinecraftRecipeService recipeService = new MinecraftRecipeService(this);
+    private final HologramsService hologramsService = new HologramsService(this);
     private final SlimefunProfiler profiler = new SlimefunProfiler();
     private NUpdater customUpdater;
 
@@ -275,6 +277,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         }
 
         autoSavingService.start(this, config.getInt("options.auto-save-delay-in-minutes"));
+        hologramsService.start();
         ticker.start(this);
 
         getLogger().log(Level.INFO, "正在加载第三方插件支持...");
@@ -703,6 +706,12 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
     public static PerWorldSettingsService getWorldSettingsService() {
         return instance.worldSettingsService;
+    }
+
+    @Nonnull
+    public static HologramsService getHologramsService() {
+        validateInstance();
+        return instance.hologramsService;
     }
 
     /**

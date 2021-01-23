@@ -198,7 +198,7 @@ machines:
     transmitters: Prehľad vysielača
     waypoints: Prehľad waypointov
   HOLOGRAM_PROJECTOR:
-    enter-text: "&7Prosím napíš text pre hologram do chatu. &r(Kódy farieb sú podporované!)"
+    enter-text: "&7Prosím napíš text pre holograms do chatu. &r(Kódy farieb sú podporované!)"
     inventory-title: Editor hologramu
   ignition-chamber-no-flint: "&cV Ignition Chamber chýba zapalovač."
   in-use: "&cInventár tohto bloku  má aktuálne otvorený iný hráč."

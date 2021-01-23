@@ -205,7 +205,7 @@ machines:
     obstructed: "&4A Pedestal el van torlaszolva! &cTávolíts el mindent, ami a Pedestal
       felett van!"
   HOLOGRAM_PROJECTOR:
-    enter-text: "&7Kérlek, írd be a kívánt hologram szöveget a chatre. &r(Színkódok
+    enter-text: "&7Kérlek, írd be a kívánt holograms szöveget a chatre. &r(Színkódok
       is használhatóak!)"
     inventory-title: Hologram szerkesztő
   ELEVATOR:
