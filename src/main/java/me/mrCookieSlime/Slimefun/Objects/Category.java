@@ -1,13 +1,15 @@
 package me.mrCookieSlime.Slimefun.Objects;
 
-import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
-import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.core.categories.LockedCategory;
-import io.github.thebusybiscuit.slimefun4.core.categories.SeasonalCategory;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Keyed;
@@ -17,10 +19,14 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.*;
+import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
+import io.github.thebusybiscuit.slimefun4.core.categories.LockedCategory;
+import io.github.thebusybiscuit.slimefun4.core.categories.SeasonalCategory;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import me.mrCookieSlime.Slimefun.api.Slimefun;
 
 /**
  * Represents a category, which structure multiple {@link SlimefunItem} in the {@link SlimefunGuide}.
@@ -78,6 +84,7 @@ public class Category implements Keyed {
         ItemMeta meta = item.getItemMeta();
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
         this.item.setItemMeta(meta);
         this.tier = tier;
     }
@@ -92,7 +99,8 @@ public class Category implements Keyed {
      * <p>
      * By default, a category is automatically registered when a {@link SlimefunItem} was added to it.
      *
-     * @param addon The {@link SlimefunAddon} that wants to register this {@link Category}
+     * @param addon
+     *            The {@link SlimefunAddon} that wants to register this {@link Category}
      */
     public void register(@Nonnull SlimefunAddon addon) {
         Validate.notNull(addon, "The Addon cannot be null");
@@ -116,7 +124,8 @@ public class Category implements Keyed {
     /**
      * Adds the given {@link SlimefunItem} to this {@link Category}.
      *
-     * @param item the {@link SlimefunItem} that should be added to this {@link Category}
+     * @param item
+     *            the {@link SlimefunItem} that should be added to this {@link Category}
      */
     public void add(@Nonnull SlimefunItem item) {
         Validate.notNull(item, "Cannot add null Items to a Category!");
@@ -132,7 +141,8 @@ public class Category implements Keyed {
     /**
      * Removes the given {@link SlimefunItem} from this {@link Category}.
      *
-     * @param item the {@link SlimefunItem} that should be removed from this {@link Category}
+     * @param item
+     *            the {@link SlimefunItem} that should be removed from this {@link Category}
      */
     public void remove(@Nonnull SlimefunItem item) {
         Validate.notNull(item, "Cannot remove null from a Category!");
@@ -149,10 +159,13 @@ public class Category implements Keyed {
      * @return A localized display item for this {@link Category}
      */
     @Nonnull
-    public ItemStack getItem(Player p) {
+    public ItemStack getItem(@Nonnull Player p) {
         return new CustomItem(item, meta -> {
             String name = SlimefunPlugin.getLocalization().getCategoryName(p, getKey());
-            if (name == null) name = item.getItemMeta().getDisplayName();
+
+            if (name == null) {
+                name = item.getItemMeta().getDisplayName();
+            }
 
             if (this instanceof SeasonalCategory) {
                 meta.setDisplayName(ChatColor.GOLD + name);
@@ -179,7 +192,9 @@ public class Category implements Keyed {
      * This returns the localized display name of this {@link Category} for the given {@link Player}.
      * The method will fall back to {@link #getUnlocalizedName()} if no translation was found.
      *
-     * @param p The {@link Player} who to translate the name for
+     * @param p
+     *            The {@link Player} who to translate the name for
+     *
      * @return The localized name of this {@link Category}
      */
     @Nonnull
@@ -206,7 +221,9 @@ public class Category implements Keyed {
     /**
      * This method returns whether a given {@link SlimefunItem} exists in this {@link Category}.
      *
-     * @param item The {@link SlimefunItem} to find
+     * @param item
+     *            The {@link SlimefunItem} to find
+     *
      * @return Whether the given {@link SlimefunItem} was found in this {@link Category}
      */
     public boolean contains(SlimefunItem item) {
@@ -236,6 +253,7 @@ public class Category implements Keyed {
      *
      * @param p
      *            The {@link Player} to check for
+     *
      * @return Whether this {@link Category} will be hidden to the given {@link Player}
      */
     public boolean isHidden(@Nonnull Player p) {
@@ -250,7 +268,7 @@ public class Category implements Keyed {
 
     /**
      * This method returns whether this {@link Category} has been registered yet.
-     * More specifically: Whether {@link #register()} was called or not.
+     * More specifically: Whether {@link #register(SlimefunAddon)} was called or not.
      *
      * @return Whether this {@link Category} has been registered
      */
