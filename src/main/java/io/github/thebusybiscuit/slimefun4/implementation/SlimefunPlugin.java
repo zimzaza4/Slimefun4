@@ -208,7 +208,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         networkManager = new NetworkManager(networkSize, config.getBoolean("networks.enable-visualizer"), config.getBoolean("networks.delete-excess-items"));
 
         // Setting up bStats
-        new Thread(metricsService::start, "Slimefun Metrics").start();
+        //new Thread(metricsService::start, "Slimefun Metrics").start();
 
         // 魔改的自动更新服务
         // 自动选择分支
