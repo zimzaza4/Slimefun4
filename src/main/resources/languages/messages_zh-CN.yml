@@ -143,6 +143,7 @@ messages:
     whirlwind: "&a&o你的护身符反弹了所有射向你的投掷物"
     wizard: "&a&o你的护身符随机提高了一个附魔的等级, 但其他的附魔等级将会下降"
     caveman: "&a&o你的护身符给予了你急迫效果"
+    wise: "&a&o你的护身符让掉落的经验翻倍了"
   soulbound-rune:
     fail: "&c灵魂一次只能绑定一个物品."
     success: "&a物品绑定成功! 在你死亡后此物品将不会掉落."
@@ -360,3 +361,5 @@ cauldron:
   no-discoloring: "&4你不能用炼药锅洗去 Slimefun 物品的颜色"
 miner:
   no-ores: "&e抱歉, 周围找不到矿石了!"
+placeholderapi:
+  profile-loading: 加载中...

@@ -1,6 +1,18 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.tools;
 
-import io.github.starwishsama.utils.ProtectionChecker;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Effect;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.inventory.ItemStack;
+
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
@@ -17,28 +29,27 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.UnregisterReason;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import org.bukkit.Bukkit;
-import org.bukkit.Effect;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * This {@link SlimefunItem} is a super class for items like the {@link ExplosivePickaxe} or {@link ExplosiveShovel}.
+ *
+ * @author TheBusyBiscuit
+ *
+ * @see ExplosivePickaxe
+ * @see ExplosiveShovel
+ *
+ */
 class ExplosiveTool extends SimpleSlimefunItem<ToolUseHandler> implements NotPlaceable, DamageableItem {
 
     private final ItemSetting<Boolean> damageOnUse = new ItemSetting<>("damage-on-use", true);
     private final ItemSetting<Boolean> callExplosionEvent = new ItemSetting<>("call-explosion-event", false);
-    private final ItemSetting<List<String>> unbreakableBlocks = new ItemSetting<>("unbreakable-blocks", new ArrayList<>());
 
     public ExplosiveTool(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
-        addItemSetting(damageOnUse, callExplosionEvent, unbreakableBlocks);
+
+        addItemSetting(damageOnUse, callExplosionEvent);
     }
 
     @Override
@@ -56,40 +67,23 @@ class ExplosiveTool extends SimpleSlimefunItem<ToolUseHandler> implements NotPla
     }
 
     private void breakBlocks(Player p, ItemStack item, Block b, List<Block> blocks, int fortune, List<ItemStack> drops) {
-        if (callExplosionEvent.getValue()) {
+        if (callExplosionEvent.getValue().booleanValue()) {
             BlockExplodeEvent blockExplodeEvent = new BlockExplodeEvent(b, blocks, 0);
             Bukkit.getServer().getPluginManager().callEvent(blockExplodeEvent);
 
             if (!blockExplodeEvent.isCancelled()) {
                 for (Block block : blockExplodeEvent.blockList()) {
                     if (canBreak(p, block)) {
-                        breakBlock(p, item, block, fortune, drops);
+                        breakBlock(p, item, block, drops);
                     }
                 }
             }
         } else {
             for (Block block : blocks) {
                 if (canBreak(p, block)) {
-                    breakBlock(p, item, block, fortune, drops);
+                    breakBlock(p, item, block, drops);
                 }
             }
-        }
-    }
-
-    protected boolean canBreak(Player p, Block b) {
-        if (b.isEmpty() || b.isLiquid()) {
-            return false;
-        } else if (isUnbreakable(b)) {
-            return false;
-        } else if (SlimefunTag.UNBREAKABLE_MATERIALS.isTagged(b.getType())) {
-            return false;
-        } else if (!b.getWorld().getWorldBorder().isInside(b.getLocation())) {
-            return false;
-        } else if (SlimefunPlugin.getIntegrations().isCustomBlock(b)) {
-            return false;
-        } else {
-            return SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.BREAK_BLOCK)
-                    && ProtectionChecker.canInteract(p, b, ProtectableAction.BREAK_BLOCK);
         }
     }
 
@@ -117,9 +111,23 @@ class ExplosiveTool extends SimpleSlimefunItem<ToolUseHandler> implements NotPla
         return damageOnUse.getValue();
     }
 
-    private void breakBlock(Player p, ItemStack item, Block b, int fortune, List<ItemStack> drops) {
-        SlimefunPlugin.getProtectionManager().logAction(p, b, ProtectableAction.BREAK_BLOCK);
+    protected boolean canBreak(Player p, Block b) {
+        if (b.isEmpty() || b.isLiquid()) {
+            return false;
+        } else if (SlimefunTag.UNBREAKABLE_MATERIALS.isTagged(b.getType())) {
+            return false;
+        } else if (!b.getWorld().getWorldBorder().isInside(b.getLocation())) {
+            return false;
+        } else if (SlimefunPlugin.getIntegrations().isCustomBlock(b)) {
+            return false;
+        } else {
+            return SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.BREAK_BLOCK);
+        }
+    }
 
+    @ParametersAreNonnullByDefault
+    private void breakBlock(Player p, ItemStack item, Block b, List<ItemStack> drops) {
+        SlimefunPlugin.getProtectionManager().logAction(p, b, ProtectableAction.BREAK_BLOCK);
         Material material = b.getType();
 
         b.getWorld().playEffect(b.getLocation(), Effect.STEP_SOUND, material);
@@ -134,34 +142,15 @@ class ExplosiveTool extends SimpleSlimefunItem<ToolUseHandler> implements NotPla
         } else if (material == Material.PLAYER_HEAD || SlimefunTag.SHULKER_BOXES.isTagged(material)) {
             b.breakNaturally(item);
         } else {
-            boolean applyFortune = SlimefunTag.FORTUNE_COMPATIBLE_ORES.isTagged(material);
-
-            for (ItemStack drop : b.getDrops(getItem())) {
-                // For some reason this check is necessary with Paper
-                if (drop != null && drop.getType() != Material.AIR) {
-                    b.getWorld().dropItemNaturally(b.getLocation(), applyFortune ? new CustomItem(drop, fortune) : drop);
-                }
+            // Check if the block was mined using Silk Touch
+            if (item.containsEnchantment(Enchantment.SILK_TOUCH)) {
+                b.getWorld().dropItemNaturally(b.getLocation(), new ItemStack(b.getType()));
+            } else {
+                b.breakNaturally(item);
             }
-
-            b.setType(Material.AIR);
         }
 
         damageItem(p, item);
-    }
-
-    protected boolean isUnbreakable(Block b) {
-        if (!unbreakableBlocks.getValue().isEmpty()) {
-            for (String material : unbreakableBlocks.getValue()) {
-                if (material.toUpperCase().equals("SIGN") && b.getState() instanceof Sign) {
-                    return true;
-                }
-
-                if (b.getType().equals(Material.matchMaterial(material, true))) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
 }

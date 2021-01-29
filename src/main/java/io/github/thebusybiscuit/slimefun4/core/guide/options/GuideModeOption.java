@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-class GuideLayoutOption implements SlimefunGuideOption<SlimefunGuideMode> {
+class GuideModeOption implements SlimefunGuideOption<SlimefunGuideMode> {
 
     @Override
     public SlimefunAddon getAddon() {
@@ -29,7 +29,7 @@ class GuideLayoutOption implements SlimefunGuideOption<SlimefunGuideMode> {
     @Nonnull
     @Override
     public NamespacedKey getKey() {
-        return new NamespacedKey(SlimefunPlugin.instance(), "guide_layout");
+        return new NamespacedKey(SlimefunPlugin.instance(), "guide_mode");
     }
 
     @Nonnull
@@ -38,23 +38,23 @@ class GuideLayoutOption implements SlimefunGuideOption<SlimefunGuideMode> {
         Optional<SlimefunGuideMode> current = getSelectedOption(p, guide);
 
         if (current.isPresent()) {
-            SlimefunGuideMode layout = current.get();
+            SlimefunGuideMode selectedMode = current.get();
             ItemStack item = new ItemStack(Material.AIR);
 
-            if (layout == SlimefunGuideMode.SURVIVAL_MODE) {
+            if (selectedMode == SlimefunGuideMode.SURVIVAL_MODE) {
                 item.setType(Material.CHEST);
             } else {
                 item.setType(Material.COMMAND_BLOCK);
             }
 
             ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(ChatColor.GRAY + "Slimefun 指南样式: " + ChatColor.YELLOW + ChatUtils.humanize(layout.name()));
+            meta.setDisplayName(ChatColor.GRAY + "Slimefun 指南样式: " + ChatColor.YELLOW + ChatUtils.humanize(selectedMode.name()));
             List<String> lore = new ArrayList<>();
             lore.add("");
-            lore.add((layout == SlimefunGuideMode.SURVIVAL_MODE ? ChatColor.GREEN : ChatColor.GRAY) + "箱子界面");
+            lore.add((selectedMode == SlimefunGuideMode.SURVIVAL_MODE ? ChatColor.GREEN : ChatColor.GRAY) + "普通界面");
 
             if (p.hasPermission("slimefun.cheat.items")) {
-                lore.add((layout == SlimefunGuideMode.CHEAT_MODE ? ChatColor.GREEN : ChatColor.GRAY) + "作弊界面");
+                lore.add((selectedMode == SlimefunGuideMode.CHEAT_MODE ? ChatColor.GREEN : ChatColor.GRAY) + "作弊界面");
             }
 
             lore.add("");

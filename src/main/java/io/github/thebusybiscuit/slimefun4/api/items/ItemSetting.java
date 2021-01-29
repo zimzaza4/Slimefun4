@@ -131,6 +131,7 @@ public class ItemSetting<T> {
      *
      * @param item The {@link SlimefunItem} who called this method
      */
+    @SuppressWarnings("unchecked")
     public void load(@Nonnull SlimefunItem item) {
         Validate.notNull(item, "Cannot apply settings for a non-existing SlimefunItem");
 
@@ -139,25 +140,33 @@ public class ItemSetting<T> {
 
         if (defaultValue.getClass().isInstance(configuredValue)) {
             // We can suppress the warning here, we did an isInstance(...) check before!
-            @SuppressWarnings("unchecked")
             T newValue = (T) configuredValue;
 
             if (validateInput(newValue)) {
                 this.value = newValue;
             } else {
-                SlimefunPlugin.logger().log(Level.WARNING, "Slimefun 在 Items.yml 中发现有无效的物品设置!");
-                SlimefunPlugin.logger().log(Level.WARNING, "  在 \"{0}.{1}\"", new Object[]{item.getId(), getKey()});
-                SlimefunPlugin.logger().log(Level.WARNING, "{0} 不是一个有效值!", configuredValue);
-                SlimefunPlugin.logger().log(Level.WARNING, getErrorMessage());
+                // @formatter:off
+                item.warn(
+                        "发现在 Items.yml 中有无效的物品设置!" +
+                                "\n  在 \"" + item.getId() + "." + getKey() + "\"" +
+                                "\n  " + configuredValue + " 不是一个有效值!" +
+                                "\n" + getErrorMessage()
+                );
+                // @formatter:on
             }
         } else {
             this.value = defaultValue;
             String found = configuredValue == null ? "null" : configuredValue.getClass().getSimpleName();
 
-            SlimefunPlugin.logger().log(Level.WARNING, "Slimefun 在 Items.yml 中发现有无效的物品设置!");
-            SlimefunPlugin.logger().log(Level.WARNING, "请只设置有效的值.");
-            SlimefunPlugin.logger().log(Level.WARNING, "  at \"{0}.{1}\"", new Object[]{item.getId(), getKey()});
-            SlimefunPlugin.logger().log(Level.WARNING, "期望 \"{0}\" 但找到了: \"{1}\"", new Object[]{defaultValue.getClass().getSimpleName(), found});
+            // @formatter:off
+            item.warn(
+                    "发现在 Items.yml 中有无效的物品设置!" +
+                            "\n请只设置有效的值." +
+                            "\n  在 \"" + item.getId() + "." + getKey() + "\"" +
+                            "\n  期望值为 \"" + defaultValue.getClass().getSimpleName() + "\" 但填写了: \"" + found + "\""
+            );
+            // @formatter:on
+
         }
     }
 

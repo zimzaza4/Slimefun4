@@ -1,9 +1,38 @@
 package io.github.thebusybiscuit.slimefun4.api.player;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.stream.IntStream;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.config.Config;
+import io.github.thebusybiscuit.slimefun4.api.events.AsyncProfileLoadEvent;
 import io.github.thebusybiscuit.slimefun4.api.gps.Waypoint;
 import io.github.thebusybiscuit.slimefun4.api.items.HashedArmorpiece;
 import io.github.thebusybiscuit.slimefun4.core.attributes.ProtectionType;
@@ -14,31 +43,20 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.armor.SlimefunArmorPiece;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
-import org.apache.commons.lang.Validate;
-import org.bukkit.*;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.File;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.stream.IntStream;
 
 /**
  * A class that can store a Player's {@link Research} progress for caching purposes.
  * It also holds the backpacks of a {@link Player}.
  *
  * @author TheBusyBiscuit
+ *
  * @see Research
  * @see Waypoint
  * @see PlayerBackpack
  * @see HashedArmorpiece
+ *
  */
-public final class PlayerProfile {
+public class PlayerProfile {
 
     private final UUID uuid;
     private final String name;
@@ -54,15 +72,19 @@ public final class PlayerProfile {
     private final Map<Integer, PlayerBackpack> backpacks = new HashMap<>();
     private final GuideHistory guideHistory = new GuideHistory(this);
 
-    private final HashedArmorpiece[] armor = {new HashedArmorpiece(), new HashedArmorpiece(), new HashedArmorpiece(), new HashedArmorpiece()};
+    private final HashedArmorpiece[] armor = { new HashedArmorpiece(), new HashedArmorpiece(), new HashedArmorpiece(), new HashedArmorpiece() };
 
-    private PlayerProfile(@Nonnull OfflinePlayer p) {
+    protected PlayerProfile(@Nonnull OfflinePlayer p) {
         this.uuid = p.getUniqueId();
         this.name = p.getName();
 
-        configFile = new Config(new File("data-storage/Slimefun/Players/" + uuid.toString() + ".yml"));
+        configFile = new Config("data-storage/Slimefun/Players/" + uuid.toString() + ".yml");
         waypointsFile = new Config("data-storage/Slimefun/waypoints/" + uuid.toString() + ".yml");
 
+        loadProfileData();
+    }
+
+    private void loadProfileData() {
         for (Research research : SlimefunPlugin.getRegistry().getResearches()) {
             if (configFile.contains("researches." + research.getID())) {
                 researches.add(research);
@@ -77,7 +99,7 @@ public final class PlayerProfile {
                     waypoints.add(new Waypoint(this, key, loc, waypointName));
                 }
             } catch (Exception x) {
-                SlimefunPlugin.logger().log(Level.WARNING, x, () -> "Could not load Waypoint \"" + key + "\" for Player \"" + p.getName() + '"');
+                SlimefunPlugin.logger().log(Level.WARNING, x, () -> "Could not load Waypoint \"" + key + "\" for Player \"" + name + '"');
             }
         }
     }
@@ -150,8 +172,10 @@ public final class PlayerProfile {
      * This method sets the Player's "researched" status for this Research.
      * Use the boolean to unlock or lock the {@link Research}
      *
-     * @param research The {@link Research} that should be unlocked or locked
-     * @param unlock   Whether the {@link Research} should be unlocked or locked
+     * @param research
+     *            The {@link Research} that should be unlocked or locked
+     * @param unlock
+     *            Whether the {@link Research} should be unlocked or locked
      */
     public void setResearched(@Nonnull Research research, boolean unlock) {
         Validate.notNull(research, "Research must not be null!");
@@ -248,14 +272,14 @@ public final class PlayerProfile {
      * Call this method if the Player has left.
      * The profile can then be removed from RAM.
      */
-    public void markForDeletion() {
+    public final void markForDeletion() {
         markedForDeletion = true;
     }
 
     /**
      * Call this method if this Profile has unsaved changes.
      */
-    public void markDirty() {
+    public final void markDirty() {
         dirty = true;
     }
 
@@ -362,9 +386,11 @@ public final class PlayerProfile {
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(SlimefunPlugin.instance(), () -> {
-            PlayerProfile pp = new PlayerProfile(p);
-            SlimefunPlugin.getRegistry().getPlayerProfiles().put(uuid, pp);
-            callback.accept(pp);
+            AsyncProfileLoadEvent event = new AsyncProfileLoadEvent(new PlayerProfile(p));
+            Bukkit.getPluginManager().callEvent(event);
+
+            SlimefunPlugin.getRegistry().getPlayerProfiles().put(uuid, event.getProfile());
+            callback.accept(event.getProfile());
         });
 
         return false;
@@ -436,9 +462,9 @@ public final class PlayerProfile {
 
         if (id.isPresent()) {
             int number = id.getAsInt();
+
             fromUUID(UUID.fromString(uuid), profile -> {
                 Optional<PlayerBackpack> backpack = profile.getBackpack(number);
-
                 backpack.ifPresent(callback);
             });
         }
@@ -446,8 +472,8 @@ public final class PlayerProfile {
 
     public boolean hasFullProtectionAgainst(@Nonnull ProtectionType type) {
         int armorCount = 0;
-
         NamespacedKey setId = null;
+
         for (HashedArmorpiece armorpiece : armor) {
             Optional<SlimefunArmorPiece> armorPiece = armorpiece.getItem();
 
@@ -469,6 +495,7 @@ public final class PlayerProfile {
                         }
                     }
                 }
+
             }
         }
 
