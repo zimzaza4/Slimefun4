@@ -1,9 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation;
 
-import io.github.starwishsama.utils.CustomBranch;
-import io.github.starwishsama.utils.LangUtil;
-import io.github.starwishsama.utils.NUpdater;
-import io.github.starwishsama.utils.ProtectionChecker;
+import io.github.starwishsama.utils.*;
 import io.github.thebusybiscuit.cscorelib2.config.Config;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectionManager;
 import io.github.thebusybiscuit.cscorelib2.reflection.ReflectionUtils;
@@ -208,7 +205,9 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         networkManager = new NetworkManager(networkSize, config.getBoolean("networks.enable-visualizer"), config.getBoolean("networks.delete-excess-items"));
 
         // Setting up bStats
-        //new Thread(metricsService::start, "Slimefun Metrics").start();
+        new Thread(metricsService::start, "Slimefun Metrics").start();
+
+        DeprecationChecker.checkDeprecation(this);
 
         // 魔改的自动更新服务
         // 自动选择分支
