@@ -22,11 +22,14 @@ import java.util.stream.Collectors;
 
 /**
  * The {@link MagicianTalisman} is a special kind of {@link Talisman} which awards a {@link Player}
- * with an utils {@link Enchantment} when they enchant their {@link ItemStack}.
+ * with an extra {@link Enchantment} when they enchant their {@link ItemStack}.
  *
  * @author TheBusyBiscuit
+ *
  */
 public class MagicianTalisman extends Talisman {
+
+    private final ItemSetting<Boolean> allowEnchantmentBooks = new ItemSetting<>("allow-enchantment-books", false);
 
     private final Set<TalismanEnchantment> enchantments = new HashSet<>();
 
@@ -34,13 +37,15 @@ public class MagicianTalisman extends Talisman {
     public MagicianTalisman(SlimefunItemStack item, ItemStack[] recipe) {
         super(item, recipe, false, false, "magician", 80);
 
+        addItemSetting(allowEnchantmentBooks);
+
         for (Enchantment enchantment : Enchantment.values()) {
             try {
                 for (int i = 1; i <= enchantment.getMaxLevel(); i++) {
                     enchantments.add(new TalismanEnchantment(enchantment, i));
                 }
             } catch (Exception x) {
-                SlimefunPlugin.logger().log(Level.SEVERE, x, () -> "The following Exception occured while trying to register the following Enchantment: " + enchantment);
+                SlimefunPlugin.logger().log(Level.SEVERE, x, () -> "The following Exception occurred while trying to register the following Enchantment: " + enchantment);
             }
         }
 
@@ -53,21 +58,25 @@ public class MagicianTalisman extends Talisman {
      * This method picks a random {@link TalismanEnchantment} for the provided {@link ItemStack}.
      * The method will return null, if null was provided or no applicable {@link Enchantment} was found.
      *
-     * @param item The {@link ItemStack} to find an {@link Enchantment} for
+     * @param item
+     *            The {@link ItemStack} to find an {@link Enchantment} for
+     * @param existingEnchantments
+     *            A {@link Set} containing the {@link Enchantment Enchantments} that currently exist on the
+     *            {@link ItemStack}
+     *
      * @return An applicable {@link TalismanEnchantment} or null
      */
     @Nullable
-    public TalismanEnchantment getRandomEnchantment(ItemStack item, @Nonnull Set<Enchantment> existingEnchantments) {
+    public TalismanEnchantment getRandomEnchantment(@Nonnull ItemStack item, @Nonnull Set<Enchantment> existingEnchantments) {
         Validate.notNull(item, "The ItemStack cannot be null");
         Validate.notNull(existingEnchantments, "The Enchantments Set cannot be null");
 
         // @formatter:off
         List<TalismanEnchantment> enabled = enchantments.stream()
-                .filter(e -> item.getType() == Material.BOOK || e.getEnchantment().canEnchantItem(item))
+                .filter(e -> (isEnchantmentBookAllowed() && item.getType() == Material.BOOK) || e.getEnchantment().canEnchantItem(item))
                 .filter(e -> hasConflicts(existingEnchantments, e))
                 .filter(TalismanEnchantment::getValue)
                 .collect(Collectors.toList());
-
         // @formatter:on
 
         return enabled.isEmpty() ? null : enabled.get(ThreadLocalRandom.current().nextInt(enabled.size()));
@@ -84,4 +93,13 @@ public class MagicianTalisman extends Talisman {
         return true;
     }
 
+    /**
+     * This method checks whether enchantment books
+     * can be given an extra {@link Enchantment} or not.
+     *
+     * @return Whether enchantment books can receive an extra {@link Enchantment}
+     */
+    public boolean isEnchantmentBookAllowed() {
+        return allowEnchantmentBooks.getValue();
+    }
 }
