@@ -14,12 +14,16 @@ public class VaultHelper {
 
     public static void register() {
         if (SlimefunPlugin.instance() != null) {
-            RegisteredServiceProvider<Economy> rsp = SlimefunPlugin.instance().getServer().getServicesManager().getRegistration(Economy.class);
-            if (rsp != null) {
-                SlimefunPlugin.logger().log(Level.INFO, "成功接入 Vault");
-                econ = rsp.getProvider();
+            if (SlimefunPlugin.instance().getServer().getPluginManager().isPluginEnabled("Vault")) {
+                RegisteredServiceProvider<Economy> rsp = SlimefunPlugin.instance().getServer().getServicesManager().getRegistration(Economy.class);
+                if (rsp != null) {
+                    SlimefunPlugin.logger().log(Level.INFO, "成功接入 Vault");
+                    econ = rsp.getProvider();
+                } else {
+                    SlimefunPlugin.logger().log(Level.WARNING, "无法接入 Vault. 如果你是 CMI 用户, 请至配置文件启用经济系统");
+                }
             } else {
-                SlimefunPlugin.logger().log(Level.SEVERE, "无法接入 Vault. 如果你是 CMI 用户, 请至配置文件启用经济系统");
+                SlimefunPlugin.logger().log(Level.WARNING, "无法接入 Vault. 你必须先安装 Vault!");
             }
         }
     }
