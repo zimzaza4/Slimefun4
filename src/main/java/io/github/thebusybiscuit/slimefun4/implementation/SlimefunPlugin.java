@@ -262,6 +262,9 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
         getLogger().log(Level.INFO, "正在加载第三方插件支持...");
         integrations.start();
+
+        VaultHelper.register();
+
         gitHubService.start(this);
 
         // Hooray!
