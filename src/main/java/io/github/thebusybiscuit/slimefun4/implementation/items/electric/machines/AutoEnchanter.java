@@ -2,6 +2,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machine
 
 import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.api.items.settings.IntRangeSetting;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
@@ -21,7 +22,7 @@ import java.util.Map;
 
 public class AutoEnchanter extends AContainer {
 
-    private final ItemSetting<Integer> enchantLevelLimit = new ItemSetting<>("enchant-level-limit", 5);
+    private final IntRangeSetting enchantLevelLimit = new IntRangeSetting("enchant-level-limit", 0, 5, 32767);
 
     @ParametersAreNonnullByDefault
     public AutoEnchanter(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
@@ -54,7 +55,7 @@ public class AutoEnchanter extends AContainer {
 
                 for (Map.Entry<Enchantment, Integer> e : meta.getStoredEnchants().entrySet()) {
                     if (e.getKey().canEnchantItem(target)) {
-                        if (e.getValue() <= enchantLevelLimit.getValue() || enchantLevelLimit.getValue() < 1) {
+                        if (enchantLevelLimit.validateInput(e.getValue())) {
                             amount++;
                             enchantments.put(e.getKey(), e.getValue());
                         } else {
