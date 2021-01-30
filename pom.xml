@@ -22,6 +22,11 @@
 
     <repositories>
         <repository>
+            <id>lss233-minecraft</id>
+            <name>Lss233's Minecraft Repository</name>
+            <url>http://lss233.littleservice.cn/repositories/minecraft</url>
+        </repository>
+        <repository>
             <id>destroystokyo-repo</id>
             <url>https://repo.destroystokyo.com/repository/maven-public</url>
         </repository>
@@ -57,11 +62,6 @@
         <repository>
             <id>walshy-public</id>
             <url>https://repo.walshy.dev/public</url>
-        </repository>
-        <repository>
-            <id>lss233-minecraft</id>
-            <name>Lss233's Minecraft Repository</name>
-            <url>http://lss233.littleservice.cn/repositories/minecraft</url>
         </repository>
     </repositories>
 
