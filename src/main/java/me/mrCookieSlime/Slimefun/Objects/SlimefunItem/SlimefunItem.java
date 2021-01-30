@@ -484,10 +484,10 @@ public class SlimefunItem implements Placeable {
         // Check for an illegal stack size
         if (itemStackTemplate.getAmount() != 1) {
             // @formatter:off
-            warn("This item has an illegal stack size: " + itemStackTemplate.getAmount()
-                    + ". An Item size of 1 is recommended. Please inform the author(s) of " + addon.getName()
-                    + " to fix this. Crafting Results with amounts of higher should be handled"
-                    + " via the recipeOutput parameter!");
+            warn("此物品设置的堆叠数量错误: " + itemStackTemplate.getAmount()
+                    + ". 我们推荐你使用 1. 请联系 " + addon.getName()
+                    + " 的作者修复这个问题. 合成超过一个以上的物品应该在 recipeOutput 参数中处理!"
+            );
             // @formatter:on
         }
 
@@ -780,7 +780,7 @@ public class SlimefunItem implements Placeable {
                 // Prevent two Item Settings with the same key
                 for (ItemSetting<?> existingSetting : itemSettings) {
                     if (existingSetting.getKey().equals(setting.getKey())) {
-                        throw new IllegalArgumentException("This Item has already an ItemSetting with this key: " + setting.getKey());
+                        throw new IllegalArgumentException("此物品已有相同的 ItemSetting 键: " + setting.getKey());
                     }
                 }
 
@@ -951,7 +951,12 @@ public class SlimefunItem implements Placeable {
 
         if (addon.getBugTrackerURL() != null) {
             // We can prompt the server operator to report it to the addon's bug tracker
-            addon.getLogger().log(Level.WARNING, "You can report this warning here: {0}", addon.getBugTrackerURL());
+            addon.getLogger().log(Level.WARNING,
+                    "你可以在此处反馈这个问题: {0}"
+                            + "\n注意: 如果你打算去附属的 Github 页面反馈问题,"
+                            + "\n请不要直接使用该汉化版去截图反馈, 而是优先在汉化版处反馈!"
+                            + "\n汉化版反馈地址: https://github.com/StarWishsama/Slimefun4/issues",
+                    addon.getBugTrackerURL());
         }
     }
 
@@ -967,11 +972,16 @@ public class SlimefunItem implements Placeable {
     public void error(@Nonnull String message, @Nonnull Throwable throwable) {
         Validate.notNull(addon, "Cannot send a warning for an unregistered item!");
 
-        addon.getLogger().log(Level.SEVERE, "Item \"{0}\" from {1} v{2} has caused an Error!", new Object[]{id, addon.getName(), addon.getPluginVersion()});
+        addon.getLogger().log(Level.SEVERE, "附属 {1} (版本 {2}) 的物品 \"{0}\" 发生了一个错误!", new Object[]{id, addon.getName(), addon.getPluginVersion()});
 
         if (addon.getBugTrackerURL() != null) {
             // We can prompt the server operator to report it to the addon's bug tracker
-            addon.getLogger().log(Level.SEVERE, "You can report it here: {0}", addon.getBugTrackerURL());
+            addon.getLogger().log(Level.WARNING,
+                    "你可以在此处反馈这个问题: {0}"
+                            + "\n注意: 如果你打算去附属的 Github 页面反馈问题,"
+                            + "\n请不要直接使用该汉化版去截图反馈, 而是优先在汉化版处反馈!"
+                            + "\n汉化版反馈地址: https://github.com/StarWishsama/Slimefun4/issues",
+                    addon.getBugTrackerURL());
         }
 
         addon.getLogger().log(Level.SEVERE, message, throwable);
