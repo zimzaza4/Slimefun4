@@ -55,7 +55,7 @@ public class AutoEnchanter extends AContainer {
 
                 for (Map.Entry<Enchantment, Integer> e : meta.getStoredEnchants().entrySet()) {
                     if (e.getKey().canEnchantItem(target)) {
-                        if (enchantLevelLimit.validateInput(e.getValue())) {
+                        if (enchantLevelLimit.getValue() >= e.getValue()) {
                             amount++;
                             enchantments.put(e.getKey(), e.getValue());
                         } else {

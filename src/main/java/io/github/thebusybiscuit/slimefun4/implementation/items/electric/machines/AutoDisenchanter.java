@@ -76,7 +76,7 @@ public class AutoDisenchanter extends AContainer {
                 int amount = 0;
 
                 for (Map.Entry<Enchantment, Integer> entry : item.getEnchantments().entrySet()) {
-                    if (enchantLevelLimit.validateInput(entry.getValue())) {
+                    if (enchantLevelLimit.getValue() >= entry.getValue()) {
                         enchantments.put(entry.getKey(), entry.getValue());
                         amount++;
                     } else {

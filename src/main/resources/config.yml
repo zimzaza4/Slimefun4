@@ -8,8 +8,6 @@
 #    legacy-ore-washer - 是否使用旧版的洗矿机机制
 #    legacy-dust-washer - 是否使用旧版的除尘机机制
 #    legacy-ore-grinder - 是否使用旧版的碎矿机机制
-#    enchanter-level-limit - 限制附魔机/祛魔机可承载的附魔等级上限
-#                            设置为 0 关闭限制
 #    language - 粘液科技文本语言 (不包括物品)
 #    enable-translations - 多语言功能
 #    backwards-compatibility - 物品向后兼容模式, 关闭后物品会使用新版物品系统
@@ -25,7 +23,6 @@ options:
   legacy-ore-washer: false
   legacy-dust-washer: false
   legacy-ore-grinder: true
-  enchanter-level-limit: 0
   language: zh-CN
   enable-translations: true
   backwards-compatibility: true
@@ -54,7 +51,7 @@ URID:
 
 networks:
   max-size: 200
-  cargo-ticker-delay: 0
+  cargo-ticker-delay: 5
   enable-visualizer: true
   delete-excess-items: false
 
