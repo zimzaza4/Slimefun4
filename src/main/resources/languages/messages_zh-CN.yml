@@ -105,7 +105,7 @@ guide:
     - 类别里的所有物品
   work-in-progress: 该功能暂未推出!
 messages:
-  above-limit-level: "&c你要附魔或祛魔的物品附魔等级超过上限!"
+  above-limit-level: "&c你要附/祛魔的物品附魔等级超过上限: %level%!"
   android-no-permission: "&c你的机器人在某个你没有权限的领地/地皮中无法工作, 机器人已自动暂停运行."
   transform:
     success: "&a物品转换成功!"

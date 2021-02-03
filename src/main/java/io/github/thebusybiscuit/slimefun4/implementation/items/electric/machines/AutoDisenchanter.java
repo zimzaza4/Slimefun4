@@ -13,6 +13,7 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecip
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -84,14 +85,14 @@ public class AutoDisenchanter extends AContainer {
                         enchantments.put(entry.getKey(), entry.getValue());
                         amount++;
                     } else if (!menu.toInventory().getViewers().isEmpty()) {
-                        String notice = SlimefunPlugin.getLocalization().getMessage("messages.above-limit-level")
-                                .replace("%level%", enchantLevelLimit.getValue().toString())
-                                .replace("%item%", item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : item.getType().name());
+                        String notice = ChatColor.translateAlternateColorCodes('&', SlimefunPlugin.getLocalization().getMessage("messages.above-limit-level")
+                                .replace("%level%", enchantLevelLimit.getValue().toString()));
 
                         ItemStack progressBar = getProgressBar().clone();
                         progressBar.setType(Material.BARRIER);
 
                         ItemMeta im = progressBar.getItemMeta();
+                        im.setDisplayName(" ");
                         im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                         im.setLore(Collections.singletonList(notice));
 
