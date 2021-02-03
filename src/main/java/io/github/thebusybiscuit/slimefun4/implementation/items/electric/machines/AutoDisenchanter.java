@@ -15,6 +15,7 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -22,6 +23,7 @@ import org.bukkit.inventory.meta.Repairable;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,12 +39,14 @@ import java.util.Map;
  */
 public class AutoDisenchanter extends AContainer {
 
-    private final IntRangeSetting enchantLevelLimit = new IntRangeSetting("enchant-level-limit", 0, Short.MAX_VALUE, Short.MAX_VALUE);
+    private final ItemSetting<Boolean> useEnchantLevelLimit = new ItemSetting<>("use-enchant-level-limit", false);
+    private final IntRangeSetting enchantLevelLimit = new IntRangeSetting("enchant-level-limit", 0, 10, Short.MAX_VALUE);
 
     @ParametersAreNonnullByDefault
     public AutoDisenchanter(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
+        addItemSetting(useEnchantLevelLimit);
         addItemSetting(enchantLevelLimit);
     }
 
@@ -76,13 +80,24 @@ public class AutoDisenchanter extends AContainer {
                 int amount = 0;
 
                 for (Map.Entry<Enchantment, Integer> entry : item.getEnchantments().entrySet()) {
-                    if (enchantLevelLimit.getValue() >= entry.getValue()) {
+                    if (!useEnchantLevelLimit.getValue() || enchantLevelLimit.getValue() >= entry.getValue()) {
                         enchantments.put(entry.getKey(), entry.getValue());
                         amount++;
-                    } else {
-                        if (!menu.toInventory().getViewers().isEmpty()) {
-                            menu.toInventory().getViewers().forEach(p -> SlimefunPlugin.getLocalization().sendMessage(p, "messages.above-limit-level", true));
-                        }
+                    } else if (!menu.toInventory().getViewers().isEmpty()) {
+                        String notice = SlimefunPlugin.getLocalization().getMessage("messages.above-limit-level")
+                                .replace("%level%", enchantLevelLimit.getValue().toString())
+                                .replace("%item%", item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : item.getType().name());
+
+                        ItemStack progressBar = getProgressBar().clone();
+                        progressBar.setType(Material.BARRIER);
+
+                        ItemMeta im = progressBar.getItemMeta();
+                        im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                        im.setLore(Collections.singletonList(notice));
+
+                        progressBar.setItemMeta(im);
+
+                        menu.replaceExistingItem(22, progressBar);
                         return null;
                     }
                 }
