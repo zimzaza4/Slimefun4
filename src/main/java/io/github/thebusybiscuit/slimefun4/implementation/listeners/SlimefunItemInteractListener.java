@@ -90,8 +90,10 @@ public class SlimefunItemInteractListener implements Listener {
         Optional<SlimefunItem> optional = event.getSlimefunItem();
 
         if (optional.isPresent()) {
-            if (Slimefun.hasUnlocked(e.getPlayer(), optional.get(), true)) {
-                return optional.get().callItemHandler(ItemUseHandler.class, handler -> handler.onRightClick(event));
+            SlimefunItem sfItem = optional.get();
+
+            if (sfItem.canUse(e.getPlayer(), true)) {
+                return sfItem.callItemHandler(ItemUseHandler.class, handler -> handler.onRightClick(event));
             } else {
                 event.setUseItem(Result.DENY);
             }
@@ -105,12 +107,14 @@ public class SlimefunItemInteractListener implements Listener {
         Optional<SlimefunItem> optional = event.getSlimefunBlock();
 
         if (optional.isPresent()) {
-            if (!Slimefun.hasUnlocked(event.getPlayer(), optional.get(), true)) {
+            SlimefunItem sfItem = optional.get();
+
+            if (!sfItem.canUse(event.getPlayer(), true)) {
                 event.getInteractEvent().setCancelled(true);
                 return false;
             }
 
-            boolean interactable = optional.get().callItemHandler(BlockUseHandler.class, handler -> handler.onRightClick(event));
+            boolean interactable = sfItem.callItemHandler(BlockUseHandler.class, handler -> handler.onRightClick(event));
 
             if (!interactable) {
                 String id = optional.get().getId();

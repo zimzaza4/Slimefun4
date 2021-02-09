@@ -292,8 +292,12 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         Bukkit.getScheduler().cancelTasks(this);
 
         // Finishes all started movements/removals of block data
-        ticker.halt();
-        ticker.run();
+        try {
+            ticker.halt();
+            ticker.run();
+        } catch (Exception x) {
+            getLogger().log(Level.SEVERE, x, () -> "Something went wrong while disabling the ticker task for Slimefun v" + getDescription().getVersion());
+        }
 
         // Kill our Profiler Threads
         profiler.kill();
@@ -531,14 +535,8 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         grapplingHookListener.register(this, (GrapplingHook) SlimefunItems.GRAPPLING_HOOK.getItem());
         bowListener.register(this);
 
-        // Toggleable Listeners for performance reasons
-        if (config.getBoolean("items.talismans")) {
-            new TalismanListener(this);
-        }
-
-        if (config.getBoolean("items.soulbound")) {
-            new SoulboundListener(this);
-        }
+        new TalismanListener(this);
+        new SoulboundListener(this);
 
         backpackListener.register(this);
 

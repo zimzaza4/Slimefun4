@@ -129,7 +129,7 @@ public class OreCrusher extends MultiBlockMachine {
 						ItemStack adding = RecipeType.getRecipeOutput(this, convert);
 						Inventory outputInv = findOutputInventory(adding, dispBlock, inv);
 
-						if (Slimefun.hasUnlocked(p, adding, true)) {
+						if (SlimefunUtils.canPlayerUseItem(p, adding, true)) {
 							if (outputInv != null) {
 								ItemStack removing = current.clone();
 								removing.setAmount(convert.getAmount());

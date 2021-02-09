@@ -44,7 +44,7 @@ public class EntityInteractionListener implements Listener {
         SlimefunItem sfItem = SlimefunItem.getByItem(itemStack);
 
         if (sfItem != null) {
-            if (Slimefun.hasUnlocked(e.getPlayer(), sfItem, true)) {
+            if (sfItem.canUse(e.getPlayer(), true)) {
                 sfItem.callItemHandler(EntityInteractHandler.class, handler -> handler.onInteract(e, itemStack, e.getHand() == EquipmentSlot.OFF_HAND));
             } else if (sfItem.getState() != ItemState.VANILLA_FALLBACK) {
                 /**

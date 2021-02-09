@@ -40,7 +40,7 @@ public class VampireBladeListener implements Listener {
             Player p = (Player) e.getDamager();
 
             if (blade.isItem(p.getInventory().getItemInMainHand())) {
-                if (Slimefun.hasUnlocked(p, blade, true)) {
+                if (blade.canUse(p, true)) {
                     blade.heal(p);
                 } else {
                     e.setCancelled(true);

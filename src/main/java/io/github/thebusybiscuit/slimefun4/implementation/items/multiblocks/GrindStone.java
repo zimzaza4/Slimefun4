@@ -69,6 +69,9 @@ public class GrindStone extends MultiBlockMachine {
 
 		recipes.add(new ItemStack(Material.PRISMARINE));
 		recipes.add(new ItemStack(Material.PRISMARINE_SHARD, 4));
+
+		recipes.add(new ItemStack(Material.NETHER_WART_BLOCK));
+		recipes.add(new ItemStack(Material.NETHER_WART, 9));
 	}
 
 

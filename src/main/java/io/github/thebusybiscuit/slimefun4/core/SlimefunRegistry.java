@@ -56,6 +56,7 @@ public final class SlimefunRegistry {
     private boolean freeCreativeResearches;
     private boolean researchFireworks;
     private boolean logDuplicateBlockEntries;
+    private boolean talismanActionBarMessages;
     private boolean useMoneyUnlock;
 
     private final Set<String> tickers = new HashSet<>();
@@ -98,6 +99,7 @@ public final class SlimefunRegistry {
         freeCreativeResearches = cfg.getBoolean("researches.free-in-creative-mode");
         researchFireworks = cfg.getBoolean("researches.enable-fireworks");
         logDuplicateBlockEntries = cfg.getBoolean("options.log-duplicate-block-entries");
+        talismanActionBarMessages = cfg.getBoolean("talismans.use-actionbar");
         useMoneyUnlock = cfg.getBoolean("researches.use-money-unlock");
     }
 
@@ -276,6 +278,10 @@ public final class SlimefunRegistry {
 
     public boolean logDuplicateBlockEntries() {
         return logDuplicateBlockEntries;
+    }
+
+    public boolean useActionbarForTalismans() {
+        return talismanActionBarMessages;
     }
 
     public boolean isUseMoneyUnlock() {

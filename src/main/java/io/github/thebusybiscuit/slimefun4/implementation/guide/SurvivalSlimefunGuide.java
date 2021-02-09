@@ -48,7 +48,6 @@ import java.util.logging.Level;
  * @author TheBusyBiscuit
  * @see SlimefunGuide
  * @see SlimefunGuideImplementation
- * @see BookSlimefunGuide
  * @see CheatSheetSlimefunGuide
  */
 public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
@@ -610,7 +609,7 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
             }
 
             String lore = Slimefun.hasPermission(p, slimefunItem, false) ? "&f需要在其他地方解锁" : "&f无权限";
-            return Slimefun.hasUnlocked(p, slimefunItem, false) ? item : new CustomItem(Material.BARRIER, ItemUtils.getItemName(item), "&4&l" + SlimefunPlugin.getLocalization().getMessage(p, "guide.locked"), "", lore);
+            return slimefunItem.canUse(p, false) ? item : new CustomItem(Material.BARRIER, ItemUtils.getItemName(item), "&4&l" + SlimefunPlugin.getLocalization().getMessage(p, "guide.locked"), "", lore);
         } else {
             return item;
         }

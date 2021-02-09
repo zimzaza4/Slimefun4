@@ -42,7 +42,7 @@ public class EnhancedCraftingTable extends AbstractCraftingTable {
             for (int i = 0; i < inputs.size(); i++) {
                 if (isCraftable(inv, inputs.get(i))) {
                     ItemStack output = RecipeType.getRecipeOutputList(this, inputs.get(i)).clone();
-                    if (Slimefun.hasUnlocked(p, output, true)) {
+                    if (SlimefunUtils.canPlayerUseItem(p, output, true)) {
                         craft(inv, dispenser, p, b, output);
                     }
 

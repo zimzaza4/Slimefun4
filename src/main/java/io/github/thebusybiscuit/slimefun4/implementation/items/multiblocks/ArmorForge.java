@@ -42,7 +42,7 @@ public class ArmorForge extends AbstractCraftingTable {
                 if (isCraftable(inv, inputs.get(i))) {
                     ItemStack output = RecipeType.getRecipeOutputList(this, inputs.get(i)).clone();
 
-                    if (Slimefun.hasUnlocked(p, output, true)) {
+                    if (SlimefunUtils.canPlayerUseItem(p, output, true)) {
                         craft(p, output, inv, dispenser);
                     }
 

@@ -54,7 +54,7 @@ public class ElytraImpactListener implements Listener {
                 if (helmet.isPresent()) {
                     SlimefunItem item = helmet.get();
 
-                    if (Slimefun.hasUnlocked(p, item, true) && profile.hasFullProtectionAgainst(ProtectionType.FLYING_INTO_WALL)) {
+                    if (item.canUse(p, true) && profile.hasFullProtectionAgainst(ProtectionType.FLYING_INTO_WALL)) {
                         e.setDamage(0);
                         p.playSound(p.getLocation(), Sound.BLOCK_STONE_HIT, 20, 1);
 

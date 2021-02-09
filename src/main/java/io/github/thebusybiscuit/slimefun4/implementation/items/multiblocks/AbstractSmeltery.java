@@ -46,7 +46,7 @@ abstract class AbstractSmeltery extends MultiBlockMachine {
                 if (canCraft(inv, inputs, i)) {
                     ItemStack output = RecipeType.getRecipeOutputList(this, inputs.get(i)).clone();
 
-                    if (Slimefun.hasUnlocked(p, output, true)) {
+                    if (SlimefunUtils.canPlayerUseItem(p, output, true)) {
                         Inventory outputInv = findOutputInventory(output, dispBlock, inv);
 
                         if (outputInv != null) {

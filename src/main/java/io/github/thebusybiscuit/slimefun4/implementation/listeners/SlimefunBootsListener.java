@@ -48,7 +48,7 @@ public class SlimefunBootsListener implements Listener {
             Player p = (Player) e.getEntity();
             SlimefunItem boots = SlimefunItem.getByItem(p.getInventory().getBoots());
 
-            if (boots instanceof EnderBoots && Slimefun.hasUnlocked(p, boots, true)) {
+            if (boots instanceof EnderBoots && boots.canUse(p, true)) {
                 e.setCancelled(true);
             }
         }
@@ -60,7 +60,7 @@ public class SlimefunBootsListener implements Listener {
 
         if (boots != null) {
             // Check if the boots were researched
-            if (!Slimefun.hasUnlocked(p, boots, true)) {
+            if (!boots.canUse(p, true)) {
                 return;
             }
 
@@ -87,7 +87,7 @@ public class SlimefunBootsListener implements Listener {
                 Player p = e.getPlayer();
                 SlimefunItem boots = SlimefunItem.getByItem(p.getInventory().getBoots());
 
-                if (boots instanceof FarmerShoes && Slimefun.hasUnlocked(p, boots, true)) {
+                if (boots instanceof FarmerShoes && boots.canUse(p, true)) {
                     e.setCancelled(true);
                 }
             }

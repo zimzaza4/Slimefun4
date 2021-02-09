@@ -42,7 +42,7 @@ public class MobDropListener implements Listener {
             if (item.getType() != Material.AIR) {
                 SlimefunItem sfItem = SlimefunItem.getByItem(item);
 
-                if (sfItem != null && Slimefun.hasUnlocked(p, sfItem, true)) {
+                if (sfItem != null && sfItem.canUse(p, true)) {
                     sfItem.callItemHandler(EntityKillHandler.class, handler -> handler.onKill(e, e.getEntity(), p, item));
                 }
             }
@@ -50,22 +50,22 @@ public class MobDropListener implements Listener {
     }
 
     private boolean canDrop(@Nonnull Player p, @Nonnull ItemStack item) {
-        SlimefunItem sfi = SlimefunItem.getByItem(item);
+        SlimefunItem sfItem = SlimefunItem.getByItem(item);
 
-        if (sfi == null) {
+        if (sfItem == null) {
             return true;
-        } else if (Slimefun.hasUnlocked(p, sfi, true)) {
+        } else if (sfItem.canUse(p, true)) {
 
-            if (sfi instanceof RandomMobDrop) {
+            if (sfItem instanceof RandomMobDrop) {
                 int random = ThreadLocalRandom.current().nextInt(100);
 
-                if (((RandomMobDrop) sfi).getMobDropChance() <= random) {
+                if (((RandomMobDrop) sfItem).getMobDropChance() <= random) {
                     return false;
                 }
             }
 
-            if (sfi instanceof BasicCircuitBoard) {
-                return ((BasicCircuitBoard) sfi).isDroppedFromGolems();
+            if (sfItem instanceof BasicCircuitBoard) {
+                return ((BasicCircuitBoard) sfItem).isDroppedFromGolems();
             }
 
             return true;
