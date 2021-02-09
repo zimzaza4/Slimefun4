@@ -144,7 +144,10 @@ class ExplosiveTool extends SimpleSlimefunItem<ToolUseHandler> implements NotPla
         } else {
             // Check if the block was mined using Silk Touch
             if (item.containsEnchantment(Enchantment.SILK_TOUCH)) {
-                b.getWorld().dropItemNaturally(b.getLocation(), new ItemStack(b.getType()));
+                ItemStack drop = new ItemStack(b.getType());
+                if (!drop.getType().isAir()) {
+                    b.getWorld().dropItemNaturally(b.getLocation(), drop);
+                }
             } else {
                 b.breakNaturally(item);
             }
