@@ -1,35 +1,56 @@
 package io.github.thebusybiscuit.slimefun4.core.services;
 
-import io.github.thebusybiscuit.cscorelib2.recipes.MinecraftRecipe;
-import io.github.thebusybiscuit.cscorelib2.recipes.RecipeSnapshot;
-import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
-import org.apache.commons.lang.Validate;
-import org.bukkit.Server;
-import org.bukkit.inventory.*;
-import org.bukkit.plugin.Plugin;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
+import org.bukkit.Keyed;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Server;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.plugin.Plugin;
+
+import io.github.thebusybiscuit.cscorelib2.recipes.MinecraftRecipe;
+import io.github.thebusybiscuit.cscorelib2.recipes.RecipeSnapshot;
+import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
+
 /**
  * This Service is responsible for accessing a {@link RecipeSnapshot}.
  * This snapshot contains a compiled list of all recipes that could be found on the
  * Server at the time the Service was loaded.
- * <p>
+ *
  * This Service is primarily used by the {@link SurvivalSlimefunGuide}.
  *
  * @author TheBusyBiscuit
+ *
  */
 public class MinecraftRecipeService {
 
+    /**
+     * Our {@link Plugin} instance
+     */
     private final Plugin plugin;
+
+    /**
+     * The subscriber list for the {@link RecipeSnapshot}.
+     */
     private final List<Consumer<RecipeSnapshot>> subscriptions = new LinkedList<>();
 
+    /**
+     * Our {@link RecipeSnapshot} - The centerpiece of this class.
+     */
     private RecipeSnapshot snapshot;
 
     /**
@@ -38,7 +59,8 @@ public class MinecraftRecipeService {
      * of much use unless you wanna expand upon it. It is advised to use Slimefun's built-in
      * {@link MinecraftRecipeService} though.
      *
-     * @param plugin The {@link Plugin} that requests this Service
+     * @param plugin
+     *            The {@link Plugin} that requests this Service
      */
     public MinecraftRecipeService(@Nonnull Plugin plugin) {
         this.plugin = plugin;
@@ -107,6 +129,7 @@ public class MinecraftRecipeService {
      *
      * @param recipe
      *            The {@link Recipe} to get the shape from
+     *
      * @return An Array of {@link RecipeChoice} representing the shape of this {@link Recipe}
      */
     @Nonnull
@@ -141,6 +164,7 @@ public class MinecraftRecipeService {
      *
      * @param item
      *            The {@link ItemStack} for which to get the recipes
+     *
      * @return An array of {@link Recipe Recipes} to craft the given {@link ItemStack}
      */
     @Nonnull
@@ -149,6 +173,29 @@ public class MinecraftRecipeService {
             return new Recipe[0];
         } else {
             return snapshot.getRecipesFor(item).toArray(new Recipe[0]);
+        }
+    }
+
+    /**
+     * This returns the corresponding {@link Keyed} {@link Recipe} for the given {@link NamespacedKey}.
+     * If no {@link Recipe} was found, null will be returned.
+     * This is a significantly faster method over {@link Bukkit#getRecipe(NamespacedKey)} since we
+     * operate on a cached {@link HashMap}
+     *
+     * @param key
+     *            The {@link NamespacedKey}
+     *
+     * @return The corresponding {@link Recipe} or null
+     */
+    @Nullable
+    public Recipe getRecipe(@Nonnull NamespacedKey key) {
+        Validate.notNull(key, "The NamespacedKey should not be null");
+
+        if (snapshot != null) {
+            // We operate on a cached HashMap which is much faster than Bukkit's method.
+            return snapshot.getRecipe(key);
+        } else {
+            return Bukkit.getRecipe(key);
         }
     }
 
