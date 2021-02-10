@@ -54,9 +54,9 @@ public interface InventoryBlock {
             @Override
             public boolean canOpen(Block b, Player p) {
                 return p.hasPermission("slimefun.inventory.bypass") ||
-                        (SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.ACCESS_INVENTORIES)
+                        (SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK)
                                 && Slimefun.hasUnlocked(p, item, false)
-                                && ProtectionChecker.checkPermission(p, b, ProtectableAction.ACCESS_INVENTORIES)
+                                && ProtectionChecker.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK)
                         );
             }
         };
