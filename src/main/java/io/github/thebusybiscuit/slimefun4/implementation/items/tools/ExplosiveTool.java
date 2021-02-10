@@ -3,17 +3,18 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.tools;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import io.github.starwishsama.utils.ProtectionChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.core.attributes.DamageableItem;
@@ -30,8 +31,6 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.UnregisterReason;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * This {@link SlimefunItem} is a super class for items like the {@link ExplosivePickaxe} or {@link ExplosiveShovel}.
  *
@@ -46,6 +45,7 @@ class ExplosiveTool extends SimpleSlimefunItem<ToolUseHandler> implements NotPla
     private final ItemSetting<Boolean> damageOnUse = new ItemSetting<>("damage-on-use", true);
     private final ItemSetting<Boolean> callExplosionEvent = new ItemSetting<>("call-explosion-event", false);
 
+    @ParametersAreNonnullByDefault
     public ExplosiveTool(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
@@ -62,11 +62,12 @@ class ExplosiveTool extends SimpleSlimefunItem<ToolUseHandler> implements NotPla
             b.getWorld().playSound(b.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 0.2F, 1F);
 
             List<Block> blocks = findBlocks(b);
-            breakBlocks(p, tool, b, blocks, fortune, drops);
+            breakBlocks(p, tool, b, blocks, drops);
         };
     }
 
-    private void breakBlocks(Player p, ItemStack item, Block b, List<Block> blocks, int fortune, List<ItemStack> drops) {
+    @ParametersAreNonnullByDefault
+    private void breakBlocks(Player p, ItemStack item, Block b, List<Block> blocks, List<ItemStack> drops) {
         if (callExplosionEvent.getValue().booleanValue()) {
             BlockExplodeEvent blockExplodeEvent = new BlockExplodeEvent(b, blocks, 0);
             Bukkit.getServer().getPluginManager().callEvent(blockExplodeEvent);
@@ -121,7 +122,7 @@ class ExplosiveTool extends SimpleSlimefunItem<ToolUseHandler> implements NotPla
         } else if (SlimefunPlugin.getIntegrations().isCustomBlock(b)) {
             return false;
         } else {
-            return SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.BREAK_BLOCK);
+            return SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.BREAK_BLOCK) && ProtectionChecker.checkPermission(p, b, ProtectableAction.BREAK_BLOCK);
         }
     }
 
@@ -139,18 +140,8 @@ class ExplosiveTool extends SimpleSlimefunItem<ToolUseHandler> implements NotPla
             if (handler != null && !handler.onBreak(p, b, sfItem, UnregisterReason.PLAYER_BREAK)) {
                 drops.add(BlockStorage.retrieve(b));
             }
-        } else if (material == Material.PLAYER_HEAD || SlimefunTag.SHULKER_BOXES.isTagged(material)) {
-            b.breakNaturally(item);
         } else {
-            // Check if the block was mined using Silk Touch
-            if (item.containsEnchantment(Enchantment.SILK_TOUCH)) {
-                ItemStack drop = new ItemStack(b.getType());
-                if (!drop.getType().isAir()) {
-                    b.getWorld().dropItemNaturally(b.getLocation(), drop);
-                }
-            } else {
-                b.breakNaturally(item);
-            }
+            b.breakNaturally(item);
         }
 
         damageItem(p, item);
