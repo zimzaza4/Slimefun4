@@ -2,7 +2,7 @@
 name: Bug 反馈
 about: 反馈 Slimefun 4 使用中遇到的问题和 Bug
 title: ''
-labels: Bug
+labels: '🐞 Bug', '💭 Unconfirmed | 未确认'
 assignees: ''
 
 ---
