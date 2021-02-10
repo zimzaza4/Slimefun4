@@ -56,7 +56,7 @@ public interface InventoryBlock {
                 return p.hasPermission("slimefun.inventory.bypass") ||
                         (SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.ACCESS_INVENTORIES)
                                 && Slimefun.hasUnlocked(p, item, false)
-                                && ProtectionChecker.canInteract(p, b, ProtectableAction.ACCESS_INVENTORIES)
+                                && ProtectionChecker.checkPermission(p, b, ProtectableAction.ACCESS_INVENTORIES)
                         );
             }
         };

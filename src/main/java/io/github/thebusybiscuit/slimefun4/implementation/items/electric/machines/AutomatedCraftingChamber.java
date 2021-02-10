@@ -25,6 +25,7 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -45,7 +46,7 @@ public abstract class AutomatedCraftingChamber extends SlimefunItem implements I
     public AutomatedCraftingChamber(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
-        new BlockMenuPreset(getId(), SlimefunItems.AUTOMATED_CRAFTING_CHAMBER.getItemMeta().getDisplayName()) {
+        new BlockMenuPreset(getId(), "&c已过时物品, 不要使用") {
 
             @Override
             public void init() {
@@ -79,6 +80,7 @@ public abstract class AutomatedCraftingChamber extends SlimefunItem implements I
 
             @Override
             public boolean canOpen(Block b, Player p) {
+                p.sendMessage(ChatColor.DARK_RED + "此机器已过时, 很快将被删除!");
                 return p.hasPermission("slimefun.inventory.bypass") || SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK);
             }
 
@@ -130,6 +132,7 @@ public abstract class AutomatedCraftingChamber extends SlimefunItem implements I
 
             @Override
             public void onPlayerPlace(BlockPlaceEvent e) {
+                e.getPlayer().sendMessage(ChatColor.DARK_RED + "此机器已过时, 很快将被删除!");
                 BlockStorage.addBlockInfo(e.getBlock(), "enabled", String.valueOf(false));
             }
 

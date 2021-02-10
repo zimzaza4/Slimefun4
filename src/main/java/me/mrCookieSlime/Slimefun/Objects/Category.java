@@ -258,7 +258,7 @@ public class Category implements Keyed {
      */
     public boolean isHidden(@Nonnull Player p) {
         for (SlimefunItem slimefunItem : getItems()) {
-            if (!slimefunItem.isHidden() && Slimefun.isEnabled(p, slimefunItem, false)) {
+            if (!slimefunItem.isHidden() && !slimefunItem.isDisabledIn(p.getWorld())) {
                 return false;
             }
         }

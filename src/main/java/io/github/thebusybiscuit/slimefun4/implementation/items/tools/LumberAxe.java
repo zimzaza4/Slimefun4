@@ -50,7 +50,7 @@ public class LumberAxe extends SlimefunItem implements NotPlaceable {
                 for (Block b : logs) {
                     if (!BlockStorage.hasBlockInfo(b)
                             && SlimefunPlugin.getProtectionManager().hasPermission(e.getPlayer(), b, ProtectableAction.BREAK_BLOCK)
-                            && ProtectionChecker.canInteract(e.getPlayer(), b, ProtectableAction.BREAK_BLOCK)
+                            && ProtectionChecker.checkPermission(e.getPlayer(), b, ProtectableAction.BREAK_BLOCK)
                     ) {
                         breakLog(b);
                     }

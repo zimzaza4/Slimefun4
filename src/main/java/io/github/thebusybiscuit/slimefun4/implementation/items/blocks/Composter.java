@@ -81,7 +81,7 @@ public class Composter extends SimpleSlimefunItem<BlockUseHandler> implements Re
 
                 if (p.hasPermission("slimefun.inventory.bypass")
                         || (SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK)
-                        && ProtectionChecker.canInteract(p, b, ProtectableAction.INTERACT_BLOCK))) {
+                        && ProtectionChecker.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK))) {
                     ItemStack input = e.getItem();
                     ItemStack output = getOutput(p, input);
 

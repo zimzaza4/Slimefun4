@@ -2,7 +2,6 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.androids;
 
 import io.github.starwishsama.utils.ProtectionChecker;
 import io.github.thebusybiscuit.cscorelib2.blocks.Vein;
-import io.github.thebusybiscuit.cscorelib2.materials.MaterialConverter;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
@@ -20,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -50,7 +48,7 @@ public class WoodcutterAndroid extends ProgrammableAndroid {
 
                 OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(BlockStorage.getLocationInfo(b.getLocation(), "owner")));
                 if (SlimefunPlugin.getProtectionManager().hasPermission(owner, log.getLocation(), ProtectableAction.BREAK_BLOCK)
-                        && ProtectionChecker.canInteract(owner.getPlayer(), b, ProtectableAction.BREAK_BLOCK)
+                        && ProtectionChecker.checkPermission(owner.getPlayer(), b, ProtectableAction.BREAK_BLOCK)
                 ) {
                     breakLog(log, b, menu, face);
                 }

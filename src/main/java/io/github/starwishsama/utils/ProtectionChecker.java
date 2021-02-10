@@ -33,7 +33,7 @@ public class ProtectionChecker implements Listener {
         if (e != null) {
             Player p = Bukkit.getPlayer(getOwnerFromJson(BlockStorage.getBlockInfoAsJson(e.getAndroid().getBlock())));
 
-            if (!canInteract(p, e.getBlock(), ProtectableAction.BREAK_BLOCK)) {
+            if (!checkPermission(p, e.getBlock(), ProtectableAction.BREAK_BLOCK)) {
                 e.setCancelled(true);
                 SlimefunPlugin.getLocalization().sendMessage(p, "android.no-permission");
             }
@@ -61,7 +61,7 @@ public class ProtectionChecker implements Listener {
      * @param action 交互类型
      * @return 是否可以破坏
      */
-    public static boolean canInteract(Player p, Block block, ProtectableAction action) {
+    public static boolean checkPermission(Player p, Block block, ProtectableAction action) {
         if (!resInstalled) {
             return true;
         }
@@ -100,8 +100,6 @@ public class ProtectionChecker implements Listener {
                     // move 是为了机器人而检查的, 防止机器人跑进别人领地然后还出不来
                     return perms.playerHas(p, Flags.place, true) || perms.playerHas(p, Flags.build, true) || !perms.playerHas(p, Flags.move, true);
                 case INTERACT_BLOCK:
-                    // 防止一些方法忘记修改导致绕过权限
-                case ACCESS_INVENTORIES:
                     if (!perms.playerHas(p, Flags.use, true)) {
                         SlimefunPlugin.getLocalization().sendMessage(p, "inventory.no-access");
                         return false;

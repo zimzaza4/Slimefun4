@@ -43,6 +43,6 @@ public class GEOScanner extends SimpleSlimefunItem<BlockUseHandler> {
 
     @ParametersAreNonnullByDefault
     private boolean hasAccess(Player p, Block b) {
-        return p.hasPermission("slimefun.gps.bypass") || (SlimefunPlugin.getProtectionManager().hasPermission(p, b, ProtectableAction.INTERACT_BLOCK)) || ProtectionChecker.canInteract(p, b, ProtectableAction.INTERACT_BLOCK);
+        return p.hasPermission("slimefun.gps.bypass") || (SlimefunPlugin.getProtectionManager().hasPermission(p, b, ProtectableAction.INTERACT_BLOCK)) || ProtectionChecker.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK);
     }
 }

@@ -151,7 +151,7 @@ public class LockedCategory extends Category {
 
         for (Category category : parents) {
             for (SlimefunItem item : category.getItems()) {
-                if (!item.canUse(p, false)) {
+                if (!item.isDisabledIn(p.getWorld()) && item.hasResearch() && !profile.hasUnlocked(item.getResearch())) {
                     return false;
                 }
             }

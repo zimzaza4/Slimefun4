@@ -90,10 +90,6 @@ public class GoldPan extends SimpleSlimefunItem<ItemUseHandler> implements Recip
         for (GoldPanDrop setting : drops) {
             randomizer.add(setting.getOutput(), setting.getValue());
         }
-
-        if (randomizer.sumWeights() < 100) {
-            randomizer.add(new ItemStack(Material.AIR), 100 - randomizer.sumWeights());
-        }
     }
 
     /**
@@ -104,7 +100,10 @@ public class GoldPan extends SimpleSlimefunItem<ItemUseHandler> implements Recip
      */
     @Nonnull
     public ItemStack getRandomOutput() {
-        return randomizer.getRandom();
+        ItemStack item = randomizer.getRandom();
+
+        // Fixes #2804
+        return item != null ? item : new ItemStack(Material.AIR);
     }
 
     @Override
@@ -142,6 +141,7 @@ public class GoldPan extends SimpleSlimefunItem<ItemUseHandler> implements Recip
      *
      * @return the {@link EntityInteractHandler} of this {@link SlimefunItem}
      */
+    @Nonnull
     public EntityInteractHandler onEntityInteract() {
         return (e, item, offHand) -> {
             if (!(e.getRightClicked() instanceof ItemFrame)) {
