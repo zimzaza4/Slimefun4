@@ -554,7 +554,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
      * This (re)loads every {@link SlimefunTag}.
      */
     private void loadTags() {
-        for (SlimefunTag tag : SlimefunTag.valuesCache) {
+        for (SlimefunTag tag : SlimefunTag.values()) {
             try {
                 // Only reload "empty" (or unloaded) Tags
                 if (tag.isEmpty()) {

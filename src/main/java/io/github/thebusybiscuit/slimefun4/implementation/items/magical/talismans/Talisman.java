@@ -9,8 +9,8 @@ import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -118,6 +118,7 @@ public class Talisman extends SlimefunItem {
         return cancel;
     }
 
+    @Nullable
     private SlimefunItemStack getEnderVariant() {
         return enderTalisman;
     }
@@ -144,23 +145,35 @@ public class Talisman extends SlimefunItem {
     }
 
     @ParametersAreNonnullByDefault
-    public static boolean checkFor(Event e, SlimefunItemStack stack) {
-        return checkFor(e, stack.getItem());
+    public static boolean trigger(Event e, SlimefunItemStack stack) {
+        return trigger(e, stack.getItem(), true);
     }
 
     @ParametersAreNonnullByDefault
-    public static boolean checkFor(Event e, SlimefunItem item) {
+    public static boolean trigger(Event e, SlimefunItemStack stack, boolean sendMessage) {
+        return trigger(e, stack.getItem(), sendMessage);
+    }
+
+    @ParametersAreNonnullByDefault
+    public static boolean trigger(Event e, SlimefunItem item) {
+        return trigger(e, item, true);
+    }
+
+    @ParametersAreNonnullByDefault
+    public static boolean trigger(Event e, SlimefunItem item, boolean sendMessage) {
         if (!(item instanceof Talisman)) {
             return false;
         }
 
         Talisman talisman = (Talisman) item;
+
         if (ThreadLocalRandom.current().nextInt(100) > talisman.getChance()) {
             return false;
         }
 
         Player p = getPlayerByEventType(e);
-        if (p == null || !pass(p, talisman)) {
+
+        if (p == null || !talisman.canEffectsBeApplied(p)) {
             return false;
         }
 
@@ -168,7 +181,7 @@ public class Talisman extends SlimefunItem {
 
         if (SlimefunUtils.containsSimilarItem(p.getInventory(), talismanItem, true)) {
             if (talisman.canUse(p, true)) {
-                activateTalisman(e, p, p.getInventory(), talisman, talismanItem);
+                activateTalisman(e, p, p.getInventory(), talisman, talismanItem, sendMessage);
                 return true;
             } else {
                 return false;
@@ -178,7 +191,7 @@ public class Talisman extends SlimefunItem {
 
             if (SlimefunUtils.containsSimilarItem(p.getEnderChest(), enderTalisman, true)) {
                 if (talisman.canUse(p, true)) {
-                    activateTalisman(e, p, p.getEnderChest(), talisman, talismanItem);
+                    activateTalisman(e, p, p.getEnderChest(), talisman, enderTalisman, sendMessage);
                     return true;
                 } else {
                     return false;
@@ -190,11 +203,14 @@ public class Talisman extends SlimefunItem {
     }
 
     @ParametersAreNonnullByDefault
-    private static void activateTalisman(Event e, Player p, Inventory inv, Talisman talisman, ItemStack talismanItem) {
+    private static void activateTalisman(Event e, Player p, Inventory inv, Talisman talisman, ItemStack talismanItem, boolean sendMessage) {
         consumeItem(inv, talisman, talismanItem);
         applyTalismanEffects(p, talisman);
         cancelEvent(e, talisman);
-        talisman.sendMessage(p);
+
+        if (sendMessage) {
+            talisman.sendMessage(p);
+        }
     }
 
     @ParametersAreNonnullByDefault
@@ -226,6 +242,7 @@ public class Talisman extends SlimefunItem {
             ((Cancellable) e).setCancelled(true);
         }
     }
+
     /**
      * This returns whether the {@link Talisman} is silent.
      * A silent {@link Talisman} will not send a message to a {@link Player}
@@ -242,17 +259,43 @@ public class Talisman extends SlimefunItem {
         return suffix;
     }
 
-    @ParametersAreNonnullByDefault
-    private void sendMessage(Player p) {
-        if (!isSilent()) {
-            String messageKey = "messages.talisman." + getMessageSuffix();
+    /**
+     * This method sends the given {@link Player} the message of this {@link Talisman}.
+     * Dependent on the selected config setting, the message will be sent via the actionbar
+     * or in the chat window.
+     *
+     * @param p
+     *            The {@link Player} who shall receive the message
+     */
+    public void sendMessage(@Nonnull Player p) {
+        Validate.notNull(p, "The Player must not be null.");
 
-            if (SlimefunPlugin.getRegistry().useActionbarForTalismans()) {
-                SlimefunPlugin.getLocalization().sendActionbarMessage(p, messageKey, false);
-            } else {
-                SlimefunPlugin.getLocalization().sendMessage(p, messageKey, true);
+        // Check if this Talisman has a message
+        if (!isSilent()) {
+            try {
+                String messageKey = "messages.talisman." + getMessageSuffix();
+
+                if (SlimefunPlugin.getRegistry().useActionbarForTalismans()) {
+                    // Use the actionbar
+                    SlimefunPlugin.getLocalization().sendActionbarMessage(p, messageKey, false);
+                } else {
+                    // Send the message via chat
+                    SlimefunPlugin.getLocalization().sendMessage(p, messageKey, true);
+                }
+            } catch (Exception x) {
+                error("An Exception was thrown while trying to send a Talisman message", x);
             }
         }
+    }
+
+    private boolean canEffectsBeApplied(@Nonnull Player p) {
+        for (PotionEffect effect : getEffects()) {
+            if (effect != null && p.hasPotionEffect(effect.getType())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Nullable
@@ -272,16 +315,6 @@ public class Talisman extends SlimefunItem {
         }
 
         return null;
-    }
-
-    private static boolean pass(@Nonnull Player p, @Nonnull SlimefunItem talisman) {
-        for (PotionEffect effect : ((Talisman) talisman).getEffects()) {
-            if (effect != null && p.hasPotionEffect(effect.getType())) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
 }
