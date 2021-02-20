@@ -71,9 +71,9 @@ guide:
     settings: Kemabali ke panel pengaturan
   locked: TERKUNCI
   locked-category:
-    - Untuk membuka kategori ini anda
-    - harus membuka semua barang dari
-    - kategori berikut
+  - Untuk membuka kategori ini anda
+  - harus membuka semua barang dari
+  - kategori berikut
 messages:
   not-researched: "&4Anda Tidak Memiliki Cukup Pengehatuan Untuk Mengetahui Ini"
   not-enough-xp: "&4Anda Tidak Memiliki Cukup XP untuk Membuka Ini"
@@ -83,11 +83,11 @@ messages:
   no-permission: "&4Anda Tidak Memiliki Izin Untuk Ini"
   usage: "&4Penggunaan: &c%usage%"
   not-online: "&4%player% &cTidak Sedang Bermain Disini!"
-  not-valid-item: "&4%item% &cBenda Ini Tidak sah"
-  not-valid-amount: "&4%amount% &cJumlah Ini Salah : Harus Lebih Tinggi Dari 0!"
+  invalid-item: "&4%item% &cBenda Ini Tidak sah"
+  invalid-amount: "&4%amount% &cJumlah Ini Salah : Harus Lebih Tinggi Dari 0!"
   given-item: '&bAnda Telah Diberikan &a%amount% &7"%item%&7"'
   give-item: '&bAnda Telah Memberi %player% &a%amount% &7"%item%&7"'
-  not-valid-research: "&4%research% &cIni Bukan Penelitian Yang Benar!"
+  invalid-research: "&4%research% &cIni Bukan Penelitian Yang Benar!"
   give-research: '&bAnda Telah Memberi %player% Penelitian &7"%research%&7"'
   hungry: "&cAnda Terlalu Lapar Untuk Ini "
   mode-change: "&b%device% Mode Telah Berubah Menjadi: &9%mode%"
@@ -130,22 +130,22 @@ messages:
   link-prompt: "&eKlik disini:"
   diet-cookie: "&eAnda mulai merasa sangat ringan..."
   fortune-cookie:
-    - "&7Tolong saya, Saya terjebak di pabrik kue keberuntungan!"
-    - "&7Anda akan mati besok... dibunuh oleh Creeper"
-    - "&7Suatu saat akan ada hal buruk dalam hidupmu!!!"
-    - "&7Minggu depan anda akan memperhatiakn ini bukan di dunia nyata, kamu dalam permainan
+  - "&7Tolong saya, Saya terjebak di pabrik kue keberuntungan!"
+  - "&7Anda akan mati besok... dibunuh oleh Creeper"
+  - "&7Suatu saat akan ada hal buruk dalam hidupmu!!!"
+  - "&7Minggu depan anda akan memperhatiakn ini bukan di dunia nyata, kamu dalam permainan
     komputer"
-    - "&7Kue ini akan berubah menjadi enak dalam beberapa detik"
-    - '&7Kalimat terakhir yang akan anda dengar adalah "MEMUSNAHKAN!!!"'
-    - "&7Apapun yang anda lakukan, jangan memeluk Creeper... saya sudah mencobanya.
+  - "&7Kue ini akan berubah menjadi enak dalam beberapa detik"
+  - '&7Kalimat terakhir yang akan anda dengar adalah "MEMUSNAHKAN!!!"'
+  - "&7Apapun yang anda lakukan, jangan memeluk Creeper... saya sudah mencobanya.
     Terasa nyaman, tapi itu tidak setimpal."
-    - "&742. Jawabannya adalah 42"
-    - "&7AHari yang membosankan akan menjauhkan anda dari masalah"
-    - "&7Jangan pernah menggali lurus kebawah!"
-    - "&7Ini hanya luka Luar!"
-    - "& 7Selalu lihat sisi terang hidup!"
-    - "&7Yang ini sebenarnya biskuit dan bukan kue"
-    - "&7Neon signs are LIT!"
+  - "&742. Jawabannya adalah 42"
+  - "&7AHari yang membosankan akan menjauhkan anda dari masalah"
+  - "&7Jangan pernah menggali lurus kebawah!"
+  - "&7Ini hanya luka Luar!"
+  - "& 7Selalu lihat sisi terang hidup!"
+  - "&7Yang ini sebenarnya biskuit dan bukan kue"
+  - "&7Neon signs are LIT!"
 machines:
   pattern-not-found: "&eMaaf, Saya tidak mengenali resep ini. Letakan benda pada dispenser
     \ sesuai dengan pola."
@@ -165,7 +165,7 @@ machines:
     obstructed: "&4Tumpuan terhalangi! &Hancurkan semua yang berada di atas tumpuan!"
   HOLOGRAM_PROJECTOR:
     enter-text: "&7Masukan teks sesuai yang anda inginkan. &r(Mendukung warna teks!)"
-    inventory-title: Pengedit holograms
+    inventory-title: Pengedit hologram
   ELEVATOR:
     no-destinations: "&4Tujuan tidak ditemukan"
     pick-a-floor: "&3- Pilih Lantai -"
@@ -215,9 +215,9 @@ gps:
     added: "&aBerhasil menambahkan titik jalan baru"
     max: "&4Anda telah mencapai jumlah maksimal penggunaan titik jalan"
   insufficient-complexity:
-    - "&4Kompleksitas jaringan GPS tidak cukup: &c%complexity%"
-    - "&4a) Anda belum membuat sistem jaringan GPS"
-    - "&4b) Kompleksitas jaringan GPS anda belum cukup"
+  - "&4Kompleksitas jaringan GPS tidak cukup: &c%complexity%"
+  - "&4a) Anda belum membuat sistem jaringan GPS"
+  - "&4b) Kompleksitas jaringan GPS anda belum cukup"
   geo:
     scan-required: "&4Dibutuhkan peninjauan GEO terlebih dahulu! &cGunakan Peninjau
       GEO!"
@@ -256,11 +256,11 @@ android:
       INTERFACE_ITEMS: "&9Masukan barang ke antarmuka penyimpanan"
       INTERFACE_FUEL: "&cMengambil bahan bakar dari penyimpanan"
     enter-name:
-      -
-      - "&eMasukan nama naskah anda"
+    - 
+    - "&eMasukan nama naskah anda"
     uploaded:
-      - "&bMengunggah..."
-      - "&aBerhasil mengunggah naskah!"
+    - "&bMengunggah..."
+    - "&aBerhasil mengunggah naskah!"
     rating:
       own: "&4Anda tidak bisa menilai naskah anda sendiri!"
       already: "&4Anda sudah memberikan nilai untuk naskah ini!"

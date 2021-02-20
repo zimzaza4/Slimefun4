@@ -2,6 +2,7 @@ package io.github.starwishsama.utils;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.containers.Flags;
+import com.bekvon.bukkit.residence.containers.ResidencePlayer;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.ResidencePermissions;
 import com.google.gson.JsonElement;
@@ -12,6 +13,7 @@ import io.github.thebusybiscuit.slimefun4.api.events.AndroidMineEvent;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -61,7 +63,7 @@ public class ProtectionChecker implements Listener {
      * @param action 交互类型
      * @return 是否可以破坏
      */
-    public static boolean checkPermission(Player p, Block block, ProtectableAction action) {
+    public static boolean checkPermission(OfflinePlayer p, Block block, ProtectableAction action) {
         if (!resInstalled) {
             return true;
         }
@@ -83,7 +85,9 @@ public class ProtectionChecker implements Listener {
 
             ResidencePermissions perms = res.getPermissions();
 
-            if (perms.playerHas(p, Flags.admin, true)) {
+            ResidencePlayer rp = new ResidencePlayer(p);
+
+            if (perms.playerHas(rp, Flags.admin, true)) {
                 return true;
             }
 
@@ -93,17 +97,13 @@ public class ProtectionChecker implements Listener {
 
             switch (action) {
                 case BREAK_BLOCK:
+                case INTERACT_BLOCK:
                     // 领地已支持 Slimefun
-                    // 详情请见 https://github.com/Zrips/Residence/blob/d061c9d09c6e07b1dfe8b5ebf539bafa9f0aa61b/src/com/bekvon/bukkit/residence/slimeFun/SlimeFunResidenceModule.java
+                    // 详见 https://github.com/Zrips/Residence/blob/master/src/com/bekvon/bukkit/residence/slimeFun/SlimeFunResidenceModule.java
                     return SlimefunPlugin.getProtectionManager().hasPermission(p, block.getLocation(), action);
                 case PLACE_BLOCK:
                     // move 是为了机器人而检查的, 防止机器人跑进别人领地然后还出不来
-                    return perms.playerHas(p, Flags.place, true) || perms.playerHas(p, Flags.build, true) || !perms.playerHas(p, Flags.move, true);
-                case INTERACT_BLOCK:
-                    if (!perms.playerHas(p, Flags.use, true)) {
-                        SlimefunPlugin.getLocalization().sendMessage(p, "inventory.no-access");
-                        return false;
-                    }
+                    return perms.playerHas(rp, Flags.place, true) || perms.playerHas(rp, Flags.build, true) || !perms.playerHas(rp, Flags.move, true);
             }
         }
         return true;

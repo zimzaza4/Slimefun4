@@ -100,17 +100,17 @@ guide:
     updated: "&aTvoj jazyk bol úspešne nastavený na: &b%lang%"
   locked: ZAMKNUTÉ
   locked-category:
-    - Pre odomknutie tejto kategórie
-    - budeš musieť odomknúť všetky itemy
-    - z nasledujúcich kategórií
+  - Pre odomknutie tejto kategórie
+  - budeš musieť odomknúť všetky itemy
+  - z nasledujúcich kategórií
   pages:
     next: Ďalšia stránka
     previous: Predošlá stránka
   search:
     inventory: 'Hľadám: %item%'
     lore:
-      - "&bČo by si chcel vyhľadať?"
-      - "&7Napíš čo chceš hľadať do chatu"
+    - "&bČo by si chcel vyhľadať?"
+    - "&7Napíš čo chceš hľadať do chatu"
     message: "&bČo by si chcel vyhľadať?"
     name: "&7Hľadať..."
     tooltip: "&bKlikni pre hľadanie itemu"
@@ -198,7 +198,7 @@ machines:
     transmitters: Prehľad vysielača
     waypoints: Prehľad waypointov
   HOLOGRAM_PROJECTOR:
-    enter-text: "&7Prosím napíš text pre holograms do chatu. &r(Kódy farieb sú podporované!)"
+    enter-text: "&7Prosím napíš text pre hologram do chatu. &r(Kódy farieb sú podporované!)"
     inventory-title: Editor hologramu
   ignition-chamber-no-flint: "&cV Ignition Chamber chýba zapalovač."
   in-use: "&cInventár tohto bloku  má aktuálne otvorený iný hráč."
@@ -251,9 +251,9 @@ messages:
   no-tome-yourself: "&cNemôžeš použiť &4Knihu vedomostí &cna seba..."
   not-online: "&4%player% &cnie je online!"
   not-researched: "&4Nemáš toľko vedomostí aby si tomu porozumel"
-  not-valid-amount: "&4%amount% &cnie je platné množstvo: Musí byť väčšie ako 0!"
-  not-valid-item: "&4%item% &cnie je platný item!"
-  not-valid-research: "&4%research% &cnie je platný výskum!"
+  invalid-amount: "&4%amount% &cnie je platné množstvo: Musí byť väčšie ako 0!"
+  invalid-item: "&4%item% &cnie je platný item!"
+  invalid-research: "&4%research% &cnie je platný výskum!"
   only-players: "&4Tento príkaz je iba pre hráčov"
   opening-backpack: "&bOtváram batoh, môže to trvať pár sekúnd..."
   opening-guide: "&bOtváram príručku, môže to trvať pár sekúnd..."

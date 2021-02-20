@@ -4,7 +4,6 @@ commands:
   cheat: Ezzel lekérhetsz tárgyakat
   give: Slimefun tárgyak lekérése egy játékosnak
   guide: Slimefun Útmutató lekérése
-  timings: Lag-információ a szerverről
   teleporter: Játékosok útpontjainak megtekintése
   versions: A kiegészítők listázása
   search: Keresés egy kifejezésre az Útmutatóban
@@ -24,6 +23,11 @@ commands:
     description: Feltölti a kezedben lévő tárgyat
     charge-success: Tárgy feltöltve!
     not-rechargeable: Ez a tárgy nem tölthető fel!
+  timings:
+    description: Teljesítményinformáció a Slimefunról és a kiegészítőiről
+    please-wait: "&eKérjük várj... Érkeznek az eredmények!"
+    verbose-player: "&4A részletes megjelenítés flag nem használható játékosként!"
+    unknown-flag: "&4Ismeretlen flag: &c%flag%"
 guide:
   search:
     message: "&bMire szeretnél keresni?"
@@ -31,8 +35,8 @@ guide:
     tooltip: "&bKlikk egy tárgy kereséséhez"
     inventory: 'Keresés erre: %item%'
     lore:
-      - "&bMit szeretnél keresni?"
-      - "&7Gépeld be a keresett kifejezést a chatbe"
+    - "&bMit szeretnél keresni?"
+    - "&7Gépeld be a keresett kifejezést a chatbe"
   cheat:
     no-multiblocks: "&4Multiblockot nem tudsz lekérni, meg kell építened!"
   languages:
@@ -45,10 +49,10 @@ guide:
     selected-language: 'Jelenleg kiválasztva:'
     change: Kattints a nyelv kiválasztásához
     description:
-      - "&7Már lehetőséged van kiválasztani,"
-      - "&7hogy a Slimefun milyen nyelven"
-      - "&7jelenjen meg számodra. A tárgyakat"
-      - "&7jelenleg nem lehet lefordítani."
+    - "&7Már lehetőséged van kiválasztani,"
+    - "&7hogy a Slimefun milyen nyelven"
+    - "&7jelenjen meg számodra. A tárgyakat"
+    - "&7jelenleg nem lehet lefordítani."
   title:
     main: Slimefun Útmutató
     settings: Beállítások és Információk
@@ -70,10 +74,10 @@ guide:
     profile-link: Kattints ide, hogy meglátogasd a profilját a GitHub-on
     open: Kattints a közreműködők megtekintéséhez
     description:
-      - "&7A Slimefun egy nyílt forráskódú projekt,"
-      - "&7amit egy hatalmas közösség tart fenn."
-      - "&7Több mint &e%contributors% &7közreműködő"
-      - "&7dolgozott rajta az évek során."
+    - "&7A Slimefun egy nyílt forráskódú projekt,"
+    - "&7amit egy hatalmas közösség tart fenn."
+    - "&7Több mint &e%contributors% &7közreműködő"
+    - "&7dolgozott rajta az évek során."
   pages:
     previous: Előző oldal
     next: Következő oldal
@@ -93,9 +97,9 @@ guide:
     settings: Visszalépés a Beállítások panelre
   locked: LEZÁRVA
   locked-category:
-    - Ennek a kategóriának a feloldásához
-    - fel kell oldanod az összes tárgyat
-    - a következő kategóriákból
+  - Ennek a kategóriának a feloldásához
+  - fel kell oldanod az összes tárgyat
+  - a következő kategóriákból
   work-in-progress: Ez a funkció még nem készült el teljesen!
 messages:
   not-researched: "&4Nincs elég ismereted, hogy megértsd ezt"
@@ -106,11 +110,8 @@ messages:
   no-permission: "&4Ehhez nincs jogod"
   usage: "&4Használat: &c%usage%"
   not-online: "&4%player% &cjelenleg nem elérhető!"
-  not-valid-item: "&4%item% &cnem megfelelő tárgy!"
-  not-valid-amount: "&4%amount% &cnem megfelelő mennyiség: 0-nál nagyobbnak kell lennie!"
   given-item: '&bKaptál &a%amount% darab &7"%item%&7"&b-t'
   give-item: '&bAdtál %player%-nek/nak &a%amount% &7"%item%&7"&b-t'
-  not-valid-research: "&4%research% &cnem érvényes Kutatás!"
   give-research: '&bMegadtad %player% játékosnak a(z) &7"%research%&7" &bkutatást'
   hungry: "&cTúl éhes vagy ehhez!"
   disabled-in-world: "&4&lEz a tárgy tiltva van ebben a világban"
@@ -125,14 +126,15 @@ messages:
     water: "&a&oA talizmánod megmentett a fulladástól"
     angel: "&a&oA talizmánod megmentett a zuhanási sérüléstől"
     fire: "&a&oA talizmánod megmentett a halálra elégéstől"
-    magician: "&a&oA talizmánod adott további fejlesztéseket is"
+    magician: "&a&oA talizmánod adott további varázslatokat is"
     traveller: "&a&oA talizmánod gyors sebességet adott neked"
     warrior: "&a&oA talizmánodtól növelte az erőd egy kis időre"
     knight: "&a&oA talizmánod adott 5 másodpercre Regenerációt"
     whirlwind: "&a&oA talizmánod visszavert egy lövedéket"
-    wizard: "&a&oA talizmánod erősítette a Szerencse enchantot, de néhány egyéb enchantot
-      gyengített"
+    wizard: "&a&oA talizmánod erősítette a Szerencse varázslatot, de néhány egyéb
+      varázslatot gyengített"
     caveman: "&a&oA talizmánod adott Sietség effektet"
+    wise: "&a&oA talizmánod megduplázta a dobott tapasztalat pontokat"
   soulbound-rune:
     fail: "&cEgyszerre csak egy tárgyat köthetsz a lelkedhez."
     success: "&aSikeresen hozzákötötted ezt a tárgyat a lelkedhez! Megmarad, amikor
@@ -151,27 +153,27 @@ messages:
   link-prompt: "&eKattints ide:"
   diet-cookie: "&eNagyon könnyednek érzed magad..."
   fortune-cookie:
-    - "&7Segítség, csapdába estem egy szerencsesüti gyárban!"
-    - "&7Holnap meghalsz...     egy Creeper által"
-    - "&7Valamikor az életedben valami rossz fog történni!!!"
-    - "&7A következő héten észreveszed, hogy ez nem az igazi világ, hanem egy számítógépes
+  - "&7Segítség, csapdába estem egy szerencsesüti gyárban!"
+  - "&7Holnap meghalsz...     egy Creeper által"
+  - "&7Valamikor az életedben valami rossz fog történni!!!"
+  - "&7A jövő héten észreveszed, hogy ez nem az igazi világ, hanem egy számítógépes
     játékban vagy"
-    - "&7Ez a süti néhány másodperc múlva jó ízű lesz"
-    - '&7Az utolsó szó, amelyet hallani fogsz: "KIÍRTANI!!!"'
-    - "&7Bármit is teszel, ne ölelj meg egy Creepert... Kipróbáltam. Jó érzés, de nem
+  - "&7Ez a süti néhány másodperc múlva jó ízű lesz"
+  - '&7Az utolsó szó, amelyet hallani fogsz: "KIÍRTANI!!!"'
+  - "&7Bármit is teszel, ne ölelj meg egy Creepert... Kipróbáltam. Jó érzés, de nem
     éri meg."
-    - "&742. A válasz 42."
-    - "&7Walshy egy nap távol tartja a bajokat."
-    - "&7Soha ne áss egyenesen!"
-    - "&7Ez csak egy kis karcolás!"
-    - "&7Mindig nézd az élet jó oldalát!"
-    - "&7Ez valójában keksz volt, és nem süti"
-    - "&7A neon táblák VILÁGÍTANAK!"
-  piglin-barter: "&4Slimefun tárgyakat nem cserélhetsz el piglinekkel."
+  - "&742. A válasz 42."
+  - "&7Minden nap egy Walshy távol tartja a bajokat."
+  - "&7Soha ne áss egyenesen!"
+  - "&7Ez csak egy kis karcolás!"
+  - "&7Mindig nézd az élet jó oldalát!"
+  - "&7Ez valójában keksz volt, és nem süti"
+  - "&7A neon táblák VILÁGÍTANAK!"
+  piglin-barter: "&4Slimefun tárgyakat nem cserélhetsz el a piglinekkel."
   enchantment-rune:
-    fail: "&cNem enchantolhatod ezt a tárgyat."
-    no-enchantment: "&cNem található megfelelő enchant ehhez az tárgyhoz."
-    success: "&aSikeresen alkalmaztál egy véletlenszerű enchantot erre a tárgyra."
+    fail: "&cNem varázsolhatod el ezt a tárgyat."
+    no-enchantment: "&cNem található megfelelő varázslat ehhez az tárgyhoz."
+    success: "&aSikeresen alkalmaztál egy véletlenszerű varázslatot erre a tárgyra."
   tape-measure:
     no-anchor: "&cBe kell állítanod egy kezdőpontot, mielőtt megkezdenéd a mérést!"
     wrong-world: "&cA kezdőpont úgy tűnik, hogy egy másik világban van!"
@@ -185,6 +187,10 @@ messages:
       őket!"
     wrong-material: "&cEzt a felületet nem mászhatod meg. Nyisd meg a Slimefun Útmutatót
       további információért!"
+  invalid-item: "&4%item% &cnem megfelelő tárgy!"
+  invalid-amount: "&4%amount% &cnem megfelelő mennyiség: 0-nál nagyobbnak kell lennie!"
+  invalid-research: "&4%research% &cnem érvényes Kutatás!"
+  bee-suit-slow-fall: "&eA Bee Wings segít neked visszatérni a földre lassan és biztonságosan"
   mode-change: "&b%device% mód állítva erre: &9%mode%"
 machines:
   pattern-not-found: "&eSajnálom, nem ismerem fel ezt a receptet. Kérlek, helyezd
@@ -205,7 +211,7 @@ machines:
     obstructed: "&4A Pedestal el van torlaszolva! &cTávolíts el mindent, ami a Pedestal
       felett van!"
   HOLOGRAM_PROJECTOR:
-    enter-text: "&7Kérlek, írd be a kívánt holograms szöveget a chatre. &r(Színkódok
+    enter-text: "&7Kérlek, írd be a kívánt hologram szöveget a chatre. &r(Színkódok
       is használhatóak!)"
     inventory-title: Hologram szerkesztő
   ELEVATOR:
@@ -244,6 +250,7 @@ machines:
     finished: Az Industrial Miner-ed kész! Összesen %ores% ércet szerzett!
 anvil:
   not-working: "&4Nem használhatsz Slimefun tárgyakat az üllőben!"
+  mcmmo-salvaging: "&4Nem hasznosíthatsz újra Slimefun tárgyakat!"
 backpack:
   already-open: "&cSajnáljuk, ez a hátizsák valahol máshol már nyitva van!"
   no-stack: "&cNem halmozhatsz hátizsákokat"
@@ -257,9 +264,9 @@ gps:
     max: "&4Elérted a maximális útpontok számát"
     duplicate: "&4Már létrehoztál egy ilyen nevű útpontot: &f%waypoint%"
   insufficient-complexity:
-    - "&4Nem megfelelő a GPS-hálózat komplexitása: &c%complexity%"
-    - "&4a) Még nem telepítetted a GPS-hálózatot"
-    - "&4b) A GPS-hálózatod nem eléggé összetett"
+  - "&4Nem megfelelő a GPS-hálózat összetettsége: &c%complexity%"
+  - "&4a) Még nem telepítetted a GPS-hálózatot"
+  - "&4b) A GPS-hálózatod nem eléggé összetett"
   geo:
     scan-required: "&4GEO-vizsgálat szükséges! &cElőbb vizsgáld meg ezt a chunkot
       a GEO-Scannerrel!"
@@ -298,15 +305,16 @@ android:
       INTERFACE_ITEMS: "&9Tegye az eszköztár tartalmát a csatlakozási felületbe"
       INTERFACE_FUEL: "&cVegyen ki az üzemanyagot a csatlakozási felületről"
     enter-name:
-      -
-      - "&eKérlek, írd be a szkript nevét"
+    - 
+    - "&eKérlek, írd be a szkript nevét"
     uploaded:
-      - "&bFeltöltés..."
-      - "&aA szkript sikeresen feltöltve!"
+    - "&bFeltöltés..."
+    - "&aA szkript sikeresen feltöltve!"
     rating:
       own: "&4Nem értékelheted a saját szkriptedet!"
       already: "&4Ezt a szkriptet már értékelted!"
-    editor: Szkript Szerkesztő
+    editor: Szkript szerkesztő
+    too-long: "&cA szkript túl hosszú a szerkesztéshez!"
 languages:
   default: Szerver-alapértelmezett
   en: Angol
@@ -323,12 +331,11 @@ languages:
   ru: Orosz
   sk: Szlovák
   zh-TW: Kínai (Tajvan)
-  vi: Vietnami
+  vi: Vietnámi
   id: Indonéz
   zh-CN: Kínai (Kína)
   el: Görög
   he: Héber
-  pt-BR: Portugál (Brazília)
   ar: Arab
   af: Afrikaans
   da: Dán
@@ -341,6 +348,7 @@ languages:
   th: Thai
   ro: Román
   pt: Portugál (Portugália)
+  pt-BR: Portugál (Brazília)
   bg: Bolgár
   ko: Koreai
   tr: Török
@@ -355,5 +363,7 @@ villagers:
   no-trading: "&4Nem cserélhetsz Slimefun tárgyakat falusiakkal!"
 cartography_table:
   not-working: "&4Nem használhatsz Slimefun tárgyakat térképasztalban."
+cauldron:
+  no-discoloring: "&4Nem színteleníthetsz Slimefun páncélt!"
 miner:
   no-ores: "&eSajnálom, nem találtam semmilyen ércet a közelben!"

@@ -44,10 +44,10 @@ guide:
     selected-language: 'Kasalukuyang pinili:'
     change: Mag-click upang pumili ng bagong wika.
     description:
-      - "&7Meron ka nang pagpipilian upang pumili"
-      - "&7ng wika kung saan ang Slimefun"
-      - "&7ay may ipapakita sa iyo. Ang mga"
-      - "&7items ay bawal pa i-translate sa ngayon."
+    - "&7Meron ka nang pagpipilian upang pumili"
+    - "&7ng wika kung saan ang Slimefun"
+    - "&7ay may ipapakita sa iyo. Ang mga"
+    - "&7items ay bawal pa i-translate sa ngayon."
   title:
     main: Slimefun Guide
     settings: Mga Settings & Impormasyon
@@ -69,10 +69,10 @@ guide:
     profile-link: I-click ito upang bisitahin ang kanilang profile sa GitHub.
     open: Pindutin ito upang makita ang aming mga nag-ambag
     description:
-      - "&7Ang Slimefun ay isang proyekto na bukas na mapagkukunan"
-      - "&7at pinapanatili ng isang malaking pamayanan ng mga tao."
-      - "&7Mga hanggang &e%contributors% &7na mga tao ang tumutulong sa"
-      - "&7Slimefun sa buong lahat ng mga taong ito."
+    - "&7Ang Slimefun ay isang proyekto na bukas na mapagkukunan"
+    - "&7at pinapanatili ng isang malaking pamayanan ng mga tao."
+    - "&7Mga hanggang &e%contributors% &7na mga tao ang tumutulong sa"
+    - "&7Slimefun sa buong lahat ng mga taong ito."
   pages:
     previous: Nakaraang pahina.
     next: Susunod na pahina.
@@ -92,9 +92,9 @@ guide:
     settings: Bumalik sa Settings Panel
   locked: NAKAKANDADO
   locked-category:
-    - Upang i-unlock ang kategoryang ito,
-    - kailangang i-unlock ang lahat ng mga item mula sa
-    - sumusunod na kategorya.
+  - Upang i-unlock ang kategoryang ito,
+  - kailangang i-unlock ang lahat ng mga item mula sa
+  - sumusunod na kategorya.
   work-in-progress: Ang feature na ito ay hindi pa tapos!
 messages:
   not-researched: "&4Kulang ang iyong Knowledge upang ito'y maintindihan."
@@ -105,12 +105,12 @@ messages:
   no-permission: "&4Wala kang permiso para gawin ito."
   usage: "&4Paggamit: &c%usage%"
   not-online: "&cHindi online si &4%player%!"
-  not-valid-item: "&cHindi valid ang &4%item%!"
-  not-valid-amount: "&cHindi valid ang amount na &4%amount% : dapat ito'y mas mataas
+  invalid-item: "&cHindi valid ang &4%item%!"
+  invalid-amount: "&cHindi valid ang amount na &4%amount% : dapat ito'y mas mataas
     kaysa sa 0!"
   given-item: '&bIka''y binigyan ng &a%amount% &7"%item%&7"'
   give-item: '&bBinigyan mo si %player% ng &a%amount% &7"%item%&7"'
-  not-valid-research: "&4%research% &cay hindi valid na Research!"
+  invalid-research: "&4%research% &cay hindi valid na Research!"
   give-research: '&bBinigyan mo si %player% ng Research &7"%research%&7"'
   hungry: "&cIkaw ay sobrang gutom para gawin ito!"
   disabled-in-world: "&4&lDinisable ang Aytem sa world na ito."
@@ -154,22 +154,22 @@ messages:
   link-prompt: "&ePindutin dito:"
   diet-cookie: "&eNakakaramdam ka nang gaan sa iyong katawan..."
   fortune-cookie:
-    - "&7Tulungan mo ako, nakulong ako sa Fortune Cookie Factory!"
-    - "&7Mamamatay ka bukas... dahil sa Creeper."
-    - "&7Sa ilang punto ng iyong buhay, may mangyayaring masama."
-    - "&7Sa susunod na linggo, mapapansin mo na hindi pala ito ang totoong mundo, nasa
+  - "&7Tulungan mo ako, nakulong ako sa Fortune Cookie Factory!"
+  - "&7Mamamatay ka bukas... dahil sa Creeper."
+  - "&7Sa ilang punto ng iyong buhay, may mangyayaring masama."
+  - "&7Sa susunod na linggo, mapapansin mo na hindi pala ito ang totoong mundo, nasa
     isang ka palang kompyuter game."
-    - "&7Sasarap ang lasa ng cookie na ito ng ilang segundo."
-    - '&7Ang maririnig mo na huling salita ay "PUKSAIN!!!"'
-    - "&7Kahit anong gawin mo, huwag mong yakapin ang Creeper... Nasubukan ko na ito.
+  - "&7Sasarap ang lasa ng cookie na ito ng ilang segundo."
+  - '&7Ang maririnig mo na huling salita ay "PUKSAIN!!!"'
+  - "&7Kahit anong gawin mo, huwag mong yakapin ang Creeper... Nasubukan ko na ito.
     Ang sarap, ngunit hindi ito katumbas ng halaga."
-    - "&742. Ang sagot ay 42."
-    - "&7Ang isang Walshy sa isang araw ay maiiwasan ang problema."
-    - "&7Huwag kang maghukay na diretso pababa!"
-    - "&7Ito ay ngunit isang sugat sa laman!"
-    - "&7Laging tumingin sa maliwanag na bahagi ng buhay!"
-    - "&7Biskwit pala ito at hindi ito siya Kukis."
-    - "&7Ang astig ng mga Neon Signs!"
+  - "&742. Ang sagot ay 42."
+  - "&7Ang isang Walshy sa isang araw ay maiiwasan ang problema."
+  - "&7Huwag kang maghukay na diretso pababa!"
+  - "&7Ito ay ngunit isang sugat sa laman!"
+  - "&7Laging tumingin sa maliwanag na bahagi ng buhay!"
+  - "&7Biskwit pala ito at hindi ito siya Kukis."
+  - "&7Ang astig ng mga Neon Signs!"
   piglin-barter: "&4Hindi ka maaaring mag-barter sa mga piglins gamit ang mga item
     ng Slimefun."
   enchantment-rune:
@@ -271,9 +271,9 @@ gps:
     max: "&4Naabot mo na ang maximum amount ng waypoints."
     duplicate: "&4Nakagawa ka na ng isang waypoint na pinangalanan: & f%waypoint%"
   insufficient-complexity:
-    - "&4Kulang ang  GPS Network Complexity: &c%complexity%"
-    - "&4a) Wala ka pang GPS Network setup."
-    - "&4b) Hindi pa complex ang iyong GPS Network!"
+  - "&4Kulang ang  GPS Network Complexity: &c%complexity%"
+  - "&4a) Wala ka pang GPS Network setup."
+  - "&4b) Hindi pa complex ang iyong GPS Network!"
   geo:
     scan-required: "&4Kailagan ng GEO-Scan! &cI-scan muna ang chunk na ito gamit ng
       GEO-Scanner!"
@@ -312,11 +312,11 @@ android:
       INTERFACE_ITEMS: "&9Itulak ang Mga nilalaman ng Imbentaryo sa Interface"
       INTERFACE_FUEL: "&cItulak ang fuel galing sa Interface"
     enter-name:
-      -
-      - "&eMangyaring mag-type ng isang pangalan para sa iyong script"
+    - 
+    - "&eMangyaring mag-type ng isang pangalan para sa iyong script"
     uploaded:
-      - "&bUploading..."
-      - "&aTagumpay ang pag-upload ng script!"
+    - "&bUploading..."
+    - "&aTagumpay ang pag-upload ng script!"
     rating:
       own: "&4Hindi puwedeng i-marka ang sarili mong script!"
       already: "&4Nakapag-iwan ka na ng marka para sa script na ito!"

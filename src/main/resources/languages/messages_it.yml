@@ -97,17 +97,17 @@ guide:
     updated: "&aLa tua lingua è stata impostata correttamente su: &b%lang%"
   locked: BLOCCATO
   locked-category:
-    - Per sbloccare questa categoria
-    - è necessario sbloccare tutti gli elementi dalle
-    - seguenti categorie
+  - Per sbloccare questa categoria
+  - è necessario sbloccare tutti gli elementi dalle
+  - seguenti categorie
   pages:
     next: Pagina successiva
     previous: Pagina precedente
   search:
     inventory: 'Ricerca di: %item%'
     lore:
-      - "&bChe cosa vuoi cercare?"
-      - "&7Digita il termine di ricerca in chat"
+    - "&bChe cosa vuoi cercare?"
+    - "&7Digita il termine di ricerca in chat"
     message: "&bChe cosa vuoi cercare?"
     name: "&7Ricerca..."
     tooltip: "&bClicca per cercare un elemento"
@@ -222,18 +222,18 @@ messages:
   cannot-place: "&cNon puoi piazzare quel blocco qui!"
   fire-extinguish: "&7Hai spento le tue fiamme"
   fortune-cookie:
-    - "&7Aiutami, sono intrappolato in una fabbrica di biscotti della fortuna!"
-    - "&7Morirai domani... da un Creeper!"
-    - "&7Ad un certo punto della tua vita succederà qualcosa di brutto!!!"
-    - "&7La prossima settimana noterai che questo non è il mondo reale, sei in un gioco
+  - "&7Aiutami, sono intrappolato in una fabbrica di biscotti della fortuna!"
+  - "&7Morirai domani... da un Creeper!"
+  - "&7Ad un certo punto della tua vita succederà qualcosa di brutto!!!"
+  - "&7La prossima settimana noterai che questo non è il mondo reale, sei in un gioco
     per computer"
-    - "&7Questo biscotto avrà un buon sapore in pochi secondi"
-    - '&7L''ultima parola che sentirai sarà "STERMINARE!!!"'
-    - "&7Qualsiasi cosa tu faccia, non abbracciare un Creeper ... L'ho provato. È bello,
+  - "&7Questo biscotto avrà un buon sapore in pochi secondi"
+  - '&7L''ultima parola che sentirai sarà "STERMINARE!!!"'
+  - "&7Qualsiasi cosa tu faccia, non abbracciare un Creeper ... L'ho provato. È bello,
     ma non ne vale la pena."
-    - "&742. La risposta è 42."
-    - "&7Un Walshy al giorno leva i problemi di torno"
-    - "&7Non scavare mai verso il basso!"
+  - "&742. La risposta è 42."
+  - "&7Un Walshy al giorno leva i problemi di torno"
+  - "&7Non scavare mai verso il basso!"
   give-item: '&bHai dato a %player% &a%amount% &7 "%item% &7"'
   given-item: '&bTi è stato dato  &a%amount% &7 "%item% &7"'
   give-research: '&bHai dato a %player% la ricerca &7 "%research% &7"'
@@ -249,9 +249,9 @@ messages:
   no-tome-yourself: "&cNon puoi utilizzare il &4Tomo della conoscienza &c su te stesso
     ..."
   not-online: "&4%player% &cnon è online!"
-  not-valid-amount: "&4%amount% &cnon è una valida quantità: deve essere maggiore
+  invalid-amount: "&4%amount% &cnon è una valida quantità: deve essere maggiore
     di 0!"
-  not-valid-research: "&4%research% &cnon è una ricerca valida!"
+  invalid-research: "&4%research% &cnon è una ricerca valida!"
   only-players: "&4Questo comando è solo per i players"
   opening-backpack: "&bAprendo lo zaino, potrebbero essere necessari alcuni secondi
     ..."
@@ -282,7 +282,7 @@ messages:
   unlocked: '&bHai sbloccato &7 "%research%"'
   usage: "&4Utilizzo: &c%usage%"
   not-researched: "&4Non hai abbastanza conoscenze per capirlo!"
-  not-valid-item: "&4%item% &cnon è un oggetto valido!"
+  invalid-item: "&4%item% &cnon è un oggetto valido!"
   disabled-in-world: "&4&lQuesto oggetto è stato disattivato in questo mondo!"
   disabled-item: "&4& lQuesto oggetto è stato disabilitato! Come l'hai ottenuto?"
   radiation: "&4Sei stato esposto a radiazioni mortali! &cSbarazzati dell'oggetto

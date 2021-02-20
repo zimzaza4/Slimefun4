@@ -1,6 +1,22 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.androids;
 
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Predicate;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import io.github.starwishsama.utils.ProtectionChecker;
+import org.bukkit.Bukkit;
+import org.bukkit.Effect;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Tag;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.inventory.ItemStack;
+
 import io.github.thebusybiscuit.cscorelib2.blocks.Vein;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
@@ -11,16 +27,6 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
-import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Predicate;
 
 public class WoodcutterAndroid extends ProgrammableAndroid {
 
@@ -47,9 +53,7 @@ public class WoodcutterAndroid extends ProgrammableAndroid {
                 log.getWorld().playEffect(log.getLocation(), Effect.STEP_SOUND, log.getType());
 
                 OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(BlockStorage.getLocationInfo(b.getLocation(), "owner")));
-                if (SlimefunPlugin.getProtectionManager().hasPermission(owner, log.getLocation(), ProtectableAction.BREAK_BLOCK)
-                        && ProtectionChecker.checkPermission(owner.getPlayer(), b, ProtectableAction.BREAK_BLOCK)
-                ) {
+                if (SlimefunPlugin.getProtectionManager().hasPermission(owner, log.getLocation(), ProtectableAction.BREAK_BLOCK) && ProtectionChecker.checkPermission(owner.getPlayer(), log, ProtectableAction.BREAK_BLOCK)) {
                     breakLog(log, b, menu, face);
                 }
 
@@ -156,7 +160,9 @@ public class WoodcutterAndroid extends ProgrammableAndroid {
             } else {
                 // Simply drop the sapling if the soil does not fit
                 block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(saplingType));
+                block.setType(Material.AIR);
             }
         }
     }
+
 }

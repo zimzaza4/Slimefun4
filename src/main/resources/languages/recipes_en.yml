@@ -95,58 +95,58 @@ slimefun:
   food_fabricator:
     name: 'Food Fabricator'
     lore:
-      - 'Craft this Item as shown'
-      - 'using a Food Fabricator'
-
+    - 'Craft this Item as shown'
+    - 'using a Food Fabricator'
+    
   food_composter:
     name: 'Food Composter'
     lore:
-      - 'Craft this Item as shown'
-      - 'using a Food Composter'
-
+    - 'Craft this Item as shown'
+    - 'using a Food Composter'
+    
   freezer:
     name: 'Freezer'
     lore:
-      - 'Craft this Item as shown'
-      - 'using a Freezer'
-
+    - 'Craft this Item as shown'
+    - 'using a Freezer'
+    
   geo_miner:
     name: 'GEO Miner'
     lore:
-      - 'This Item can be gathered'
-      - 'by using a GEO Miner'
-
+    - 'This Item can be gathered'
+    - 'by using a GEO Miner'
+    
   nuclear_reactor:
     name: 'Nuclear Reactor'
     lore:
-      - 'This Item is a byproduct'
-      - 'of running a Nuclear Reactor'
-
+    - 'This Item is a byproduct'
+    - 'of running a Nuclear Reactor'
+    
   oil_pump:
     name: 'Oil Pump'
     lore:
-      - 'This Item can be gathered'
-      - 'by using an Oil Pump'
-
+    - 'This Item can be gathered'
+    - 'by using an Oil Pump'
+    
   pickaxe_of_containment:
     name: 'Pickaxe of Containment'
     lore:
-      - 'This Block can be obtained'
-      - 'by mining a Spawner with'
-      - 'the Pickaxe of Containment'
-
+    - 'This Block can be obtained'
+    - 'by mining a Spawner with'
+    - 'the Pickaxe of Containment'
+    
   refinery:
     name: 'Refinery'
     lore:
-      - 'Craft this Item as shown'
-      - 'using a Refinery'
-
+    - 'Craft this Item as shown'
+    - 'using a Refinery'
+    
   barter_drop:
     name: 'Piglin Bartering Drop'
     lore:
-      - 'Barter with Piglins using'
-      - 'Gold Ingots to obtain this Item'
-
+    - 'Barter with Piglins using'
+    - 'Gold Ingots to obtain this Item'
+    
 minecraft:
 
   shaped:
@@ -180,21 +180,21 @@ minecraft:
     lore:
     - 'Smelt this item in a Smoker'
     - 'to craft your desired item'
-
+    
   campfire:
     name: 'Campfire Recipe'
     lore:
-      - 'Smelt this item over a Campfire'
-      - 'to craft your desired item'
-
+    - 'Smelt this item over a Campfire'
+    - 'to craft your desired item'
+    
   stonecutting:
     name: 'Stonecutter Recipe'
     lore:
-      - 'Craft this Item as shown'
-      - 'using a Stonecutter'
-
+    - 'Craft this Item as shown'
+    - 'using a Stonecutter'
+    
   smithing:
     name: 'Smithing Table Recipe'
     lore:
-      - 'Craft this Item as shown'
-      - 'using a Smithing Table'
+    - 'Craft this Item as shown'
+    - 'using a Smithing Table'

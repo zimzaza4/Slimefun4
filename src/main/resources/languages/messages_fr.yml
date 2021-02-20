@@ -4,7 +4,6 @@ commands:
   cheat: Vous permet de vous donnez des objets
   give: Donne à quelqu'un des objets Slimefun
   guide: Vous donne un guide Slimefun
-  timings: Informations sur la latence de votre serveur
   teleporter: Affiche les waypoints d'un autre joueur
   versions: Affiche toutes les extensions  installées
   search: Recherche dans votre guide le terme donné
@@ -25,6 +24,11 @@ commands:
     description: Charge l'objet que vous avez en main
     charge-success: L'objet a été chargé !
     not-rechargeable: Cet objet ne peut pas être chargé !
+  timings:
+    description: Timings pour Slimefun et ses addons
+    please-wait: "&eAttendez s'il vous plaît, les résultats arrivent !"
+    verbose-player: "&4Ce flag ne peux pas être utiliser par un joueur!"
+    unknown-flag: "&4Flag inconnu: &c%flag%"
 guide:
   search:
     message: "&bQue souhaitez-vous rechercher?"
@@ -32,8 +36,8 @@ guide:
     tooltip: "&bCliquez pour rechercher un objet"
     inventory: 'Rechercher: %item%'
     lore:
-      - "&bQue souhaitez-vous rechercher?"
-      - "&7Entrez votre terme de recherche dans le chat"
+    - "&bQue souhaitez-vous rechercher?"
+    - "&7Entrez votre terme de recherche dans le chat"
   cheat:
     no-multiblocks: "&4Vous ne pouvez pas vous donnez les multiblocs, vous devez les
       construire!"
@@ -47,10 +51,10 @@ guide:
     selected-language: 'Actuellement Sélectionné :'
     change: Cliquez pour sélectionner une nouvelle langue
     description:
-      - "&7Vous avez maintenant la possibilité de changer"
-      - "&7la langue dans laquelle Slimefun"
-      - "&7vous sera présenté. Les objets"
-      - "&7ne peuvent pas être traduits pour l'instant."
+    - "&7Vous avez maintenant la possibilité de changer"
+    - "&7la langue dans laquelle Slimefun"
+    - "&7vous sera présenté. Les objets"
+    - "&7ne peuvent pas être traduits pour l'instant."
   title:
     main: Guide Slimefun
     settings: Paramètres et informations
@@ -72,10 +76,10 @@ guide:
     profile-link: Cliquez pour visiter leurs profils GitHub
     open: Cliquez pour voir nos contributeurs
     description:
-      - "&7Slimefun est un projet open-source"
-      - "&7entretenu par une grande communauté."
-      - "&7Plus de &e%contributors% &7personnes ont travaillé sur"
-      - "&7Slimefun pendant toutes ces années."
+    - "&7Slimefun est un projet open-source"
+    - "&7entretenu par une grande communauté."
+    - "&7Plus de &e%contributors% &7personnes ont travaillé sur"
+    - "&7Slimefun pendant toutes ces années."
   pages:
     previous: Page précédente
     next: Page suivante
@@ -96,9 +100,9 @@ guide:
     settings: Revenir au menu des Options
   locked: VERROUILLÉ
   locked-category:
-    - Pour déverrouiller cette catégorie, vous devrez
-    - déverrouiller tous les objets des
-    - catégories suivantes
+  - Pour déverrouiller cette catégorie, vous devrez
+  - déverrouiller tous les objets des
+  - catégories suivantes
   work-in-progress: Cette fonctionnalité n'est pas encore complètement terminée !
 messages:
   not-researched: "&4Vous n'avez pas suffisamment de connaissances pour comprendre
@@ -110,12 +114,8 @@ messages:
   no-permission: "&4Vous n'avez pas les permissions requises pour faire ceci"
   usage: "&4Utilisation: &c%usage%"
   not-online: "&4%player% &cn'est pas en ligne!"
-  not-valid-item: "&4%item% &cn'est pas un item valide!"
-  not-valid-amount: "&4%amount% &cn'est pas un montant valide: il doit être supérieur
-    à 0!"
   given-item: '&bVous avez reçu &a%amount%&7 "%item%&7"'
   give-item: '&bVous avez donné &a%amount% &7"%item%&7" à %player%'
-  not-valid-research: "&4%research% &cn'est pas une recherche valide!"
   give-research: '&bVous avez débloqué la recherche "%research%&7" à %player%'
   hungry: "&cVous avez trop faim pour faire ça!"
   disabled-in-world: "&4&lCet item a été désactivé dans ce monde"
@@ -138,6 +138,7 @@ messages:
     wizard: "&a&oVotre talisman vous a donné un meilleur niveau de Fortune mais a
       peut-être diminué plusieurs autres enchantements"
     caveman: "&a&oVotre Talisman vous a donné Célérité"
+    wise: "&a&oVotre talisman a doublé votre XP"
   soulbound-rune:
     fail: "&cVous pouvez lier un seul objet à la fois à votre âme"
     success: "&aVous avez réussi à lier cet objet à votre âme! Vous le garderez quand
@@ -157,22 +158,22 @@ messages:
   link-prompt: "&eCliquez ici :"
   diet-cookie: "&eVous vous sentez léger comme une plume..."
   fortune-cookie:
-    - "&7Aidez-moi, je suis coincé dans une usine à Biscuit Chinois !"
-    - "&7Vous allez mourir demain... par un Creeper"
-    - "&7Quelque chose de mal vous arrivera à un moment de votre vie !"
-    - "&7La semaine prochaine, vous vous rendrez compte que ce monde n'est pas réel
+  - "&7Aidez-moi, je suis coincé dans une usine à Biscuit Chinois !"
+  - "&7Vous allez mourir demain... par un Creeper"
+  - "&7Quelque chose de mal vous arrivera à un moment de votre vie !"
+  - "&7La semaine prochaine, vous vous rendrez compte que ce monde n'est pas réel
     et que vous êtes dans un jeu vidéo"
-    - "&7Ce biscuit aura bon goût dans quelques secondes"
-    - '&7Le dernier mot que vous entendrez sera "EXTERMINATE!!!"'
-    - "&7Quoi que vous fassiez, ne faites pas de câlin à un Creeper... J'ai essayé.
+  - "&7Ce biscuit aura bon goût dans quelques secondes"
+  - '&7Le dernier mot que vous entendrez sera "EXTERMINATE!!!"'
+  - "&7Quoi que vous fassiez, ne faites pas de câlin à un Creeper... J'ai essayé.
     Ça fait du bien, mais ça n'en vaut pas la peine."
-    - "&742. La réponse est 42."
-    - "&7Un Walshy par jour éloigne les ennuis."
-    - "&7Ne creusez jamais directement en-dessous de vous !"
-    - "&7Ce n'est que superficiel !"
-    - "&7Regarde le bon coté des choses !"
-    - "&7C'était pas un Cookie... mais un biscuit."
-    - "&7Les panneaux lumineux sont allumé  !"
+  - "&742. La réponse est 42."
+  - "&7Un Walshy par jour éloigne les ennuis."
+  - "&7Ne creusez jamais directement en-dessous de vous !"
+  - "&7Ce n'est que superficiel !"
+  - "&7Regarde le bon coté des choses !"
+  - "&7C'était pas un Cookie... mais un biscuit."
+  - "&7Les panneaux lumineux sont allumé  !"
   piglin-barter: "&4Vous ne pouvez pas troquer des objets Slimefun avec les piglins"
   enchantment-rune:
     fail: "&cVous ne pouvez pas enchanter cet objet."
@@ -193,6 +194,12 @@ messages:
       utiliser !"
     wrong-material: "&cVous ne pouvez pas escalader cette surface. Consultez votre
       guide Slimefun pour plus d'informations !"
+  invalid-item: "&4%item% &cn'est pas un item valide!"
+  invalid-amount: "&4%amount% &cn'est pas un montant valide: il doit être supérieur
+    à 0!"
+  invalid-research: "&4%research% &cn'est pas une recherche valide!"
+  bee-suit-slow-fall: "&eVos ailes d'abeille vous aideront à revenir au sol lentement
+    et en toute sécurité"
   mode-change: 'Vous avez changé votre &b%device% en mode : &9%mode%'
 machines:
   pattern-not-found: "&eDésolé, je ne reconnais pas cette recette. Veuillez disposer
@@ -270,9 +277,9 @@ gps:
     max: "&4Vous avez atteint le nombre maximum de waypoint"
     duplicate: "&4Vous avez déjà créé un waypoint nommé : &f%waypoint%"
   insufficient-complexity:
-    - "&4Complexité du réseau GPS insuffisante : &c%complexity%"
-    - "&4a) Vous n'avez pas encore de réseau GPS"
-    - "&4b) Votre réseau GPS n'est pas assez complexe"
+  - "&4Complexité du réseau GPS insuffisante : &c%complexity%"
+  - "&4a) Vous n'avez pas encore de réseau GPS"
+  - "&4b) Votre réseau GPS n'est pas assez complexe"
   geo:
     scan-required: "&4GEO-scan requis ! &cScannez d'abord ce chunk en utilisant un
       GEO-Scanner."
@@ -311,11 +318,11 @@ android:
       INTERFACE_ITEMS: "&9Mettre le contenu de l'inventaire à l'interface en face"
       INTERFACE_FUEL: "&cPrendre du carburant de l'interface en face"
     enter-name:
-      -
-      - "&eVeuillez saisir un nom pour votre script"
+    - 
+    - "&eVeuillez saisir un nom pour votre script"
     uploaded:
-      - "&bUpload du script..."
-      - "&aVotre script a bien été upload !"
+    - "&bUpload du script..."
+    - "&aVotre script a bien été upload !"
     rating:
       own: "&4Vous ne pouvez pas noter votre propre script !"
       already: "&4Vous avez déjà noté ce script !"
@@ -341,7 +348,6 @@ languages:
   zh-CN: Chinois (Chine)
   el: Grec
   he: Hébreu
-  pt: Portugais (Portugal)
   ar: Arabe
   af: Afrikaans
   da: Danois
@@ -353,6 +359,7 @@ languages:
   fa: Persan
   th: Thaï
   ro: Roumain
+  pt: Portugais (Portugal)
   pt-BR: Portugais (Brésil)
   bg: Bulgare
   ko: Coréen

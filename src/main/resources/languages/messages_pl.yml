@@ -21,8 +21,8 @@ guide:
     tooltip: "&bKliknij, aby wyszukać przedmiot"
     inventory: 'Wyszukiwanie dla: % item%'
     lore:
-      - "&bCo chcesz wyszukać?"
-      - "&7Wpisz wyszukiwane hasło na czacie"
+    - "&bCo chcesz wyszukać?"
+    - "&7Wpisz wyszukiwane hasło na czacie"
   cheat:
     no-multiblocks: "&4Nie możesz otrzymać Multibloków, musisz je zbudować!"
   languages:
@@ -69,9 +69,9 @@ guide:
     settings: Wróć Do Panelu Ustawień
   locked: Zablokowany
   locked-category:
-    - Aby odblokować tę kategorię, będziesz
-    - Musisz odblokować wszystkie przedmioty z
-    - Następujące kategorie
+  - Aby odblokować tę kategorię, będziesz
+  - Musisz odblokować wszystkie przedmioty z
+  - Następujące kategorie
 messages:
   not-researched: "&4Nie masz wystarczającej wiedzy, aby to zrozumieć"
   not-enough-xp: "&4Nie masz wystarczająco doświadczenia, aby to odblokować"
@@ -81,12 +81,12 @@ messages:
   no-permission: "&4Brak uprawnień"
   usage: "&4Użycie: &c%usage%"
   not-online: "&4%player% &cnie jest online!"
-  not-valid-item: "&4%item% &cnie jest poprawnym przedmiotem!"
-  not-valid-amount: "&4%amount% &cnie jest prawidłową ilością: ilość musi być większa
+  invalid-item: "&4%item% &cnie jest poprawnym przedmiotem!"
+  invalid-amount: "&4%amount% &cnie jest prawidłową ilością: ilość musi być większa
     od 0!"
   given-item: '&bOtrzymano &a%amount% &7"%item%&7"'
   give-item: '&bDodano przedmiot do plecaka gracza %player%: &a%amount% &7"%item%&7"'
-  not-valid-research: "&4%research% &cnie jest poprawnym Badaniem!"
+  invalid-research: "&4%research% &cnie jest poprawnym Badaniem!"
   give-research: '&bOdblokowano badanie &7"%research%&7" dla gracza %player%'
   hungry: "&cJesteś zbyt głodny, żeby to zrobić!"
   mode-change: "&bTryb urządzenia %device% został zmieniony na: &9%mode%"
@@ -128,18 +128,18 @@ messages:
   link-prompt: "&eKliknij tutaj:"
   diet-cookie: "&eZaczynasz czuć się bardzo lekko..."
   fortune-cookie:
-    - "&7Pomóż mi, jestem uwięziony w fabryce ciastek z wróżbami!"
-    - "&7Jutro umrzesz... przez Creepera"
-    - "&7W pewnym momencie w twoim życiu wydarzy się coś złego!"
-    - "&7W następnym tygodniu zauważysz, że to nie jest prawdziwe życie, i że jesteś
+  - "&7Pomóż mi, jestem uwięziony w fabryce ciastek z wróżbami!"
+  - "&7Jutro umrzesz... przez Creepera"
+  - "&7W pewnym momencie w twoim życiu wydarzy się coś złego!"
+  - "&7W następnym tygodniu zauważysz, że to nie jest prawdziwe życie, i że jesteś
     w grze komputerowej"
-    - "&7To ciastko będzie dobrze smakowało za kilka sekund"
-    - "&7Ostatnim słowem, które usłyszysz, będzie „WYTĘPIĆ!!!”"
-    - "&7Cokolwiek robisz, nie przytulaj Creepera... Próbowałem. Czuje się dobrze, ale
+  - "&7To ciastko będzie dobrze smakowało za kilka sekund"
+  - "&7Ostatnim słowem, które usłyszysz, będzie „WYTĘPIĆ!!!”"
+  - "&7Cokolwiek robisz, nie przytulaj Creepera... Próbowałem. Czuje się dobrze, ale
     to nie jest tego warte."
-    - "&742. Odpowiedź to 42."
-    - "&7Walshy dziennie pomoże uniknąć kłopotów."
-    - "&7Nigdy nie kop prosto w dół!"
+  - "&742. Odpowiedź to 42."
+  - "&7Walshy dziennie pomoże uniknąć kłopotów."
+  - "&7Nigdy nie kop prosto w dół!"
 machines:
   pattern-not-found: "&ePrzepraszamy, nie można rozpoznać tego przepisu. Umieść przedmioty
     we właściwym wzorze w Dozowniku."
@@ -198,9 +198,9 @@ gps:
     added: "&aPomyślnie dodano nowy punkt trasy"
     max: "&4Osiągnięto maksymalną liczbę punktów trasy"
   insufficient-complexity:
-    - "&4Niewystarczająca złożoność sieci GPS: &c%complexity%"
-    - "&4a) Nie masz jeszcze skonfigurowanej sieci GPS"
-    - "&4b) Twoja sieć GPS nie jest wystarczająco złożona"
+  - "&4Niewystarczająca złożoność sieci GPS: &c%complexity%"
+  - "&4a) Nie masz jeszcze skonfigurowanej sieci GPS"
+  - "&4b) Twoja sieć GPS nie jest wystarczająco złożona"
   geo:
     scan-required: "&4Wymagany jest skan GEO-Skan! &cNajpierw zeskanuj ten fragment
       za pomocą skanera GEO!"
@@ -239,11 +239,11 @@ android:
       INTERFACE_ITEMS: "&9Wyślij zawartość ekwipunku do Interfejsu w obecnym kierunku"
       INTERFACE_FUEL: "&cOtrzymaj paliwo z Interfejsu w obecnym kierunku"
     enter-name:
-      -
-      - "&eProszę wpisać nazwę dla tego skryptu"
+    - 
+    - "&eProszę wpisać nazwę dla tego skryptu"
     uploaded:
-      - "&bPrzesyłanie..."
-      - "&aPomyślnie przesłano twój skrypt!"
+    - "&bPrzesyłanie..."
+    - "&aPomyślnie przesłano twój skrypt!"
     rating:
       own: "&4Nie możesz ocenić własnego skryptu!"
       already: "&4Oceniłeś już ten skrypt!"

@@ -33,8 +33,8 @@ guide:
     tooltip: "&bBir eşyayı aramak için tıklayın"
     inventory: 'Eşya aranıyor: %item%'
     lore:
-      - "&bNe aramak istersiniz?"
-      - "&7Arama teriminizi sohbete yazınız."
+    - "&bNe aramak istersiniz?"
+    - "&7Arama teriminizi sohbete yazınız."
   cheat:
     no-multiblocks: "&4Yapı Oluşturmada hile yapamazsınız, onları inşa etmelisiniz!"
   languages:
@@ -47,10 +47,10 @@ guide:
     selected-language: 'Şuan seçili:'
     change: Yeni bir dil seçmek için tıklayın
     description:
-      - "&7Artık Slimefun içerisinde size"
-      - "&7sunulacak olan dilinizi"
-      - "&7değiştirebilirsiniz. Henüz eşyalar"
-      - "&7çevrilememektedir."
+    - "&7Artık Slimefun içerisinde size"
+    - "&7sunulacak olan dilinizi"
+    - "&7değiştirebilirsiniz. Henüz eşyalar"
+    - "&7çevrilememektedir."
   title:
     main: Slimefun Rehberi
     settings: Ayarlar & Bilgi
@@ -72,10 +72,10 @@ guide:
     profile-link: GitHubdaki profillerini ziyaret etmek için tıklayın
     open: Bize katkıda bulunanları görmek için tıklayın
     description:
-      - "&7Slimefun açık kaynak kodlu bir projedir"
-      - "&7ve büyük bir topluluk tarafından geliştirilir."
-      - "&e%contributors%&7den(dan) fazla kişi yıllar"
-      - "&7boyunca Slimefun'a katkıda bulundu."
+    - "&7Slimefun açık kaynak kodlu bir projedir"
+    - "&7ve büyük bir topluluk tarafından geliştirilir."
+    - "&e%contributors%&7den(dan) fazla kişi yıllar"
+    - "&7boyunca Slimefun'a katkıda bulundu."
   pages:
     previous: Önceki sayfa
     next: Sonraki sayfa
@@ -95,9 +95,9 @@ guide:
     settings: Ayarlar Paneline geri dön
   locked: KİLİTLİ
   locked-category:
-    - Bu kategoriyi açmak için
-    - aşağıdaki kategorilerde bulunan
-    - bütün eşyaları açın
+  - Bu kategoriyi açmak için
+  - aşağıdaki kategorilerde bulunan
+  - bütün eşyaları açın
   work-in-progress: Bu özellik henüz tamamlanmadı!
 messages:
   not-researched: "&4Bunu anlayacak kadar bilgin yok"
@@ -108,11 +108,11 @@ messages:
   no-permission: "&4Bunu yapmak için gerekli izniniz yok"
   usage: "&4Kullanış: &c%usage%"
   not-online: "&4%player% &coyunda değil!"
-  not-valid-item: "&4%item% &cgeçerli bir eşya değil!"
-  not-valid-amount: "&4%amount% &cgeçerli bir miktar değil : 0 dan büyük olmalı!"
+  invalid-item: "&4%item% &cgeçerli bir eşya değil!"
+  invalid-amount: "&4%amount% &cgeçerli bir miktar değil : 0 dan büyük olmalı!"
   given-item: '&a%amount% &badet &7"%item%&7" &bsana verildi.'
   give-item: '&b%player% adlı oyuncuya &a%amount% &badet &7"%item%&7" &bverdin.'
-  not-valid-research: "&4%research% &cgeçerli bir araştırma değil!"
+  invalid-research: "&4%research% &cgeçerli bir araştırma değil!"
   give-research: '&b%player% adlı oyuncu için bir araştırmayı açtın: &7"%research%&7"'
   hungry: "&cBunu yapmak için çok açsın!"
   disabled-in-world: "&4&lBu eşya bu dünyada devre dışı bırakıldı."
@@ -153,21 +153,21 @@ messages:
   link-prompt: "&eBuraya tıklayın:"
   diet-cookie: "&eKendinizi çok hafif hissetmeye başlıyorsunuz..."
   fortune-cookie:
-    - "&7Bana yardım et, Şans Kurabiyesi Fabrikasında mahsur kaldım!"
-    - "&7Yarın öleceksiniz ... bir Creeper tarafından"
-    - "&7Hayatınızın bir noktasında kötü bir şey gerçekleşecek!!!"
-    - "&7Haftaya bunun gerçek dünya olmadığını fark edeceksiniz, bir bilgisayar oyunundasınız"
-    - "&7Bu kurabiye birkaç saniye içinde lezzetli olacak"
-    - '&7En son duyacağınız kelime "YOK EDİN!!!"'
-    - "&7Her ne yaparsan yap, Creeper a sarılma ... Denedim. İyi hissettiriyor, ama
+  - "&7Bana yardım et, Şans Kurabiyesi Fabrikasında mahsur kaldım!"
+  - "&7Yarın öleceksiniz ... bir Creeper tarafından"
+  - "&7Hayatınızın bir noktasında kötü bir şey gerçekleşecek!!!"
+  - "&7Haftaya bunun gerçek dünya olmadığını fark edeceksiniz, bir bilgisayar oyunundasınız"
+  - "&7Bu kurabiye birkaç saniye içinde lezzetli olacak"
+  - '&7En son duyacağınız kelime "YOK EDİN!!!"'
+  - "&7Her ne yaparsan yap, Creeper a sarılma ... Denedim. İyi hissettiriyor, ama
     buna değmez."
-    - "&742. Cevap 42."
-    - "&7Bir Walshy bir gün sıkıntıları uzak tutacaktır."
-    - "&7Hiçbir zaman doğrudan aşağıyı kazmayın!"
-    - "&7Bu ancak bir yara."
-    - "&7Daima hayatın parlak tarafından bak!"
-    - "&7Bu aslında bir Bisküvi idi, Kurabiye değil."
-    - "&7Neon levhalar ışık yayar!"
+  - "&742. Cevap 42."
+  - "&7Bir Walshy bir gün sıkıntıları uzak tutacaktır."
+  - "&7Hiçbir zaman doğrudan aşağıyı kazmayın!"
+  - "&7Bu ancak bir yara."
+  - "&7Daima hayatın parlak tarafından bak!"
+  - "&7Bu aslında bir Bisküvi idi, Kurabiye değil."
+  - "&7Neon levhalar ışık yayar!"
   piglin-barter: "&4Slimefun eşyalarıyla, piglinlerle ticaret yapamazsın"
   enchantment-rune:
     fail: "&cYou eşyayı büyüleyemezsin."
@@ -255,9 +255,9 @@ gps:
     max: "&4Maksimum yer noktası sayısına ulaştınız"
     duplicate: "&4Bu adla zaten bir yer noktası yarattınız: &f%waypoint%"
   insufficient-complexity:
-    - "&4Yetersiz GPS Ağ Gücü: &c%complexity%"
-    - "&4a) Henüz bir GPS Ağı kurulumunuz yok"
-    - "&4b) GPS Ağınız yeterince güçlü değil"
+  - "&4Yetersiz GPS Ağ Gücü: &c%complexity%"
+  - "&4a) Henüz bir GPS Ağı kurulumunuz yok"
+  - "&4b) GPS Ağınız yeterince güçlü değil"
   geo:
     scan-required: "&4GEO-Taraması gerekli! &cİlk önce bir GEO-Tarayıcı kullanarak
       bu bölgeyi tarayın!"
@@ -296,11 +296,11 @@ android:
       INTERFACE_ITEMS: "&9Envanter İçeriğini öndeki Arayüze aktar"
       INTERFACE_FUEL: "&cÖndeki Arayüzden Yakıt çek"
     enter-name:
-      -
-      - "&eLütfen senaryonuz için bir ad yazınız"
+    - 
+    - "&eLütfen senaryonuz için bir ad yazınız"
     uploaded:
-      - "&bYükleniyor..."
-      - "&aSenaryon başarıyla yüklendi!"
+    - "&bYükleniyor..."
+    - "&aSenaryon başarıyla yüklendi!"
     rating:
       own: "&4Kendi senaryonu oylayamazın!"
       already: "&4Bu senaryo için zaten oy kullandın!"
