@@ -53,7 +53,7 @@ public class WoodcutterAndroid extends ProgrammableAndroid {
                 log.getWorld().playEffect(log.getLocation(), Effect.STEP_SOUND, log.getType());
 
                 OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(BlockStorage.getLocationInfo(b.getLocation(), "owner")));
-                if (SlimefunPlugin.getProtectionManager().hasPermission(owner, log.getLocation(), ProtectableAction.BREAK_BLOCK) && ProtectionChecker.checkPermission(owner.getPlayer(), log, ProtectableAction.BREAK_BLOCK)) {
+                if (SlimefunPlugin.getProtectionManager().hasPermission(owner, log.getLocation(), ProtectableAction.BREAK_BLOCK) && ProtectionChecker.checkPermission(owner, log, ProtectableAction.BREAK_BLOCK)) {
                     breakLog(log, b, menu, face);
                 }
 

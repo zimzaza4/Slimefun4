@@ -146,7 +146,7 @@ public class BlockPlacer extends SlimefunItem {
         // Get the corresponding OfflinePlayer
         OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(owner));
         return SlimefunPlugin.getProtectionManager().hasPermission(player, target, ProtectableAction.PLACE_BLOCK)
-                && ProtectionChecker.checkPermission(player.getPlayer(), target, ProtectableAction.PLACE_BLOCK);
+                && ProtectionChecker.checkPermission(player, target, ProtectableAction.PLACE_BLOCK);
     }
 
     /**

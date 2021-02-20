@@ -44,7 +44,7 @@ public class MinerAndroid extends ProgrammableAndroid {
             OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(BlockStorage.getLocationInfo(b.getLocation(), "owner")));
 
             if (SlimefunPlugin.getProtectionManager().hasPermission(owner, block.getLocation(), ProtectableAction.BREAK_BLOCK)
-                    && ProtectionChecker.checkPermission(owner.getPlayer(), block, ProtectableAction.BREAK_BLOCK)) {
+                    && ProtectionChecker.checkPermission(owner, block, ProtectableAction.BREAK_BLOCK)) {
                 AndroidMineEvent event = new AndroidMineEvent(block, new AndroidInstance(this, b));
                 Bukkit.getPluginManager().callEvent(event);
 
@@ -76,7 +76,7 @@ public class MinerAndroid extends ProgrammableAndroid {
             OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(BlockStorage.getLocationInfo(b.getLocation(), "owner")));
 
             if (SlimefunPlugin.getProtectionManager().hasPermission(owner, block.getLocation(), ProtectableAction.BREAK_BLOCK)
-                    && ProtectionChecker.checkPermission(owner.getPlayer(), block, ProtectableAction.BREAK_BLOCK)) {
+                    && ProtectionChecker.checkPermission(owner, block, ProtectableAction.BREAK_BLOCK)) {
                 AndroidMineEvent event = new AndroidMineEvent(block, new AndroidInstance(this, b));
                 Bukkit.getPluginManager().callEvent(event);
 
