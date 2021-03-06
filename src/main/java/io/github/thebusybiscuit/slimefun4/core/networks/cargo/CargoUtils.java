@@ -234,11 +234,11 @@ final class CargoUtils {
         int maxSlot = range[1];
 
         for (int slot = minSlot; slot < maxSlot; slot++) {
-            ItemStack is = contents[slot];
+            ItemStack item = contents[slot];
 
-            if (matchesFilter(network, node, is)) {
+            if (matchesFilter(network, node, item)) {
                 inv.setItem(slot, null);
-                return new ItemStackAndInteger(is, slot);
+                return new ItemStackAndInteger(item, slot);
             }
         }
 

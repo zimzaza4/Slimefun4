@@ -3,8 +3,10 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.altar;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockDispenseHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.AncientAltarListener;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.AncientAltarTask;
@@ -51,21 +53,25 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
     public AncientPedestal(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
         super(category, item, recipeType, recipe, recipeOutput);
 
-        SlimefunItem.registerBlockHandler(getId(), (p, b, tool, reason) -> {
-            Optional<Item> entity = getPlacedItem(b);
+        addItemHandler(onBreak());
+    }
 
-            if (entity.isPresent()) {
-                Item stack = entity.get();
-
-                if (stack.isValid()) {
-                    stack.removeMetadata("no_pickup", SlimefunPlugin.instance());
-                    b.getWorld().dropItem(b.getLocation(), getOriginalItemStack(stack));
-                    stack.remove();
+    @Nonnull
+    private BlockBreakHandler onBreak() {
+        return new SimpleBlockBreakHandler() {
+            @Override
+            public void onBlockBreak(@Nonnull Block b) {
+                Optional<Item> entity = getPlacedItem(b);
+                if (entity.isPresent()) {
+                    Item stack = entity.get();
+                    if (stack.isValid()) {
+                        stack.removeMetadata("no_pickup", SlimefunPlugin.instance());
+                        b.getWorld().dropItem(b.getLocation(), getOriginalItemStack(stack));
+                        stack.remove();
+                    }
                 }
             }
-
-            return true;
-        });
+        };
     }
 
     @Override

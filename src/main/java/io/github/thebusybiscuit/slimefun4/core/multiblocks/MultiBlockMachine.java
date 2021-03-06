@@ -8,6 +8,7 @@ import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.handlers.MultiBlockInteractionHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.OutputChest;
 import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
@@ -167,9 +168,9 @@ public abstract class MultiBlockMachine extends SlimefunItem implements NotPlace
             Block potentialOutput = b.getRelative(face);
 
             if (potentialOutput.getType() == Material.CHEST) {
-                String id = BlockStorage.checkID(potentialOutput);
+                SlimefunItem slimefunItem = BlockStorage.check(potentialOutput);
 
-                if (id != null && id.equals("OUTPUT_CHEST")) {
+                if (slimefunItem instanceof OutputChest) {
                     // Found the output chest! Now, let's check if we can fit the product in it.
                     BlockState state = PaperLib.getBlockState(potentialOutput, false).getState();
 

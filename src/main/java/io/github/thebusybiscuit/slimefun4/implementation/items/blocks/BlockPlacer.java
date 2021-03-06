@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.github.starwishsama.utils.ProtectionChecker;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -14,8 +15,10 @@ import org.bukkit.Material;
 import org.bukkit.Nameable;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -58,7 +61,7 @@ public class BlockPlacer extends SlimefunItem {
         super(category, item, recipeType, recipe);
 
         addItemSetting(unplaceableBlocks);
-        addItemHandler(onPlace(), onBlockDispense());
+        addItemHandler(onPlace(), onBlockBreak(), onBlockDispense());
     }
 
     @Nonnull
@@ -71,6 +74,32 @@ public class BlockPlacer extends SlimefunItem {
                 Block b = e.getBlock();
 
                 BlockStorage.addBlockInfo(b, "owner", p.getUniqueId().toString());
+            }
+        };
+    }
+
+    @Nonnull
+    private BlockBreakHandler onBlockBreak() {
+        /*
+         * Explosions don't need explicit handling here.
+         * The default of "destroy the dispenser and drop the contents" is
+         * fine for our purposes already.
+         */
+        return new BlockBreakHandler(false, true) {
+
+            @Override
+            public void onPlayerBreak(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
+                // Fixes #2852 - Manually drop inventory contents
+                Block b = e.getBlock();
+                BlockState state = PaperLib.getBlockState(b, false).getState();
+
+                if (state instanceof Dispenser) {
+                    for (ItemStack stack : ((Dispenser) state).getInventory()) {
+                        if (stack != null && !stack.getType().isAir()) {
+                            drops.add(stack);
+                        }
+                    }
+                }
             }
         };
     }

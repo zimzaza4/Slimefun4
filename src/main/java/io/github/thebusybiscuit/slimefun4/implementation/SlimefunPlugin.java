@@ -513,6 +513,8 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new CauldronListener(this);
         new GrindstoneListener(this);
         new CartographyTableListener(this);
+        new ButcherAndroidListener(this);
+        new MiningAndroidListener(this);
         new NetworkListener(this, networkManager);
         new HopperListener(this);
 

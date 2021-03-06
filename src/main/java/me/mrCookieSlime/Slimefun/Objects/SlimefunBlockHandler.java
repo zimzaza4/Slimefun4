@@ -1,5 +1,6 @@
 package me.mrCookieSlime.Slimefun.Objects;
 
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.UnregisterReason;
 import org.bukkit.block.Block;
@@ -14,7 +15,11 @@ import org.bukkit.event.Event;
  * {@code SlimefunItem.registerBlockHandler(String, SlimefunBlockHandler); }
  *
  * @author TheBusyBiscuit
+ *
+ * @deprecated Please use the {@link BlockBreakHandler} instead.
  */
+
+@Deprecated
 @FunctionalInterface
 public interface SlimefunBlockHandler {
 

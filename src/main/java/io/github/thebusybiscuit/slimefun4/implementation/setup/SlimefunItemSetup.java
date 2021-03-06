@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.*;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -45,17 +46,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.EnderBa
 import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.RestoredBackpack;
 import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
 import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SoulboundBackpack;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.BlockPlacer;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.BrokenSpawner;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.Composter;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.Crucible;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.EnhancedFurnace;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.HardenedGlass;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.HologramProjector;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.RainbowBlock;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.RepairedSpawner;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.UnplaceableBlock;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.WitherProofBlock;
 import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.AdvancedCargoOutputNode;
 import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.CargoConnectorNode;
 import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.CargoInputNode;
@@ -243,7 +233,7 @@ public final class SlimefunItemSetup {
                 new ItemStack[] {new ItemStack(Material.COOKIE), SlimefunItems.ELYTRA_SCALE, null, null, null, null, null, null, null})
                 .register(plugin);
 
-        new SlimefunItem(categories.basicMachines, SlimefunItems.OUTPUT_CHEST, RecipeType.ENHANCED_CRAFTING_TABLE,
+        new OutputChest(categories.basicMachines, SlimefunItems.OUTPUT_CHEST, RecipeType.ENHANCED_CRAFTING_TABLE,
                 new ItemStack[] {SlimefunItems.LEAD_INGOT, new ItemStack(Material.HOPPER), SlimefunItems.LEAD_INGOT, SlimefunItems.LEAD_INGOT, new ItemStack(Material.CHEST), SlimefunItems.LEAD_INGOT, null, SlimefunItems.LEAD_INGOT, null})
                 .register(plugin);
 
