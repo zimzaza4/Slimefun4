@@ -41,6 +41,11 @@ abstract class AbstractFilterNode extends AbstractCargoNode {
         addItemHandler(onBreak());
     }
 
+    @Override
+    public boolean hasItemFilter() {
+        return true;
+    }
+
     @Nonnull
     private BlockBreakHandler onBreak() {
         return new SimpleBlockBreakHandler() {

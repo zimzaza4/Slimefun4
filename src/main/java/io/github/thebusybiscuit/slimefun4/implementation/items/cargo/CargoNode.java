@@ -12,7 +12,6 @@ import javax.annotation.Nonnull;
  *
  * @author TheBusyBiscuit
  */
-@FunctionalInterface
 public interface CargoNode {
 
     /**
@@ -23,4 +22,10 @@ public interface CargoNode {
      */
     int getSelectedChannel(@Nonnull Block b);
 
+    /**
+     * This returns whether this {@link CargoNode} has item filtering capabilities.
+     *
+     * @return Whether this {@link CargoNode} can filter items
+     */
+    boolean hasItemFilter();
 }
