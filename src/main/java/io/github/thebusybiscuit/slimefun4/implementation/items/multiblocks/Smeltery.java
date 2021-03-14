@@ -5,6 +5,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.api.items.settings.IntRangeSetting;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.IgnitionChamber;
 import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
@@ -103,7 +104,9 @@ public class Smeltery extends AbstractSmeltery {
 
     private Inventory findIgnitionChamber(@Nonnull Block b) {
         for (BlockFace face : faces) {
-            if (b.getRelative(face).getType() == Material.DROPPER && BlockStorage.check(b.getRelative(face), "IGNITION_CHAMBER")) {
+            Block block = b.getRelative(face);
+
+            if (block.getType() == Material.DROPPER && BlockStorage.check(block) instanceof IgnitionChamber) {
                 BlockState state = PaperLib.getBlockState(b.getRelative(face), false).getState();
 
                 if (state instanceof Dropper) {

@@ -279,7 +279,7 @@ public final class SlimefunItemSetup {
         new MakeshiftSmeltery(categories.basicMachines, SlimefunItems.MAKESHIFT_SMELTERY).register(plugin);
         new Smeltery(categories.basicMachines, SlimefunItems.SMELTERY).register(plugin);
 
-        new SlimefunItem(categories.basicMachines, SlimefunItems.IGNITION_CHAMBER, RecipeType.ENHANCED_CRAFTING_TABLE,
+        new IgnitionChamber(categories.basicMachines, SlimefunItems.IGNITION_CHAMBER, RecipeType.ENHANCED_CRAFTING_TABLE,
                 new ItemStack[] {new ItemStack(Material.IRON_INGOT), new ItemStack(Material.FLINT_AND_STEEL), new ItemStack(Material.IRON_INGOT), new ItemStack(Material.IRON_INGOT), SlimefunItems.BASIC_CIRCUIT_BOARD, new ItemStack(Material.IRON_INGOT), null, new ItemStack(Material.OBSERVER), null})
                 .register(plugin);
 
