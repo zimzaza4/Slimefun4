@@ -1,16 +1,4 @@
-package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.enchanting;
 
 import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
@@ -21,6 +9,16 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents Book Binder, a machine that binds multiple enchantments books into one.

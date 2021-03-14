@@ -1,34 +1,22 @@
 package io.github.thebusybiscuit.slimefun4.utils.tags;
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import io.github.thebusybiscuit.slimefun4.api.exceptions.TagMisconfigurationException;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.BlockPlacer;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.accelerators.CropGrowthAccelerator;
+import io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans.Talisman;
+import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.miner.IndustrialMiner;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.*;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.block.data.Waterlogged;
 
-import io.github.thebusybiscuit.slimefun4.api.exceptions.TagMisconfigurationException;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.BlockPlacer;
-import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.CropGrowthAccelerator;
-import io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans.Talisman;
-import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.miner.IndustrialMiner;
-import io.github.thebusybiscuit.slimefun4.implementation.items.tools.ClimbingPick;
-import io.github.thebusybiscuit.slimefun4.implementation.items.tools.ExplosiveShovel;
-import io.github.thebusybiscuit.slimefun4.implementation.items.tools.PickaxeOfTheSeeker;
-import io.github.thebusybiscuit.slimefun4.implementation.items.tools.PickaxeOfVeinMining;
-import io.github.thebusybiscuit.slimefun4.implementation.items.tools.SmeltersPickaxe;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * This enum contains various implementations of the {@link Tag} interface.

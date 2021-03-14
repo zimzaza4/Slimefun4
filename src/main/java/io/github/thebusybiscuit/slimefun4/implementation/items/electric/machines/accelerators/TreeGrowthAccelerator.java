@@ -1,6 +1,7 @@
-package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines;
+package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.accelerators;
 
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.AbstractGrowthAccelerator;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;

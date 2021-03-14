@@ -18,6 +18,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.BiConsumer;
 
@@ -140,15 +141,31 @@ public class RecipeType implements Keyed {
     }
 
     @Override
-    public NamespacedKey getKey() {
+    public final NamespacedKey getKey() {
         return key;
     }
 
+    @Override
+    public final boolean equals(Object obj) {
+        if (obj instanceof RecipeType) {
+            return ((RecipeType) obj).getKey().equals(this.getKey());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public final int hashCode() {
+        return getKey().hashCode();
+    }
+
+    @ParametersAreNonnullByDefault
     private static void registerBarterDrop(ItemStack[] recipe, ItemStack output) {
         if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_16))
             SlimefunPlugin.getRegistry().getBarteringDrops().add(output);
     }
 
+    @ParametersAreNonnullByDefault
     private static void registerMobDrop(ItemStack[] recipe, ItemStack output) {
         String mob = ChatColor.stripColor(recipe[4].getItemMeta().getDisplayName()).toUpperCase(Locale.ROOT).replace(' ', '_');
         EntityType entity = EntityType.valueOf(mob);

@@ -13,17 +13,17 @@ import io.github.thebusybiscuit.slimefun4.core.attributes.Placeable;
 import io.github.thebusybiscuit.slimefun4.core.attributes.Radioactive;
 import io.github.thebusybiscuit.slimefun4.core.attributes.Rechargeable;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.researching.Research;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.VanillaItem;
 import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
-import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.AutoDisenchanter;
-import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.AutoEnchanter;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.enchanting.AutoDisenchanter;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.enchanting.AutoEnchanter;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunBlockHandler;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.Objects.handlers.ItemHandler;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
@@ -1170,7 +1170,7 @@ public class SlimefunItem implements Placeable {
      *            The handler
      */
     @Deprecated
-    public static void registerBlockHandler(String id, SlimefunBlockHandler handler) {
+    public static void registerBlockHandler(String id, me.mrCookieSlime.Slimefun.Objects.SlimefunBlockHandler handler) {
         SlimefunPlugin.getRegistry().getBlockHandlers().put(id, handler);
     }
 }

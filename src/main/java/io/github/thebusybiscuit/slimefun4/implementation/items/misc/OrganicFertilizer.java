@@ -1,8 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.misc;
 
-import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.CropGrowthAccelerator;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.FoodComposter;
-import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.TreeGrowthAccelerator;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.accelerators.CropGrowthAccelerator;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.accelerators.TreeGrowthAccelerator;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
