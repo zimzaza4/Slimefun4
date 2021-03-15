@@ -11,7 +11,6 @@ import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -23,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  */
 public class OreCrusher extends MultiBlockMachine {
 
-	private final DoubleOreSetting doubleOres = new DoubleOreSetting();
+	private final DoubleOreSetting doubleOres = new DoubleOreSetting(this);
 
 	public OreCrusher(Category category, SlimefunItemStack item) {
 		super(category, item, new ItemStack[]{null, null, null, null, new ItemStack(Material.NETHER_BRICK_FENCE), null, new ItemStack(Material.IRON_BARS), new CustomItem(Material.DISPENSER, "发射器 (朝上)"), new ItemStack(Material.IRON_BARS)}, BlockFace.SELF);
@@ -160,8 +160,8 @@ public class OreCrusher extends MultiBlockMachine {
 		private final ItemStack quartz = new ItemStack(Material.QUARTZ, 1);
 		private final ItemStack goldNuggets = new ItemStack(Material.GOLD_NUGGET, 4);
 
-		public DoubleOreSetting() {
-			super("double-ores", true);
+		public DoubleOreSetting(@Nonnull OreCrusher oreCrusher) {
+			super(oreCrusher,"double-ores", true);
 		}
 
 		private void apply(boolean value) {
@@ -191,8 +191,8 @@ public class OreCrusher extends MultiBlockMachine {
 		}
 
 		@Override
-		public void load(SlimefunItem item) {
-			super.load(item);
+		public void reload() {
+			super.reload();
 			apply(getValue());
 		}
 

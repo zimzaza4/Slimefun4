@@ -13,7 +13,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 public class MeatJerky extends SimpleSlimefunItem<ItemConsumptionHandler> {
 
-    private final ItemSetting<Integer> saturation = new IntRangeSetting("saturation-level", 0, 6, Integer.MAX_VALUE);
+    private final ItemSetting<Integer> saturation = new IntRangeSetting(this, "saturation-level", 0, 6, Integer.MAX_VALUE);
 
     @ParametersAreNonnullByDefault
     public MeatJerky(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {

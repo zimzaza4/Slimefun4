@@ -9,8 +9,8 @@ class MultiToolMode {
     private final ItemSetting<Boolean> enabled;
 
     MultiToolMode(MultiTool multiTool, int id, String itemId) {
-        this.item = new ItemSetting<>("mode." + id + ".item", itemId);
-        this.enabled = new ItemSetting<>("mode." + id + ".enabled", true);
+        this.item = new ItemSetting<>(multiTool, "mode." + id + ".item", itemId);
+        this.enabled = new ItemSetting<>(multiTool, "mode." + id + ".enabled", true);
 
         multiTool.addItemSetting(item, enabled);
     }

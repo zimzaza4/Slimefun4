@@ -1,15 +1,12 @@
 package me.mrCookieSlime.Slimefun.Objects;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
+import io.github.thebusybiscuit.slimefun4.core.categories.LockedCategory;
+import io.github.thebusybiscuit.slimefun4.core.categories.SeasonalCategory;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Keyed;
@@ -19,14 +16,10 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
-import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.core.categories.LockedCategory;
-import io.github.thebusybiscuit.slimefun4.core.categories.SeasonalCategory;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.*;
 
 /**
  * Represents a category, which structure multiple {@link SlimefunItem} in the {@link SlimefunGuide}.
@@ -90,7 +83,8 @@ public class Category implements Keyed {
     }
 
     @Override
-    public NamespacedKey getKey() {
+    @Nonnull
+    public final NamespacedKey getKey() {
         return key;
     }
 
@@ -226,7 +220,7 @@ public class Category implements Keyed {
      *
      * @return Whether the given {@link SlimefunItem} was found in this {@link Category}
      */
-    public boolean contains(SlimefunItem item) {
+    public boolean contains(@Nullable SlimefunItem item) {
         return item != null && items.contains(item);
     }
 
@@ -238,6 +232,20 @@ public class Category implements Keyed {
      */
     public int getTier() {
         return tier;
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+        if (obj instanceof Category) {
+            return ((Category) obj).getKey().equals(getKey());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public final int hashCode() {
+        return key.hashCode();
     }
 
     @Override

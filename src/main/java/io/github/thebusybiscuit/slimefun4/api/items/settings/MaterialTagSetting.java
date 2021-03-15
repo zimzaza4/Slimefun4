@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.api.items.settings;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 
@@ -13,21 +14,28 @@ import java.util.stream.Collectors;
  * This variation of {@link ItemSetting} allows you to define a default {@link Tag}.
  * The {@link Tag} will be translated into a {@link String} {@link List} which the user
  * can then configure as they wish.
- * <p>
+ *
  * It also validates all inputs to be a valid {@link Material}.
  *
  * @author TheBusyBiscuit
+ *
  * @see ItemSetting
+ *
  */
 public class MaterialTagSetting extends ItemSetting<List<String>> {
 
     private final Tag<Material> defaultTag;
 
     @ParametersAreNonnullByDefault
-    public MaterialTagSetting(String key, Tag<Material> defaultTag) {
-        super(key, getAsStringList(defaultTag));
+    public MaterialTagSetting(SlimefunItem item, String key, Tag<Material> defaultTag) {
+        super(item, key, getAsStringList(defaultTag));
 
         this.defaultTag = defaultTag;
+    }
+
+    @Deprecated
+    public MaterialTagSetting(String key, Tag<Material> defaultValue) {
+        this(null, key, defaultValue);
     }
 
     /**
@@ -40,9 +48,15 @@ public class MaterialTagSetting extends ItemSetting<List<String>> {
         return defaultTag;
     }
 
+    @Nonnull
+    @Override
+    protected String getErrorMessage() {
+        return "This List can only contain Materials in the format of e.g. REDSTONE_BLOCK";
+    }
+
     @Override
     public boolean validateInput(List<String> input) {
-        if (input != null) {
+        if (super.validateInput(input)) {
             for (String value : input) {
                 Material material = Material.matchMaterial(value);
 
@@ -61,7 +75,8 @@ public class MaterialTagSetting extends ItemSetting<List<String>> {
     /**
      * Internal method to turn a {@link Tag} into a {@link List} of {@link String Strings}.
      *
-     * @param tag Our {@link Tag}
+     * @param tag
+     *            Our {@link Tag}
      * @return The {@link String} {@link List}
      */
     @Nonnull

@@ -23,7 +23,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class TelepositionScroll extends SimpleSlimefunItem<ItemUseHandler> {
 
-    private final ItemSetting<Integer> radius = new IntRangeSetting("radius", 1, 10, Integer.MAX_VALUE);
+    private final ItemSetting<Integer> radius = new IntRangeSetting(this, "radius", 1, 10, Integer.MAX_VALUE);
 
     public TelepositionScroll(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);

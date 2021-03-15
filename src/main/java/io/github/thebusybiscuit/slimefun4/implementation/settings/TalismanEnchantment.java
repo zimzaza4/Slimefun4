@@ -5,19 +5,25 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.TalismanListener;
 import org.bukkit.enchantments.Enchantment;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * This class is an extension of {@link ItemSetting} that holds an {@link Enchantment} and
  * a level. It is only used by the {@link TalismanListener} to handle the {@link MagicianTalisman}.
  *
  * @author TheBusyBiscuit
+ *
+ * @see MagicianTalisman
  */
 public class TalismanEnchantment extends ItemSetting<Boolean> {
 
     private final Enchantment enchantment;
     private final int level;
 
-    public TalismanEnchantment(Enchantment enchantment, int level) {
-        super("allow-enchantments." + enchantment.getKey().getNamespace() + "." + enchantment.getKey().getKey() + ".level." + level, true);
+    @ParametersAreNonnullByDefault
+    public TalismanEnchantment(MagicianTalisman talisman, Enchantment enchantment, int level) {
+        super(talisman, "allow-enchantments." + enchantment.getKey().getNamespace() + '.' + enchantment.getKey().getKey() + ".level." + level, true);
 
         this.enchantment = enchantment;
         this.level = level;
@@ -28,6 +34,7 @@ public class TalismanEnchantment extends ItemSetting<Boolean> {
      *
      * @return The associated {@link Enchantment}
      */
+    @Nonnull
     public Enchantment getEnchantment() {
         return enchantment;
     }

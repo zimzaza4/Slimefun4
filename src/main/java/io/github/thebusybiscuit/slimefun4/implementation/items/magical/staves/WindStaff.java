@@ -16,6 +16,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * The {@link WindStaff} is a powerful staff which launches the {@link Player} forward when right clicked.
  *
@@ -23,8 +25,9 @@ import org.bukkit.inventory.ItemStack;
  */
 public class WindStaff extends SimpleSlimefunItem<ItemUseHandler> {
 
-    private final ItemSetting<Integer> multiplier = new IntRangeSetting("power", 1, 4, Integer.MAX_VALUE);
+    private final ItemSetting<Integer> multiplier = new IntRangeSetting(this, "power", 1, 4, Integer.MAX_VALUE);
 
+    @ParametersAreNonnullByDefault
     public WindStaff(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 

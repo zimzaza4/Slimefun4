@@ -42,7 +42,7 @@ public class IndustrialMiner extends MultiBlockMachine {
 
     private final int range;
     private final boolean silkTouch;
-    private final ItemSetting<Boolean> canMineAncientDebris = new ItemSetting<>("can-mine-ancient-debris", false);
+    private final ItemSetting<Boolean> canMineAncientDebris = new ItemSetting<>(this, "can-mine-ancient-debris", false);
 
     public IndustrialMiner(Category category, SlimefunItemStack item, Material baseMaterial, boolean silkTouch, int range) {
         super(category, item, new ItemStack[]{null, null, null, new CustomItem(Material.PISTON, "活塞 (面朝上方)"), new ItemStack(Material.CHEST), new CustomItem(Material.PISTON, "活塞 (面朝上方)"), new ItemStack(baseMaterial), new ItemStack(Material.BLAST_FURNACE), new ItemStack(baseMaterial)}, BlockFace.UP);

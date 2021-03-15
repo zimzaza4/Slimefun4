@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.api.items.settings;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -19,11 +20,16 @@ public class DoubleRangeSetting extends ItemSetting<Double> {
     private final double max;
 
     @ParametersAreNonnullByDefault
-    public DoubleRangeSetting(String key, double min, double defaultValue, double max) {
-        super(key, defaultValue);
+    public DoubleRangeSetting(SlimefunItem item, String key, double min, double defaultValue, double max) {
+        super(item, key, defaultValue);
 
         this.min = min;
         this.max = max;
+    }
+
+    @Deprecated
+    public DoubleRangeSetting(String key, double min, double defaultValue, double max) {
+        this(null, key, min, defaultValue, max);
     }
 
     @Nonnull

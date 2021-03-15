@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.api.items.settings;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -19,11 +20,16 @@ public class IntRangeSetting extends ItemSetting<Integer> {
     private final int max;
 
     @ParametersAreNonnullByDefault
-    public IntRangeSetting(String key, int min, int defaultValue, int max) {
-        super(key, defaultValue);
+    public IntRangeSetting(SlimefunItem item, String key, int min, int defaultValue, int max) {
+        super(item, key, defaultValue);
 
         this.min = min;
         this.max = max;
+    }
+
+    @Deprecated
+    public IntRangeSetting(String key, int min, int defaultValue, int max) {
+        this(null, key, min, defaultValue, max);
     }
 
     @Nonnull

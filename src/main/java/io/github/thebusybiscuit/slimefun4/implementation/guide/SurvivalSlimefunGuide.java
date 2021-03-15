@@ -64,6 +64,17 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
         item = new SlimefunGuideItem(this, "&aSlimefun 指南 &7(箱子界面)");
     }
 
+    /**
+     * This returns the {@link Sound} which is played when someone navigates through
+     * the {@link SlimefunGuide}
+     *
+     * @return The {@link Sound}
+     */
+    @Nonnull
+    public Sound getSound() {
+        return sound;
+    }
+
     @Nonnull
     @Override
     public SlimefunGuideMode getMode() {
@@ -214,11 +225,7 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
         ChestMenu menu = create(p);
         createHeader(p, profile, menu);
 
-        menu.addItem(1, new CustomItem(ChestMenuUtils.getBackButton(p, "", ChatColor.GRAY + SlimefunPlugin.getLocalization().getMessage(p, "guide.back.guide"))));
-        menu.addMenuClickHandler(1, (pl, s, is, action) -> {
-            openMainMenu(profile, 1);
-            return false;
-        });
+        addBackButton(menu, 1, p, profile);
 
         int pages = (category.getItems().size() - 1) / CATEGORY_SIZE + 1;
 
@@ -548,7 +555,8 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
         menu.addItem(16, output, ChestMenuUtils.getEmptyClickHandler());
     }
 
-    protected void createHeader(Player p, PlayerProfile profile, ChestMenu menu) {
+    @ParametersAreNonnullByDefault
+    public void createHeader(Player p, PlayerProfile profile, ChestMenu menu) {
         for (int i = 0; i < 9; i++) {
             menu.addItem(i, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
         }

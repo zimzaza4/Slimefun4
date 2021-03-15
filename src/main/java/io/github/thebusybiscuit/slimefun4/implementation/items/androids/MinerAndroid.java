@@ -17,28 +17,53 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.UUID;
 
+/**
+ * The {@link MinerAndroid} is a variant of the {@link ProgrammableAndroid} which
+ * is able to break blocks.
+ * The core functionalities boil down to {@link #dig(Block, BlockMenu, Block)} and
+ * {@link #moveAndDig(Block, BlockMenu, BlockFace, Block)}.
+ * Otherwise the functionality is similar to a regular android.
+ * <p>
+ * The {@link MinerAndroid} will also fire an {@link AndroidMineEvent} when breaking a {@link Block}.
+ *
+ * @author TheBusyBiscuit
+ * @author creator3
+ * @author poma123
+ * @author Sfiguz7
+ * @author CyberPatriot
+ * @author Redemption198
+ * @author Poslovitch
+ *
+ * @see AndroidMineEvent
+ *
+ */
 public class MinerAndroid extends ProgrammableAndroid {
 
     // Determines the drops a miner android will get
     private final ItemStack effectivePickaxe = new ItemStack(Material.DIAMOND_PICKAXE);
-    private final ItemSetting<Boolean> firesEvent = new ItemSetting<>("trigger-event-for-generators", false);
+
+    private final ItemSetting<Boolean> firesEvent = new ItemSetting<>(this, "trigger-event-for-generators", false);
+    private final ItemSetting<Boolean> applyOptimizations = new ItemSetting<>(this, "reduced-block-updates", true);
 
     @ParametersAreNonnullByDefault
     public MinerAndroid(Category category, int tier, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, tier, item, recipeType, recipe);
-        addItemSetting(firesEvent);
+        addItemSetting(firesEvent, applyOptimizations);
     }
 
     @Override
+    @Nonnull
     public AndroidType getAndroidType() {
         return AndroidType.MINER;
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     protected void dig(Block b, BlockMenu menu, Block block) {
         Collection<ItemStack> drops = block.getDrops(effectivePickaxe);
 
@@ -64,6 +89,7 @@ public class MinerAndroid extends ProgrammableAndroid {
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     protected void moveAndDig(Block b, BlockMenu menu, BlockFace face, Block block) {
         Collection<ItemStack> drops = block.getDrops(effectivePickaxe);
 
@@ -99,16 +125,21 @@ public class MinerAndroid extends ProgrammableAndroid {
             menu.pushItem(drop, getOutputSlots());
         }
 
-        InfiniteBlockGenerator generator = InfiniteBlockGenerator.findAt(block);
+        // Check if Block Generator optimizations should be applied.
+        if (applyOptimizations.getValue()) {
+            InfiniteBlockGenerator generator = InfiniteBlockGenerator.findAt(block);
 
-        if (generator != null) {
-            if (firesEvent.getValue()) {
-                generator.callEvent(block);
+            if (generator != null) {
+                if (firesEvent.getValue()) {
+                    generator.callEvent(block);
+                }
+
+                // "poof" a "new" block was generated
+                block.getWorld().playSound(block.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.075F, 0.8F);
+                block.getWorld().spawnParticle(Particle.SMOKE_NORMAL, block.getX() + 0.5, block.getY() + 1.25, block.getZ() + 0.5, 8, 0.5, 0.5, 0.5, 0.015);
+            } else {
+                block.setType(Material.AIR);
             }
-
-            // "poof" a "new" block was generated
-            block.getWorld().playSound(block.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.075F, 0.8F);
-            block.getWorld().spawnParticle(Particle.SMOKE_NORMAL, block.getX() + 0.5, block.getY() + 1.25, block.getZ() + 0.5, 8, 0.5, 0.5, 0.5, 0.015);
         } else {
             block.setType(Material.AIR);
         }
