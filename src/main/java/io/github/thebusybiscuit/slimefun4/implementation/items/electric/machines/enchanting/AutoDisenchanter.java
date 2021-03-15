@@ -40,8 +40,8 @@ import java.util.Map;
  */
 public class AutoDisenchanter extends AContainer {
 
-    private final ItemSetting<Boolean> useEnchantLevelLimit = new ItemSetting<>("use-enchant-level-limit", false);
-    private final IntRangeSetting enchantLevelLimit = new IntRangeSetting("enchant-level-limit", 0, 10, Short.MAX_VALUE);
+    private final ItemSetting<Boolean> useEnchantLevelLimit = new ItemSetting<>(this, "use-enchant-level-limit", false);
+    private final IntRangeSetting enchantLevelLimit = new IntRangeSetting(this, "enchant-level-limit", 0, 10, Short.MAX_VALUE);
 
     @ParametersAreNonnullByDefault
     public AutoDisenchanter(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
@@ -88,7 +88,7 @@ public class AutoDisenchanter extends AContainer {
                         String notice = ChatColor.translateAlternateColorCodes('&', SlimefunPlugin.getLocalization().getMessage("messages.above-limit-level")
                                 .replace("%level%", enchantLevelLimit.getValue().toString()));
 
-                        ItemStack progressBar = getProgressBar().clone();
+                        ItemStack progressBar = getProgressBar();
                         progressBar.setType(Material.BARRIER);
 
                         ItemMeta im = progressBar.getItemMeta();
