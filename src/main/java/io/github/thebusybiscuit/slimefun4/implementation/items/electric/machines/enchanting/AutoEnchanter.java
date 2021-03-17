@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.enchanting;
 
+import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.api.items.settings.IntRangeSetting;
@@ -11,7 +12,6 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -65,7 +65,7 @@ public class AutoEnchanter extends AContainer {
                             amount++;
                             enchantments.put(e.getKey(), e.getValue());
                         } else if (!menu.toInventory().getViewers().isEmpty()) {
-                            String notice = ChatColor.translateAlternateColorCodes('&', SlimefunPlugin.getLocalization().getMessage("messages.above-limit-level")
+                            String notice = ChatColors.color(SlimefunPlugin.getLocalization().getMessage("messages.above-limit-level")
                                     .replace("%level%", enchantLevelLimit.getValue().toString()));
 
                             ItemStack progressBar = getProgressBar();
