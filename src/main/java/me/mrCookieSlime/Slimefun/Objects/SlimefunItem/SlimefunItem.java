@@ -768,6 +768,10 @@ public class SlimefunItem implements Placeable {
         }
 
         for (ItemHandler handler : handlers) {
+            if (itemhandlers.put(handler.getIdentifier(), handler).isPresent()) {
+                warn("ItemHandler \"" + handler.getIdentifier().getSimpleName() + "\" has already been assigned to this item. It was overridden.");
+            }
+
             itemhandlers.put(handler.getIdentifier(), handler);
 
             // Tickers are a special case (at the moment at least)
