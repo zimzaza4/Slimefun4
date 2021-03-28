@@ -32,6 +32,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.OptionalInt;
 
+/**
+ * The {@link GEOMiner} is an electrical machine that allows you to obtain a {@link GEOResource}.
+ *
+ * @author TheBusyBiscuit
+ *
+ * @see GEOResource
+ */
 public class GEOMiner extends AContainer implements RecipeDisplayItem, HologramOwner {
 
     private static final int[] BORDER = {0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 26, 27, 35, 36, 44, 45, 53};
@@ -43,9 +50,6 @@ public class GEOMiner extends AContainer implements RecipeDisplayItem, HologramO
         super(category, item, recipeType, recipe);
 
         addItemHandler(onPlace(), onBreak());
-
-        // Unregister the Block handler from AContainer (Fixes #2861)
-        registerBlockHandler(getId(), null);
     }
 
     @Nonnull

@@ -4,6 +4,7 @@ import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
@@ -12,6 +13,7 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.interfaces.InventoryBlock;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
+import me.mrCookieSlime.Slimefun.Objects.handlers.ItemHandler;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
@@ -24,6 +26,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 public class AutoBreeder extends SlimefunItem implements InventoryBlock, EnergyNetComponent {
 
     private final int[] border = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26};
@@ -33,19 +38,25 @@ public class AutoBreeder extends SlimefunItem implements InventoryBlock, EnergyN
     // We wanna strip the Slimefun Item id here
     private static final ItemStack organicFood = new ItemStackWrapper(SlimefunItems.ORGANIC_FOOD);
 
+    @ParametersAreNonnullByDefault
     public AutoBreeder(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
+        addItemHandler(onBreak());
         createPreset(this, this::constructMenu);
+    }
 
-        registerBlockHandler(getId(), (p, b, tool, reason) -> {
+    @Nonnull
+    private ItemHandler onBreak() {
+        return new SimpleBlockBreakHandler() {
+          @Override
+          public void onBlockBreak(@Nonnull Block b) {
             BlockMenu inv = BlockStorage.getInventory(b);
-
             if (inv != null) {
-                inv.dropItems(b.getLocation(), getInputSlots());
-            }
-            return true;
-        });
+              inv.dropItems(b.getLocation(), getInputSlots());
+              }
+          }
+        };
     }
 
     protected void constructMenu(BlockMenuPreset preset) {
@@ -111,7 +122,7 @@ public class AutoBreeder extends SlimefunItem implements InventoryBlock, EnergyN
         }
     }
 
-    private boolean canBreed(Entity n) {
+    private boolean canBreed(@Nonnull Entity n) {
         if (n.isValid() && n instanceof Animals) {
             Animals animal = (Animals) n;
 

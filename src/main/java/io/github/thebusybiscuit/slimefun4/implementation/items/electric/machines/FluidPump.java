@@ -2,7 +2,9 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machine
 
 import io.github.thebusybiscuit.cscorelib2.blocks.Vein;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
+import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
@@ -57,18 +59,23 @@ public class FluidPump extends SimpleSlimefunItem<BlockTicker> implements Invent
     public FluidPump(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
+        addItemHandler(onBreak());
         createPreset(this, this::constructMenu);
+    }
 
-        registerBlockHandler(getId(), (p, b, stack, reason) -> {
-            BlockMenu inv = BlockStorage.getInventory(b);
+    @Nonnull
+    private BlockBreakHandler onBreak() {
+        return new SimpleBlockBreakHandler() {
+            @Override
+            public void onBlockBreak(@Nonnull Block b) {
+                BlockMenu inv = BlockStorage.getInventory(b);
 
-            if (inv != null) {
-                inv.dropItems(b.getLocation(), getInputSlots());
-                inv.dropItems(b.getLocation(), getOutputSlots());
+                if (inv != null) {
+                    inv.dropItems(b.getLocation(), getInputSlots());
+                    inv.dropItems(b.getLocation(), getOutputSlots());
+                }
             }
-
-            return true;
-        });
+        };
     }
 
     private void constructMenu(@Nonnull BlockMenuPreset preset) {
