@@ -2,6 +2,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machine
 
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
+import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.slimefun4.api.events.AutoDisenchantEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.api.items.settings.IntRangeSetting;
@@ -16,7 +17,6 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -24,7 +24,6 @@ import org.bukkit.inventory.meta.Repairable;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,8 +33,13 @@ import java.util.Map;
  * to a book.
  *
  * @author TheBusyBiscuit
+ * @author Poslovitch
+ * @author John000708
  * @author Walshy
  * @author poma123
+ * @author mrcoffee1026
+ * @author VoidAngel
+ * @author StarWishSama
  *
  * @see AutoEnchanter
  *
@@ -87,19 +91,9 @@ public class AutoDisenchanter extends AContainer {
                         enchantments.put(entry.getKey(), entry.getValue());
                         amount++;
                     } else if (!menu.toInventory().getViewers().isEmpty()) {
-                        String notice = ChatColors.color(SlimefunPlugin.getLocalization().getMessage("messages.above-limit-level")
-                                .replace("%level%", enchantLevelLimit.getValue().toString()));
-
-                        ItemStack progressBar = getProgressBar();
-                        progressBar.setType(Material.BARRIER);
-
-                        ItemMeta im = progressBar.getItemMeta();
-                        im.setDisplayName(" ");
-                        im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                        im.setLore(Collections.singletonList(notice));
-
-                        progressBar.setItemMeta(im);
-
+                        String notice = ChatColors.color(SlimefunPlugin.getLocalization().getMessage("messages.above-limit-level"));
+                        notice = notice.replace("%level%", String.valueOf(enchantLevelLimit.getValue()));
+                        ItemStack progressBar = new CustomItem(Material.BARRIER, " ", notice);
                         menu.replaceExistingItem(22, progressBar);
                         return null;
                     }
