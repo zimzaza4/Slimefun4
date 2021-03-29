@@ -36,7 +36,9 @@ import java.util.Map;
  * @author TheBusyBiscuit
  * @author Walshy
  * @author poma123
+ *
  * @see AutoEnchanter
+ *
  */
 public class AutoDisenchanter extends AContainer {
 
@@ -85,7 +87,8 @@ public class AutoDisenchanter extends AContainer {
                         enchantments.put(entry.getKey(), entry.getValue());
                         amount++;
                     } else if (!menu.toInventory().getViewers().isEmpty()) {
-                        String notice = ChatColors.color(SlimefunPlugin.getLocalization().getMessage("messages.above-limit-level").replace("%level%", enchantLevelLimit.getValue().toString()));
+                        String notice = ChatColors.color(SlimefunPlugin.getLocalization().getMessage("messages.above-limit-level")
+                                .replace("%level%", enchantLevelLimit.getValue().toString()));
 
                         ItemStack progressBar = getProgressBar();
                         progressBar.setType(Material.BARRIER);
@@ -109,7 +112,7 @@ public class AutoDisenchanter extends AContainer {
                     ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
                     transferEnchantments(disenchantedItem, book, enchantments);
 
-                    MachineRecipe recipe = new MachineRecipe(90 * amount / this.getSpeed(), new ItemStack[]{target, item}, new ItemStack[]{disenchantedItem, book});
+                    MachineRecipe recipe = new MachineRecipe(90 * amount / this.getSpeed(), new ItemStack[] { target, item }, new ItemStack[] { disenchantedItem, book });
 
                     if (!InvUtils.fitAll(menu.toInventory(), recipe.getOutput(), getOutputSlots())) {
                         return null;
@@ -157,116 +160,9 @@ public class AutoDisenchanter extends AContainer {
         }
     }
 
-
     @Override
     public String getMachineIdentifier() {
         return "AUTO_DISENCHANTER";
     }
-
-    /**
-
-     private MachineRecipe findRecipe(BlockMenu menu) {
-     Map<Enchantment, Integer> enchantments = new HashMap<>();
-     Set<ItemEnchantment> emeraldEnchantments = new HashSet<>();
-
-     for (int slot : getInputSlots()) {
-     ItemStack item = menu.getItemInSlot(slot);
-
-     if (!isDisenchantable(item)) {
-     return null;
-     }
-
-     AutoDisenchantEvent event = new AutoDisenchantEvent(item);
-     Bukkit.getPluginManager().callEvent(event);
-
-     if (event.isCancelled()) {
-     return null;
-     }
-
-     ItemStack target = menu.getItemInSlot(slot == getInputSlots()[0] ? getInputSlots()[1] : getInputSlots()[0]);
-
-     // Disenchanting
-     if (item != null && target != null && target.getType() == Material.BOOK) {
-     int amount = 0;
-
-     for (Map.Entry<Enchantment, Integer> entry : item.getEnchantments().entrySet()) {
-     if (entry.getValue() <= SlimefunPlugin.getCfg().getInt("options.enchanter-level-limit") || SlimefunPlugin.getCfg().getInt("options.enchanter-level-limit") == 0) {
-     enchantments.put(entry.getKey(), entry.getValue());
-     amount++;
-     } else {
-     if (!menu.toInventory().getViewers().isEmpty()) {
-     HumanEntity p = menu.toInventory().getViewers().get(0);
-     if (!noticedPlayer.contains(p.getUniqueId())) {
-     SlimefunPlugin.getLocalization().sendMessage(p, "messages.above-limit-level", true);
-     noticedPlayer.add(p.getUniqueId());
-     }
-     }
-     return null;
-     }
-     }
-
-     if (SlimefunPlugin.getThirdPartySupportService().isEmeraldEnchantsInstalled()) {
-     for (ItemEnchantment enchantment : EmeraldEnchants.getInstance().getRegistry().getEnchantments(item)) {
-     amount++;
-     emeraldEnchantments.add(enchantment);
-     }
-     }
-
-     if (amount > 0) {
-     ItemStack disenchantedItem = item.clone();
-     disenchantedItem.setAmount(1);
-
-     ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
-     transferEnchantments(disenchantedItem, book, enchantments);
-
-     for (ItemEnchantment ench : emeraldEnchantments) {
-     EmeraldEnchants.getInstance().getRegistry().applyEnchantment(book, ench.getEnchantment(), ench.getLevel());
-     EmeraldEnchants.getInstance().getRegistry().applyEnchantment(disenchantedItem, ench.getEnchantment(), 0);
-     }
-
-     return new MachineRecipe(90 * amount, new ItemStack[]{target, item}, new ItemStack[]{disenchantedItem, book});
-     }
-     }
-     }
-
-     return null;
-     }
-
-     private void transferEnchantments(ItemStack item, ItemStack book, Map<Enchantment, Integer> enchantments) {
-     ItemMeta itemMeta = item.getItemMeta();
-     ItemMeta bookMeta = book.getItemMeta();
-     ((Repairable) bookMeta).setRepairCost(((Repairable) itemMeta).getRepairCost());
-     ((Repairable) itemMeta).setRepairCost(0);
-     item.setItemMeta(itemMeta);
-     book.setItemMeta(bookMeta);
-
-     EnchantmentStorageMeta meta = (EnchantmentStorageMeta) book.getItemMeta();
-
-     for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
-     item.removeEnchantment(entry.getKey());
-     meta.addStoredEnchant(entry.getKey(), entry.getValue(), true);
-     }
-
-     book.setItemMeta(meta);
-     }
-
-     private boolean isDisenchantable(ItemStack item) {
-     SlimefunItem sfItem = null;
-
-     // stops endless checks of getByItem for empty book stacks.
-     if (item != null && item.getType() != Material.BOOK) {
-     sfItem = SlimefunItem.getByItem(item);
-     }
-
-     return sfItem == null || sfItem.isDisenchantable();
-     }
-
-     @Override public int getSpeed() {
-     return 1;
-     }
-
-     @Override public String getMachineIdentifier() {
-     return "AUTO_DISENCHANTER";
-     } */
 
 }

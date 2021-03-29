@@ -92,7 +92,7 @@ public class AutoEnchanter extends AContainer {
                         enchantedItem.addUnsafeEnchantment(entry.getKey(), entry.getValue());
                     }
 
-                    MachineRecipe recipe = new MachineRecipe(75 * amount / this.getSpeed(), new ItemStack[]{target, item}, new ItemStack[]{enchantedItem, new ItemStack(Material.BOOK)});
+                    MachineRecipe recipe = new MachineRecipe(75 * amount / this.getSpeed(), new ItemStack[] { target, item }, new ItemStack[] { enchantedItem, new ItemStack(Material.BOOK) });
 
                     if (!InvUtils.fitAll(menu.toInventory(), recipe.getOutput(), getOutputSlots())) {
                         return null;
@@ -127,4 +127,5 @@ public class AutoEnchanter extends AContainer {
     public String getMachineIdentifier() {
         return "AUTO_ENCHANTER";
     }
+
 }
