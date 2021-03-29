@@ -10,6 +10,7 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -25,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class UnplaceableBlock extends SimpleSlimefunItem<ItemUseHandler> implements NotPlaceable {
 
     @ParametersAreNonnullByDefault
-    public UnplaceableBlock(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    public UnplaceableBlock(Category category, SlimefunItemStack item, RecipeType recipeType, @Nullable ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
     }
 

@@ -539,6 +539,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
         new TalismanListener(this);
         new SoulboundListener(this);
+        new AutoCrafterListener(this);
 
         backpackListener.register(this);
 

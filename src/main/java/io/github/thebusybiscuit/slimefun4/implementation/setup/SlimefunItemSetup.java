@@ -2352,8 +2352,7 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new AutomatedCraftingChamber(categories.electricity, SlimefunItems.AUTOMATED_CRAFTING_CHAMBER, RecipeType.ENHANCED_CRAFTING_TABLE,
-                new ItemStack[] {null, new ItemStack(Material.CRAFTING_TABLE), null, SlimefunItems.CARGO_MOTOR, SlimefunItems.BLISTERING_INGOT_3, SlimefunItems.CARGO_MOTOR, null, SlimefunItems.ELECTRIC_MOTOR, null}) {
-
+                new ItemStack[] {null, null, null, null, new CustomItem(Material.BARRIER, "&4该物品已被禁用.", "&c即将在接下来的版本中被移除!", "&c请使用货运网络分类下的", "&c新版自动合成机."), null, null, null, null}) {
             @Override
             public int getEnergyConsumption() {
                 return 10;
