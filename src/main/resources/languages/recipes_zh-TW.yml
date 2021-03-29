@@ -141,32 +141,32 @@ minecraft:
     - 位置不重要
     - "(原版合成檯)"
   furnace:
-    name: 熔爐合成表
+    name: 熔爐合成配方
     lore:
     - 加熱燒一燒
     - 成品出來了!
   blasting:
-    name: 高爐合成表
+    name: 高爐合成配方
     lore:
     - 加熱燒一燒
     - 成品出來了!
   smoking:
-    name: 煙燻爐合成表
+    name: 煙燻爐合成配方
     lore:
     - 加熱燒一燒
     - 成品出來了!
   campfire:
-    name: 營火合成表
+    name: 營火合成配方
     lore:
     - 加熱燒一燒
     - "\t\n成品出來了!"
   stonecutting:
-    name: 切石機合成表
+    name: 切石機合成配方
     lore:
     - 上去磨一磨
     - "\t\n成品出來了!"
   smithing:
-    name: 鍛造台合成表
+    name: 鍛造台合成配方
     lore:
     - 鍛造一下下
     - 成品出來了

@@ -187,6 +187,14 @@ messages:
   multi-tool:
     mode-change: "&b%device% 的模式已切换为: &9%mode%"
     not-shears: "&c多功能工具 (Multi Tool) 不能作为剪刀使用!"
+  auto-crafting:
+    select-a-recipe: '&7手持你想要合成的物品 &eShift + 右键 &7此方块.'
+    recipe-set: '&a成功设置了合成机合成配方.'
+    recipe-removed: '&e成功清除了合成机已有的合成配方, 你可以随时重新设置一个新配方!'
+    no-recipes: '&c抱歉, 找不到你手持物品的合成配方.'
+    missing-chest: '&c缺少箱子! 自动合成机需要被放在一个箱子上方.'
+    select: '选中此合成配方'
+    remove: '移除此合成配方'
   climbing-pick:
     dual-wielding: "&4你需要双手拿着攀岩镐才能使用!"
     wrong-material: "&c你不能爬上这个平面. 查看指南书了解详情!"
@@ -205,7 +213,7 @@ machines:
   ANCIENT_ALTAR:
     not-enough-pedestals: "&4古代基座不足. 目前已摆放的基座数: &c(%pedestals% / 8)"
     unknown-catalyst: "&4无效的催化剂! &c请按照合成配方正确摆放物品!"
-    unknown-recipe: "&4未知合成表! &c请按照合成配方正确摆放物品!"
+    unknown-recipe: "&4未知合成配方! &c请按照合成配方正确摆放物品!"
   ANCIENT_PEDESTAL:
     obstructed: "&4基座被挡住了! &c把基座上面的东西移开!"
     in-use: "&4基座上还有东西没拿下来!"

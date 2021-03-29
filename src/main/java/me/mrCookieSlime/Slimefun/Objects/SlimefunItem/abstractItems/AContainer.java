@@ -139,6 +139,7 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
      *
      * @return The max amount of electricity this Block can store.
      */
+    @Override
     public int getCapacity() {
         return energyCapacity;
     }
