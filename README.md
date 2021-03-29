@@ -6,27 +6,29 @@ Looking for English (or Original) Version? [**Click here**](https://github.com/S
 
 MCBBS 链接: https://www.mcbbs.net/thread-827594-1-1.html
 
+⚡ 汉化不易, 欢迎支持爱发电
+
 交流群：807302496
 
 ![目前版本](https://img.shields.io/github/v/release/StarWishSama/Slimefun4?include_prereleases)
 ![编译状态](https://github.com/StarWishsama/Slimefun4/workflows/Java%20CI/badge.svg)
 [![Issues](https://img.shields.io/github/issues/StarWishsama/Slimefun4.svg?style=popout)](https://github.com/StarWishsama/Slimefun4/issues)
 
-如果你使用了本版本, 请 **不要** 在官方问题追踪器创建新问题!<br>
-如果你执意要这么做, 请在反馈时使用**官方**开发版并且使用**英语** 提交问题<br>
-如果不能, 请优先考虑在此处创建新问题.
+使用汉化版之后, **禁止** 在官方问题追踪器创建新问题!<br>
+如果你执意要这么做, 请在反馈时使用**官方**开发版并且使用**英语** 提交问题.<br>
+否则, 请在此处创建问题或加群讨论.
 
 魔改内容:
 * 粘液机器支持领地保护
 * 粘液方块支持领地/地皮保护
 * 支持使用游戏币解锁研究项目
-* 支持自定义附/祛魔机可使用的附魔等级上限
+* 支持自定义附/祛魔机可使用的附魔等级上限 (官方已合并)
 * 修复了部分官方未修复的 Bug
 
-Slimefun 是一个致力于提供模组般体验的插件. 它提供了你能想到的一切, 无论是喷气背包还是魔法祭坛!
+Slimefun 是一个致力于提供模组般体验的插件. 它提供了你能想到的一切, 不管是喷气背包还是魔法祭坛!
 Slimefun 让每个玩家可以自己决定在魔法或科技方面发展<br>
 从魔杖到核反应堆, 我们应有尽有.<br>
-不仅如此, 我们还有魔法祭坛, 能源网络甚至物品运输系统.
+除此之外, 我们还有魔法祭坛, 能源网络甚至物品运输系统.
 
 该项目从2013年开始开发，此后一直发展.<br>
 从那时一个人开发插件到发展成一个拥有数千名参与者和一百多位贡献者的社区.<br>
