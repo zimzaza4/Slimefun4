@@ -9,6 +9,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Wither;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A quick and easy implementation of {@link SlimefunItem} that also implements the
  * interface {@link WitherProof}.
@@ -19,10 +21,12 @@ import org.bukkit.inventory.ItemStack;
  */
 public class WitherProofBlock extends SlimefunItem implements WitherProof {
 
+    @ParametersAreNonnullByDefault
     public WitherProofBlock(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
     }
 
+    @ParametersAreNonnullByDefault
     public WitherProofBlock(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
         super(category, item, recipeType, recipe, recipeOutput);
     }
