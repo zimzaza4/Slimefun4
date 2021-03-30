@@ -1,6 +1,6 @@
 package me.mrCookieSlime.Slimefun.Objects.SlimefunItem.interfaces;
 
-import io.github.starwishsama.utils.ProtectionChecker;
+import io.github.starwishsama.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
@@ -56,7 +56,7 @@ public interface InventoryBlock {
                 return p.hasPermission("slimefun.inventory.bypass") ||
                         (SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK)
                                 && Slimefun.hasUnlocked(p, item, false)
-                                && ProtectionChecker.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK)
+                                && IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK)
                         );
             }
         };

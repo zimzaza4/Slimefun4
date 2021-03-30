@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.core.multiblocks;
 
-import io.github.starwishsama.utils.ProtectionChecker;
+import io.github.starwishsama.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
@@ -118,7 +118,7 @@ public abstract class MultiBlockMachine extends SlimefunItem implements NotPlace
             if (mb.equals(getMultiBlock())) {
                 if (canUse(p, true)
                         && SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK)
-                        && ProtectionChecker.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK)
+                        && IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK)
                         && Slimefun.hasUnlocked(p, this, true)) {
                     onInteract(p, b);
                 }

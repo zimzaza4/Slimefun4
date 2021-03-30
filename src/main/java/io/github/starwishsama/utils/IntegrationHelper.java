@@ -13,12 +13,15 @@ import io.github.thebusybiscuit.slimefun4.api.events.AndroidMineEvent;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.maxgamer.quickshop.api.QuickShopAPI;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -27,8 +30,9 @@ import java.util.logging.Level;
  *
  * @author Nameless
  */
-public class ProtectionChecker implements Listener {
-    private static boolean resInstalled = false;
+public class IntegrationHelper implements Listener {
+    private static boolean resInstalled;
+    private static boolean qsInstalled;
 
     @EventHandler
     public void onAndroidMine(AndroidMineEvent e) {
@@ -42,8 +46,9 @@ public class ProtectionChecker implements Listener {
         }
     }
 
-    public ProtectionChecker(SlimefunPlugin plugin) {
+    public IntegrationHelper(SlimefunPlugin plugin) {
         resInstalled = plugin.getServer().getPluginManager().getPlugin("Residence") != null;
+        qsInstalled = plugin.getServer().getPluginManager().getPlugin("QuickShop") != null;
 
         if (!resInstalled) {
             plugin.getLogger().log(Level.WARNING, "未检测到领地插件, 相关功能将自动关闭");
@@ -118,5 +123,13 @@ public class ProtectionChecker implements Listener {
             }
         }
         return null;
+    }
+
+    public static boolean checkForQuickShop(@Nonnull Location l) {
+        try {
+            return QuickShopAPI.getShopAPI().getShopWithCaching(l) != null;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

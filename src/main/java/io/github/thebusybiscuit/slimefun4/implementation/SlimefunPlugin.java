@@ -527,7 +527,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
             new PiglinListener(this);
         }
 
-        new ProtectionChecker(this);
+        new IntegrationHelper(this);
 
         // Item-specific Listeners
         new VampireBladeListener(this, (VampireBlade) SlimefunItems.BLADE_OF_VAMPIRES.getItem());

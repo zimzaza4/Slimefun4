@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.cargo;
 
-import io.github.starwishsama.utils.ProtectionChecker;
+import io.github.starwishsama.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
@@ -55,7 +55,7 @@ abstract class AbstractCargoNode extends SimpleSlimefunItem<BlockPlaceHandler> i
             public boolean canOpen(Block b, Player p) {
                 return p.hasPermission("slimefun.cargo.bypass")
                         || (SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK)
-                        && ProtectionChecker.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK));
+                        && IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK));
             }
 
             @Override

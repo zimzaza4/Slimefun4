@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.geo;
 
-import io.github.starwishsama.utils.ProtectionChecker;
+import io.github.starwishsama.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockUseHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
@@ -43,6 +43,6 @@ public class GEOScanner extends SimpleSlimefunItem<BlockUseHandler> {
 
     @ParametersAreNonnullByDefault
     private boolean hasAccess(Player p, Block b) {
-        return p.hasPermission("slimefun.gps.bypass") || (SlimefunPlugin.getProtectionManager().hasPermission(p, b, ProtectableAction.INTERACT_BLOCK)) || ProtectionChecker.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK);
+        return p.hasPermission("slimefun.gps.bypass") || (SlimefunPlugin.getProtectionManager().hasPermission(p, b, ProtectableAction.INTERACT_BLOCK)) || IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK);
     }
 }

@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.core.networks.cargo;
 
+import io.github.starwishsama.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
@@ -359,7 +360,7 @@ final class CargoUtils {
     }
 
     static boolean matchesFilter(@Nonnull AbstractItemNetwork network, @Nonnull Block node, @Nullable ItemStack item) {
-        if (item == null || item.getType() == Material.AIR) {
+        if (item == null || item.getType() == Material.AIR || IntegrationHelper.checkForQuickShop(node.getLocation())) {
             return false;
         }
 

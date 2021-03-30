@@ -83,6 +83,11 @@
             <id>walshy-public</id>
             <url>https://repo.walshy.dev/public</url>
         </repository>
+        <repository>
+            <!-- QuickShop-Reremake -->
+            <id>quickshop-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <build>
@@ -354,6 +359,19 @@
             <version>4.9.2.1</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/Residence4.9.2.1.jar</systemPath>
+            <exclusions>
+                <exclusion>
+                    <!-- We don't need any of the dependencies -->
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.maxgamer</groupId>
+            <artifactId>QuickShop</artifactId>
+            <version>4.0.5.9</version>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <!-- We don't need any of the dependencies -->

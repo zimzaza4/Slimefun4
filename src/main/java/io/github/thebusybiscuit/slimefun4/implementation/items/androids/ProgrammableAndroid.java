@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.androids;
 
-import io.github.starwishsama.utils.ProtectionChecker;
+import io.github.starwishsama.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatInput;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
@@ -24,7 +24,6 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.UnregisterReason;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.interfaces.InventoryBlock;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
-import me.mrCookieSlime.Slimefun.Objects.handlers.ItemHandler;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
@@ -868,9 +867,9 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
 
     @ParametersAreNonnullByDefault
     protected void move(Block b, BlockFace face, Block block) {
-        Player p = Bukkit.getPlayer(ProtectionChecker.getOwnerFromJson(BlockStorage.getBlockInfoAsJson(b.getLocation())));
+        Player p = Bukkit.getPlayer(IntegrationHelper.getOwnerFromJson(BlockStorage.getBlockInfoAsJson(b.getLocation())));
 
-        if (p != null && !ProtectionChecker.checkPermission(p, block, ProtectableAction.PLACE_BLOCK)) {
+        if (p != null && !IntegrationHelper.checkPermission(p, block, ProtectableAction.PLACE_BLOCK)) {
             BlockStorage.addBlockInfo(b, "paused", "false");
             SlimefunPlugin.getLocalization().sendMessage(p, "messages.android-no-permission", true);
             return;

@@ -1,6 +1,6 @@
 package me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems;
 
-import io.github.starwishsama.utils.ProtectionChecker;
+import io.github.starwishsama.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
@@ -62,7 +62,7 @@ public abstract class AGenerator extends AbstractEnergyProvider {
             public boolean canOpen(Block b, Player p) {
                 return p.hasPermission("slimefun.inventory.bypass")
                         || SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK)
-                        || ProtectionChecker.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK);
+                        || IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK);
             }
 
             @Override

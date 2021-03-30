@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.blocks;
 
-import io.github.starwishsama.utils.ProtectionChecker;
+import io.github.starwishsama.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.cscorelib2.scheduling.TaskQueue;
@@ -81,7 +81,7 @@ public class Composter extends SimpleSlimefunItem<BlockUseHandler> implements Re
 
                 if (p.hasPermission("slimefun.inventory.bypass")
                         || (SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK)
-                        && ProtectionChecker.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK))) {
+                        && IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK))) {
                     ItemStack input = e.getItem();
                     ItemStack output = getOutput(p, input);
 

@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.androids;
 
-import io.github.starwishsama.utils.ProtectionChecker;
+import io.github.starwishsama.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.events.AndroidMineEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
@@ -71,7 +71,7 @@ public class MinerAndroid extends ProgrammableAndroid {
             OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(BlockStorage.getLocationInfo(b.getLocation(), "owner")));
 
             if (SlimefunPlugin.getProtectionManager().hasPermission(owner, block.getLocation(), ProtectableAction.BREAK_BLOCK)
-                    && ProtectionChecker.checkPermission(owner, block, ProtectableAction.BREAK_BLOCK)) {
+                    && IntegrationHelper.checkPermission(owner, block, ProtectableAction.BREAK_BLOCK)) {
                 AndroidMineEvent event = new AndroidMineEvent(block, new AndroidInstance(this, b));
                 Bukkit.getPluginManager().callEvent(event);
 

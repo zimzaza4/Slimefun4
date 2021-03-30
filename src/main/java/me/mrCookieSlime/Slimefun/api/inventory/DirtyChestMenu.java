@@ -1,6 +1,6 @@
 package me.mrCookieSlime.Slimefun.api.inventory;
 
-import io.github.starwishsama.utils.ProtectionChecker;
+import io.github.starwishsama.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
@@ -58,7 +58,7 @@ public class DirtyChestMenu extends ChestMenu {
     }
 
     public boolean canOpen(Block b, Player p) {
-        return preset.canOpen(b, p) && ProtectionChecker.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK);
+        return preset.canOpen(b, p) && IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK);
     }
 
     @Override
