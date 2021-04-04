@@ -1,7 +1,7 @@
-package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.auto_crafters;
+package io.github.thebusybiscuit.slimefun4.implementation.items.autocrafters;
 
-import io.github.thebusybiscuit.cscorelib2.data.PersistentDataAPI;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.core.services.MinecraftRecipeService;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.AsyncRecipeChoiceTask;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
@@ -13,7 +13,10 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.apache.commons.lang.Validate;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Skull;
@@ -22,6 +25,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -52,16 +57,12 @@ public class VanillaAutoCrafter extends AbstractAutoCrafter {
     @Override
     @Nullable
     public AbstractRecipe getSelectedRecipe(@Nonnull Block b) {
-        return AbstractRecipe.of(getRecipe(b));
-    }
-
-    @Nullable
-    private Recipe getRecipe(@Nonnull Block b) {
         BlockState state = PaperLib.getBlockState(b, false).getState();
 
         if (state instanceof Skull) {
             // Read the stored value from persistent data storage
-            String value = PersistentDataAPI.getString((Skull) state, recipeStorageKey);
+            PersistentDataContainer container = ((Skull) state).getPersistentDataContainer();
+            String value = container.get(recipeStorageKey, PersistentDataType.STRING);
 
             if (value != null) {
                 String[] values = PatternUtils.COLON.split(value);
@@ -73,8 +74,15 @@ public class VanillaAutoCrafter extends AbstractAutoCrafter {
                  */
                 @SuppressWarnings("deprecation")
                 NamespacedKey key = new NamespacedKey(values[0], values[1]);
+                Recipe keyedRecipe = SlimefunPlugin.getMinecraftRecipeService().getRecipe(key);
 
-                return SlimefunPlugin.getMinecraftRecipeService().getRecipe(key);
+                if (keyedRecipe != null) {
+                    boolean enabled = !container.has(recipeEnabledKey, PersistentDataType.BYTE);
+                    AbstractRecipe recipe = AbstractRecipe.of(keyedRecipe);
+                    recipe.setEnabled(enabled);
+
+                    return recipe;
+                }
             }
         }
 
@@ -163,7 +171,10 @@ public class VanillaAutoCrafter extends AbstractAutoCrafter {
     private List<Recipe> getRecipesFor(@Nonnull ItemStack item) {
         List<Recipe> recipes = new ArrayList<>();
 
-        for (Recipe recipe : Bukkit.getRecipesFor(item)) {
+        // Fixes #2913 - Bukkit.getRecipesFor() only checks for Materials
+        MinecraftRecipeService recipeService = SlimefunPlugin.getMinecraftRecipeService();
+
+        for (Recipe recipe : recipeService.getRecipesFor(item)) {
             if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe) {
                 recipes.add(recipe);
             }
@@ -171,5 +182,4 @@ public class VanillaAutoCrafter extends AbstractAutoCrafter {
 
         return recipes;
     }
-
 }

@@ -13,6 +13,8 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAlta
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientPedestal;
 import io.github.thebusybiscuit.slimefun4.implementation.items.androids.*;
 import io.github.thebusybiscuit.slimefun4.implementation.items.armor.*;
+import io.github.thebusybiscuit.slimefun4.implementation.items.autocrafters.EnhancedAutoCrafter;
+import io.github.thebusybiscuit.slimefun4.implementation.items.autocrafters.VanillaAutoCrafter;
 import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.*;
 import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.*;
 import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.*;
@@ -25,8 +27,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.accelerators.AnimalGrowthAccelerator;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.accelerators.CropGrowthAccelerator;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.accelerators.TreeGrowthAccelerator;
-import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.auto_crafters.EnhancedAutoCrafter;
-import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.auto_crafters.VanillaAutoCrafter;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.enchanting.AutoDisenchanter;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.enchanting.AutoEnchanter;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.enchanting.BookBinder;

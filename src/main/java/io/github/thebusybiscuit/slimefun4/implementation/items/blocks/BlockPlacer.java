@@ -1,6 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.blocks;
 
-import io.github.starwishsama.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.events.BlockPlacerPlaceEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
@@ -20,6 +19,7 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -50,6 +50,8 @@ public class BlockPlacer extends SlimefunItem {
     @ParametersAreNonnullByDefault
     public BlockPlacer(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
+
+        addItemSetting(unplaceableBlocks);
 
         addItemHandler(onPlace(), onBlockDispense());
         addItemHandler(new VanillaInventoryDropHandler<>(Dispenser.class));
@@ -89,16 +91,7 @@ public class BlockPlacer extends SlimefunItem {
 
             e.setCancelled(true);
 
-            if (!material.isBlock() || SlimefunTag.BLOCK_PLACER_IGNORED_MATERIALS.isTagged(material)) {
-                /*
-                 * Some materials cannot be reliably placed, like beds,
-                 * it would look kinda wonky, so we just ignore these altogether.
-                 * The event has already been cancelled too, so they won't drop.
-                 */
-                return;
-            }
-
-            if (facedBlock.isEmpty() && isAllowed(material) && dispenser.getInventory().getViewers().isEmpty()) {
+            if (facedBlock.isEmpty() && dispenser.getInventory().getViewers().isEmpty() && isAllowed(facedBlock, material)) {
                 SlimefunItem item = SlimefunItem.getByItem(e.getItem());
 
                 if (item != null) {
@@ -139,8 +132,7 @@ public class BlockPlacer extends SlimefunItem {
 
         // Get the corresponding OfflinePlayer
         OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(owner));
-        return SlimefunPlugin.getProtectionManager().hasPermission(player, target, ProtectableAction.PLACE_BLOCK)
-                && IntegrationHelper.checkPermission(player, target, ProtectableAction.PLACE_BLOCK);
+        return SlimefunPlugin.getProtectionManager().hasPermission(player, target, ProtectableAction.PLACE_BLOCK);
     }
 
     /**
@@ -151,14 +143,33 @@ public class BlockPlacer extends SlimefunItem {
      *
      * @return Whether placing this {@link Material} is allowed
      */
-    private boolean isAllowed(@Nonnull Material type) {
-        for (String blockType : unplaceableBlocks.getValue()) {
-            if (type.toString().equals(blockType)) {
-                return false;
+    private boolean isAllowed(@Nonnull Block facedBlock, @Nonnull Material type) {
+        if (!type.isBlock()) {
+            // Make sure the material is actually a block.
+            return false;
+        } else if (type == Material.CAKE) {
+            /*
+             * Special case for cakes.
+             * Cakes are a lie but I really want the Block Placer to place them down!!!
+             */
+            return !facedBlock.getRelative(BlockFace.DOWN).isPassable();
+        } else if (SlimefunTag.BLOCK_PLACER_IGNORED_MATERIALS.isTagged(type)) {
+            /*
+             * Some materials cannot be reliably placed, like beds,
+             * it would look kinda wonky, so we just ignore these altogether.
+             * The event has already been cancelled too, so they won't drop.
+             */
+            return false;
+        } else {
+            // Check for all unplaceable block
+            for (String blockType : unplaceableBlocks.getValue()) {
+                if (type.toString().equals(blockType)) {
+                    return false;
+                }
             }
-        }
 
-        return true;
+            return true;
+        }
     }
 
     @ParametersAreNonnullByDefault

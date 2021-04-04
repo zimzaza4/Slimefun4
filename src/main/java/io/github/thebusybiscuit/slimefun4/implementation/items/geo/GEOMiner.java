@@ -50,6 +50,9 @@ public class GEOMiner extends AContainer implements RecipeDisplayItem, HologramO
         super(category, item, recipeType, recipe);
 
         addItemHandler(onPlace(), onBreak());
+
+        // Unregister the Block handler from AContainer (Fixes #2914)
+        registerBlockHandler(getId(), null);
     }
 
     @Nonnull

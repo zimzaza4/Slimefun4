@@ -29,6 +29,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
+@Deprecated
 public abstract class AutomatedCraftingChamber extends SlimefunItem implements InventoryBlock, EnergyNetComponent {
 
     private final int[] border = {0, 1, 3, 4, 5, 7, 8, 13, 14, 15, 16, 17, 50, 51, 52, 53};

@@ -195,6 +195,19 @@ messages:
     missing-chest: '&c缺少箱子! 自动合成机需要被放在一个箱子上方.'
     select: '选中此合成配方'
     remove: '移除此合成配方'
+    temporarily-disabled: '&e自动合成机已停用. 你随时可以重新启动!'
+    re-enabled: '&e自动合成机已重启!'
+    tooltips:
+      enabled:
+        - '&a该合成配方正在使用'
+        - ''
+        - '&e左键 &7停用此合成配方'
+        - '&e右键 &7删除此合成配方'
+      disabled:
+        - '&c该合成配方已被停用'
+        - ''
+        - '&e左键 &7使用此合成配方'
+        - '&e右键 &7删除此合成配方'
   climbing-pick:
     dual-wielding: "&4你需要双手拿着攀岩镐才能使用!"
     wrong-material: "&c你不能爬上这个平面. 查看指南书了解详情!"
