@@ -2,7 +2,6 @@ package io.github.thebusybiscuit.slimefun4.core.attributes;
 
 import io.github.thebusybiscuit.cscorelib2.config.Config;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -45,7 +44,7 @@ public interface DamageableItem extends ItemAttribute {
      *            The {@link ItemStack} to damage
      */
     default void damageItem(@Nonnull Player p, @Nullable ItemStack item) {
-        if (isDamageable() && item != null && item.getType() != Material.AIR && item.getAmount() > 0) {
+        if (isDamageable() && item != null && !item.getType().isAir() && item.getAmount() > 0) {
             int unbreakingLevel = item.getEnchantmentLevel(Enchantment.DURABILITY);
 
             if (unbreakingLevel > 0 && Math.random() * 100 <= (60 + Math.floorDiv(40, (unbreakingLevel + 1)))) {
@@ -53,14 +52,16 @@ public interface DamageableItem extends ItemAttribute {
             }
 
             ItemMeta meta = item.getItemMeta();
-            Damageable damageable = (Damageable) meta;
+            if (!meta.isUnbreakable()) {
+                Damageable damageable = (Damageable) meta;
 
-            if (damageable.getDamage() >= item.getType().getMaxDurability()) {
-                p.playSound(p.getEyeLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
-                item.setAmount(0);
-            } else {
-                damageable.setDamage(damageable.getDamage() + 1);
-                item.setItemMeta(meta);
+                if (damageable.getDamage() >= item.getType().getMaxDurability()) {
+                    p.playSound(p.getEyeLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
+                    item.setAmount(0);
+                } else {
+                    damageable.setDamage(damageable.getDamage() + 1);
+                    item.setItemMeta(meta);
+                }
             }
         }
     }

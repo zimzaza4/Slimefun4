@@ -7,7 +7,6 @@ import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -50,7 +49,11 @@ public class ArmorForge extends AbstractCraftingTable {
                 }
             }
 
-            SlimefunPlugin.getLocalization().sendMessage(p, "machines.pattern-not-found", true);
+            if (inv.isEmpty()) {
+                SlimefunPlugin.getLocalization().sendMessage(p, "machines.inventory-empty", true);
+            } else {
+                SlimefunPlugin.getLocalization().sendMessage(p, "machines.pattern-not-found", true);
+            }
         }
     }
 

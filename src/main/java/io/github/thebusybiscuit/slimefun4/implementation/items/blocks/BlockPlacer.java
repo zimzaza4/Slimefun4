@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.blocks;
 
+import io.github.starwishsama.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.events.BlockPlacerPlaceEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
@@ -132,7 +133,7 @@ public class BlockPlacer extends SlimefunItem {
 
         // Get the corresponding OfflinePlayer
         OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(owner));
-        return SlimefunPlugin.getProtectionManager().hasPermission(player, target, ProtectableAction.PLACE_BLOCK);
+        return SlimefunPlugin.getProtectionManager().hasPermission(player, target, ProtectableAction.PLACE_BLOCK) && IntegrationHelper.checkPermission(player, target, ProtectableAction.PLACE_BLOCK);
     }
 
     /**

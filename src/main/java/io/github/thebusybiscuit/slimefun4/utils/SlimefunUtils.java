@@ -13,10 +13,7 @@ import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.apache.commons.lang.Validate;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -85,7 +82,23 @@ public final class SlimefunUtils {
      * @return Whether the given item is soulbound
      */
     public static boolean isSoulbound(@Nullable ItemStack item) {
-        if (item == null || item.getType() == Material.AIR) {
+        return isSoulbound(item, null);
+    }
+
+    /**
+     * This method checks whether the given {@link ItemStack} is considered {@link Soulbound}.
+     * If the provided item is a {@link SlimefunItem} then this method will also check that the item
+     * is enabled in the provided {@link World}.
+     *
+     * @param item
+     *              The {@link ItemStack} to check for
+     * @param world
+     *              The {@link World} to check if the {@link SlimefunItem} is enabled in if applicable.
+     *              If {@code null} then this will not do a world check.
+     * @return Whether the given item is soulbound
+     */
+    public static boolean isSoulbound(@Nullable ItemStack item, @Nullable World world) {
+        if (item != null && item.getType() != Material.AIR) {
             return false;
         } else {
             ItemMeta meta = item.hasItemMeta() ? item.getItemMeta() : null;
@@ -97,7 +110,11 @@ public final class SlimefunUtils {
             SlimefunItem sfItem = SlimefunItem.getByItem(item);
 
             if (sfItem instanceof Soulbound) {
-                return !sfItem.isDisabled();
+                if (world != null) {
+                    return !sfItem.isDisabledIn(world);
+                } else {
+                    return !sfItem.isDisabled();
+                }
             } else if (meta != null) {
                 return meta.hasLore() && meta.getLore().contains(SOULBOUND_LORE);
             }
@@ -111,9 +128,7 @@ public final class SlimefunUtils {
             PersistentDataContainer container = meta.getPersistentDataContainer();
             NamespacedKey key = SlimefunPlugin.getRegistry().getSoulboundDataKey();
 
-            if (container.has(key, PersistentDataType.BYTE)) {
-                return true;
-            }
+            return container.has(key, PersistentDataType.BYTE);
         }
 
         return false;

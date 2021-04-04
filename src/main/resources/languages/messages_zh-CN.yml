@@ -223,6 +223,7 @@ machines:
   full-inventory: "&e抱歉, 物品栏已经满了!"
   in-use: "&c这个机器正在被其他玩家使用."
   ignition-chamber-no-flint: "&c自动点火机缺少打火石."
+  inventory-empty: '&6你成功制造了一台多方块结构的机器. 将物品按合成配方放入发射器内然后再右键我一次合成!'
   ANCIENT_ALTAR:
     not-enough-pedestals: "&4古代基座不足. 目前已摆放的基座数: &c(%pedestals% / 8)"
     unknown-catalyst: "&4无效的催化剂! &c请按照合成配方正确摆放物品!"
