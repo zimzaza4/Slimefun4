@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.core.networks.cargo;
 
+import io.github.starwishsama.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
@@ -208,6 +209,12 @@ final class CargoUtils {
                 }
             }
         } else if (hasInventory(target)) {
+
+            // Quickshop 商店物品禁止获取
+            if (IntegrationHelper.checkForQuickShop(target.getLocation())) {
+                return null;
+            }
+
             Inventory inventory = inventories.get(target.getLocation());
 
             if (inventory != null) {

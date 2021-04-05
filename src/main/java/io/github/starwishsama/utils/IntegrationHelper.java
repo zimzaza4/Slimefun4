@@ -50,6 +50,10 @@ public class IntegrationHelper implements Listener {
         resInstalled = plugin.getServer().getPluginManager().getPlugin("Residence") != null;
         qsInstalled = plugin.getServer().getPluginManager().getPlugin("QuickShop") != null;
 
+        if (!qsInstalled) {
+            plugin.getLogger().log(Level.WARNING, "未检测到 Quickshop-Reremake, 相关功能将自动关闭");
+        }
+
         if (!resInstalled) {
             plugin.getLogger().log(Level.WARNING, "未检测到领地插件, 相关功能将自动关闭");
             return;
@@ -126,6 +130,10 @@ public class IntegrationHelper implements Listener {
     }
 
     public static boolean checkForQuickShop(@Nonnull Location l) {
+        if (!qsInstalled) {
+            return false;
+        }
+
         try {
             return QuickShopAPI.getShopAPI().getShopWithCaching(l) != null;
         } catch (Exception e) {
