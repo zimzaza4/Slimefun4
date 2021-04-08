@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.setup;
 
+import com.xzavier0722.mc.plugin.slimefun4.autocrafter.CrafterSmartPort;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
@@ -2485,6 +2486,11 @@ public final class SlimefunItemSetup {
                 .setEnergyConsumption(32)
                 .register(plugin);
 
+        new CrafterSmartPort(categories.cargo, SlimefunItems.CRAFTER_SMART_PORT, RecipeType.ENHANCED_CRAFTING_TABLE,
+                new ItemStack[]{
+                        null, SlimefunItems.CARGO_MOTOR, null,
+                        new ItemStack(Material.CHEST), SlimefunItems.CRAFTING_MOTOR, new ItemStack(Material.CHEST),
+                        null, SlimefunItems.ELECTRIC_MOTOR, null}).register(plugin);
         // @formatter:on
     }
 

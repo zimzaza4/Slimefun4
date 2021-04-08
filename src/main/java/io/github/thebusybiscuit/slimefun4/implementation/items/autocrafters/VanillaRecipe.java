@@ -41,6 +41,10 @@ class VanillaRecipe extends AbstractRecipe {
         this.recipe = recipe;
     }
 
+    public Recipe getRecipe(){
+        return recipe;
+    }
+
     @Nonnull
     private static Collection<Predicate<ItemStack>> getChoices(@Nonnull ShapedRecipe recipe) {
         List<Predicate<ItemStack>> choices = new ArrayList<>();
