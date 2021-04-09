@@ -53,7 +53,7 @@ public class CrafterSmartPort extends SlimefunItem{
 
                         @Override
                         public boolean onClick(InventoryClickEvent e, Player p, int slot, ItemStack cursor, ClickAction action) {
-                            return cursor == null || cursor.getType() == Material.AIR;
+                            return cursor == null || cursor.getType().isAir();
                         }
                     });
                 }
@@ -69,9 +69,9 @@ public class CrafterSmartPort extends SlimefunItem{
                 // Check if has inv
                 if(BlockStorage.hasInventory(b)){
                     // Resume the ingredient count
-                    String countStr = BlockStorage.getLocationInfo(b.getLocation(), "" + "ingredientCount");
+                    String countStr = BlockStorage.getLocationInfo(b.getLocation(),"ingredientCount");
                     if(countStr != null){
-                        int count = Integer.parseInt(BlockStorage.getLocationInfo(b.getLocation(), "" + "ingredientCount"));
+                        int count = Integer.parseInt(BlockStorage.getLocationInfo(b.getLocation(),"ingredientCount"));
                         menu.getItemInSlot(6).setAmount(count);
                     }
                 }
