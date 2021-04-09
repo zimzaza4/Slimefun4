@@ -8,13 +8,25 @@ import java.util.Map;
 
 /**
  *
+ * This manager provide accessibility to custom interactors.
  *
+ * @author Xzavier0722
+ *
+ * @see CrafterInteractable
+ * @see CrafterInteractorHandler
  *
  */
 public class CrafterInteractorManager {
 
     private static final Map<String, CrafterInteractorHandler> handlers = new HashMap<>();
 
+    /**
+     * Register the specific slimefun item as crafter interactor.
+     * @param id: the id of the slimefun item that will be registered as interactor.
+     * @param handler: way to get the {@link CrafterInteractable} implementation.
+     *
+     * @see CrafterInteractorHandler
+     */
     public static void register(String id, CrafterInteractorHandler handler){
         handlers.put(id,handler);
     }
