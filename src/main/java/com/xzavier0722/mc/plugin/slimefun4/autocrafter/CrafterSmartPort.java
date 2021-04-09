@@ -70,10 +70,9 @@ public class CrafterSmartPort extends SlimefunItem{
                 if(BlockStorage.hasInventory(b)){
                     // Resume the ingredient count
                     String countStr = BlockStorage.getLocationInfo(b.getLocation(),"ingredientCount");
-                    if(countStr != null){
-                        int count = Integer.parseInt(BlockStorage.getLocationInfo(b.getLocation(),"ingredientCount"));
-                        menu.getItemInSlot(6).setAmount(count);
-                    }
+                    if(countStr != null)
+                        menu.getItemInSlot(6).setAmount(Integer.parseInt(countStr));
+
                 }
             }
 
