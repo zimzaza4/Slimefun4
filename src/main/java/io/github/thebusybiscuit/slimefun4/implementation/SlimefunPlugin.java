@@ -3,7 +3,6 @@ package io.github.thebusybiscuit.slimefun4.implementation;
 import io.github.starwishsama.utils.*;
 import io.github.thebusybiscuit.cscorelib2.config.Config;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectionManager;
-import io.github.thebusybiscuit.cscorelib2.reflection.ReflectionUtils;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.exceptions.TagMisconfigurationException;
@@ -386,49 +385,58 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
      * @return Whether the {@link MinecraftVersion} is unsupported
      */
     private boolean isVersionUnsupported() {
-        try {
-            // First check if they still use the unsupported CraftBukkit software.
-            if (!PaperLib.isSpigot() && Bukkit.getName().equals("CraftBukkit")) {
-                getLogger().log(Level.SEVERE, "###############################################");
-                getLogger().log(Level.SEVERE, "### Slimefun 未被正确安装!");
-                getLogger().log(Level.SEVERE, "### 我们不再支持 CraftBukkit 服务端了!");
-                getLogger().log(Level.SEVERE, "###");
-                getLogger().log(Level.SEVERE, "### Slimefun 需要你使用 Spigot, Paper");
-                getLogger().log(Level.SEVERE, "### 或者 Spigot/Paper 分支的任意服务端.");
-                getLogger().log(Level.SEVERE, "### (我们推荐 Paper)");
-                getLogger().log(Level.SEVERE, "###############################################");
+      try {
+        // First check if they still use the unsupported CraftBukkit software.
+        if (!PaperLib.isSpigot() && Bukkit.getName().equals("CraftBukkit")) {
+          getLogger().log(Level.SEVERE, "###############################################");
+          getLogger().log(Level.SEVERE, "### Slimefun 未被正确安装!");
+          getLogger().log(Level.SEVERE, "### 我们不再支持 CraftBukkit 服务端了!");
+          getLogger().log(Level.SEVERE, "###");
+          getLogger().log(Level.SEVERE, "### Slimefun 需要你使用 Spigot, Paper");
+          getLogger().log(Level.SEVERE, "### 或者 Spigot/Paper 分支的任意服务端.");
+          getLogger().log(Level.SEVERE, "### (我们推荐 Paper)");
+          getLogger().log(Level.SEVERE, "###############################################");
 
-                return true;
-            }
-
-            String currentVersion = ReflectionUtils.getVersion();
-
-            if (currentVersion.startsWith("v")) {
-                for (MinecraftVersion version : MinecraftVersion.values()) {
-                    if (version.matches(currentVersion)) {
-                        minecraftVersion = version;
-                        return false;
-                    }
-                }
-
-                getLogger().log(Level.SEVERE, "#############################################");
-                getLogger().log(Level.SEVERE, "### Slimefun 未被正确安装!");
-                getLogger().log(Level.SEVERE, "### 你正在使用不支持的 Minecraft 版本!");
-                getLogger().log(Level.SEVERE, "###");
-                getLogger().log(Level.SEVERE, "### 你正在使用 Minecraft {0}", currentVersion);
-                getLogger().log(Level.SEVERE, "### 但 Slimefun v{0} 只支持", getDescription().getVersion());
-                getLogger().log(Level.SEVERE, "### Minecraft {0}", String.join(" / ", getSupportedVersions()));
-                getLogger().log(Level.SEVERE, "#############################################");
-                return true;
-            }
-
-            getLogger().log(Level.WARNING, "We could not determine the version of Minecraft you were using ({0})", currentVersion);
-            return false;
-        } catch (Exception | LinkageError x) {
-            getLogger().log(Level.SEVERE, x, () -> "Error: Could not determine Environment or version of Minecraft for Slimefun v" + getDescription().getVersion());
-            // We assume "unsupported" if something went wrong.
-            return true;
+          return true;
         }
+
+        // Now check the actual Version of Minecraft
+        int version = PaperLib.getMinecraftVersion();
+
+        if (version > 0) {
+          // Check all supported versions of Minecraft
+          for (MinecraftVersion supportedVersion : MinecraftVersion.values()) {
+            if (supportedVersion.isMinecraftVersion(version)) {
+              minecraftVersion = supportedVersion;
+              return false;
+            }
+          }
+
+          getLogger().log(Level.SEVERE, "#############################################");
+          getLogger().log(Level.SEVERE, "### Slimefun 未被正确安装!");
+          getLogger().log(Level.SEVERE, "### 你正在使用不支持的 Minecraft 版本!");
+          getLogger().log(Level.SEVERE, "###");
+          getLogger().log(Level.SEVERE, "### 你正在使用 Minecraft 1.{0}.x", version);
+          getLogger().log(Level.SEVERE, "### 但 Slimefun v{0} 只支持", getDescription().getVersion());
+          getLogger().log(Level.SEVERE, "### Minecraft {0}", String.join(" / ", getSupportedVersions()));
+          getLogger().log(Level.SEVERE, "#############################################");
+          return true;
+        } else {
+          getLogger().log(Level.WARNING, "We could not determine the version of Minecraft you were using (1.{0}.x)", version);
+
+          /*
+           * If we are unsure about it, we will assume "supported".
+           * They could be using a non-Bukkit based Software which still
+           * might support Bukkit-based plugins.
+           * Use at your own risk in this case.
+           */
+          return false;
+        }
+      } catch (Exception | LinkageError x) {
+        getLogger().log(Level.SEVERE, x, () -> "Error: Could not determine Environment or version of Minecraft for Slimefun v" + getDescription().getVersion());
+        // We assume "unsupported" if something went wrong.
+        return true;
+      }
     }
 
     /**
