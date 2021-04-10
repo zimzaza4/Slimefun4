@@ -1,26 +1,16 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans.MagicianTalisman;
+import io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans.Talisman;
+import io.github.thebusybiscuit.slimefun4.implementation.settings.TalismanEnchantment;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.AbstractArrow;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.ChestedHorse;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Trident;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -41,13 +31,10 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
-import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans.MagicianTalisman;
-import io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans.Talisman;
-import io.github.thebusybiscuit.slimefun4.implementation.settings.TalismanEnchantment;
-import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class TalismanListener implements Listener {
 
@@ -278,7 +265,14 @@ public class TalismanListener implements Listener {
         ItemStack item = e.getPlayer().getInventory().getItemInMainHand();
 
         // We are going to ignore Silk Touch here
-        if (item.getType() != Material.AIR && item.getAmount() > 0 && !item.containsEnchantment(Enchantment.SILK_TOUCH)) {
+        if (item.getType() != Material.AIR && item.getAmount() > 0 && item.hasItemMeta()) {
+            ItemMeta meta = item.getItemMeta();
+
+            // Ignore Silk Touch Enchantment
+            if (meta.hasEnchant(Enchantment.SILK_TOUCH)) {
+                return;
+            }
+
             Material type = e.getBlockState().getType();
 
             // We only want to double ores
@@ -286,7 +280,7 @@ public class TalismanListener implements Listener {
                 Collection<Item> drops = e.getItems();
 
                 if (Talisman.trigger(e, SlimefunItems.TALISMAN_MINER, false)) {
-                    int dropAmount = getAmountWithFortune(type, item.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS));
+                    int dropAmount = getAmountWithFortune(type, meta.getEnchantLevel(Enchantment.LOOT_BONUS_BLOCKS));
 
                     // Keep track of whether we actually doubled the drops or not
                     boolean doubledDrops = false;

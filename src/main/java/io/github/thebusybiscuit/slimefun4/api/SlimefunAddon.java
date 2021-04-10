@@ -1,20 +1,14 @@
 package io.github.thebusybiscuit.slimefun4.api;
 
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import org.apache.commons.lang.Validate;
-import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Locale;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * This is a very basic interface that will be used to identify
@@ -101,17 +95,4 @@ public interface SlimefunAddon {
         PluginDescriptionFile description = getJavaPlugin().getDescription();
         return description.getDepend().contains(dependency) || description.getSoftDepend().contains(dependency);
     }
-
-    /**
-     * This returns a {@link Collection} holding every {@link Category} that can be directly
-     * linked to this {@link SlimefunAddon} based on its {@link NamespacedKey}.
-     *
-     * @return A {@link Collection} of every {@link Category} from this addon
-     */
-    @Nonnull
-    default Collection<Category> getCategories() {
-        String namespace = getJavaPlugin().getName().toLowerCase(Locale.ROOT);
-        return SlimefunPlugin.getRegistry().getCategories().stream().filter(cat -> cat.getKey().getNamespace().equals(namespace)).collect(Collectors.toList());
-    }
-
 }

@@ -98,9 +98,7 @@ public final class SlimefunUtils {
      * @return Whether the given item is soulbound
      */
     public static boolean isSoulbound(@Nullable ItemStack item, @Nullable World world) {
-        if (item != null && item.getType() != Material.AIR) {
-            return false;
-        } else {
+        if (item == null || item.getType() == Material.AIR) {
             ItemMeta meta = item.hasItemMeta() ? item.getItemMeta() : null;
 
             if (hasSoulboundFlag(meta)) {
@@ -119,8 +117,8 @@ public final class SlimefunUtils {
                 return meta.hasLore() && meta.getLore().contains(SOULBOUND_LORE);
             }
 
-            return false;
         }
+        return false;
     }
 
     private static boolean hasSoulboundFlag(@Nullable ItemMeta meta) {

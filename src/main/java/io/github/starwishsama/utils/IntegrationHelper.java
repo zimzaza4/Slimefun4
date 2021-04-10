@@ -73,49 +73,42 @@ public class IntegrationHelper implements Listener {
      * @return 是否可以破坏
      */
     public static boolean checkPermission(OfflinePlayer p, Block block, ProtectableAction action) {
-        if (!resInstalled) {
-            return true;
-        }
-
-        if (p == null || block == null) {
-            return true;
-        }
-
-        if (p.isOp()) {
-            return true;
-        }
-
-        ClaimedResidence res = Residence.getInstance().getResidenceManager().getByLoc(block.getLocation());
-
-        if (res != null) {
-            if (res.getOwnerUUID() == p.getUniqueId()) {
-                return true;
-            }
-
-            ResidencePermissions perms = res.getPermissions();
-
-            ResidencePlayer rp = new ResidencePlayer(p);
-
-            if (perms.playerHas(rp, Flags.admin, true)) {
-                return true;
-            }
-
-            if (!action.isBlockAction()) {
-                return true;
-            }
-
-            switch (action) {
-                case BREAK_BLOCK:
-                case INTERACT_BLOCK:
-                    // 领地已支持 Slimefun
-                    // 详见 https://github.com/Zrips/Residence/blob/master/src/com/bekvon/bukkit/residence/slimeFun/SlimeFunResidenceModule.java
-                    return SlimefunPlugin.getProtectionManager().hasPermission(p, block.getLocation(), action);
-                case PLACE_BLOCK:
-                    // move 是为了机器人而检查的, 防止机器人跑进别人领地然后还出不来
-                    return perms.playerHas(rp, Flags.place, true) || perms.playerHas(rp, Flags.build, true) || !perms.playerHas(rp, Flags.move, true);
-            }
-        }
+      if (!resInstalled || p == null || block == null || p.isOp()) {
         return true;
+      }
+
+      ClaimedResidence res = Residence.getInstance().getResidenceManager().getByLoc(block.getLocation());
+
+      if (res != null) {
+        if (res.getOwnerUUID() == p.getUniqueId()) {
+          return true;
+        }
+
+        ResidencePermissions perms = res.getPermissions();
+
+        if (perms != null) {
+          ResidencePlayer rp = new ResidencePlayer(p);
+
+          if (perms.playerHas(rp, Flags.admin, true) || !action.isBlockAction()) {
+            return true;
+          }
+
+          switch (action) {
+            case BREAK_BLOCK:
+            case INTERACT_BLOCK:
+              // 领地已支持 Slimefun
+              // 详见 https://github.com/Zrips/Residence/blob/master/src/com/bekvon/bukkit/residence/slimeFun/SlimeFunResidenceModule.java
+              return SlimefunPlugin.getProtectionManager()
+                      .hasPermission(p, block.getLocation(), action);
+            case PLACE_BLOCK:
+              // move 是为了机器人而检查的, 防止机器人跑进别人领地然后还出不来
+              return perms.playerHas(rp, Flags.place, true)
+                      || perms.playerHas(rp, Flags.build, true)
+                      || !perms.playerHas(rp, Flags.move, true);
+          }
+        }
+      }
+      return true;
     }
 
     public static UUID getOwnerFromJson(String json) {

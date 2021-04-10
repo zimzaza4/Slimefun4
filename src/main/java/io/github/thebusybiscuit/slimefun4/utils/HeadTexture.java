@@ -118,8 +118,6 @@ public enum HeadTexture {
     CARGO_MOTOR("8e47f99abcd645a3ef1122c9d850a981979f431ba293255c1680e91ab117ed35"),
     CRAFTING_MOTOR("1003620899f1afa271e8e521ecbee2977a06c8529d3f389e8cc04af06d8c7940");
 
-    public static final HeadTexture[] valuesCache = values();
-
     private final String texture;
     private final UUID uuid;
 

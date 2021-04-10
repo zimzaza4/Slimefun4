@@ -4,6 +4,7 @@ import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.events.BlockPlacerPlaceEvent;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
@@ -15,7 +16,6 @@ import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.UnregisterReason;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
@@ -29,9 +29,14 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 /**
  * This is an abstract super class for Entity Assemblers.
@@ -56,7 +61,8 @@ public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSl
 
     private int lifetime = 0;
 
-    public AbstractEntityAssembler(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    @ParametersAreNonnullByDefault
+    protected AbstractEntityAssembler(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
         new BlockMenuPreset(getId(), item.getImmutableMeta().getDisplayName().orElse("Entity Assembler")) {
@@ -105,23 +111,10 @@ public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSl
             }
         };
 
-        addItemHandler(onPlace());
-        registerBlockHandler(getId(), (p, b, stack, reason) -> {
-            if (reason == UnregisterReason.EXPLODE) {
-                return false;
-            }
-
-            BlockMenu inv = BlockStorage.getInventory(b);
-
-            if (inv != null) {
-                inv.dropItems(b.getLocation(), headSlots);
-                inv.dropItems(b.getLocation(), bodySlots);
-            }
-
-            return true;
-        });
+        addItemHandler(onPlace(), onBreak());
     }
 
+    @Nonnull
     private BlockPlaceHandler onPlace() {
         return new BlockPlaceHandler(true) {
 
@@ -138,6 +131,23 @@ public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSl
             private void onPlace(BlockEvent e) {
                 BlockStorage.addBlockInfo(e.getBlock(), KEY_OFFSET, "3.0");
                 BlockStorage.addBlockInfo(e.getBlock(), KEY_ENABLED, String.valueOf(false));
+            }
+        };
+    }
+
+    @Nonnull
+    private BlockBreakHandler onBreak() {
+        return new BlockBreakHandler(false, false) {
+
+            @Override
+            public void onPlayerBreak(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
+                Block b = e.getBlock();
+                BlockMenu inv = BlockStorage.getInventory(b);
+
+                if (inv != null) {
+                    inv.dropItems(b.getLocation(), headSlots);
+                    inv.dropItems(b.getLocation(), bodySlots);
+                }
             }
         };
     }

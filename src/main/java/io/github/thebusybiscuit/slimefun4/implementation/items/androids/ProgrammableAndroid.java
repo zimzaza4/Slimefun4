@@ -8,6 +8,7 @@ import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.cscorelib2.skull.SkullBlock;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
@@ -20,7 +21,6 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.UnregisterReason;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.interfaces.InventoryBlock;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
@@ -39,6 +39,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Rotatable;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -124,14 +125,24 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
             }
         };
 
-        registerBlockHandler(getId(), (p, b, stack, reason) -> {
-            boolean allow = false;
+        addItemHandler(onPlace(), onBreak());
+    }
 
-            if (p != null && reason != null) {
-                allow = reason == UnregisterReason.PLAYER_BREAK && (BlockStorage.getLocationInfo(b.getLocation(), "owner").equals(p.getUniqueId().toString()) || p.hasPermission("slimefun.android.bypass"));
-            }
+    @Nonnull
+    private BlockBreakHandler onBreak() {
+        return new BlockBreakHandler(false, false) {
 
-            if (allow) {
+            @Override
+            public void onPlayerBreak(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
+                Block b = e.getBlock();
+                String owner = BlockStorage.getLocationInfo(b.getLocation(), "owner");
+
+                if (!e.getPlayer().hasPermission("slimefun.android.bypass") && !e.getPlayer().getUniqueId().toString().equals(owner)) {
+                    // The Player is not allowed to break this android
+                    e.setCancelled(true);
+                    return;
+                }
+
                 BlockMenu inv = BlockStorage.getInventory(b);
 
                 if (inv != null) {
@@ -139,11 +150,7 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
                     inv.dropItems(b.getLocation(), getOutputSlots());
                 }
             }
-
-            return allow;
-        });
-
-        addItemHandler(onPlace());
+        };
     }
 
     @Nonnull

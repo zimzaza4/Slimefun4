@@ -4,6 +4,7 @@ import io.github.thebusybiscuit.cscorelib2.collections.OptionalMap;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
+import io.github.thebusybiscuit.slimefun4.api.SlimefunBranch;
 import io.github.thebusybiscuit.slimefun4.api.exceptions.*;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemState;
@@ -504,6 +505,11 @@ public class SlimefunItem implements Placeable {
         // Send out deprecation warnings for any classes or interfaces
         checkForDeprecations(getClass());
 
+        // Inform addon developers about the BlockBreakHandler
+        if (SlimefunPlugin.getUpdater().getBranch() != SlimefunBranch.DEVELOPMENT && SlimefunPlugin.getRegistry().getBlockHandlers().containsKey(getId())) {
+            warn("This item uses a deprecated SlimefunBlockHandler which will be removed in the very near future! Please switch to the BlockBreakHandler as soon as possible.");
+        }
+
         // Check for an illegal stack size
         if (itemStackTemplate.getAmount() != 1) {
             // @formatter:off
@@ -768,10 +774,6 @@ public class SlimefunItem implements Placeable {
         }
 
         for (ItemHandler handler : handlers) {
-            if (itemhandlers.put(handler.getIdentifier(), handler).isPresent()) {
-                warn("ItemHandler \"" + handler.getIdentifier().getSimpleName() + "\" has already been assigned to this item. It was overridden.");
-            }
-
             itemhandlers.put(handler.getIdentifier(), handler);
 
             // Tickers are a special case (at the moment at least)
