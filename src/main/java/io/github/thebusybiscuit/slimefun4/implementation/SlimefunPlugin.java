@@ -422,7 +422,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
           getLogger().log(Level.SEVERE, "#############################################");
           return true;
         } else {
-          getLogger().log(Level.WARNING, "We could not determine the version of Minecraft you were using (1.{0}.x)", version);
+          getLogger().log(Level.WARNING, "我们无法识别你正在使用的 Minecraft 版本 (1.{0}.x)", version);
 
           /*
            * If we are unsure about it, we will assume "supported".
@@ -433,7 +433,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
           return false;
         }
       } catch (Exception | LinkageError x) {
-        getLogger().log(Level.SEVERE, x, () -> "Error: Could not determine Environment or version of Minecraft for Slimefun v" + getDescription().getVersion());
+        getLogger().log(Level.SEVERE, x, () -> "错误: 无法识别服务器 Minecraft 版本, Slimefun v" + getDescription().getVersion());
         // We assume "unsupported" if something went wrong.
         return true;
       }
