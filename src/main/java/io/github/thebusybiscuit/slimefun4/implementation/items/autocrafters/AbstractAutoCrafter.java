@@ -133,8 +133,9 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
                 recipeCache.remove(b);
 
                 Block interactor = b.getRelative(BlockFace.DOWN);
-                if (CrafterInteractorManager.hasInterator(interactor))
+                if (CrafterInteractorManager.hasInterator(interactor)) {
                     CrafterInteractorManager.getInteractor(interactor).setIngredientCount(interactor, 1);
+                }
             }
         });
     }
