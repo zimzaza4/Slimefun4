@@ -1,4 +1,4 @@
-你# Slimefun
+# Slimefun
 
 Looking for English (or Original) Version? [**Click here**](https://github.com/Slimefun/Slimefun4/)
 
