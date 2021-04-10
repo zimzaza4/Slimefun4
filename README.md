@@ -1,4 +1,4 @@
-# Slimefun
+你# Slimefun
 
 Looking for English (or Original) Version? [**Click here**](https://github.com/Slimefun/Slimefun4/)
 
@@ -6,7 +6,7 @@ Looking for English (or Original) Version? [**Click here**](https://github.com/S
 
 MCBBS 链接: https://www.mcbbs.net/thread-827594-1-1.html
 
-⚡ 汉化不易, 欢迎支持爱发电
+⚡ 汉化不易, 欢迎支持[爱发电](http://afdian.net/@name1ess)
 
 交流群：807302496
 
