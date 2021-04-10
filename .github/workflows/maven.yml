@@ -16,6 +16,8 @@ jobs:
       with:
         distribution: 'adopt'
         java-version: 11
+        java-package: jdk
+        architecture: x64
     - run: mvn -B package --file pom.xml --debug --errors
     - run: mkdir staging && cp target/*.jar staging
     - uses: actions/cache@v2
