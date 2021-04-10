@@ -1,5 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.autocrafters;
 
+import com.xzavier0722.mc.plugin.slimefun4.autocrafter.ChestInventoryParser;
+import com.xzavier0722.mc.plugin.slimefun4.autocrafter.CrafterInteractable;
+import com.xzavier0722.mc.plugin.slimefun4.autocrafter.CrafterInteractorManager;
 import io.github.thebusybiscuit.cscorelib2.data.PersistentDataAPI;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
@@ -7,12 +10,15 @@ import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemState;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.AutoCrafterListener;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.AsyncRecipeChoiceTask;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import io.papermc.lib.PaperLib;
 import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
@@ -25,23 +31,34 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.apache.commons.lang.Validate;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -54,6 +71,8 @@ import java.util.function.Predicate;
  *
  */
 public abstract class AbstractAutoCrafter extends SlimefunItem implements EnergyNetComponent {
+
+    private final Map<Block, ItemStack> recipeCache;
 
     /**
      * The amount of energy consumed per crafting operation.
@@ -92,6 +111,8 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
         recipeStorageKey = new NamespacedKey(SlimefunPlugin.instance(), "recipe_key");
         recipeEnabledKey = new NamespacedKey(SlimefunPlugin.instance(), "recipe_enabled");
 
+        recipeCache = new HashMap<>();
+
         addItemHandler(new BlockTicker() {
 
             @Override
@@ -102,6 +123,19 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
             @Override
             public boolean isSynchronized() {
                 return true;
+            }
+        });
+
+        addItemHandler(new BlockBreakHandler(false, true) {
+            @Override
+            public void onPlayerBreak(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
+                Block b = e.getBlock();
+                recipeCache.remove(b);
+
+                Block interactor = b.getRelative(BlockFace.DOWN);
+                if (CrafterInteractorManager.hasInterator(interactor)) {
+                    CrafterInteractorManager.getInteractor(interactor).setIngredientCount(interactor, 1);
+                }
             }
         });
     }
@@ -156,29 +190,93 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
     protected void tick(@Nonnull Block b, @Nonnull Config data) {
         AbstractRecipe recipe = getSelectedRecipe(b);
 
-        if (recipe == null || !recipe.isEnabled() || getCharge(b.getLocation(), data) < getEnergyConsumption()) {
-            // No recipe / disabled recipe / no energy, abort...
+        // If no recipe, return
+        if (recipe == null) {
             return;
         }
 
         // The block below where we would expect our inventory holder.
         Block targetBlock = b.getRelative(BlockFace.DOWN);
 
-        // Make sure this is a Chest
+        // Check if special interactor used. If so, check the recipe.
+        if (CrafterInteractorManager.hasInterator(targetBlock)) {
+            // Check if recipe change. If so, update the count...
+            ItemStack cachedRecipeResult = recipeCache.get(b);
+
+            if (cachedRecipeResult == null || !SlimefunUtils.isItemSimilar(recipe.getResult(), cachedRecipeResult, true, false)) {
+                recipeCache.put(b, recipe.getResult());
+                CrafterInteractorManager.getInteractor(targetBlock).setIngredientCount(targetBlock, getIngredientCount(recipe));
+            }
+        }
+
+        // If recipe noe enabled or no enough charge, return
+        if (!recipe.isEnabled() || getCharge(b.getLocation(), data) < getEnergyConsumption()) {
+            return;
+        }
+
+
+        // Make sure this is interactable
         if (isValidInventory(targetBlock)) {
-            BlockState state = PaperLib.getBlockState(targetBlock, false).getState();
+            CrafterInteractable interactor = null;
 
-            if (state instanceof InventoryHolder) {
-                Inventory inv = ((InventoryHolder) state).getInventory();
+            if (CrafterInteractorManager.hasInterator(targetBlock)) {
+                // Has valid interactor
+                interactor = CrafterInteractorManager.getInteractor(targetBlock);
+            }else{
+                // No custom interactor, check if the vanilla inventory
+                BlockState state = PaperLib.getBlockState(targetBlock, false).getState();
+                if (state instanceof InventoryHolder) {
+                    interactor = new ChestInventoryParser(((InventoryHolder) state).getInventory());
+                }
+            }
 
-                if (craft(inv, recipe)) {
+            // While passing the #isValidInventory means that there should a valid interactor, double check it for sure.
+            if (interactor != null) {
+                if (craft(interactor, recipe)) {
                     // We are done crafting!
                     Location loc = b.getLocation().add(0.5, 0.8, 0.5);
                     b.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, loc, 6);
                     removeCharge(b.getLocation(), getEnergyConsumption());
                 }
             }
+        } else recipeCache.remove(b);
+
+    }
+
+    /**
+     * This method checks whether the given {@link Predicate} matches the provided {@link ItemStack}.
+     *
+     * @param item
+     *            The {@link ItemStack} to check
+     * @param predicate
+     *            The {@link Predicate}
+     *
+     * @return Whether the {@link Predicate} matches the {@link ItemStack}
+     */
+    @ParametersAreNonnullByDefault
+    protected boolean matches(ItemStack item, Predicate<ItemStack> predicate) {
+        return predicate.test(item);
+    }
+
+    @ParametersAreNonnullByDefault
+    public boolean matchesAny(Inventory inv, Map<Integer, Integer> itemQuantities, Predicate<ItemStack> predicate) {
+        ItemStack[] contents = inv.getContents();
+
+        for (int slot = 0; slot < contents.length; slot++) {
+            ItemStack item = contents[slot];
+
+            if (item != null) {
+                int amount = itemQuantities.getOrDefault(slot, item.getAmount());
+
+                if (amount > 0 && matches(item, predicate)) {
+                    // Update our local quantity map
+                    itemQuantities.put(slot, amount - 1);
+                    return true;
+                }
+            }
         }
+
+        return false;
     }
 
     /**
@@ -193,6 +291,11 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
      * @return Whether that {@link Block} has a valid {@link Inventory}
      */
     protected boolean isValidInventory(@Nonnull Block block) {
+
+        if (CrafterInteractorManager.hasInterator(block)) {
+            return true;
+        }
+
         Material type = block.getType();
 
         switch (type) {
@@ -349,41 +452,7 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
         SlimefunPlugin.getLocalization().sendMessage(p, "messages.auto-crafting.recipe-removed");
     }
 
-    /**
-     * This method checks whether the given {@link Predicate} matches the provided {@link ItemStack}.
-     *
-     * @param item
-     *            The {@link ItemStack} to check
-     * @param predicate
-     *            The {@link Predicate}
-     *
-     * @return Whether the {@link Predicate} matches the {@link ItemStack}
-     */
-    @ParametersAreNonnullByDefault
-    protected boolean matches(ItemStack item, Predicate<ItemStack> predicate) {
-        return predicate.test(item);
-    }
 
-    @ParametersAreNonnullByDefault
-    protected boolean matchesAny(Inventory inv, Map<Integer, Integer> itemQuantities, Predicate<ItemStack> predicate) {
-        ItemStack[] contents = inv.getContents();
-
-        for (int slot = 0; slot < contents.length; slot++) {
-            ItemStack item = contents[slot];
-
-            if (item != null) {
-                int amount = itemQuantities.getOrDefault(slot, item.getAmount());
-
-                if (amount > 0 && matches(item, predicate)) {
-                    // Update our local quantity map
-                    itemQuantities.put(slot, amount - 1);
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
 
     /**
      * This method performs a crafting operation.
@@ -399,7 +468,7 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
      *
      * @return Whether this crafting operation was successful or not
      */
-    public boolean craft(@Nonnull Inventory inv, @Nonnull AbstractRecipe recipe) {
+    public boolean craft(@Nonnull CrafterInteractable inv, @Nonnull AbstractRecipe recipe) {
         Validate.notNull(inv, "The Inventory must not be null");
         Validate.notNull(recipe, "The Recipe shall not be null");
 
@@ -409,15 +478,12 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
         }
 
         // Check if we have an empty slot
-        if (inv.firstEmpty() != -1) {
+        if (inv.canOutput(recipe.getResult())) {
             Map<Integer, Integer> itemQuantities = new HashMap<>();
             List<ItemStack> leftoverItems = new ArrayList<>();
 
-            for (Predicate<ItemStack> predicate : recipe.getIngredients()) {
-                // Check if any Item matches the Predicate
-                if (!matchesAny(inv, itemQuantities, predicate)) {
-                    return false;
-                }
+            if (!inv.matchRecipe(this, recipe.getIngredients(), itemQuantities)) {
+                return false;
             }
 
             // Remove ingredients
@@ -440,7 +506,7 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
                 }
             }
 
-            boolean success = inv.addItem(recipe.getResult().clone()).isEmpty();
+            boolean success = inv.addItem(recipe.getResult().clone());
 
             if (success) {
                 // Fixes #2926 - Push leftover items to the inventory.
@@ -573,5 +639,60 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
     @Override
     public final EnergyNetComponentType getEnergyComponentType() {
         return EnergyNetComponentType.CONSUMER;
+    }
+
+    private int getIngredientCount(AbstractRecipe recipe) {
+
+        if (recipe instanceof SlimefunItemRecipe) {
+            // Recipe is for slimefun item
+            List<ItemStackWrapper> itemInRecipe = new ArrayList<>();
+            for (ItemStack each : SlimefunItem.getByItem(recipe.getResult()).getRecipe()) {
+                if (each == null) continue;
+                ItemStackWrapper wrapper = new ItemStackWrapper(each);
+                boolean found = false;
+                for (ItemStackWrapper foundItem : itemInRecipe) {
+                    if (SlimefunUtils.isItemSimilar(wrapper, foundItem, true, false)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    itemInRecipe.add(wrapper);
+                }
+            }
+            return itemInRecipe.size();
+        }
+
+
+        //Recipe is for vanilla item
+        Recipe vanillaRecipe = ((VanillaRecipe) recipe).getRecipe();
+
+        if (vanillaRecipe instanceof ShapelessRecipe) {
+            return ((ShapelessRecipe)vanillaRecipe).getIngredientList().size();
+        }
+
+        // Not shape less recipe, do check the shape.
+        Set<ItemStack> itemInRecipe = new HashSet<>();
+        // Loop to read each recipe shape char
+        for (String row : ((ShapedRecipe)vanillaRecipe).getShape()) {
+            for (char each : row.toCharArray()) {
+                // Get MaterialChoice from char
+                RecipeChoice.MaterialChoice materialChoice= (RecipeChoice.MaterialChoice) ((ShapedRecipe)vanillaRecipe).getChoiceMap().get(each);
+                if (materialChoice != null) {
+                    ItemStack itemInChoice = materialChoice.getItemStack();
+                    boolean found = false;
+                    for (ItemStack eachInRecipe : itemInRecipe) {
+                        if (eachInRecipe.isSimilar(itemInChoice)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        itemInRecipe.add(itemInChoice);
+                    }
+                }
+            }
+        }
+        return itemInRecipe.size();
     }
 }
