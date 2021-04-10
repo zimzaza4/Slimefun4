@@ -27,23 +27,23 @@ public class CrafterInteractorManager {
      *
      * @see CrafterInteractorHandler
      */
-    public static void register(String id, CrafterInteractorHandler handler){
+    public static void register(String id, CrafterInteractorHandler handler) {
         handlers.put(id,handler);
     }
 
-    public static CrafterInteractorHandler getHandler(String id){
+    public static CrafterInteractorHandler getHandler(String id) {
         return handlers.get(id);
     }
 
-    public static CrafterInteractable getInteractor(Block b){
-        if(hasInterator(b)){
+    public static CrafterInteractable getInteractor(Block b) {
+        if (hasInterator(b)) {
             CrafterInteractorHandler handler = handlers.get(BlockStorage.getLocationInfo(b.getLocation(),"id"));
             return handler.getInteractor(BlockStorage.getInventory(b));
         }
         return null;
     }
 
-    public static boolean hasInterator(Block b){
+    public static boolean hasInterator(Block b) {
         return BlockStorage.hasBlockInfo(b) && handlers.containsKey(BlockStorage.getLocationInfo(b.getLocation(),"id"));
     }
 

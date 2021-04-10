@@ -118,7 +118,7 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
                 recipeCache.remove(b);
 
                 Block interactor = b.getRelative(BlockFace.DOWN);
-                if(CrafterInteractorManager.hasInterator(interactor))
+                if (CrafterInteractorManager.hasInterator(interactor))
                     CrafterInteractorManager.getInteractor(interactor).setIngredientCount(interactor, 1);
             }
         });
@@ -175,42 +175,47 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
         AbstractRecipe recipe = getSelectedRecipe(b);
 
         // If no recipe, return
-        if (recipe == null) return;
+        if (recipe == null) {
+            return;
+        }
 
         // The block below where we would expect our inventory holder.
         Block targetBlock = b.getRelative(BlockFace.DOWN);
 
         // Check if special interactor used. If so, check the recipe.
-        if(CrafterInteractorManager.hasInterator(targetBlock)){
+        if (CrafterInteractorManager.hasInterator(targetBlock)) {
             // Check if recipe change. If so, update the count...
             ItemStack cachedRecipeResult = recipeCache.get(b);
 
-            if(cachedRecipeResult == null || !SlimefunUtils.isItemSimilar(recipe.getResult(), cachedRecipeResult, true, false)){
+            if (cachedRecipeResult == null || !SlimefunUtils.isItemSimilar(recipe.getResult(), cachedRecipeResult, true, false)) {
                 recipeCache.put(b, recipe.getResult());
                 CrafterInteractorManager.getInteractor(targetBlock).setIngredientCount(targetBlock, getIngredientCount(recipe));
             }
         }
 
         // If recipe noe enabled or no enough charge, return
-        if(!recipe.isEnabled() || getCharge(b.getLocation(), data) < getEnergyConsumption()) return;
+        if (!recipe.isEnabled() || getCharge(b.getLocation(), data) < getEnergyConsumption()) {
+            return;
+        }
 
 
         // Make sure this is interactable
         if (isValidInventory(targetBlock)) {
             CrafterInteractable interactor = null;
 
-            if(CrafterInteractorManager.hasInterator(targetBlock)){
+            if (CrafterInteractorManager.hasInterator(targetBlock)) {
                 // Has valid interactor
                 interactor = CrafterInteractorManager.getInteractor(targetBlock);
             }else{
                 // No custom interactor, check if the vanilla inventory
                 BlockState state = PaperLib.getBlockState(targetBlock, false).getState();
-                if (state instanceof InventoryHolder)
+                if (state instanceof InventoryHolder) {
                     interactor = new ChestInventoryParser(((InventoryHolder) state).getInventory());
+                }
             }
 
             // While passing the #isValidInventory means that there should a valid interactor, double check it for sure.
-            if(interactor != null){
+            if (interactor != null) {
                 if (craft(interactor, recipe)) {
                     // We are done crafting!
                     Location loc = b.getLocation().add(0.5, 0.8, 0.5);
@@ -271,7 +276,9 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
      */
     protected boolean isValidInventory(@Nonnull Block block) {
 
-        if(CrafterInteractorManager.hasInterator(block)) return true;
+        if (CrafterInteractorManager.hasInterator(block)) {
+            return true;
+        }
 
         Material type = block.getType();
 
@@ -459,7 +466,9 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
             Map<Integer, Integer> itemQuantities = new HashMap<>();
             List<ItemStack> leftoverItems = new ArrayList<>();
 
-            if(!inv.matchRecipe(this, recipe.getIngredients(), itemQuantities)) return false;
+            if (!inv.matchRecipe(this, recipe.getIngredients(), itemQuantities)) {
+                return false;
+            }
 
             // Remove ingredients
             for (Map.Entry<Integer, Integer> entry : itemQuantities.entrySet()) {
@@ -616,23 +625,24 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
         return EnergyNetComponentType.CONSUMER;
     }
 
-    private int getIngredientCount(AbstractRecipe recipe){
+    private int getIngredientCount(AbstractRecipe recipe) {
 
-        if(recipe instanceof SlimefunItemRecipe){
+        if (recipe instanceof SlimefunItemRecipe) {
             // Recipe is for slimefun item
             List<ItemStackWrapper> itemInRecipe = new ArrayList<>();
-            for(ItemStack each : SlimefunItem.getByItem(recipe.getResult()).getRecipe()){
-                if(each == null) continue;
+            for (ItemStack each : SlimefunItem.getByItem(recipe.getResult()).getRecipe()) {
+                if (each == null) continue;
                 ItemStackWrapper wrapper = new ItemStackWrapper(each);
                 boolean found = false;
-                for(ItemStackWrapper foundItem : itemInRecipe){
-                    if(SlimefunUtils.isItemSimilar(wrapper, foundItem, true, false)){
+                for (ItemStackWrapper foundItem : itemInRecipe) {
+                    if (SlimefunUtils.isItemSimilar(wrapper, foundItem, true, false)) {
                         found = true;
                         break;
                     }
                 }
-                if(!found)
+                if (!found) {
                     itemInRecipe.add(wrapper);
+                }
             }
             return itemInRecipe.size();
         }
@@ -641,26 +651,29 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
         //Recipe is for vanilla item
         Recipe vanillaRecipe = ((VanillaRecipe) recipe).getRecipe();
 
-        if(vanillaRecipe instanceof ShapelessRecipe) return ((ShapelessRecipe)vanillaRecipe).getIngredientList().size();
+        if (vanillaRecipe instanceof ShapelessRecipe) {
+            return ((ShapelessRecipe)vanillaRecipe).getIngredientList().size();
+        }
 
         // Not shape less recipe, do check the shape.
         Set<ItemStack> itemInRecipe = new HashSet<>();
         // Loop to read each recipe shape char
-        for(String row : ((ShapedRecipe)vanillaRecipe).getShape()){
-            for(char each : row.toCharArray()){
+        for (String row : ((ShapedRecipe)vanillaRecipe).getShape()) {
+            for (char each : row.toCharArray()) {
                 // Get MaterialChoice from char
                 RecipeChoice.MaterialChoice materialChoice= (RecipeChoice.MaterialChoice) ((ShapedRecipe)vanillaRecipe).getChoiceMap().get(each);
-                if(materialChoice != null){
+                if (materialChoice != null) {
                     ItemStack itemInChoice = materialChoice.getItemStack();
                     boolean found = false;
-                    for(ItemStack eachInRecipe : itemInRecipe){
-                        if(eachInRecipe.isSimilar(itemInChoice)){
+                    for (ItemStack eachInRecipe : itemInRecipe) {
+                        if (eachInRecipe.isSimilar(itemInChoice)) {
                             found = true;
                             break;
                         }
                     }
-                    if(!found)
+                    if (!found) {
                         itemInRecipe.add(itemInChoice);
+                    }
                 }
             }
         }

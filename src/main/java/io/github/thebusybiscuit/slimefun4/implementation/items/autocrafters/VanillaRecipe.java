@@ -41,7 +41,7 @@ class VanillaRecipe extends AbstractRecipe {
         this.recipe = recipe;
     }
 
-    public Recipe getRecipe(){
+    public Recipe getRecipe() {
         return recipe;
     }
 

@@ -40,11 +40,11 @@ public class CrafterSmartPort extends SlimefunItem{
             @Override
             public void init() {
                 addItem(6, getCountItem(),(p, slot, item, action)->false);
-                for(int i = 15; i < 54 ; i+=9){
+                for (int i = 15; i < 54 ; i+=9) {
                     addItem(i, ChestMenuUtils.getBackground(),(p, slot, item, action)->false);
                 }
 
-                for(int slot : OUTPUT_SLOTS){
+                for (int slot : OUTPUT_SLOTS) {
                     addMenuClickHandler(slot, new AdvancedMenuClickHandler() {
                         @Override
                         public boolean onClick(Player p, int slot, ItemStack cursor, ClickAction action) {
@@ -65,13 +65,14 @@ public class CrafterSmartPort extends SlimefunItem{
             }
 
             @Override
-            public void newInstance(@Nonnull BlockMenu menu, @Nonnull Block b){
+            public void newInstance(@Nonnull BlockMenu menu, @Nonnull Block b) {
                 // Check if has inv
-                if(BlockStorage.hasInventory(b)){
+                if (BlockStorage.hasInventory(b)) {
                     // Resume the ingredient count
                     String countStr = BlockStorage.getLocationInfo(b.getLocation(),"ingredientCount");
-                    if(countStr != null)
+                    if (countStr != null) {
                         menu.getItemInSlot(6).setAmount(Integer.parseInt(countStr));
+                    }
 
                 }
             }
@@ -82,20 +83,20 @@ public class CrafterSmartPort extends SlimefunItem{
             }
 
             @Override
-            public int[] getSlotsAccessedByItemTransport(DirtyChestMenu menu, ItemTransportFlow flow, ItemStack item){
-                if(flow == ItemTransportFlow.WITHDRAW) return OUTPUT_SLOTS;
+            public int[] getSlotsAccessedByItemTransport(DirtyChestMenu menu, ItemTransportFlow flow, ItemStack item) {
+                if (flow == ItemTransportFlow.WITHDRAW) return OUTPUT_SLOTS;
 
                 int itemAmount = 0;
                 ItemStackWrapper wrapper = new ItemStackWrapper(item);
-                for(int slot : INPUT_SLOTS){
+                for (int slot : INPUT_SLOTS) {
                     ItemStack itemInSlot = menu.getItemInSlot(slot);
-                    if(SlimefunUtils.isItemSimilar(itemInSlot, wrapper, true, false)){
+                    if (SlimefunUtils.isItemSimilar(itemInSlot, wrapper, true, false)) {
                         itemAmount += itemInSlot.getAmount();
                     }
                 }
 
                 int amountLimit = INPUT_SLOTS.length / menu.getItemInSlot(6).getAmount() * wrapper.getMaxStackSize();
-                if(itemAmount + wrapper.getAmount() <= amountLimit) return INPUT_SLOTS;
+                if (itemAmount + wrapper.getAmount() <= amountLimit) return INPUT_SLOTS;
                 return new int[0];
             }
         };
@@ -104,28 +105,28 @@ public class CrafterSmartPort extends SlimefunItem{
     }
 
     @Override
-    public void preRegister(){
+    public void preRegister() {
         addItemHandler(new BlockBreakHandler(false, true) {
             @Override
             public void onPlayerBreak(@Nonnull BlockBreakEvent e, @Nonnull ItemStack item, @Nonnull List<ItemStack> drops) {
                 Block b = e.getBlock();
                 BlockMenu inv = BlockStorage.getInventory(b);
-                if(inv != null){
-                    for(int slot : INPUT_SLOTS){
+                if (inv != null) {
+                    for (int slot : INPUT_SLOTS) {
                         ItemStack itemInSlot = inv.getItemInSlot(slot);
-                        if(itemInSlot != null) drops.add(itemInSlot);
+                        if (itemInSlot != null) drops.add(itemInSlot);
                     }
 
-                    for(int slot : OUTPUT_SLOTS){
+                    for (int slot : OUTPUT_SLOTS) {
                         ItemStack itemInSlot = inv.getItemInSlot(slot);
-                        if(itemInSlot != null) drops.add(itemInSlot);
+                        if (itemInSlot != null) drops.add(itemInSlot);
                     }
                 }
             }
         });
     }
 
-    private ItemStack getCountItem(){
+    private ItemStack getCountItem() {
         ItemStack countItem = new ItemStack(Material.CLOCK);
         ItemMeta im = countItem.getItemMeta();
         im.setDisplayName(ChatColor.BLUE+"合成表的原料数量");

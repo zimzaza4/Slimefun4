@@ -45,7 +45,7 @@ public interface CrafterInteractable {
      * @param b: block to update.
      * @param count: amount of different item.
      */
-    default void setIngredientCount(Block b, int count){}
+    default void setIngredientCount(Block b, int count) {}
 
 
 }

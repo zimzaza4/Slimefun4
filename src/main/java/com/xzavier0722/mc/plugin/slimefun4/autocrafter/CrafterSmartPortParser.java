@@ -16,7 +16,7 @@ public class CrafterSmartPortParser implements CrafterInteractable{
 
     BlockMenu inv;
 
-    public CrafterSmartPortParser(BlockMenu inv){
+    public CrafterSmartPortParser(BlockMenu inv) {
         this.inv = inv;
     }
 
@@ -25,13 +25,17 @@ public class CrafterSmartPortParser implements CrafterInteractable{
         ItemStackWrapper wrapper = new ItemStackWrapper(item);
 
         int amountLeft = wrapper.getAmount();
-        for(int slot : CrafterSmartPort.OUTPUT_SLOTS){
+        for (int slot : CrafterSmartPort.OUTPUT_SLOTS) {
             ItemStack itemInSlot = inv.getItemInSlot(slot);
-            if(itemInSlot == null) return true;
-            if(SlimefunUtils.isItemSimilar(itemInSlot, wrapper, true, false)){
+            if (itemInSlot == null) {
+                return true;
+            }
+            if (SlimefunUtils.isItemSimilar(itemInSlot, wrapper, true, false)) {
                 int slotItemAmount = itemInSlot.getAmount();
                 int maxAmount = itemInSlot.getMaxStackSize();
-                if(slotItemAmount + amountLeft <= maxAmount) return true;
+                if (slotItemAmount + amountLeft <= maxAmount) {
+                    return true;
+                }
                 amountLeft -= maxAmount - slotItemAmount;
             }
         }

@@ -21,7 +21,7 @@ public class ChestInventoryParser implements CrafterInteractable{
 
     private final Inventory inv;
 
-    public ChestInventoryParser(Inventory inv){
+    public ChestInventoryParser(Inventory inv) {
         this.inv = inv;
     }
 
@@ -51,18 +51,20 @@ public class ChestInventoryParser implements CrafterInteractable{
         return inv.addItem(item).isEmpty();
     }
 
-    private boolean isFit(ItemStack item){
+    private boolean isFit(ItemStack item) {
         ItemStack[] contents = inv.getContents();
 
         ItemStackWrapper wrapper = new ItemStackWrapper(item);
         int amount = wrapper.getAmount();
 
-        for(ItemStack each : contents){
+        for (ItemStack each : contents) {
             int eachAmount = each.getAmount();
             int maxAmount = each.getMaxStackSize();
-            if(SlimefunUtils.isItemSimilar(each, wrapper, true, false) && eachAmount < maxAmount){
+            if (SlimefunUtils.isItemSimilar(each, wrapper, true, false) && eachAmount < maxAmount) {
                 int restAmount = maxAmount - eachAmount;
-                if(amount <= restAmount) return true;
+                if (amount <= restAmount) {
+                    return true;
+                }
                 amount -= restAmount;
             }
         }
