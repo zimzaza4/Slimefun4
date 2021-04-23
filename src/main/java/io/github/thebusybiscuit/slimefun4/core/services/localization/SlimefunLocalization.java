@@ -1,23 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.core.services.localization;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.UnaryOperator;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Keyed;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Server;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.config.Localization;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
@@ -29,6 +11,24 @@ import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.commons.lang.Validate;
+import org.bukkit.ChatColor;
+import org.bukkit.Keyed;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Server;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.UnaryOperator;
 
 /**
  * This is an abstract parent class of {@link LocalizationService}.
@@ -65,6 +65,7 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
      *
      * @return The {@link Language} that was selected by the given {@link Player}
      */
+    @Nullable
     public abstract Language getLanguage(@Nonnull Player p);
 
     /**
@@ -72,6 +73,7 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
      *
      * @return The default {@link Language}
      */
+    @Nullable
     public abstract Language getDefaultLanguage();
 
     /**
@@ -117,7 +119,28 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
         }
     }
 
-    public String getMessage(Player p, String key) {
+    @Nonnull
+    @Override
+    public String getMessage(@Nonnull String key) {
+        Validate.notNull(key, "Message key cannot be null!");
+
+        Language language = getDefaultLanguage();
+
+        String message = language == null ? null : language.getMessagesFile().getString(key);
+
+        if (message == null) {
+            Language fallback = getLanguage(SupportedLanguage.ENGLISH.getLanguageId());
+            return fallback.getMessagesFile().getString(key);
+        }
+
+        return message;
+    }
+
+    @Nonnull
+    public String getMessage(@Nonnull Player p, @Nonnull String key) {
+        Validate.notNull(p, "Player cannot be null!");
+        Validate.notNull(key, "Message key cannot be null!");
+
         Language language = getLanguage(p);
 
         if (language == null) {
@@ -134,11 +157,15 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
         return message;
     }
 
-    public List<String> getMessages(Player p, String key) {
+    @Nonnull
+    public List<String> getMessages(@Nonnull Player p, @Nonnull String key) {
+        Validate.notNull(p, "Player cannot be null!");
+        Validate.notNull(key, "Message key cannot be null!");
+
         Language language = getLanguage(p);
 
         if (language == null) {
-            return Arrays.asList("NO LANGUAGE FOUND");
+            return Collections.singletonList("NO LANGUAGE FOUND");
         }
 
         List<String> messages = language.getMessagesFile().getStringList(key);
@@ -151,37 +178,55 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
         return messages;
     }
 
+    @Nonnull
+    @ParametersAreNonnullByDefault
     public List<String> getMessages(Player p, String key, UnaryOperator<String> function) {
+        Validate.notNull(p, "Player cannot be null!");
+        Validate.notNull(key, "Message key cannot be null!");
+        Validate.notNull(function, "Function cannot be null!");
+
         List<String> messages = getMessages(p, key);
         messages.replaceAll(function);
 
         return messages;
     }
 
-    public String getResearchName(Player p, NamespacedKey key) {
+    @Nullable
+    public String getResearchName(@Nonnull Player p, @Nonnull NamespacedKey key) {
+        Validate.notNull(p, "Player cannot be null!");
+        Validate.notNull(key, "NamespacedKey cannot be null!");
+
         Language language = getLanguage(p);
 
-        if (language.getResearchesFile() == null) {
+        if (language == null || language.getResearchesFile() == null) {
             return null;
         }
 
-        return language.getResearchesFile().getString(key.getNamespace() + "." + key.getKey());
+        return language.getResearchesFile().getString(key.getNamespace() + '.' + key.getKey());
     }
 
-    public String getCategoryName(Player p, NamespacedKey key) {
+    @Nullable
+    public String getCategoryName(@Nonnull Player p, @Nonnull NamespacedKey key) {
+        Validate.notNull(p, "Player cannot be null!");
+        Validate.notNull(key, "NamespacedKey cannot be null!");
+
         Language language = getLanguage(p);
 
-        if (language.getCategoriesFile() == null) {
+        if (language == null || language.getCategoriesFile() == null) {
             return null;
         }
 
-        return language.getCategoriesFile().getString(key.getNamespace() + "." + key.getKey());
+        return language.getCategoriesFile().getString(key.getNamespace() + '.' + key.getKey());
     }
 
-    public String getResourceString(Player p, String key) {
+    @Nonnull
+    public String getResourceString(@Nonnull Player p, @Nonnull String key) {
+        Validate.notNull(p, "Player cannot be null!");
+        Validate.notNull(key, "Message key cannot be null!");
+
         Language language = getLanguage(p);
 
-        String value = language.getResourcesFile() != null ? language.getResourcesFile().getString(key) : null;
+        String value = language != null && language.getResourcesFile() != null ? language.getResourcesFile().getString(key) : null;
 
         if (value != null) {
             return value;
@@ -191,16 +236,20 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
         }
     }
 
-    public ItemStack getRecipeTypeItem(Player p, RecipeType recipeType) {
+    @Nonnull
+    public ItemStack getRecipeTypeItem(@Nonnull Player p, @Nonnull RecipeType recipeType) {
+        Validate.notNull(p, "Player cannot be null!");
+        Validate.notNull(recipeType, "Recipe type cannot be null!");
+
         Language language = getLanguage(p);
         ItemStack item = recipeType.toItem();
         NamespacedKey key = recipeType.getKey();
 
-        if (language.getRecipeTypesFile() == null || !language.getRecipeTypesFile().contains(key.getNamespace() + "." + key.getKey())) {
+        if (language == null || language.getRecipeTypesFile() == null || !language.getRecipeTypesFile().contains(key.getNamespace() + '.' + key.getKey())) {
             language = getLanguage("en");
         }
 
-        if (!language.getRecipeTypesFile().contains(key.getNamespace() + "." + key.getKey())) {
+        if (!language.getRecipeTypesFile().contains(key.getNamespace() + '.' + key.getKey())) {
             return item;
         }
 
@@ -218,7 +267,10 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
     }
 
     @Override
-    public void sendMessage(CommandSender recipient, String key, boolean addPrefix) {
+    public void sendMessage(@Nonnull CommandSender recipient, @Nonnull String key, boolean addPrefix) {
+        Validate.notNull(recipient, "Recipient cannot be null!");
+        Validate.notNull(key, "Message key cannot be null!");
+
         String prefix = addPrefix ? getPrefix() : "";
 
         if (recipient instanceof Player) {
@@ -229,6 +281,8 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
     }
 
     public void sendActionbarMessage(@Nonnull Player player, @Nonnull String key, boolean addPrefix) {
+        Validate.notNull(player, "Player cannot be null!");
+
         String prefix = addPrefix ? getPrefix() : "";
         String message = ChatColors.color(prefix + getMessage(player, key));
 
@@ -237,15 +291,17 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
     }
 
     @Override
-    public void sendMessage(CommandSender recipient, String key) {
+    public void sendMessage(@Nonnull CommandSender recipient, @Nonnull String key) {
         sendMessage(recipient, key, true);
     }
 
+    @ParametersAreNonnullByDefault
     public void sendMessage(CommandSender recipient, String key, UnaryOperator<String> function) {
         sendMessage(recipient, key, true, function);
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public void sendMessage(CommandSender recipient, String key, boolean addPrefix, UnaryOperator<String> function) {
         if (SlimefunPlugin.getMinecraftVersion() == MinecraftVersion.UNIT_TEST) {
             return;
@@ -261,7 +317,7 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
     }
 
     @Override
-    public void sendMessages(CommandSender recipient, String key) {
+    public void sendMessages(@Nonnull CommandSender recipient, @Nonnull String key) {
         String prefix = getPrefix();
 
         if (recipient instanceof Player) {
@@ -278,6 +334,7 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public void sendMessages(CommandSender recipient, String key, boolean addPrefix, UnaryOperator<String> function) {
         String prefix = addPrefix ? getPrefix() : "";
 
@@ -294,8 +351,8 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
         }
     }
 
+    @ParametersAreNonnullByDefault
     public void sendMessages(CommandSender recipient, String key, UnaryOperator<String> function) {
         sendMessages(recipient, key, true, function);
     }
-
 }

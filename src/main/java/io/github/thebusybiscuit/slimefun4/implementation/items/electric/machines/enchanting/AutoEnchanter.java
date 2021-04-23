@@ -3,6 +3,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machine
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.api.events.AutoEnchantEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.api.items.settings.IntRangeSetting;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
@@ -13,11 +14,13 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,6 +63,13 @@ public class AutoEnchanter extends AContainer {
 
             // Check if the item is enchantable
             if (!isEnchantable(target)) {
+                return null;
+            }
+
+            AutoEnchantEvent event = new AutoEnchantEvent(target);
+            Bukkit.getPluginManager().callEvent(event);
+
+            if (event.isCancelled()) {
                 return null;
             }
 
@@ -113,15 +123,14 @@ public class AutoEnchanter extends AContainer {
         return null;
     }
 
-    private boolean isEnchantable(ItemStack item) {
-        SlimefunItem sfItem = null;
-
+    private boolean isEnchantable(@Nullable ItemStack item) {
         // stops endless checks of getByItem for enchanted book stacks.
         if (item != null && item.getType() != Material.ENCHANTED_BOOK) {
-            sfItem = SlimefunItem.getByItem(item);
+            SlimefunItem sfItem = SlimefunItem.getByItem(item);
+            return sfItem == null || sfItem.isEnchantable();
+        } else {
+            return false;
         }
-
-        return sfItem == null || sfItem.isEnchantable();
     }
 
     @Override

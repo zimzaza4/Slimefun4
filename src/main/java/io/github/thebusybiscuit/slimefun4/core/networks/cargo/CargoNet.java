@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -40,10 +41,12 @@ public class CargoNet extends AbstractItemNetwork implements HologramOwner {
     protected final Map<Location, Integer> roundRobin = new HashMap<>();
     private int tickDelayThreshold = 0;
 
+    @Nullable
     public static CargoNet getNetworkFromLocation(@Nonnull Location l) {
         return SlimefunPlugin.getNetworkManager().getNetworkFromLocation(l, CargoNet.class).orElse(null);
     }
 
+    @Nonnull
     public static CargoNet getNetworkFromLocationOrCreate(@Nonnull Location l) {
         Optional<CargoNet> cargoNetwork = SlimefunPlugin.getNetworkManager().getNetworkFromLocation(l, CargoNet.class);
 
@@ -138,7 +141,7 @@ public class CargoNet extends AbstractItemNetwork implements HologramOwner {
         }
     }
 
-    public void tick(Block b) {
+    public void tick(@Nonnull Block b) {
         if (!regulator.equals(b.getLocation())) {
             updateHologram(b, "&4发现附近有多个货运网络调节机");
             return;
@@ -179,6 +182,7 @@ public class CargoNet extends AbstractItemNetwork implements HologramOwner {
         }
     }
 
+    @Nonnull
     private Map<Location, Integer> mapInputNodes(Set<Location> chestTerminalNodes) {
         Map<Location, Integer> inputs = new HashMap<>();
 
@@ -244,14 +248,15 @@ public class CargoNet extends AbstractItemNetwork implements HologramOwner {
      */
     private static int getFrequency(@Nonnull Location node) {
 
-        String str = BlockStorage.getLocationInfo(node,"frequency");
-        if (str == null) {
+        String frequency = BlockStorage.getLocationInfo(node,"frequency");
+
+        if (frequency == null) {
             return 0;
-        } else if (!PatternUtils.NUMERIC.matcher(str).matches()) {
+        } else if (!PatternUtils.NUMERIC.matcher(frequency).matches()) {
             SlimefunPlugin.logger().log(Level.SEVERE, () -> "An Error occurred while parsing a Cargo Node Frequency (" + node.getWorld().getName() + " - " + node.getBlockX() + ',' + node.getBlockY() + ',' + node.getBlockZ() + ')');
             return 0;
+        } else {
+            return Integer.parseInt(frequency);
         }
-        return Integer.parseInt(str);
-
     }
 }

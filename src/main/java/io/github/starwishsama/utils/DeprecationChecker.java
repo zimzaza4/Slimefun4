@@ -15,7 +15,7 @@ public class DeprecationChecker {
         List<Plugin> result = Arrays.stream(plugin.getServer().getPluginManager().getPlugins()).filter(p -> unrecommendedPlugins.contains(p.getName())).collect(Collectors.toList());
 
         if (!result.isEmpty()) {
-            plugin.getLogger().warning("你正在使用过时的修复插件 " + result.toString());
+            plugin.getLogger().warning("你正在使用过时的修复插件 " + result);
             plugin.getLogger().warning("这些插件仅支持 1.12 以下版本或者官方版本已经修复这些问题");
             plugin.getLogger().warning("如方块放置机刷物品, 快捷键刷物品等");
         }
