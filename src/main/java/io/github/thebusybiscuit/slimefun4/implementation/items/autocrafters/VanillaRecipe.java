@@ -6,8 +6,12 @@ import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Keyed;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.RecipeChoice.MaterialChoice;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -39,6 +43,10 @@ class VanillaRecipe extends AbstractRecipe {
         super(getChoices(recipe), recipe.getResult());
 
         this.recipe = recipe;
+    }
+
+    public Recipe getRecipe() {
+        return recipe;
     }
 
     @Nonnull
