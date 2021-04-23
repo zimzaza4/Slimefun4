@@ -12,6 +12,10 @@
         <pattern>feature/(.+)></pattern>
         <versionFormat>4.9-${1}-${commit.short}</versionFormat>
     </branch>
+    <branch>
+        <pattern>release</pattern>
+        <versionFormat>4.9-dev-${commit.short}</versionFormat>
+    </branch>
     <tag>
         <pattern>v([0-9].*)></pattern>
         <versionFormat>${1}</versionFormat>
