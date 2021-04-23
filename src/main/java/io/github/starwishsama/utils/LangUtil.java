@@ -10,6 +10,8 @@ import java.util.logging.Logger;
  * LangUtil
  * <p>
  * 将部分无法直接汉化的方法提取出来
+ *
+ * @author StarWishsama
  */
 public class LangUtil {
     /**

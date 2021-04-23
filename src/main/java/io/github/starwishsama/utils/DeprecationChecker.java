@@ -8,6 +8,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author StarWishsama
+ */
 public class DeprecationChecker {
     private static final List<String> unrecommendedPlugins = Collections.unmodifiableList(Arrays.asList("SlimeFunBookFix", "SlimefunBugFixer", "WipeGhostSlimefunBlock", "SlimefunFix"));
 

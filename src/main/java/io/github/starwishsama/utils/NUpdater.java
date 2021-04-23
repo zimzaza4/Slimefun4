@@ -8,7 +8,6 @@ import io.github.starwishsama.utils.data.GithubObject;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.apache.commons.lang.Validate;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -24,7 +23,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 
 /**
- * @author Nameless
+ * @author StarWishsama
  */
 public class NUpdater {
 

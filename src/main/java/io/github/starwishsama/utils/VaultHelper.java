@@ -7,7 +7,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import java.util.logging.Level;
 
 /**
- * @author Nameless
+ * @author StarWishsama
  */
 public class VaultHelper {
     private static Economy econ = null;

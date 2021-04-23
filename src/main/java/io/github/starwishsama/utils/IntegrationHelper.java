@@ -28,7 +28,7 @@ import java.util.logging.Level;
 /**
  * 保护插件权限检查器
  *
- * @author Nameless
+ * @author StarWishsama
  */
 public class IntegrationHelper implements Listener {
     private static boolean resInstalled;
