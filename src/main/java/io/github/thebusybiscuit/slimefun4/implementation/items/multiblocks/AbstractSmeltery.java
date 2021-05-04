@@ -7,7 +7,6 @@ import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Effect;
 import org.bukkit.Sound;
@@ -28,7 +27,7 @@ import java.util.List;
  */
 abstract class AbstractSmeltery extends MultiBlockMachine {
 
-    public AbstractSmeltery(Category category, SlimefunItemStack item, ItemStack[] recipe, BlockFace trigger) {
+    protected AbstractSmeltery(Category category, SlimefunItemStack item, ItemStack[] recipe, BlockFace trigger) {
         super(category, item, recipe, trigger);
     }
 

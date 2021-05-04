@@ -122,7 +122,7 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
     @Nonnull
     @Override
     public String getMessage(@Nonnull String key) {
-        Validate.notNull(key, "Message key cannot be null!");
+        Validate.notNull(key, "Message key must not be null!");
 
         Language language = getDefaultLanguage();
 
@@ -138,8 +138,8 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
 
     @Nonnull
     public String getMessage(@Nonnull Player p, @Nonnull String key) {
-        Validate.notNull(p, "Player cannot be null!");
-        Validate.notNull(key, "Message key cannot be null!");
+        Validate.notNull(p, "Player must not be null!");
+        Validate.notNull(key, "Message key must not be null!");
 
         Language language = getLanguage(p);
 
@@ -159,8 +159,8 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
 
     @Nonnull
     public List<String> getMessages(@Nonnull Player p, @Nonnull String key) {
-        Validate.notNull(p, "Player cannot be null!");
-        Validate.notNull(key, "Message key cannot be null!");
+        Validate.notNull(p, "Player should not be null.");
+        Validate.notNull(key, "Message key cannot be null.");
 
         Language language = getLanguage(p);
 
@@ -181,9 +181,9 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
     @Nonnull
     @ParametersAreNonnullByDefault
     public List<String> getMessages(Player p, String key, UnaryOperator<String> function) {
-        Validate.notNull(p, "Player cannot be null!");
-        Validate.notNull(key, "Message key cannot be null!");
-        Validate.notNull(function, "Function cannot be null!");
+        Validate.notNull(p, "Player cannot be null.");
+        Validate.notNull(key, "Message key cannot be null.");
+        Validate.notNull(function, "Function cannot be null.");
 
         List<String> messages = getMessages(p, key);
         messages.replaceAll(function);
@@ -193,8 +193,8 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
 
     @Nullable
     public String getResearchName(@Nonnull Player p, @Nonnull NamespacedKey key) {
-        Validate.notNull(p, "Player cannot be null!");
-        Validate.notNull(key, "NamespacedKey cannot be null!");
+        Validate.notNull(p, "Player must not be null.");
+        Validate.notNull(key, "NamespacedKey cannot be null.");
 
         Language language = getLanguage(p);
 
@@ -207,7 +207,7 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
 
     @Nullable
     public String getCategoryName(@Nonnull Player p, @Nonnull NamespacedKey key) {
-        Validate.notNull(p, "Player cannot be null!");
+        Validate.notNull(p, "Player must not be null.");
         Validate.notNull(key, "NamespacedKey cannot be null!");
 
         Language language = getLanguage(p);
@@ -219,10 +219,10 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
         return language.getCategoriesFile().getString(key.getNamespace() + '.' + key.getKey());
     }
 
-    @Nonnull
+    @Nullable
     public String getResourceString(@Nonnull Player p, @Nonnull String key) {
-        Validate.notNull(p, "Player cannot be null!");
-        Validate.notNull(key, "Message key cannot be null!");
+        Validate.notNull(p, "Player should not be null!");
+        Validate.notNull(key, "Message key should not be null!");
 
         Language language = getLanguage(p);
 
@@ -236,7 +236,7 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
         }
     }
 
-    @Nonnull
+    @Nullable
     public ItemStack getRecipeTypeItem(@Nonnull Player p, @Nonnull RecipeType recipeType) {
         Validate.notNull(p, "Player cannot be null!");
         Validate.notNull(recipeType, "Recipe type cannot be null!");
@@ -282,6 +282,7 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
 
     public void sendActionbarMessage(@Nonnull Player player, @Nonnull String key, boolean addPrefix) {
         Validate.notNull(player, "Player cannot be null!");
+        Validate.notNull(key, "Message key cannot be null!");
 
         String prefix = addPrefix ? getPrefix() : "";
         String message = ChatColors.color(prefix + getMessage(player, key));

@@ -28,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public abstract class NetherStarReactor extends Reactor implements HologramOwner {
 
     @ParametersAreNonnullByDefault
-    public NetherStarReactor(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    protected NetherStarReactor(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
     }
 

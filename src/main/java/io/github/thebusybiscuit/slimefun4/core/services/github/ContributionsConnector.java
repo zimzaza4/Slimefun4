@@ -52,7 +52,9 @@ class ContributionsConnector extends GitHubConnector {
      */
     private void loadConfiguration() {
         ignoredAccounts.add("invalid-email-address");
+        ignoredAccounts.add("renovate");
         ignoredAccounts.add("renovate-bot");
+        ignoredAccounts.add("renovate[bot]");
         ignoredAccounts.add("TheBusyBot");
         ignoredAccounts.add("ImgBotApp");
         ignoredAccounts.add("imgbot");

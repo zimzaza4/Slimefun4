@@ -40,7 +40,7 @@ public abstract class AutomatedCraftingChamber extends SlimefunItem implements I
 
     private final Map<String, ItemStack> craftingRecipes = new HashMap<>();
 
-    public AutomatedCraftingChamber(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    protected AutomatedCraftingChamber(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
         new BlockMenuPreset(getId(), "&c该机器已无法使用, 请使用新版自动合成机") {

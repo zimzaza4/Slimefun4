@@ -31,12 +31,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public abstract class SimpleSlimefunItem<T extends ItemHandler> extends SlimefunItem {
 
     @ParametersAreNonnullByDefault
-    public SimpleSlimefunItem(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    protected SimpleSlimefunItem(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
     }
 
     @ParametersAreNonnullByDefault
-    public SimpleSlimefunItem(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, @Nullable ItemStack recipeOutput) {
+    protected SimpleSlimefunItem(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, @Nullable ItemStack recipeOutput) {
         super(category, item, recipeType, recipe, recipeOutput);
     }
 
