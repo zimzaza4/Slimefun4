@@ -2,7 +2,7 @@ package io.github.thebusybiscuit.slimefun4.api.events;
 
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.enchanting.AutoEnchanter;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
-import org.bukkit.Bukkit;
+
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -26,7 +26,7 @@ public class AutoEnchantProcessEvent extends Event implements Cancellable {
     private boolean cancelled;
 
     public AutoEnchantProcessEvent(@Nonnull ItemStack item, @Nonnull ItemStack enchantBook, @Nonnull BlockMenu menu) {
-    super(!Bukkit.isPrimaryThread());
+        super(true);
 
         this.item = item;
         this.enchantBook = enchantBook;

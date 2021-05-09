@@ -29,6 +29,7 @@ import java.util.Map;
  * @author Poslovitch
  * @author Mooy1
  * @author StarWishSama
+ * @author martinbrom
  *
  * @see AutoDisenchanter
  *
@@ -52,7 +53,7 @@ public class AutoEnchanter extends AbstractEnchantmentMachine {
 
             // Check if the item is enchantable
             if (!isEnchantable(item)) {
-                return null;
+                continue;
             }
 
             // Call an event so other Plugins can modify it.
@@ -86,13 +87,11 @@ public class AutoEnchanter extends AbstractEnchantmentMachine {
 
         EnchantmentStorageMeta meta = (EnchantmentStorageMeta) enchantedBook.getItemMeta();
         Map<Enchantment, Integer> enchantments = new HashMap<>();
-        int amount = 0;
 
         // Find applicable enchantments
         for (Map.Entry<Enchantment, Integer> entry : meta.getStoredEnchants().entrySet()) {
             if (entry.getKey().canEnchantItem(target)) {
                 if (isEnchantmentLevelAllowed(entry.getValue())) {
-                    amount++;
                     enchantments.put(entry.getKey(), entry.getValue());
                 } else if (!menu.toInventory().getViewers().isEmpty()) {
                     showEnchantmentLevelWarning(menu);
@@ -102,15 +101,12 @@ public class AutoEnchanter extends AbstractEnchantmentMachine {
         }
 
         // Check if we found any valid enchantments
-        if (amount > 0) {
+        if (!enchantments.isEmpty()) {
             ItemStack enchantedItem = target.clone();
             enchantedItem.setAmount(1);
+            enchantedItem.addUnsafeEnchantments(enchantments);
 
-            for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
-                enchantedItem.addUnsafeEnchantment(entry.getKey(), entry.getValue());
-            }
-
-            MachineRecipe recipe = new MachineRecipe(75 * amount / this.getSpeed(), new ItemStack[] { target, enchantedBook }, new ItemStack[] { enchantedItem, new ItemStack(Material.BOOK) });
+            MachineRecipe recipe = new MachineRecipe(75 * enchantments.size() / getSpeed(), new ItemStack[] { target, enchantedBook }, new ItemStack[] { enchantedItem, new ItemStack(Material.BOOK) });
 
             if (!InvUtils.fitAll(menu.toInventory(), recipe.getOutput(), getOutputSlots())) {
                 return null;
@@ -128,7 +124,7 @@ public class AutoEnchanter extends AbstractEnchantmentMachine {
 
     private boolean isEnchantable(@Nullable ItemStack item) {
         // stops endless checks of getByItem for enchanted book stacks.
-        if (item != null && item.getType() != Material.ENCHANTED_BOOK) {
+        if (item != null && item.getType() != Material.ENCHANTED_BOOK && !item.getType().isAir() && !hasIgnoredLore(item)) {
             SlimefunItem sfItem = SlimefunItem.getByItem(item);
             return sfItem == null || sfItem.isEnchantable();
         } else {
