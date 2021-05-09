@@ -54,18 +54,18 @@ public class AutoEnchanter extends AbstractEnchantmentMachine {
                 return null;
             }
 
-            // Call an event so other Plugins can modify it.
-            AutoEnchantEvent event = new AutoEnchantEvent(item);
-            Bukkit.getPluginManager().callEvent(event);
+            ItemStack enchantBook = menu.getItemInSlot(slot);
 
-            if (event.isCancelled()) {
-                return null;
-            }
+            if (enchantBook != null && enchantBook.getType() == Material.ENCHANTED_BOOK) {
+                // Call an event so other Plugins can modify it.
+                AutoEnchantEvent event = new AutoEnchantEvent(item, enchantBook, this);
+                Bukkit.getPluginManager().callEvent(event);
 
-            ItemStack secondItem = menu.getItemInSlot(slot);
+                if (event.isCancelled()) {
+                    return null;
+                }
 
-            if (secondItem != null && secondItem.getType() == Material.ENCHANTED_BOOK) {
-                return enchant(menu, item, secondItem);
+                return enchant(menu, item, enchantBook);
             }
         }
 
