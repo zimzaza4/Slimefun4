@@ -14,7 +14,9 @@
     <packaging>jar</packaging>
 
     <!-- Project Info -->
-    <description>Slimefun is a Spigot/Paper plugin that simulates a modpack-like atmosphere by adding over 500 new items and recipes to your Minecraft Server.</description>
+    <description>Slimefun is a Spigot/Paper plugin that simulates a modpack-like atmosphere by adding over 500 new items
+        and recipes to your Minecraft Server.
+    </description>
     <url>https://github.com/Slimefun/Slimefun4</url>
 
     <properties>
@@ -185,15 +187,20 @@
                 <filtering>true</filtering>
 
                 <includes>
-                    <include>*</include>
-                    <include>tags/*</include>
-                    <include>languages/*</include>
+                    <include>plugin.yml</include>
+                    <include>config.yml</include>
+
+                    <include>wiki.json</include>
+                    <include>tags/*.json</include>
+
+                    <include>languages/**/*.yml</include>
                 </includes>
             </resource>
 
             <!-- We also want to include our LICENSE file -->
             <resource>
                 <directory>${basedir}</directory>
+                <filtering>false</filtering>
 
                 <includes>
                     <include>LICENSE</include>

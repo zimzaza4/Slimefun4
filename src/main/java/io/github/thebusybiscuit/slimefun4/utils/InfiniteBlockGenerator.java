@@ -41,7 +41,7 @@ public enum InfiniteBlockGenerator implements Predicate<Block> {
      */
     BASALT_GENERATOR("BASALT");
 
-    public static final InfiniteBlockGenerator[] values = values();
+    private static final InfiniteBlockGenerator[] valuesCached = values();
     private static final BlockFace[] sameLevelFaces = { BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
 
     private final Material material;
@@ -162,7 +162,7 @@ public enum InfiniteBlockGenerator implements Predicate<Block> {
     public static InfiniteBlockGenerator findAt(@Nonnull Block b) {
         Validate.notNull(b, "Cannot find a generator without a Location!");
 
-        for (InfiniteBlockGenerator generator : values) {
+        for (InfiniteBlockGenerator generator : valuesCached) {
             if (generator.test(b)) {
                 return generator;
             }

@@ -1,16 +1,16 @@
 package io.github.thebusybiscuit.slimefun4.core.services.localization;
 
-import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
-import io.github.thebusybiscuit.cscorelib2.config.Localization;
-import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
-import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
-import io.github.thebusybiscuit.slimefun4.api.SlimefunBranch;
-import io.github.thebusybiscuit.slimefun4.core.services.LocalizationService;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.UnaryOperator;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Keyed;
@@ -22,13 +22,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.UnaryOperator;
+import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
+import io.github.thebusybiscuit.cscorelib2.config.Localization;
+import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
+import io.github.thebusybiscuit.slimefun4.api.SlimefunBranch;
+import io.github.thebusybiscuit.slimefun4.core.services.LocalizationService;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import me.mrCookieSlime.Slimefun.Lists.RecipeType;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 /**
  * This is an abstract parent class of {@link LocalizationService}.
@@ -120,17 +124,33 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
     }
 
     @Nonnull
+    private final FileConfiguration getFallback(@Nonnull LanguageFile file) {
+        Language language = getLanguage(SupportedLanguage.ENGLISH.getLanguageId());
+
+        if (language == null) {
+            throw new IllegalStateException("Fallback language \"en\" is missing!");
+        }
+
+        FileConfiguration fallback = language.getFile(file);
+
+        if (fallback != null) {
+            return fallback;
+        } else {
+            throw new IllegalStateException("Fallback file: \"" + file.getFilePath("en") + "\" is missing!");
+        }
+    }
+
+    @Nonnull
     @Override
     public String getMessage(@Nonnull String key) {
         Validate.notNull(key, "Message key must not be null!");
 
         Language language = getDefaultLanguage();
 
-        String message = language == null ? null : language.getMessagesFile().getString(key);
+        String message = language == null ? null : language.getFile(LanguageFile.MESSAGES).getString(key);
 
         if (message == null) {
-            Language fallback = getLanguage(SupportedLanguage.ENGLISH.getLanguageId());
-            return fallback.getMessagesFile().getString(key);
+            return getFallback(LanguageFile.MESSAGES).getString(key);
         }
 
         return message;
@@ -147,11 +167,10 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
             return "NO LANGUAGE FOUND";
         }
 
-        String message = language.getMessagesFile().getString(key);
+        String message = language.getFile(LanguageFile.MESSAGES).getString(key);
 
         if (message == null) {
-            Language fallback = getLanguage(SupportedLanguage.ENGLISH.getLanguageId());
-            return fallback.getMessagesFile().getString(key);
+            return getFallback(LanguageFile.MESSAGES).getString(key);
         }
 
         return message;
@@ -168,11 +187,10 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
             return Collections.singletonList("NO LANGUAGE FOUND");
         }
 
-        List<String> messages = language.getMessagesFile().getStringList(key);
+        List<String> messages = language.getFile(LanguageFile.MESSAGES).getStringList(key);
 
         if (messages.isEmpty()) {
-            Language fallback = getLanguage(SupportedLanguage.ENGLISH.getLanguageId());
-            return fallback.getMessagesFile().getStringList(key);
+            return getFallback(LanguageFile.MESSAGES).getStringList(key);
         }
 
         return messages;
@@ -198,11 +216,11 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
 
         Language language = getLanguage(p);
 
-        if (language == null || language.getResearchesFile() == null) {
+        if (language == null || language.getFile(LanguageFile.RESEARCHES) == null) {
             return null;
         }
 
-        return language.getResearchesFile().getString(key.getNamespace() + '.' + key.getKey());
+        return language.getFile(LanguageFile.RESEARCHES).getString(key.getNamespace() + '.' + key.getKey());
     }
 
     @Nullable
@@ -212,11 +230,11 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
 
         Language language = getLanguage(p);
 
-        if (language == null || language.getCategoriesFile() == null) {
+        if (language == null || language.getFile(LanguageFile.CATEGORIES) == null) {
             return null;
         }
 
-        return language.getCategoriesFile().getString(key.getNamespace() + '.' + key.getKey());
+        return language.getFile(LanguageFile.CATEGORIES).getString(key.getNamespace() + '.' + key.getKey());
     }
 
     @Nullable
@@ -226,13 +244,12 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
 
         Language language = getLanguage(p);
 
-        String value = language != null && language.getResourcesFile() != null ? language.getResourcesFile().getString(key) : null;
+        String value = language != null && language.getFile(LanguageFile.RESOURCES) != null ? language.getFile(LanguageFile.RESOURCES).getString(key) : null;
 
         if (value != null) {
             return value;
         } else {
-            Language fallback = getLanguage(SupportedLanguage.ENGLISH.getLanguageId());
-            return fallback.getResourcesFile().getString(key);
+            return getFallback(LanguageFile.RESOURCES).getString(key);
         }
     }
 
@@ -245,15 +262,15 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
         ItemStack item = recipeType.toItem();
         NamespacedKey key = recipeType.getKey();
 
-        if (language == null || language.getRecipeTypesFile() == null || !language.getRecipeTypesFile().contains(key.getNamespace() + '.' + key.getKey())) {
+        if (language == null || language.getFile(LanguageFile.RECIPES) == null || !language.getFile(LanguageFile.RECIPES).contains(key.getNamespace() + '.' + key.getKey())) {
             language = getLanguage("en");
         }
 
-        if (!language.getRecipeTypesFile().contains(key.getNamespace() + '.' + key.getKey())) {
+        if (!language.getFile(LanguageFile.RECIPES).contains(key.getNamespace() + '.' + key.getKey())) {
             return item;
         }
 
-        FileConfiguration config = language.getRecipeTypesFile();
+        FileConfiguration config = language.getFile(LanguageFile.RECIPES);
 
         return new CustomItem(item, meta -> {
             meta.setDisplayName(ChatColor.AQUA + config.getString(key.getNamespace() + "." + key.getKey() + ".name"));
@@ -355,5 +372,21 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
     @ParametersAreNonnullByDefault
     public void sendMessages(CommandSender recipient, String key, UnaryOperator<String> function) {
         sendMessages(recipient, key, true, function);
+    }
+
+    @Nonnull
+    protected Set<String> getTotalKeys(@Nonnull Language lang) {
+        return getKeys(lang.getFiles());
+    }
+
+    @Nonnull
+    protected Set<String> getKeys(@Nonnull FileConfiguration... files) {
+        Set<String> keys = new HashSet<>();
+
+        for (FileConfiguration cfg : files) {
+            keys.addAll(cfg.getKeys(true));
+        }
+
+        return keys;
     }
 }

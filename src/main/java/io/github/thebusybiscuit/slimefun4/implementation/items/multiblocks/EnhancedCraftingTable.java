@@ -19,10 +19,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public class EnhancedCraftingTable extends AbstractCraftingTable {
 
+    @ParametersAreNonnullByDefault
     public EnhancedCraftingTable(Category category, SlimefunItemStack item) {
         super(category, item, new ItemStack[]{null, null, null, null, new ItemStack(Material.CRAFTING_TABLE), null, null, new ItemStack(Material.DISPENSER), null}, BlockFace.SELF);
     }

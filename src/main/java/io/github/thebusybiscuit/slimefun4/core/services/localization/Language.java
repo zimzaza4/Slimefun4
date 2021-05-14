@@ -1,18 +1,23 @@
 package io.github.thebusybiscuit.slimefun4.core.services.localization;
 
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
-import io.github.thebusybiscuit.slimefun4.core.services.LocalizationService;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Locale;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
+import io.github.thebusybiscuit.slimefun4.core.services.LocalizationService;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 
 /**
  * This Class represents a {@link Language} that Slimefun can recognize and use.
@@ -24,22 +29,20 @@ import java.util.Locale;
  */
 public final class Language {
 
+    private final Map<LanguageFile, FileConfiguration> files = new EnumMap<>(LanguageFile.class);
+
     private final String id;
     private final ItemStack item;
     private double progress = -1;
-
-    private FileConfiguration messages;
-    private FileConfiguration researches;
-    private FileConfiguration resources;
-    private FileConfiguration categories;
-    private FileConfiguration recipeTypes;
 
     /**
      * This instantiates a new {@link Language} with the given language code
      * and skull texture.
      *
-     * @param id   The language code of this {@link Language}
-     * @param hash The hash of the skull texture to use
+     * @param id
+     *            The language code of this {@link Language}
+     * @param hash
+     *            The hash of the skull texture to use
      */
     public Language(@Nonnull String id, @Nonnull String hash) {
         Validate.notNull(id, "A Language must have an id that is not null!");
@@ -81,58 +84,15 @@ public final class Language {
     }
 
     @Nullable
-    FileConfiguration getMessagesFile() {
-        return messages;
+    FileConfiguration getFile(@Nonnull LanguageFile file) {
+        return files.get(file);
     }
 
-    @Nullable
-    FileConfiguration getResearchesFile() {
-        return researches;
-    }
+    public void setFile(@Nonnull LanguageFile file, @Nonnull FileConfiguration config) {
+        Validate.notNull(file, "The provided file should not be null.");
+        Validate.notNull(config, "The provided config should not be null.");
 
-    @Nullable
-    FileConfiguration getResourcesFile() {
-        return resources;
-    }
-
-    @Nullable
-    FileConfiguration getCategoriesFile() {
-        return categories;
-    }
-
-    @Nullable
-    FileConfiguration getRecipeTypesFile() {
-        return recipeTypes;
-    }
-
-    public void setMessagesFile(@Nonnull FileConfiguration config) {
-        Validate.notNull(config);
-
-        this.messages = config;
-    }
-
-    public void setResearchesFile(@Nonnull FileConfiguration config) {
-        Validate.notNull(config);
-
-        this.researches = config;
-    }
-
-    public void setResourcesFile(@Nonnull FileConfiguration config) {
-        Validate.notNull(config);
-
-        this.resources = config;
-    }
-
-    public void setCategoriesFile(@Nonnull FileConfiguration config) {
-        Validate.notNull(config);
-
-        this.categories = config;
-    }
-
-    public void setRecipeTypesFile(@Nonnull FileConfiguration config) {
-        Validate.notNull(config);
-
-        this.recipeTypes = config;
+        files.put(file, config);
     }
 
     /**
@@ -176,7 +136,7 @@ public final class Language {
 
     @Nonnull
     public FileConfiguration[] getFiles() {
-        return new FileConfiguration[] { getMessagesFile(), getCategoriesFile(), getResearchesFile(), getResourcesFile()};
+        return Arrays.stream(LanguageFile.valuesCached).map(this::getFile).toArray(FileConfiguration[]::new);
     }
 
 }

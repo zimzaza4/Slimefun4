@@ -597,6 +597,17 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     }
 
     /**
+     * This returns the global instance of {@link SlimefunPlugin}.
+     * This may return null if the {@link Plugin} was disabled.
+     *
+     * @return The {@link SlimefunPlugin} instance
+     */
+    @Nullable
+    public static SlimefunPlugin instance() {
+        return instance;
+    }
+
+    /**
      * This private static method allows us to throw a proper {@link Exception}
      * whenever someone tries to access a static method while the instance is null.
      * This happens when the method is invoked before {@link #onEnable()} or after {@link #onDisable()}.
@@ -620,11 +631,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
     public static Logger logger() {
         validateInstance();
         return instance.getLogger();
-    }
-
-    @Nullable
-    public static SlimefunPlugin instance() {
-        return instance;
     }
 
     public static Config getCfg() {

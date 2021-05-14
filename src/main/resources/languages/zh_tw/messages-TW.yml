@@ -86,7 +86,7 @@ guide:
     versions-notice: 這些在回報錯誤時非常重要！
     wiki: 在Slimefun官方Wiki上查看此物品
     recipes:
-      machine: 使用本機械的合成配方
+      machine: 使用本機械的合成表
       miner: 此挖礦機可獲取的資源
       generator: 可以使用的燃料
       gold-pan: 可以獲取的資源
@@ -186,16 +186,16 @@ messages:
   bee-suit-slow-fall: "&e你的蜂翅將會幫你緩慢且安全的回到地面"
   mode-change: "&b%device% 模式切換至: &9%mode%"
 machines:
-  pattern-not-found: "&e查無此合成配方，請確認使用的機器或合成配方的材料。"
-  unknown-material: "&e這個機器不能處理這個物品，請確認使用的機器或合成配方的材料。"
-  wrong-item: "&e你手持的物品和機器並不相容，請確認使用的機器或合成配方的材料。"
+  pattern-not-found: "&e查無此合成表，請確認使用的機器或合成表的材料。"
+  unknown-material: "&e這個機器不能處理這個物品，請確認使用的機器或合成表的材料。"
+  wrong-item: "&e你手持的物品和機器並不相容，請確認使用的機器或合成表的材料。"
   full-inventory: "&e發射器滿了！（請考慮使用基礎機械的輸出箱）"
   in-use: "&c別人正在使用這台機器。"
   ignition-chamber-no-flint: "&c點火系統沒有打火石。"
   ANCIENT_ALTAR:
     not-enough-pedestals: "&4此祭壇需要更多基座&c(%pedestals% / 8)"
-    unknown-catalyst: "&4未知中心物品！ &c請檢查合成配方！"
-    unknown-recipe: "&4未知合成配方！ &c請檢查合成配方！"
+    unknown-catalyst: "&4未知中心物品！ &c請檢查合成表！"
+    unknown-recipe: "&4未知合成表！ &c請檢查合成表！"
   ANCIENT_PEDESTAL:
     obstructed: "&4基座被擋住了！&c請移除上方的方塊！"
   HOLOGRAM_PROJECTOR:

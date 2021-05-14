@@ -1,6 +1,19 @@
 package io.github.thebusybiscuit.slimefun4.implementation.setup;
 
-import com.xzavier0722.mc.plugin.slimefun4.autocrafter.CrafterSmartPort;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
+
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
@@ -12,20 +25,84 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.RadioactiveItem;
 import io.github.thebusybiscuit.slimefun4.implementation.items.VanillaItem;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAltar;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientPedestal;
-import io.github.thebusybiscuit.slimefun4.implementation.items.androids.*;
-import io.github.thebusybiscuit.slimefun4.implementation.items.armor.*;
+import io.github.thebusybiscuit.slimefun4.implementation.items.androids.AndroidInterface;
+import io.github.thebusybiscuit.slimefun4.implementation.items.androids.ButcherAndroid;
+import io.github.thebusybiscuit.slimefun4.implementation.items.androids.FarmerAndroid;
+import io.github.thebusybiscuit.slimefun4.implementation.items.androids.FisherAndroid;
+import io.github.thebusybiscuit.slimefun4.implementation.items.androids.MinerAndroid;
+import io.github.thebusybiscuit.slimefun4.implementation.items.androids.ProgrammableAndroid;
+import io.github.thebusybiscuit.slimefun4.implementation.items.androids.WoodcutterAndroid;
+import io.github.thebusybiscuit.slimefun4.implementation.items.armor.ElytraCap;
+import io.github.thebusybiscuit.slimefun4.implementation.items.armor.EnderBoots;
+import io.github.thebusybiscuit.slimefun4.implementation.items.armor.FarmerShoes;
+import io.github.thebusybiscuit.slimefun4.implementation.items.armor.HazmatArmorPiece;
+import io.github.thebusybiscuit.slimefun4.implementation.items.armor.LongFallBoots;
+import io.github.thebusybiscuit.slimefun4.implementation.items.armor.Parachute;
+import io.github.thebusybiscuit.slimefun4.implementation.items.armor.SlimefunArmorPiece;
+import io.github.thebusybiscuit.slimefun4.implementation.items.armor.StomperBoots;
 import io.github.thebusybiscuit.slimefun4.implementation.items.autocrafters.ArmorAutoCrafter;
 import io.github.thebusybiscuit.slimefun4.implementation.items.autocrafters.EnhancedAutoCrafter;
 import io.github.thebusybiscuit.slimefun4.implementation.items.autocrafters.VanillaAutoCrafter;
-import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.*;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.*;
-import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.*;
+import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.Cooler;
+import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.EnderBackpack;
+import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.RestoredBackpack;
+import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
+import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SoulboundBackpack;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.BlockPlacer;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.BrokenSpawner;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.Composter;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.Crucible;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.EnhancedFurnace;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.HardenedGlass;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.HologramProjector;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.IgnitionChamber;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.OutputChest;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.RainbowBlock;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.RepairedSpawner;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.UnplaceableBlock;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.WitherProofBlock;
+import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.AdvancedCargoOutputNode;
+import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.CargoConnectorNode;
+import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.CargoInputNode;
+import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.CargoManager;
+import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.CargoOutputNode;
+import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.ReactorAccessPort;
+import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.TrashCan;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.Capacitor;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.EnergyConnector;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.EnergyRegulator;
-import io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets.*;
-import io.github.thebusybiscuit.slimefun4.implementation.items.electric.generators.*;
-import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.*;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets.JetBoots;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets.Jetpack;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets.MultiTool;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets.Multimeter;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets.SolarHelmet;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.generators.BioGenerator;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.generators.CoalGenerator;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.generators.CombustionGenerator;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.generators.LavaGenerator;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.generators.MagnesiumGenerator;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.generators.SolarGenerator;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.AutoAnvil;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.AutoBrewer;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.AutoDrier;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.AutomatedCraftingChamber;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.CarbonPress;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.ChargingBench;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.ElectricDustWasher;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.ElectricFurnace;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.ElectricGoldPan;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.ElectricIngotFactory;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.ElectricIngotPulverizer;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.ElectricOreGrinder;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.ElectricPress;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.ElectricSmeltery;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.ElectrifiedCrucible;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.FluidPump;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.FoodComposter;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.FoodFabricator;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.Freezer;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.HeatedPressureChamber;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.Refinery;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.accelerators.AnimalGrowthAccelerator;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.accelerators.CropGrowthAccelerator;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.accelerators.TreeGrowthAccelerator;
@@ -35,17 +112,40 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.entities.AutoBreeder;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.entities.ExpCollector;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.entities.IronGolemAssembler;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.entities.ProduceCollector;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.entities.WitherAssembler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.reactors.NetherStarReactor;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.reactors.NuclearReactor;
 import io.github.thebusybiscuit.slimefun4.implementation.items.elevator.ElevatorPlate;
-import io.github.thebusybiscuit.slimefun4.implementation.items.food.*;
+import io.github.thebusybiscuit.slimefun4.implementation.items.food.BirthdayCake;
+import io.github.thebusybiscuit.slimefun4.implementation.items.food.DietCookie;
+import io.github.thebusybiscuit.slimefun4.implementation.items.food.FortuneCookie;
+import io.github.thebusybiscuit.slimefun4.implementation.items.food.HeavyCream;
+import io.github.thebusybiscuit.slimefun4.implementation.items.food.Juice;
+import io.github.thebusybiscuit.slimefun4.implementation.items.food.MagicSugar;
+import io.github.thebusybiscuit.slimefun4.implementation.items.food.MeatJerky;
+import io.github.thebusybiscuit.slimefun4.implementation.items.food.MonsterJerky;
 import io.github.thebusybiscuit.slimefun4.implementation.items.geo.GEOMiner;
 import io.github.thebusybiscuit.slimefun4.implementation.items.geo.GEOScanner;
 import io.github.thebusybiscuit.slimefun4.implementation.items.geo.OilPump;
 import io.github.thebusybiscuit.slimefun4.implementation.items.geo.PortableGEOScanner;
-import io.github.thebusybiscuit.slimefun4.implementation.items.gps.*;
-import io.github.thebusybiscuit.slimefun4.implementation.items.magical.*;
+import io.github.thebusybiscuit.slimefun4.implementation.items.gps.GPSControlPanel;
+import io.github.thebusybiscuit.slimefun4.implementation.items.gps.GPSMarkerTool;
+import io.github.thebusybiscuit.slimefun4.implementation.items.gps.GPSTransmitter;
+import io.github.thebusybiscuit.slimefun4.implementation.items.gps.PersonalActivationPlate;
+import io.github.thebusybiscuit.slimefun4.implementation.items.gps.SharedActivationPlate;
+import io.github.thebusybiscuit.slimefun4.implementation.items.gps.Teleporter;
+import io.github.thebusybiscuit.slimefun4.implementation.items.gps.TeleporterPylon;
+import io.github.thebusybiscuit.slimefun4.implementation.items.magical.BeeWings;
+import io.github.thebusybiscuit.slimefun4.implementation.items.magical.InfernalBonemeal;
+import io.github.thebusybiscuit.slimefun4.implementation.items.magical.InfusedHopper;
+import io.github.thebusybiscuit.slimefun4.implementation.items.magical.InfusedMagnet;
+import io.github.thebusybiscuit.slimefun4.implementation.items.magical.KnowledgeFlask;
+import io.github.thebusybiscuit.slimefun4.implementation.items.magical.KnowledgeTome;
+import io.github.thebusybiscuit.slimefun4.implementation.items.magical.MagicEyeOfEnder;
+import io.github.thebusybiscuit.slimefun4.implementation.items.magical.MagicalZombiePills;
+import io.github.thebusybiscuit.slimefun4.implementation.items.magical.SoulboundItem;
+import io.github.thebusybiscuit.slimefun4.implementation.items.magical.TelepositionScroll;
 import io.github.thebusybiscuit.slimefun4.implementation.items.magical.runes.EnchantmentRune;
 import io.github.thebusybiscuit.slimefun4.implementation.items.magical.runes.SoulboundRune;
 import io.github.thebusybiscuit.slimefun4.implementation.items.magical.runes.VillagerRune;
@@ -58,14 +158,52 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.medical.Bandage;
 import io.github.thebusybiscuit.slimefun4.implementation.items.medical.Medicine;
 import io.github.thebusybiscuit.slimefun4.implementation.items.medical.Splint;
 import io.github.thebusybiscuit.slimefun4.implementation.items.medical.Vitamins;
-import io.github.thebusybiscuit.slimefun4.implementation.items.misc.*;
-import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.*;
+import io.github.thebusybiscuit.slimefun4.implementation.items.misc.AlloyIngot;
+import io.github.thebusybiscuit.slimefun4.implementation.items.misc.BasicCircuitBoard;
+import io.github.thebusybiscuit.slimefun4.implementation.items.misc.CoolantCell;
+import io.github.thebusybiscuit.slimefun4.implementation.items.misc.GoldIngot;
+import io.github.thebusybiscuit.slimefun4.implementation.items.misc.OrganicFertilizer;
+import io.github.thebusybiscuit.slimefun4.implementation.items.misc.OrganicFood;
+import io.github.thebusybiscuit.slimefun4.implementation.items.misc.SteelThruster;
+import io.github.thebusybiscuit.slimefun4.implementation.items.misc.StrangeNetherGoo;
+import io.github.thebusybiscuit.slimefun4.implementation.items.misc.SyntheticEmerald;
+import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.ArmorForge;
+import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.AutomatedPanningMachine;
+import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.Compressor;
+import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.EnhancedCraftingTable;
+import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.GrindStone;
+import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.Juicer;
+import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.MagicWorkbench;
+import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.MakeshiftSmeltery;
+import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.OreCrusher;
+import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.OreWasher;
+import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.PressureChamber;
+import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.Smeltery;
+import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.TableSaw;
 import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.miner.AdvancedIndustrialMiner;
 import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.miner.IndustrialMiner;
 import io.github.thebusybiscuit.slimefun4.implementation.items.seasonal.ChristmasPresent;
 import io.github.thebusybiscuit.slimefun4.implementation.items.seasonal.EasterEgg;
-import io.github.thebusybiscuit.slimefun4.implementation.items.tools.*;
-import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.*;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.ClimbingPick;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.ExplosivePickaxe;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.ExplosiveShovel;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.GoldPan;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.GrapplingHook;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.HerculesPickaxe;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.LumberAxe;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.NetherGoldPan;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.PickaxeOfContainment;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.PickaxeOfTheSeeker;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.PickaxeOfVeinMining;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.PortableCrafter;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.PortableDustbin;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.SmeltersPickaxe;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.TapeMeasure;
+import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.ExplosiveBow;
+import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.IcyBow;
+import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.SeismicAxe;
+import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.SwordOfBeheading;
+import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.VampireBlade;
 import io.github.thebusybiscuit.slimefun4.utils.ColoredMaterial;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
@@ -73,18 +211,6 @@ import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
-
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class holds the recipes of all items.
@@ -308,51 +434,51 @@ public final class SlimefunItemSetup {
 
         registerArmorSet(categories.armor, new ItemStack(Material.CACTUS), new ItemStack[] {SlimefunItems.CACTUS_HELMET, SlimefunItems.CACTUS_CHESTPLATE, SlimefunItems.CACTUS_LEGGINGS, SlimefunItems.CACTUS_BOOTS}, "CACTUS", false, new PotionEffect[0][0], plugin);
 
-        new SlimefunItem(categories.resources, SlimefunItems.REINFORCED_ALLOY_INGOT, RecipeType.SMELTERY,
+        new AlloyIngot(categories.resources, SlimefunItems.REINFORCED_ALLOY_INGOT,
                 new ItemStack[] {SlimefunItems.DAMASCUS_STEEL_INGOT, SlimefunItems.HARDENED_METAL_INGOT, SlimefunItems.CORINTHIAN_BRONZE_INGOT, SlimefunItems.SOLDER_INGOT, SlimefunItems.BILLON_INGOT, SlimefunItems.GOLD_24K, null, null, null})
                 .register(plugin);
 
-        new SlimefunItem(categories.resources, SlimefunItems.HARDENED_METAL_INGOT, RecipeType.SMELTERY,
+        new AlloyIngot(categories.resources, SlimefunItems.HARDENED_METAL_INGOT,
                 new ItemStack[] {SlimefunItems.DAMASCUS_STEEL_INGOT, SlimefunItems.DURALUMIN_INGOT, SlimefunItems.COMPRESSED_CARBON, SlimefunItems.ALUMINUM_BRONZE_INGOT, null, null, null, null, null})
                 .register(plugin);
 
-        new SlimefunItem(categories.resources, SlimefunItems.DAMASCUS_STEEL_INGOT, RecipeType.SMELTERY,
+        new AlloyIngot(categories.resources, SlimefunItems.DAMASCUS_STEEL_INGOT,
                 new ItemStack[] {SlimefunItems.STEEL_INGOT, SlimefunItems.IRON_DUST, SlimefunItems.CARBON, new ItemStack(Material.IRON_INGOT), null, null, null, null, null})
                 .register(plugin);
 
-        new SlimefunItem(categories.resources, SlimefunItems.STEEL_INGOT, RecipeType.SMELTERY,
+        new AlloyIngot(categories.resources, SlimefunItems.STEEL_INGOT,
                 new ItemStack[] {SlimefunItems.IRON_DUST, SlimefunItems.CARBON, new ItemStack(Material.IRON_INGOT), null, null, null, null, null, null})
                 .register(plugin);
 
-        new SlimefunItem(categories.resources, SlimefunItems.BRONZE_INGOT, RecipeType.SMELTERY,
+        new AlloyIngot(categories.resources, SlimefunItems.BRONZE_INGOT,
                 new ItemStack[] {SlimefunItems.COPPER_DUST, SlimefunItems.TIN_DUST, SlimefunItems.COPPER_INGOT, null, null, null, null, null, null})
                 .register(plugin);
 
-        new SlimefunItem(categories.resources, SlimefunItems.DURALUMIN_INGOT, RecipeType.SMELTERY,
+        new AlloyIngot(categories.resources, SlimefunItems.DURALUMIN_INGOT,
                 new ItemStack[] {SlimefunItems.ALUMINUM_DUST, SlimefunItems.COPPER_DUST, SlimefunItems.ALUMINUM_INGOT, null, null, null, null, null, null})
                 .register(plugin);
 
-        new SlimefunItem(categories.resources, SlimefunItems.BILLON_INGOT, RecipeType.SMELTERY,
+        new AlloyIngot(categories.resources, SlimefunItems.BILLON_INGOT,
                 new ItemStack[] {SlimefunItems.SILVER_DUST, SlimefunItems.COPPER_DUST, SlimefunItems.SILVER_INGOT, null, null, null, null, null, null})
                 .register(plugin);
 
-        new SlimefunItem(categories.resources, SlimefunItems.BRASS_INGOT, RecipeType.SMELTERY,
+        new AlloyIngot(categories.resources, SlimefunItems.BRASS_INGOT,
                 new ItemStack[] {SlimefunItems.COPPER_DUST, SlimefunItems.ZINC_DUST, SlimefunItems.COPPER_INGOT, null, null, null, null, null, null})
                 .register(plugin);
 
-        new SlimefunItem(categories.resources, SlimefunItems.ALUMINUM_BRASS_INGOT, RecipeType.SMELTERY,
+        new AlloyIngot(categories.resources, SlimefunItems.ALUMINUM_BRASS_INGOT,
                 new ItemStack[] {SlimefunItems.ALUMINUM_DUST, SlimefunItems.BRASS_INGOT, SlimefunItems.ALUMINUM_INGOT, null, null, null, null, null, null})
                 .register(plugin);
 
-        new SlimefunItem(categories.resources, SlimefunItems.ALUMINUM_BRONZE_INGOT, RecipeType.SMELTERY,
+        new AlloyIngot(categories.resources, SlimefunItems.ALUMINUM_BRONZE_INGOT,
                 new ItemStack[] {SlimefunItems.ALUMINUM_DUST, SlimefunItems.BRONZE_INGOT, SlimefunItems.ALUMINUM_INGOT, null, null, null, null, null, null})
                 .register(plugin);
 
-        new SlimefunItem(categories.resources, SlimefunItems.CORINTHIAN_BRONZE_INGOT, RecipeType.SMELTERY,
+        new AlloyIngot(categories.resources, SlimefunItems.CORINTHIAN_BRONZE_INGOT,
                 new ItemStack[] {SlimefunItems.SILVER_DUST, SlimefunItems.GOLD_DUST, SlimefunItems.COPPER_DUST, SlimefunItems.BRONZE_INGOT, null, null, null, null, null})
                 .register(plugin);
 
-        new SlimefunItem(categories.resources, SlimefunItems.SOLDER_INGOT, RecipeType.SMELTERY,
+        new AlloyIngot(categories.resources, SlimefunItems.SOLDER_INGOT,
                 new ItemStack[] {SlimefunItems.LEAD_DUST, SlimefunItems.TIN_DUST, SlimefunItems.LEAD_INGOT, null, null, null, null, null, null})
                 .register(plugin);
 
@@ -370,11 +496,11 @@ public final class SlimefunItemSetup {
                 new ItemStack[] {SlimefunItems.SYNTHETIC_DIAMOND, SlimefunItems.CARBON_CHUNK, new ItemStack(Material.GLASS_PANE), null, null, null, null, null, null})
                 .register(plugin);
 
-        new SlimefunItem(categories.resources, SlimefunItems.NICKEL_INGOT, RecipeType.SMELTERY,
+        new AlloyIngot(categories.resources, SlimefunItems.NICKEL_INGOT,
                 new ItemStack[] {SlimefunItems.IRON_DUST, new ItemStack(Material.IRON_INGOT), SlimefunItems.COPPER_DUST, null, null, null, null, null, null})
                 .register(plugin);
 
-        new SlimefunItem(categories.resources, SlimefunItems.COBALT_INGOT, RecipeType.SMELTERY,
+        new AlloyIngot(categories.resources, SlimefunItems.COBALT_INGOT,
                 new ItemStack[] {SlimefunItems.IRON_DUST, SlimefunItems.COPPER_DUST, SlimefunItems.NICKEL_INGOT, null, null, null, null, null, null})
                 .register(plugin);
 
@@ -2097,7 +2223,7 @@ public final class SlimefunItemSetup {
                 new ItemStack[] {SlimefunItems.GPS_TELEPORTER_PYLON, SlimefunItems.REINFORCED_ALLOY_INGOT, SlimefunItems.GPS_TELEPORTER_PYLON, SlimefunItems.ELECTRO_MAGNET, SlimefunItems.GPS_CONTROL_PANEL, SlimefunItems.ELECTRO_MAGNET, SlimefunItems.GPS_TELEPORTER_PYLON, SlimefunItems.REINFORCED_ALLOY_INGOT, SlimefunItems.GPS_TELEPORTER_PYLON})
                 .register(plugin);
 
-        new SlimefunItem(categories.gps, SlimefunItems.GPS_ACTIVATION_DEVICE_SHARED, RecipeType.ENHANCED_CRAFTING_TABLE,
+        new SharedActivationPlate(categories.gps, SlimefunItems.GPS_ACTIVATION_DEVICE_SHARED, RecipeType.ENHANCED_CRAFTING_TABLE,
                 new ItemStack[] {null, new ItemStack(Material.STONE_PRESSURE_PLATE), null, new ItemStack(Material.REDSTONE), SlimefunItems.GPS_TRANSMITTER, new ItemStack(Material.REDSTONE), SlimefunItems.BILLON_INGOT, SlimefunItems.BILLON_INGOT, SlimefunItems.BILLON_INGOT})
                 .register(plugin);
 
@@ -2369,7 +2495,8 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new AutomatedCraftingChamber(categories.electricity, SlimefunItems.AUTOMATED_CRAFTING_CHAMBER, RecipeType.ENHANCED_CRAFTING_TABLE,
-                new ItemStack[] {null, null, null, null, new CustomItem(Material.BARRIER, "&4该物品已被禁用.", "&c即将在接下来的版本中被移除!", "&c请使用货运网络分类下的", "&c新版自动合成机."), null, null, null, null}) {
+                new ItemStack[] {null, null, null, null, new CustomItem(Material.BARRIER, "&4This Item has been disabled.", "&cIt will soon be removed!", "&cPlease switch over to the new", "&cAuto-Crafters from the Cargo Category."), null, null, null, null}) {
+
             @Override
             public int getEnergyConsumption() {
                 return 10;
@@ -2474,7 +2601,7 @@ public final class SlimefunItemSetup {
         }
 
         new ElytraCap(categories.magicalArmor, SlimefunItems.ELYTRA_CAP, RecipeType.ARMOR_FORGE,
-                new ItemStack[]{new ItemStack(Material.SLIME_BALL), new ItemStack(Material.SLIME_BALL), new ItemStack(Material.SLIME_BALL), SlimefunItems.ELYTRA_SCALE, SlimefunItems.ELYTRA_SCALE, SlimefunItems.ELYTRA_SCALE, new ItemStack(Material.SLIME_BALL), new ItemStack(Material.LEATHER_HELMET), new ItemStack(Material.SLIME_BALL)})
+                new ItemStack[] {new ItemStack(Material.SLIME_BALL), new ItemStack(Material.SLIME_BALL), new ItemStack(Material.SLIME_BALL), SlimefunItems.ELYTRA_SCALE, SlimefunItems.ELYTRA_SCALE, SlimefunItems.ELYTRA_SCALE, new ItemStack(Material.SLIME_BALL), new ItemStack(Material.LEATHER_HELMET), new ItemStack(Material.SLIME_BALL)})
                 .register(plugin);
 
         new UnplaceableBlock(categories.cargo, SlimefunItems.CRAFTING_MOTOR, RecipeType.ENHANCED_CRAFTING_TABLE,
@@ -2500,11 +2627,13 @@ public final class SlimefunItemSetup {
                 .setEnergyConsumption(32)
                 .register(plugin);
 
-        new CrafterSmartPort(categories.cargo, SlimefunItems.CRAFTER_SMART_PORT, RecipeType.ENHANCED_CRAFTING_TABLE,
-                new ItemStack[]{
-                        null, SlimefunItems.CARGO_MOTOR, null,
-                        new ItemStack(Material.CHEST), SlimefunItems.CRAFTING_MOTOR, new ItemStack(Material.CHEST),
-                        null, SlimefunItems.ELECTRIC_MOTOR, null}).register(plugin);
+        new ProduceCollector(categories.electricity, SlimefunItems.PRODUCE_COLLECTOR, RecipeType.ENHANCED_CRAFTING_TABLE,
+                new ItemStack[] {null, new ItemStack(Material.HAY_BLOCK), null, new ItemStack(Material.BUCKET), SlimefunItems.MEDIUM_CAPACITOR, new ItemStack(Material.BUCKET), SlimefunItems.ALUMINUM_BRASS_INGOT, SlimefunItems.ELECTRIC_MOTOR, SlimefunItems.ALUMINUM_BRASS_INGOT})
+                .setCapacity(256)
+                .setProcessingSpeed(1)
+                .setEnergyConsumption(16)
+                .register(plugin);
+
         // @formatter:on
     }
 

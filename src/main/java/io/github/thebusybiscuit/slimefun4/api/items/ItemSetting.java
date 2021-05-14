@@ -7,6 +7,7 @@ import org.apache.commons.lang.Validate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 /**
  * This class represents a Setting for a {@link SlimefunItem} that can be modified via
@@ -144,7 +145,7 @@ public class ItemSetting<T> {
         SlimefunPlugin.getItemCfg().setDefaultValue(item.getId() + '.' + getKey(), getDefaultValue());
         Object configuredValue = SlimefunPlugin.getItemCfg().getValue(item.getId() + '.' + getKey());
 
-        if (defaultValue.getClass().isInstance(configuredValue)) {
+        if (defaultValue.getClass().isInstance(configuredValue) || (configuredValue instanceof List && defaultValue instanceof List)) {
             // We can do an unsafe cast here, we did an isInstance(...) check before!
             T newValue = (T) configuredValue;
 
