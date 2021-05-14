@@ -2,6 +2,7 @@ package io.github.thebusybiscuit.slimefun4.core.guide;
 
 import io.github.starwishsama.utils.VaultHelper;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import io.github.thebusybiscuit.slimefun4.core.researching.Research;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
@@ -64,7 +65,9 @@ public interface SlimefunGuideImplementation {
             } else {
                 p.setLevel(p.getLevel() - research.getCost());
             }
-            research.unlock(p, false, callback);
+            boolean skipLearningAnimation = SlimefunPlugin.getRegistry().isLearningAnimationDisabled()
+                    || !SlimefunGuideSettings.hasLearningAnimationEnabled(p);
+            research.unlock(p, skipLearningAnimation, callback);
         }
     }
 

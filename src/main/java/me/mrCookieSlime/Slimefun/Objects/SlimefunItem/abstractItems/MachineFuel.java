@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Predicate;
 
+// This class will be rewritten in the "Recipe Rewrite"
 public class MachineFuel implements Predicate<ItemStack> {
 
     private final int ticks;

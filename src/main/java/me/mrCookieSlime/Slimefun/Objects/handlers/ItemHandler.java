@@ -15,7 +15,6 @@ import java.util.Optional;
  * can perform.
  *
  * @author TheBusyBiscuit
- * @see ItemUseHandler
  * @see ItemConsumptionHandler
  * @see BlockUseHandler
  * @see EntityKillHandler
@@ -23,19 +22,6 @@ import java.util.Optional;
  */
 @FunctionalInterface
 public interface ItemHandler {
-
-    /**
-     * This method is used to determine whether this {@link ItemHandler} can be
-     * safely associated with one particular {@link SlimefunItem}.
-     * <p>
-     * Should this {@link ItemHandler} not be private, then it will never be
-     * permanently linked to a {@link SlimefunItem}.
-     *
-     * @return Whether this {@link ItemHandler} is considered private.
-     */
-    default boolean isPrivate() {
-        return true;
-    }
 
     /**
      * This method returns the identifier for this {@link ItemHandler}.

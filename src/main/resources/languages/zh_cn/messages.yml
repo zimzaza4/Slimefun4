@@ -56,6 +56,25 @@ guide:
       - "&7展示的文本消息的语言了."
       - "&7注意: 物品中的文本"
       - "&7暂时无法修改."
+  options:
+    learning-animation:
+      enabled:
+        text:
+          - '&b解锁研究动画: &a启用'
+          - ''
+          - '&7现在你可以选择是否'
+          - '&7跳过解锁物品研究时'
+          - '&7的过程了.'
+        click: '&e单击禁用解锁研究动画'
+      disabled:
+        text:
+          - '&b解锁研究动画: &a禁用'
+          - ''
+          - '&7现在你可以选择是否'
+          - '&7跳过解锁物品研究时'
+          - '&7的过程了.'
+        click: '&e单击启用解锁研究动画'
+
   title:
     main: Slimefun 指南
     settings: 设置 & 详情
@@ -216,6 +235,9 @@ messages:
   invalid-research: "&4%research% &c不是一个有效的研究名!"
   bee-suit-slow-fall: "&e你的蜂翅将会让你安全缓降"
   mode-change: "&b%device% 的模式已切换为: &9%mode%"
+
+  pickaxe-of-the-seeker:
+    no-ores: '&c抱歉, 周围找不到矿石了!'
 machines:
   pattern-not-found: "&e抱歉, 这不是正确的合成配方, 请检查发射器里放置物品的顺序."
   unknown-material: "&e抱歉, 我无法识别在发射器里的物品. 请按照合成配方放置物品."

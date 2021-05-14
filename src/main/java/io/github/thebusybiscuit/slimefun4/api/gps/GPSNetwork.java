@@ -10,7 +10,7 @@ import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.gps.GPSTransmitter;
-import io.github.thebusybiscuit.slimefun4.implementation.items.gps.Teleporter;
+import io.github.thebusybiscuit.slimefun4.implementation.items.teleporter.Teleporter;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
@@ -235,11 +235,11 @@ public class GPSNetwork {
 
         PlayerProfile.get(p, profile -> {
             if ((profile.getWaypoints().size() + 2) > inventory.length) {
-                SlimefunPlugin.getLocalization().sendMessage(p, "gps.waypoint.max", true);
+                SlimefunPlugin.getLocalization().sendMessage(p, "teleporter.waypoint.max", true);
                 return;
             }
 
-            SlimefunPlugin.getLocalization().sendMessage(p, "gps.waypoint.new", true);
+            SlimefunPlugin.getLocalization().sendMessage(p, "teleporter.waypoint.new", true);
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5F, 1F);
 
             ChatInput.waitForPlayer(SlimefunPlugin.instance(), p, message -> addWaypoint(p, message, l));
@@ -263,7 +263,7 @@ public class GPSNetwork {
 
         PlayerProfile.get(p, profile -> {
             if ((profile.getWaypoints().size() + 2) > inventory.length) {
-                SlimefunPlugin.getLocalization().sendMessage(p, "gps.waypoint.max", true);
+                SlimefunPlugin.getLocalization().sendMessage(p, "teleporter.waypoint.max", true);
                 return;
             }
 
@@ -276,7 +276,7 @@ public class GPSNetwork {
 
                     for (Waypoint wp : profile.getWaypoints()) {
                         if (wp.getId().equals(id)) {
-                            SlimefunPlugin.getLocalization().sendMessage(p, "gps.waypoint.duplicate", true, msg -> msg.replace("%waypoint%", event.getName()));
+                            SlimefunPlugin.getLocalization().sendMessage(p, "teleporter.waypoint.duplicate", true, msg -> msg.replace("%waypoint%", event.getName()));
                             return;
                         }
                     }
@@ -284,7 +284,7 @@ public class GPSNetwork {
                     profile.addWaypoint(new Waypoint(profile, id, event.getLocation(), event.getName()));
 
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 1F);
-                    SlimefunPlugin.getLocalization().sendMessage(p, "gps.waypoint.added", true);
+                    SlimefunPlugin.getLocalization().sendMessage(p, "teleporter.waypoint.added", true);
                 }
             });
         });

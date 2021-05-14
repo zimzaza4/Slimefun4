@@ -55,6 +55,7 @@ public final class SlimefunRegistry {
     private boolean enableResearches;
     private boolean freeCreativeResearches;
     private boolean researchFireworks;
+    private boolean disableLearningAnimation;
     private boolean logDuplicateBlockEntries;
     private boolean talismanActionBarMessages;
     private boolean useMoneyUnlock;
@@ -99,6 +100,7 @@ public final class SlimefunRegistry {
         freeCreativeResearches = cfg.getBoolean("researches.free-in-creative-mode");
         researchFireworks = cfg.getBoolean("researches.enable-fireworks");
         logDuplicateBlockEntries = cfg.getBoolean("options.log-duplicate-block-entries");
+        disableLearningAnimation = cfg.getBoolean("researches.disable-learning-animation");
         talismanActionBarMessages = cfg.getBoolean("talismans.use-actionbar");
         useMoneyUnlock = cfg.getBoolean("researches.use-money-unlock");
     }
@@ -188,7 +190,20 @@ public final class SlimefunRegistry {
         return researchFireworks;
     }
 
-    public List<MultiBlock> getMultiBlocks() {
+    /**
+     * Returns whether the research learning animations is disabled
+     *
+     * @return Whether the research learning animations is disabled
+     */
+    public boolean isLearningAnimationDisabled() {
+        return disableLearningAnimation;
+    }
+
+    /**
+     * This method returns a {@link List} of every enabled {@link MultiBlock}.
+     *
+     */
+     public List<MultiBlock> getMultiBlocks() {
         return multiblocks;
     }
 
@@ -256,8 +271,14 @@ public final class SlimefunRegistry {
         return profiles;
     }
 
-    public Map<Class<? extends ItemHandler>, Set<ItemHandler>> getPublicItemHandlers() {
+    @Nonnull
+    public Map<Class<? extends ItemHandler>, Set<ItemHandler>> getGlobalItemHandlers() {
         return globalItemHandlers;
+    }
+
+    @Nonnull
+    public Set<ItemHandler> getGlobalItemHandlers(@Nonnull Class<? extends ItemHandler> identifier) {
+        return globalItemHandlers.computeIfAbsent(identifier, c -> new HashSet<>());
     }
 
     @Deprecated

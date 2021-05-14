@@ -90,6 +90,24 @@ guide:
     translations:
       name: '&aIs something missing?'
       lore: 'Click to add your own translation'
+  options:
+    learning-animation:
+      enabled:
+        text:
+          - '&bLearning Animation: &aYes'
+          - ''
+          - '&7You can now toggle whether you'
+          - '&7will see information about your pondering in chat'
+          - '&7upon researching an item.'
+        click: '&eClick to disable your learning animation'
+      disabled:
+        text:
+          - '&bLearning Animation: &4No'
+          - ''
+          - '&7You can now toggle whether you'
+          - '&7will see information about your pondering in chat'
+          - '&7upon researching an item.'
+        click: '&eClick to enable your learning animation'
 
   title:
     main: 'Slimefun Guide'
@@ -235,6 +253,9 @@ messages:
   - '&7Neon signs are LIT!'
 
   above-limit-level: '&cCannot (dis)enchant an enchantment level higher than %level%!'
+
+  pickaxe-of-the-seeker:
+    no-ores: '&cCannot find any nearby ores!'
 
 machines:
   pattern-not-found: '&eSorry, I could not recognize this Recipe. Please place the Items in the correct pattern into the Dispenser.'

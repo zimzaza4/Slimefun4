@@ -1,29 +1,33 @@
 package io.github.thebusybiscuit.slimefun4.core.guide.options;
 
-import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
-import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
-import io.github.thebusybiscuit.cscorelib2.skull.SkullItem;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
-import io.github.thebusybiscuit.slimefun4.core.researching.Research;
-import io.github.thebusybiscuit.slimefun4.core.services.LocalizationService;
-import io.github.thebusybiscuit.slimefun4.core.services.github.Contributor;
-import io.github.thebusybiscuit.slimefun4.core.services.github.GitHubService;
-import io.github.thebusybiscuit.slimefun4.core.services.localization.Language;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.utils.*;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.*;
+import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
+import io.github.thebusybiscuit.slimefun4.core.researching.Research;
+import io.github.thebusybiscuit.slimefun4.core.services.LocalizationService;
+import io.github.thebusybiscuit.slimefun4.core.services.github.GitHubService;
+import io.github.thebusybiscuit.slimefun4.core.services.localization.Language;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
+import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 
 /**
  * This static utility class offers various methods that provide access to the
@@ -38,17 +42,17 @@ import java.util.*;
  */
 public final class SlimefunGuideSettings {
 
-    private static final int[] BACKGROUND_SLOTS = {1, 3, 5, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 26, 27, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 48, 50, 52, 53};
+    private static final int[] BACKGROUND_SLOTS = { 1, 3, 5, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 26, 27, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 48, 50, 52, 53 };
     private static final List<SlimefunGuideOption<?>> options = new ArrayList<>();
 
     static {
         options.add(new GuideModeOption());
         options.add(new FireworksOption());
+        options.add(new LearningAnimationOption());
         options.add(new PlayerLanguageOption());
     }
 
-    private SlimefunGuideSettings() {
-    }
+    private SlimefunGuideSettings() {}
 
     public static <T> void addOption(@Nonnull SlimefunGuideOption<T> option) {
         options.add(option);
@@ -225,64 +229,54 @@ public final class SlimefunGuideSettings {
         }
     }
 
-    private static ItemStack getContributorHead(Player p, Contributor contributor) {
-        ItemStack skull = SkullItem.fromBase64(contributor.getTexture());
-
-        SkullMeta meta = (SkullMeta) skull.getItemMeta();
-        meta.setDisplayName(contributor.getDisplayName());
-
-        List<String> lore = new LinkedList<>();
-        lore.add("");
-
-        for (Map.Entry<String, Integer> entry : contributor.getContributions()) {
-            String info = entry.getKey();
-
-            if (!info.startsWith("&")) {
-                String[] segments = PatternUtils.COMMA.split(info);
-                info = SlimefunPlugin.getLocalization().getMessage(p, "guide.credits.roles." + segments[0]);
-
-                if (segments.length == 2) {
-                    info += " &7(" + SlimefunPlugin.getLocalization().getMessage(p, "languages." + segments[1]) + ')';
-                }
-            }
-
-            if (entry.getValue() > 0) {
-                String commits = SlimefunPlugin.getLocalization().getMessage(p, "guide.credits." + (entry.getValue() > 1 ? "commits" : "commit"));
-
-                info += " &7(" + entry.getValue() + ' ' + commits + ')';
-            }
-
-            lore.add(ChatColors.color(info));
-        }
-
-        if (contributor.getProfile() != null) {
-            lore.add("");
-            lore.add(ChatColors.color("&7\u21E8 &e") + SlimefunPlugin.getLocalization().getMessage(p, "guide.credits.profile-link"));
-        }
-
-        meta.setLore(lore);
-        skull.setItemMeta(meta);
-        return skull;
-    }
-
     /**
      * This method checks if the given {@link Player} has enabled the {@link FireworksOption}
      * in their {@link SlimefunGuide}.
      * If they enabled this setting, they will see fireworks when they unlock a {@link Research}.
      *
      * @param p The {@link Player}
+     *
      * @return Whether this {@link Player} wants to see fireworks when unlocking a {@link Research}
      */
-    public static boolean hasFireworksEnabled(Player p) {
+    public static boolean hasFireworksEnabled(@Nonnull Player p) {
+        return getOptionValue(p, FireworksOption.class, true);
+    }
+
+    /**
+     * This method checks if the given {@link Player} has enabled the {@link LearningAnimationOption}
+     * in their {@link SlimefunGuide}.
+     * If they enabled this setting, they will see messages in chat about the progress of their {@link Research}.
+     *
+     * @param p The {@link Player}
+     *
+     * @return Whether this {@link Player} wants to info messages in chat when unlocking a {@link Research}
+     */
+    public static boolean hasLearningAnimationEnabled(@Nonnull Player p) {
+        return getOptionValue(p, LearningAnimationOption.class, true);
+    }
+
+    /**
+     * Helper method to get the value of a {@link SlimefunGuideOption} that the {@link Player}
+     * has set in their {@link SlimefunGuide}
+     *
+     * @param p The {@link Player}
+     * @param cls Class of the {@link SlimefunGuideOption} to get the value of
+     * @param defaultValue Default value to return in case the option is not found at all or has no value set
+     * @param <T> Type of the {@link SlimefunGuideOption}
+     * @param <V> Type of the {@link SlimefunGuideOption} value
+     * @return The value of given {@link SlimefunGuideOption}
+     */
+    @Nonnull
+    private static <T extends SlimefunGuideOption<V>, V> V getOptionValue(@Nonnull Player p, @Nonnull Class<T> cls, @Nonnull V defaultValue) {
         for (SlimefunGuideOption<?> option : options) {
-            if (option instanceof FireworksOption) {
-                FireworksOption fireworks = (FireworksOption) option;
+            if (cls.isInstance(option)) {
+                T o = (T) option;
                 ItemStack guide = SlimefunGuide.getItem(SlimefunGuideMode.SURVIVAL_MODE);
-                return fireworks.getSelectedOption(p, guide).orElse(true);
+                return o.getSelectedOption(p, guide).orElse(defaultValue);
             }
         }
 
-        return true;
+        return defaultValue;
     }
 
 }

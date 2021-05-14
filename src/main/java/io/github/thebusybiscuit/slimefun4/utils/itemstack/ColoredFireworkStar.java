@@ -6,13 +6,23 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This simple {@link ItemStack} implementation allows us to obtain
+ * a colored {@code Material.FIREWORK_STAR} {@link ItemStack} quickly.
+ *
+ * @author TheBusyBiscuit
+ *
+ */
 public class ColoredFireworkStar extends CustomItem {
 
+    @ParametersAreNonnullByDefault
     public ColoredFireworkStar(Color color, String name, String... lore) {
         super(Material.FIREWORK_STAR, im -> {
             if (name != null) {

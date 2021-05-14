@@ -1,4 +1,4 @@
-package io.github.thebusybiscuit.slimefun4.implementation.items.gps;
+package io.github.thebusybiscuit.slimefun4.implementation.items.teleporter;
 
 import io.github.thebusybiscuit.slimefun4.core.handlers.RainbowTickHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.RainbowBlock;
