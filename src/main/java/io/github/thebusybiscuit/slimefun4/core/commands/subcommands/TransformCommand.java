@@ -55,7 +55,7 @@ class TransformCommand extends SubCommand {
                         }
                     });
                 } catch (Exception e) {
-                    Slimefun.getLogger().log(Level.WARNING, "在转换物品时发生了错误", e);
+                    SlimefunPlugin.logger().log(Level.WARNING, "在转换物品时发生了错误", e);
                 }
 
                 noticedPlayer.remove(p);
