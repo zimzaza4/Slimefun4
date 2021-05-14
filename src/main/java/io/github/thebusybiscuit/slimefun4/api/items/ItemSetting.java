@@ -7,6 +7,8 @@ import org.apache.commons.lang.Validate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents a Setting for a {@link SlimefunItem} that can be modified via
@@ -87,6 +89,16 @@ public class ItemSetting<T> {
     }
 
     /**
+     * This returns the associated {@link SlimefunItem} for this {@link ItemSetting}.
+     *
+     * @return The associated {@link SlimefunItem}
+     */
+    @Nonnull
+    protected SlimefunItem getItem() {
+        return item;
+    }
+
+    /**
      * This returns the <strong>current</strong> value of this {@link ItemSetting}.
      *
      * @return The current value
@@ -144,7 +156,7 @@ public class ItemSetting<T> {
         SlimefunPlugin.getItemCfg().setDefaultValue(item.getId() + '.' + getKey(), getDefaultValue());
         Object configuredValue = SlimefunPlugin.getItemCfg().getValue(item.getId() + '.' + getKey());
 
-        if (defaultValue.getClass().isInstance(configuredValue)) {
+        if (defaultValue.getClass().isInstance(configuredValue) || (configuredValue instanceof List && defaultValue instanceof List)) {
             // We can do an unsafe cast here, we did an isInstance(...) check before!
             T newValue = (T) configuredValue;
 
@@ -180,6 +192,21 @@ public class ItemSetting<T> {
     public String toString() {
         T currentValue = this.value != null ? this.value : defaultValue;
         return getClass().getSimpleName() + " {" + getKey() + " = " + currentValue + " (default: " + getDefaultValue() + ")";
+    }
+
+    @Override
+    public final int hashCode() {
+        return Objects.hash(item, key);
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+        if (obj instanceof ItemSetting) {
+            ItemSetting<?> setting = (ItemSetting<?>) obj;
+            return Objects.equals(getKey(), setting.getKey()) && Objects.equals(getItem(), setting.getItem());
+        } else {
+            return false;
+        }
     }
 
 }

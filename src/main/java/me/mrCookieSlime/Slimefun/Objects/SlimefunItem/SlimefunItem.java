@@ -9,12 +9,14 @@ import io.github.thebusybiscuit.slimefun4.api.exceptions.*;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemState;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.core.SlimefunRegistry;
 import io.github.thebusybiscuit.slimefun4.core.attributes.NotConfigurable;
 import io.github.thebusybiscuit.slimefun4.core.attributes.Placeable;
 import io.github.thebusybiscuit.slimefun4.core.attributes.Radioactive;
 import io.github.thebusybiscuit.slimefun4.core.attributes.Rechargeable;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
+import io.github.thebusybiscuit.slimefun4.core.handlers.GlobalItemHandler;
 import io.github.thebusybiscuit.slimefun4.core.researching.Research;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.VanillaItem;
@@ -544,11 +546,13 @@ public class SlimefunItem implements Placeable {
                 checkForDeprecations(handler.getClass());
             }
 
-            // If this ItemHandler is "public" (not bound to this SlimefunItem),
-            // we add it to the list of public Item handlers
-            if (!handler.isPrivate()) {
-                Set<ItemHandler> handlerset = getPublicItemHandlers(handler.getIdentifier());
-                handlerset.add(handler);
+            /*
+             * If this ItemHandler is "global" (not bound to this SlimefunItem),
+             * we add it to the list of global Item handlers
+             */
+            if (handler instanceof GlobalItemHandler) {
+                SlimefunRegistry registry = SlimefunPlugin.getRegistry();
+                registry.getGlobalItemHandlers(handler.getIdentifier()).add(handler);
             }
         }
     }
@@ -1160,11 +1164,6 @@ public class SlimefunItem implements Placeable {
         }
 
         return null;
-    }
-
-    @Nonnull
-    public static Set<ItemHandler> getPublicItemHandlers(@Nonnull Class<? extends ItemHandler> identifier) {
-        return SlimefunPlugin.getRegistry().getPublicItemHandlers().computeIfAbsent(identifier, c -> new HashSet<>());
     }
 
     /**

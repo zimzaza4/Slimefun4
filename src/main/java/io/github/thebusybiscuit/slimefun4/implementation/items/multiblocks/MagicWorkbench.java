@@ -20,10 +20,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public class MagicWorkbench extends AbstractCraftingTable {
 
+    @ParametersAreNonnullByDefault
     public MagicWorkbench(Category category, SlimefunItemStack item) {
         super(category, item, new ItemStack[]{null, null, null, null, null, null, new ItemStack(Material.BOOKSHELF), new ItemStack(Material.CRAFTING_TABLE), new ItemStack(Material.DISPENSER)}, BlockFace.UP);
     }

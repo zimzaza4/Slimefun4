@@ -43,6 +43,7 @@ researches:
   use-money-unlock: false
   # 经验自动转换到游戏币倍率
   money-multiply: 25.0
+  disable-learning-animation: false
 
 URID:
   info-delay: 3000

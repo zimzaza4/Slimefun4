@@ -1,5 +1,22 @@
 package io.github.thebusybiscuit.slimefun4.implementation.tasks;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.World.Environment;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
 import io.github.thebusybiscuit.slimefun4.api.items.HashedArmorpiece;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.attributes.ProtectionType;
@@ -11,23 +28,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets.
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.World.Environment;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * The {@link ArmorTask} is responsible for handling {@link PotionEffect PotionEffects} for
@@ -35,6 +36,7 @@ import java.util.Set;
  * It also handles the prevention of radiation through a Hazmat Suit
  *
  * @author TheBusyBiscuit
+ *
  */
 public class ArmorTask implements Runnable {
 
@@ -167,22 +169,22 @@ public class ArmorTask implements Runnable {
         }
 
         Set<SlimefunItem> radioactiveItems = SlimefunPlugin.getRegistry().getRadioactiveItems();
-        ItemStack subject = item;
+        ItemStack itemStack = item;
 
         if (!(item instanceof SlimefunItemStack) && radioactiveItems.size() > 1) {
             // Performance optimization to reduce ItemMeta calls
-            subject = new ItemStackWrapper(item);
+            itemStack = new ItemStackWrapper(item);
         }
 
         for (SlimefunItem radioactiveItem : radioactiveItems) {
-            if (radioactiveItem.isItem(subject) && Slimefun.isEnabled(p, radioactiveItem, true)) {
+            if (radioactiveItem.isItem(itemStack) && !radioactiveItem.isDisabledIn(p.getWorld())) {
                 // If the item is enabled in the world, then make radioactivity do its job
                 SlimefunPlugin.getLocalization().sendMessage(p, "messages.radiation");
 
                 SlimefunPlugin.runSync(() -> {
                     p.addPotionEffects(radiationEffects);
 
-                    // if radiative fire is enabled
+                    // if radioactive fire is enabled, set them on fire
                     if (radioactiveFire) {
                         p.setFireTicks(400);
                     }

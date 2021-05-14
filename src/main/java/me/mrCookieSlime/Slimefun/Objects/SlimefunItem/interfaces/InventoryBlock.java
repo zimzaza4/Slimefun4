@@ -53,11 +53,11 @@ public interface InventoryBlock {
 
             @Override
             public boolean canOpen(Block b, Player p) {
-                return p.hasPermission("slimefun.inventory.bypass") ||
-                        (SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK)
-                                && Slimefun.hasUnlocked(p, item, false)
-                                && IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK)
-                        );
+                if (p.hasPermission("slimefun.inventory.bypass")) {
+                    return true;
+                } else {
+                    return item.canUse(p, false) && SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK) && IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK);
+                }
             }
         };
     }

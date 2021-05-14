@@ -79,7 +79,7 @@ public class BlockListener implements Listener {
         ItemStack item = e.getItemInHand();
         SlimefunItem sfItem = SlimefunItem.getByItem(item);
 
-        if (sfItem != null && !(sfItem instanceof NotPlaceable) && Slimefun.isEnabled(e.getPlayer(), sfItem, true)) {
+        if (sfItem != null && !(sfItem instanceof NotPlaceable)) {
             if (!sfItem.canUse(e.getPlayer(), true)) {
                 e.setCancelled(true);
             } else {
@@ -191,7 +191,7 @@ public class BlockListener implements Listener {
                 e.setDropItems(false);
 
                 for (ItemStack drop : drops) {
-                    if (drop != null && drop.getType().isAir()) {
+                    if (drop != null && !drop.getType().isAir()) {
                         e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), drop);
                     }
                 }

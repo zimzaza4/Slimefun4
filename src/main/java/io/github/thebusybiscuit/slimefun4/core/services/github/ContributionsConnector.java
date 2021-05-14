@@ -35,12 +35,12 @@ class ContributionsConnector extends GitHubConnector {
     private boolean finished = false;
 
     @ParametersAreNonnullByDefault
-    ContributionsConnector(GitHubService github, String prefix, int page, String repository, String role) {
+    ContributionsConnector(GitHubService github, String prefix, int page, String repository, ContributorRole role) {
         super(github, repository);
 
         this.prefix = prefix;
         this.page = page;
-        this.role = role;
+        this.role = role.getId();
 
         loadConfiguration();
     }
@@ -52,7 +52,9 @@ class ContributionsConnector extends GitHubConnector {
      */
     private void loadConfiguration() {
         ignoredAccounts.add("invalid-email-address");
+        ignoredAccounts.add("renovate");
         ignoredAccounts.add("renovate-bot");
+        ignoredAccounts.add("renovate[bot]");
         ignoredAccounts.add("TheBusyBot");
         ignoredAccounts.add("ImgBotApp");
         ignoredAccounts.add("imgbot");
@@ -71,6 +73,7 @@ class ContributionsConnector extends GitHubConnector {
         aliases.put("bverhoeven", "soczol");
         aliases.put("ramdon-person", "ramdon_person");
         aliases.put("NCBPFluffyBear", "FluffyBear_");
+        aliases.put("martinbrom", "OneTime97");
     }
 
     /**

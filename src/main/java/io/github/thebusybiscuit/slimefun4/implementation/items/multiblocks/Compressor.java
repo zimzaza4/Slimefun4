@@ -19,11 +19,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Compressor extends MultiBlockMachine {
 
+    @ParametersAreNonnullByDefault
     public Compressor(Category category, SlimefunItemStack item) {
         super(category, item, new ItemStack[]{null, null, null, null, new ItemStack(Material.NETHER_BRICK_FENCE), null, new ItemStack(Material.PISTON), new CustomItem(Material.DISPENSER, "发射器 (朝上)"), new ItemStack(Material.PISTON)}, BlockFace.SELF);
     }
@@ -35,6 +37,9 @@ public class Compressor extends MultiBlockMachine {
 
         recipes.add(new ItemStack(Material.FLINT, 8));
         recipes.add(new ItemStack(Material.COBBLESTONE));
+
+        recipes.add(new ItemStack(Material.COAL_BLOCK, 8));
+        recipes.add(new SlimefunItemStack(SlimefunItems.CARBON, 9));
     }
 
     @Override

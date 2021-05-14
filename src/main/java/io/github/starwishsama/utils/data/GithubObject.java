@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * @author Nameless
+ * @author StarWishsama
  */
 public class GithubObject {
     @SerializedName("html_url")

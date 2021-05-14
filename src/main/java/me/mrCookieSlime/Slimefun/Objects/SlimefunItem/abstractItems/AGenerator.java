@@ -50,7 +50,7 @@ public abstract class AGenerator extends AbstractEnergyProvider {
     private int energyProducedPerTick = -1;
     private int energyCapacity = -1;
 
-    public AGenerator(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    protected AGenerator(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
         new BlockMenuPreset(item.getItemId(), getInventoryTitle()) {

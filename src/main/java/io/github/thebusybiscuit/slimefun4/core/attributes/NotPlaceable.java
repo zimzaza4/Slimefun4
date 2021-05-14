@@ -14,6 +14,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
  *
  * @author TheBusyBiscuit
  */
-public interface NotPlaceable {
+public interface NotPlaceable extends ItemAttribute {
 
 }

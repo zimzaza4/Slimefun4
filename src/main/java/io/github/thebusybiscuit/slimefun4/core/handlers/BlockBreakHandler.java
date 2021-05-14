@@ -1,19 +1,17 @@
 package io.github.thebusybiscuit.slimefun4.core.handlers;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.thebusybiscuit.slimefun4.api.events.AndroidMineEvent;
+import io.github.thebusybiscuit.slimefun4.implementation.items.androids.MinerAndroid;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import me.mrCookieSlime.Slimefun.Objects.handlers.ItemHandler;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.slimefun4.api.events.AndroidMineEvent;
-import io.github.thebusybiscuit.slimefun4.implementation.items.androids.MinerAndroid;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.Objects.handlers.ItemHandler;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 /**
  * The {@link BlockBreakHandler} is called when a {@link Block} is broken
@@ -47,7 +45,7 @@ public abstract class BlockBreakHandler implements ItemHandler {
      * @param allowExplosions
      *            Whether blocks of this type are allowed to be broken by explosions
      */
-    public BlockBreakHandler(boolean allowAndroids, boolean allowExplosions) {
+    protected BlockBreakHandler(boolean allowAndroids, boolean allowExplosions) {
         this.allowAndroids = allowAndroids;
         this.allowExplosions = allowExplosions;
     }
