@@ -4,6 +4,7 @@ import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.containers.ResidencePlayer;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
+import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import com.bekvon.bukkit.residence.protection.ResidencePermissions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -75,7 +76,7 @@ public class IntegrationHelper implements Listener {
    * @return 是否可以破坏
    */
   public static boolean checkPermission(OfflinePlayer p, Block block, ProtectableAction action) {
-    if (!resInstalled || p == null || block == null || p.isOp()) {
+    if (!resInstalled || p == null || !p.isOnline() || block == null || p.isOp()) {
       return true;
     }
 
@@ -90,9 +91,9 @@ public class IntegrationHelper implements Listener {
       ResidencePermissions perms = res.getPermissions();
 
       if (perms != null) {
-        ResidencePlayer rp = new ResidencePlayer(p);
+        Player online = p.getPlayer();
 
-        if (!action.isBlockAction() || perms.hasResidencePermission(p.getPlayer(), false)) {
+        if (!action.isBlockAction() || perms.playerHas(online, Flags.admin, FlagPermissions.FlagCombo.OnlyTrue)) {
           return true;
         }
 
@@ -105,9 +106,9 @@ public class IntegrationHelper implements Listener {
             return true;
           case PLACE_BLOCK:
             // move 是为了机器人而检查的, 防止机器人跑进别人领地然后还出不来
-            return perms.playerHas(rp, Flags.place, true)
-                || perms.playerHas(rp, Flags.build, true)
-                || !perms.playerHas(rp, Flags.move, true);
+            return perms.playerHas(online, Flags.place, FlagPermissions.FlagCombo.OnlyTrue)
+                || perms.playerHas(online, Flags.build, FlagPermissions.FlagCombo.OnlyTrue)
+                || !perms.playerHas(online, Flags.move, FlagPermissions.FlagCombo.OnlyTrue);
         }
       }
     }
