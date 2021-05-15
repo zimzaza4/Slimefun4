@@ -1,16 +1,23 @@
 package io.github.thebusybiscuit.slimefun4.core.services.github;
 
-import io.github.thebusybiscuit.cscorelib2.data.TriStateOptional;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
-import org.apache.commons.lang.Validate;
-import org.bukkit.ChatColor;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+
+import org.apache.commons.lang.Validate;
+import org.bukkit.ChatColor;
+
+import io.github.thebusybiscuit.cscorelib2.data.TriStateOptional;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 
 /**
  * Represents a {@link Contributor} who contributed to a GitHub repository.
@@ -31,13 +38,14 @@ public class Contributor {
     private final TriStateOptional<String> headTexture = TriStateOptional.createNew();
 
     private Optional<UUID> uuid = Optional.empty();
-    private boolean immutable = false;
 
     /**
      * This creates a new {@link Contributor} with the given ingame name and GitHub profile.
      *
-     * @param minecraftName The ingame name in Minecraft for this {@link Contributor}
-     * @param profile       A link to their GitHub profile
+     * @param minecraftName
+     *            The ingame name in Minecraft for this {@link Contributor}
+     * @param profile
+     *            A link to their GitHub profile
      */
     public Contributor(@Nonnull String minecraftName, @Nonnull String profile) {
         Validate.notNull(minecraftName, "Username must never be null!");
@@ -75,9 +83,7 @@ public class Contributor {
         Validate.notNull(role, "The role cannot be null!");
         Validate.isTrue(commits >= 0, "Contributions cannot be negative");
 
-        if (!immutable || role.startsWith("translator,")) {
-            contributions.put(role, commits);
-        }
+        contributions.put(role, commits);
     }
 
     /**
@@ -178,7 +184,9 @@ public class Contributor {
      * If no texture could be found, or it hasn't been pulled yet,
      * then it will return a placeholder texture.
      *
-     * @param github Our {@link GitHubService} instance
+     * @param github
+     *            Our {@link GitHubService} instance
+     *
      * @return A Base64-Head Texture
      */
     @Nonnull
@@ -247,14 +255,5 @@ public class Contributor {
      */
     public int getPosition() {
         return -getTotalContributions();
-    }
-
-    /**
-     * This marks this {@link Contributor} as immutable.
-     * Immutable {@link Contributor Contributors} will no longer be assigned any contributions.
-     * This is useful when you want to prevent some commits from counting twice.
-     */
-    public void setImmutable() {
-        immutable = true;
     }
 }
