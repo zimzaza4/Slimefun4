@@ -1,17 +1,15 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
-import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
-import io.github.thebusybiscuit.slimefun4.core.handlers.ToolUseHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunBlockHandler;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.UnregisterReason;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -25,14 +23,15 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
+import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
+import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
+import io.github.thebusybiscuit.slimefun4.core.handlers.ToolUseHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 
 /**
  * The {@link BlockListener} is responsible for listening to the {@link BlockPlaceEvent}
@@ -41,9 +40,11 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author TheBusyBiscuit
  * @author Linox
  * @author Patbox
+ *
  * @see BlockPlaceHandler
  * @see BlockBreakHandler
  * @see ToolUseHandler
+ *
  */
 public class BlockListener implements Listener {
 
@@ -97,9 +98,9 @@ public class BlockListener implements Listener {
     public void onBlockBreak(BlockBreakEvent e) {
         // Simply ignore any events that were faked by other plugins
         if (SlimefunPlugin.getIntegrations().isEventFaked(e)) {
-            // This is a "fake" event, we can ignore it.
             return;
         }
+
         // Also ignore custom blocks which were placed by other plugins
         if (SlimefunPlugin.getIntegrations().isCustomBlock(e.getBlock())) {
             return;
@@ -153,23 +154,10 @@ public class BlockListener implements Listener {
         }
 
         if (sfItem != null && !sfItem.useVanillaBlockBreaking()) {
-            SlimefunBlockHandler blockHandler = SlimefunPlugin.getRegistry().getBlockHandlers().get(sfItem.getId());
+            sfItem.callItemHandler(BlockBreakHandler.class, handler -> handler.onPlayerBreak(e, item, drops));
 
-            if (blockHandler != null) {
-                try {
-                    if (!blockHandler.onBreak(e.getPlayer(), e.getBlock(), sfItem, UnregisterReason.PLAYER_BREAK)) {
-                        e.setCancelled(true);
-                        return;
-                    }
-                } catch (Exception | LinkageError x) {
-                    sfItem.error("Something went wrong while triggering a BlockHandler", x);
-                }
-            } else {
-                sfItem.callItemHandler(BlockBreakHandler.class, handler -> handler.onPlayerBreak(e, item, drops));
-
-                if (e.isCancelled()) {
-                    return;
-                }
+            if (e.isCancelled()) {
+                return;
             }
 
             drops.addAll(sfItem.getDrops());
@@ -180,8 +168,6 @@ public class BlockListener implements Listener {
     @ParametersAreNonnullByDefault
     private void dropItems(BlockBreakEvent e, List<ItemStack> drops) {
         if (!drops.isEmpty() && !e.isCancelled()) {
-            e.getBlock().setType(Material.AIR);
-
             // Notify plugins like CoreProtect
             SlimefunPlugin.getProtectionManager().logAction(e.getPlayer(), e.getBlock(), ProtectableAction.BREAK_BLOCK);
 
@@ -191,7 +177,8 @@ public class BlockListener implements Listener {
                 e.setDropItems(false);
 
                 for (ItemStack drop : drops) {
-                    if (drop != null && !drop.getType().isAir()) {
+                    // Prevent null or air from being dropped
+                    if (drop != null && drop.getType() != Material.AIR) {
                         e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), drop);
                     }
                 }
@@ -217,39 +204,27 @@ public class BlockListener implements Listener {
             SlimefunItem sfItem = BlockStorage.check(blockAbove);
 
             if (sfItem != null && !sfItem.useVanillaBlockBreaking()) {
-                SlimefunBlockHandler blockHandler = SlimefunPlugin.getRegistry().getBlockHandlers().get(sfItem.getId());
+                /*
+                 * We create a dummy here to pass onto the BlockBreakHandler.
+                 * This will set the correct block context.
+                 */
+                BlockBreakEvent dummyEvent = new BlockBreakEvent(blockAbove, e.getPlayer());
+                List<ItemStack> drops = new ArrayList<>();
+                drops.addAll(sfItem.getDrops(e.getPlayer()));
 
-                if (blockHandler != null) {
-                    if (blockHandler.onBreak(e.getPlayer(), blockAbove, sfItem, UnregisterReason.PLAYER_BREAK)) {
-                        blockAbove.getWorld().dropItemNaturally(blockAbove.getLocation(), BlockStorage.retrieve(blockAbove));
-                        blockAbove.setType(Material.AIR);
-                    }
-                } else {
-                    /*
-                     * We create a dummy here to pass onto the BlockBreakHandler.
-                     * This will set the correct block context.
-                     */
-                    BlockBreakEvent dummyEvent = new BlockBreakEvent(blockAbove, e.getPlayer());
-                    List<ItemStack> drops = new ArrayList<>();
-                    drops.addAll(sfItem.getDrops(e.getPlayer()));
+                sfItem.callItemHandler(BlockBreakHandler.class, handler -> handler.onPlayerBreak(dummyEvent, item, drops));
+                blockAbove.setType(Material.AIR);
 
-                    sfItem.callItemHandler(BlockBreakHandler.class, handler -> handler.onPlayerBreak(dummyEvent, item, drops));
-
-                    blockAbove.setType(Material.AIR);
-
-                    if (!dummyEvent.isCancelled() && dummyEvent.isDropItems()) {
-                        for (ItemStack drop : drops) {
-                            // Prevent null or air from being dropped
-                            if (drop != null && drop.getType() != Material.AIR) {
-                                blockAbove.getWorld().dropItemNaturally(blockAbove.getLocation(), drop);
-                            }
+                if (!dummyEvent.isCancelled() && dummyEvent.isDropItems()) {
+                    for (ItemStack drop : drops) {
+                        if (drop != null && !drop.getType().isAir()) {
+                            blockAbove.getWorld().dropItemNaturally(blockAbove.getLocation(), drop);
                         }
                     }
                 }
 
                 // Fixes #2944 - Don't forget to clear the Block Data
                 BlockStorage.clearBlockInfo(blockAbove);
-
             }
         }
     }
@@ -264,7 +239,6 @@ public class BlockListener implements Listener {
              * we are handling more than one Enchantment, we should access the ItemMeta
              * directly and re use it.
              */
-
             ItemMeta meta = item.getItemMeta();
             int fortuneLevel = meta.getEnchantLevel(Enchantment.LOOT_BONUS_BLOCKS);
 
