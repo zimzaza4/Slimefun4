@@ -1,5 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.OreWasher;
@@ -10,8 +13,6 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 public class ElectricDustWasher extends AContainer {
 
@@ -45,14 +46,14 @@ public class ElectricDustWasher extends AContainer {
                 }
 
                 ItemStack dust = oreWasher.getRandomDust();
-                MachineRecipe recipe = new MachineRecipe(4 / getSpeed(), new ItemStack[0], new ItemStack[]{dust});
+                MachineRecipe recipe = new MachineRecipe(4 / getSpeed(), new ItemStack[0], new ItemStack[] { dust });
 
                 if (!legacyMode || menu.fits(recipe.getOutput()[0], getOutputSlots())) {
                     menu.consumeItem(slot);
                     return recipe;
                 }
             } else if (SlimefunUtils.isItemSimilar(menu.getItemInSlot(slot), SlimefunItems.PULVERIZED_ORE, true)) {
-                MachineRecipe recipe = new MachineRecipe(4 / getSpeed(), new ItemStack[0], new ItemStack[]{SlimefunItems.PURE_ORE_CLUSTER});
+                MachineRecipe recipe = new MachineRecipe(4 / getSpeed(), new ItemStack[0], new ItemStack[] { SlimefunItems.PURE_ORE_CLUSTER });
 
                 if (menu.fits(recipe.getOutput()[0], getOutputSlots())) {
                     menu.consumeItem(slot);
