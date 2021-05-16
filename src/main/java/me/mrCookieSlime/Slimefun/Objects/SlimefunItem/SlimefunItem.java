@@ -917,7 +917,7 @@ public class SlimefunItem implements Placeable {
             try {
                 callable.accept(c.cast(handler.get()));
             } catch (Exception | LinkageError x) {
-                error("Could not pass \"" + c.getSimpleName() + "\" for " + toString(), x);
+                error("Could not pass \"" + c.getSimpleName() + "\" for " + this, x);
             }
 
             return true;
@@ -980,7 +980,7 @@ public class SlimefunItem implements Placeable {
     public void warn(@Nonnull String message) {
         Validate.notNull(addon, "Cannot send a warning for an unregistered item!");
 
-        String msg = toString() + ": " + message;
+        String msg = this + ": " + message;
         addon.getLogger().log(Level.WARNING, msg);
 
         if (addon.getBugTrackerURL() != null) {

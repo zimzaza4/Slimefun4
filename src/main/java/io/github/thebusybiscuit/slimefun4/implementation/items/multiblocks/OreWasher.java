@@ -1,12 +1,9 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks;
 
-import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import io.papermc.lib.PaperLib;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -18,9 +15,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
+import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.papermc.lib.PaperLib;
+import me.mrCookieSlime.Slimefun.Objects.Category;
+import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 
 public class OreWasher extends MultiBlockMachine {
 
@@ -28,16 +29,16 @@ public class OreWasher extends MultiBlockMachine {
     private final ItemStack[] dusts;
 
     public OreWasher(Category category, SlimefunItemStack item) {
-        super(category, item, new ItemStack[]{null, new ItemStack(Material.DISPENSER), null, null, new ItemStack(Material.OAK_FENCE), null, null, new ItemStack(Material.CAULDRON), null}, new ItemStack[0], BlockFace.SELF);
+        super(category, item, new ItemStack[] { null, new ItemStack(Material.DISPENSER), null, null, new ItemStack(Material.OAK_FENCE), null, null, new ItemStack(Material.CAULDRON), null }, BlockFace.SELF);
 
         legacyMode = SlimefunPlugin.getCfg().getBoolean("options.legacy-ore-washer");
-        dusts = new ItemStack[]{SlimefunItems.IRON_DUST, SlimefunItems.GOLD_DUST, SlimefunItems.COPPER_DUST, SlimefunItems.TIN_DUST, SlimefunItems.ZINC_DUST, SlimefunItems.ALUMINUM_DUST, SlimefunItems.MAGNESIUM_DUST, SlimefunItems.LEAD_DUST, SlimefunItems.SILVER_DUST};
+        dusts = new ItemStack[] { SlimefunItems.IRON_DUST, SlimefunItems.GOLD_DUST, SlimefunItems.COPPER_DUST, SlimefunItems.TIN_DUST, SlimefunItems.ZINC_DUST, SlimefunItems.ALUMINUM_DUST, SlimefunItems.MAGNESIUM_DUST, SlimefunItems.LEAD_DUST, SlimefunItems.SILVER_DUST };
     }
 
     @Override
     protected void registerDefaultRecipes(List<ItemStack> recipes) {
         // Iron and Gold are displayed as Ore Crusher recipes, as that is their primary
-        // way of obtainining them. But we also wanna display them here, so we just
+        // way of obtaining them. But we also wanna display them here, so we just
         // add these two recipes manually
         recipes.add(SlimefunItems.SIFTED_ORE);
         recipes.add(SlimefunItems.IRON_DUST);
@@ -45,7 +46,6 @@ public class OreWasher extends MultiBlockMachine {
         recipes.add(SlimefunItems.SIFTED_ORE);
         recipes.add(SlimefunItems.GOLD_DUST);
     }
-
 
     @Override
     public List<ItemStack> getDisplayRecipes() {
