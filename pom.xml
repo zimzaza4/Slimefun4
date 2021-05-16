@@ -365,9 +365,9 @@
         <dependency>
             <groupId>com.bekvon.bukkit</groupId>
             <artifactId>residence</artifactId>
-            <version>4.9.2.1</version>
+            <version>4.9.3.5</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/lib/Residence4.9.2.1.jar</systemPath>
+            <systemPath>${project.basedir}/lib/Residence.jar</systemPath>
             <exclusions>
                 <exclusion>
                     <!-- We don't need any of the dependencies -->
