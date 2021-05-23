@@ -62,9 +62,9 @@ public class SlimefunItemInteractListener implements Listener {
 
             boolean itemUsed = e.getHand() == EquipmentSlot.OFF_HAND;
 
-            if (itemUsed && event.useItem() != Result.ALLOW) {
-                e.setCancelled(true);
-            }
+            //if (itemUsed && (SlimefunItem.getByItem(e.getItem()) != null && event.useItem() != Result.ALLOW)) {
+            //    e.setCancelled(true);
+            //}
 
             // Only handle the Item if it hasn't been denied
             if (event.useItem() != Result.DENY) {
