@@ -53,12 +53,17 @@ public class SlimefunGuideListener implements Listener {
                 openGuide(p, e, SlimefunGuideMode.SURVIVAL_MODE);
             }
         } else if (tryOpenGuide(p, e, SlimefunGuideMode.CHEAT_MODE) == Result.ALLOW) {
+            // Permission check to prevent player from accessing the cheat menu through setting page.
+            if(!p.hasPermission("slimefun.cheat.items")) {
+                SlimefunPlugin.getLocalization().sendMessage(p, "messages.no-permission", true);
+                return;
+            }
+
             if (p.isSneaking()) {
                 SlimefunGuideSettings.openSettings(p, e.getItem());
             } else {
-                // We rather just run the command here,
-                // all necessary permission checks will be handled there.
-                p.chat("/sf cheat");
+                // Since the permission checked, directly open the cheat menu.
+                openGuide(p, e, SlimefunGuideMode.CHEAT_MODE);
             }
         }
     }
