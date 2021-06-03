@@ -127,14 +127,6 @@ public class IntegrationHelper implements Listener {
   }
 
   public static boolean checkForQuickShop(@Nonnull Location l) {
-    if (!qsInstalled) {
-      return false;
-    }
-
-    try {
-      return QuickShopAPI.getShopAPI().getShopWithCaching(l) != null;
-    } catch (Exception e) {
-      return false;
-    }
+    return qsInstalled && QuickShopAPI.getShopAPI().getShop(l).isPresent();
   }
 }
