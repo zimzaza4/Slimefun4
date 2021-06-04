@@ -2,7 +2,6 @@ package io.github.starwishsama.utils;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.containers.Flags;
-import com.bekvon.bukkit.residence.containers.ResidencePlayer;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import com.bekvon.bukkit.residence.protection.ResidencePermissions;
@@ -21,7 +20,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.maxgamer.quickshop.api.QuickShopAPI;
-import org.maxgamer.quickshop.shop.Shop;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
@@ -49,12 +47,12 @@ public class IntegrationHelper implements Listener {
     if (!qsInstalled) {
       plugin.getLogger().log(Level.WARNING, "未检测到 Quickshop-Reremake, 相关功能将自动关闭");
     } else {
-      String[] version = plugin.getServer().getPluginManager().getPlugin("Quickshop").getDescription().getVersion().split(".");
+      String[] version = plugin.getServer().getPluginManager().getPlugin("Quickshop").getDescription().getVersion().split("\\.");
       int major = Integer.parseInt(version[2]);
 
-      if (major < 8 || (major > 8 && Integer.parseInt(version[3]) < 3)) {
+      if (major < 8 || (major == 8 && Integer.parseInt(version[3]) < 2)) {
         try {
-          qsMethod = Class.forName("org.maxgamer.quickshop.api.ShopAPI").getDeclaredMethod("getShopWithCaching", Location.class, Shop.class);
+          qsMethod = Class.forName("org.maxgamer.quickshop.api.ShopAPI").getDeclaredMethod("getShopWithCaching", Location.class);
           qsMethod.setAccessible(true);
         } catch (ClassNotFoundException | NoSuchMethodException ignored) {
         }
@@ -151,7 +149,7 @@ public class IntegrationHelper implements Listener {
 
     if (qsMethod != null) {
       try {
-        return qsMethod.invoke(l) == null;
+        return qsMethod.invoke(QuickShopAPI.getShopAPI(),l) != null;
       } catch (IllegalAccessException | InvocationTargetException e) {
         logger.log(Level.WARNING, "在获取箱子商店时出现了问题", e);
         return true;
