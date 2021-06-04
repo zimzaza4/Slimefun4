@@ -21,10 +21,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.maxgamer.quickshop.api.QuickShopAPI;
+import org.maxgamer.quickshop.shop.Shop;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 保护插件权限检查器
@@ -34,27 +38,27 @@ import java.util.logging.Level;
 public class IntegrationHelper implements Listener {
   private static boolean resInstalled;
   private static boolean qsInstalled;
-
-  @EventHandler
-  public void onAndroidMine(AndroidMineEvent e) {
-    if (e != null) {
-      Player p =
-          Bukkit.getPlayer(
-              getOwnerFromJson(BlockStorage.getBlockInfoAsJson(e.getAndroid().getBlock())));
-
-      if (!checkPermission(p, e.getBlock(), ProtectableAction.BREAK_BLOCK)) {
-        e.setCancelled(true);
-        SlimefunPlugin.getLocalization().sendMessage(p, "android.no-permission");
-      }
-    }
-  }
+  private static Method qsMethod = null;
+  private static Logger logger;
 
   public IntegrationHelper(SlimefunPlugin plugin) {
     resInstalled = plugin.getServer().getPluginManager().getPlugin("Residence") != null;
     qsInstalled = plugin.getServer().getPluginManager().getPlugin("QuickShop") != null;
+    logger = plugin.getLogger();
 
     if (!qsInstalled) {
       plugin.getLogger().log(Level.WARNING, "未检测到 Quickshop-Reremake, 相关功能将自动关闭");
+    } else {
+      String[] version = plugin.getServer().getPluginManager().getPlugin("Quickshop").getDescription().getVersion().split(".");
+      int major = Integer.parseInt(version[2]);
+
+      if (major < 8 || (major > 8 && Integer.parseInt(version[3]) < 3)) {
+        try {
+          qsMethod = Class.forName("org.maxgamer.quickshop.api.ShopAPI").getDeclaredMethod("getShopWithCaching", Location.class, Shop.class);
+          qsMethod.setAccessible(true);
+        } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+        }
+      }
     }
 
     if (!resInstalled) {
@@ -65,6 +69,20 @@ public class IntegrationHelper implements Listener {
     plugin.getLogger().log(Level.INFO, "检测到领地插件, 相关功能已开启");
 
     plugin.getServer().getPluginManager().registerEvents(this, plugin);
+  }
+
+  @EventHandler
+  public void onAndroidMine(AndroidMineEvent e) {
+    if (e != null) {
+      Player p =
+              Bukkit.getPlayer(
+                      getOwnerFromJson(BlockStorage.getBlockInfoAsJson(e.getAndroid().getBlock())));
+
+      if (!checkPermission(p, e.getBlock(), ProtectableAction.BREAK_BLOCK)) {
+        e.setCancelled(true);
+        SlimefunPlugin.getLocalization().sendMessage(p, "android.no-permission");
+      }
+    }
   }
 
   /**
@@ -127,6 +145,19 @@ public class IntegrationHelper implements Listener {
   }
 
   public static boolean checkForQuickShop(@Nonnull Location l) {
-    return qsInstalled && QuickShopAPI.getShopAPI().getShop(l).isPresent();
+    if (!qsInstalled) {
+      return false;
+    }
+
+    if (qsMethod != null) {
+      try {
+        return qsMethod.invoke(l) == null;
+      } catch (IllegalAccessException | InvocationTargetException e) {
+        logger.log(Level.WARNING, "在获取箱子商店时出现了问题", e);
+        return true;
+      }
+    }
+
+    return QuickShopAPI.getShopAPI().getShop(l).isPresent();
   }
 }
