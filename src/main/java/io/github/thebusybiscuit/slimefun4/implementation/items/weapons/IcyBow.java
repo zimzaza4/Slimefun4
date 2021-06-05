@@ -6,6 +6,7 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -28,6 +29,13 @@ public class IcyBow extends SlimefunBow {
     @Override
     public BowShootHandler onShoot() {
         return (e, n) -> {
+            if (n instanceof Player) {
+                Player p = (Player) n;
+                if (p.isBlocking() && e.getFinalDamage() == 0) {
+                    return;
+                }
+            }
+
             n.getWorld().playEffect(n.getLocation(), Effect.STEP_SOUND, Material.ICE);
             n.getWorld().playEffect(n.getEyeLocation(), Effect.STEP_SOUND, Material.ICE);
             n.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 2, 10));

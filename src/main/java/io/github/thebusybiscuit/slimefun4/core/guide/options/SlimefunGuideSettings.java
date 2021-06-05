@@ -259,17 +259,17 @@ public final class SlimefunGuideSettings {
      * has set in their {@link SlimefunGuide}
      *
      * @param p The {@link Player}
-     * @param cls Class of the {@link SlimefunGuideOption} to get the value of
+     * @param optionsClass Class of the {@link SlimefunGuideOption} to get the value of
      * @param defaultValue Default value to return in case the option is not found at all or has no value set
      * @param <T> Type of the {@link SlimefunGuideOption}
      * @param <V> Type of the {@link SlimefunGuideOption} value
      * @return The value of given {@link SlimefunGuideOption}
      */
     @Nonnull
-    private static <T extends SlimefunGuideOption<V>, V> V getOptionValue(@Nonnull Player p, @Nonnull Class<T> cls, @Nonnull V defaultValue) {
+    private static <T extends SlimefunGuideOption<V>, V> V getOptionValue(@Nonnull Player p, @Nonnull Class<T> optionsClass, @Nonnull V defaultValue) {
         for (SlimefunGuideOption<?> option : options) {
-            if (cls.isInstance(option)) {
-                T o = (T) option;
+            if (optionsClass.isInstance(option)) {
+                T o = optionsClass.cast(option);
                 ItemStack guide = SlimefunGuide.getItem(SlimefunGuideMode.SURVIVAL_MODE);
                 return o.getSelectedOption(p, guide).orElse(defaultValue);
             }

@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Consumer;
 
 /**
@@ -44,16 +45,22 @@ public interface SlimefunGuideImplementation {
     @Nonnull
     ItemStack getItem();
 
+    @ParametersAreNonnullByDefault
     void openMainMenu(PlayerProfile profile, int page);
 
+    @ParametersAreNonnullByDefault
     void openCategory(PlayerProfile profile, Category category, int page);
 
+    @ParametersAreNonnullByDefault
     void openSearch(PlayerProfile profile, String input, boolean addToHistory);
 
+    @ParametersAreNonnullByDefault
     void displayItem(PlayerProfile profile, ItemStack item, int index, boolean addToHistory);
 
+    @ParametersAreNonnullByDefault
     void displayItem(PlayerProfile profile, SlimefunItem item, boolean addToHistory);
 
+    @ParametersAreNonnullByDefault
     default void unlockItem(Player p, SlimefunItem sfitem, Consumer<Player> callback) {
         Research research = sfitem.getResearch();
 
@@ -65,8 +72,7 @@ public interface SlimefunGuideImplementation {
             } else {
                 p.setLevel(p.getLevel() - research.getCost());
             }
-            boolean skipLearningAnimation = SlimefunPlugin.getRegistry().isLearningAnimationDisabled()
-                    || !SlimefunGuideSettings.hasLearningAnimationEnabled(p);
+            boolean skipLearningAnimation = SlimefunPlugin.getRegistry().isLearningAnimationDisabled() || !SlimefunGuideSettings.hasLearningAnimationEnabled(p);
             research.unlock(p, skipLearningAnimation, callback);
         }
     }
