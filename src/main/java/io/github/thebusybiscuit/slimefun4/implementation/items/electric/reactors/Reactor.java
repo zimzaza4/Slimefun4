@@ -6,6 +6,7 @@ import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.api.events.AsyncReactorProcessCompleteEvent;
 import io.github.thebusybiscuit.slimefun4.api.events.ReactorExplodeEvent;
 import io.github.thebusybiscuit.slimefun4.core.attributes.HologramOwner;
+import io.github.thebusybiscuit.slimefun4.core.attributes.MachineProcessHolder;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.machines.MachineProcessor;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
@@ -13,6 +14,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.ReactorAccessPort;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.AbstractEnergyProvider;
+import io.github.thebusybiscuit.slimefun4.implementation.operations.FuelOperation;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
@@ -281,7 +283,6 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
 
         if (operation != null) {
             extraTick(l);
-            int timeleft = progress.get(l);
 
             if (!operation.isFinished()) {
                 return generateEnergy(l, data, inv, accessPort, operation);
@@ -295,7 +296,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
         }
     }
 
-    private int generateEnergy(@Nonnull Location l, @Nonnull Config data, @Nonnull BlockMenu inv, @Nullable BlockMenu accessPort, int timeleft) {
+    private int generateEnergy(@Nonnull Location l, @Nonnull Config data, @Nonnull BlockMenu inv, @Nullable BlockMenu accessPort, @Nonnull FuelOperation operation) {
         int produced = getEnergyProduction();
         String energyData = data.getString("energy-charge");
         int charge = 0;
@@ -307,12 +308,11 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
         int space = getCapacity() - charge;
 
         if (space >= produced || getReactorMode(l) != ReactorMode.GENERATOR) {
-            progress.put(l, timeleft - 1);
+            operation.addProgress(1);
             checkForWaterBlocks(l);
+            processor.updateProgressBar(inv, 22, operation);
 
-            ChestMenuUtils.updateProgressbar(inv, 22, timeleft, processing.get(l).getTicks(), getProgressBar());
-
-            if (needsCooling() && !hasEnoughCoolant(l, inv, accessPort, timeleft)) {
+            if (needsCooling() && !hasEnoughCoolant(l, inv, accessPort, operation)) {
                 explosionsQueue.add(l);
                 return 0;
             }
@@ -339,8 +339,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
             });
 
             explosionsQueue.remove(l);
-            processing.remove(l);
-            progress.remove(l);
+            processor.endOperation(l);
         }
 
         return explosion;
