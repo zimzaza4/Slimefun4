@@ -7,6 +7,7 @@ import io.github.thebusybiscuit.slimefun4.api.events.AsyncReactorProcessComplete
 import io.github.thebusybiscuit.slimefun4.api.events.ReactorExplodeEvent;
 import io.github.thebusybiscuit.slimefun4.core.attributes.HologramOwner;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
+import io.github.thebusybiscuit.slimefun4.core.machines.MachineProcessor;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
@@ -54,10 +55,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @see NuclearReactor
  * @see NetherStarReactor
  */
-public abstract class Reactor extends AbstractEnergyProvider implements HologramOwner {
-
-    public static Map<Location, MachineFuel> processing = new HashMap<>();
-    public static Map<Location, Integer> progress = new HashMap<>();
+public abstract class Reactor extends AbstractEnergyProvider implements HologramOwner, MachineProcessHolder<FuelOperation> {
 
     private static final String MODE = "reactor-mode";
     private static final int INFO_SLOT = 49;
@@ -73,10 +71,13 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
     private static final int[] border_4 = {25, 34, 43};
 
     private final Set<Location> explosionsQueue = new HashSet<>();
+    private final MachineProcessor<FuelOperation> processor = new MachineProcessor<>(this);
 
     @ParametersAreNonnullByDefault
     protected Reactor(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
+
+        processor.setProgressBar(getProgressBar());
 
         new BlockMenuPreset(getId(), getInventoryTitle()) {
 
@@ -110,6 +111,11 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
         registerDefaultFuelTypes();
     }
 
+    @Override
+    public MachineProcessor<FuelOperation> getMachineProcessor() {
+        return processor;
+    }
+
     @Nonnull
     private BlockBreakHandler onBreak() {
         return new SimpleBlockBreakHandler() {
@@ -123,8 +129,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
                     inv.dropItems(b.getLocation(), getOutputSlots());
                 }
 
-                progress.remove(b.getLocation());
-                processing.remove(b.getLocation());
+                processor.endOperation(b);
                 removeHologram(b);
             }
         };
@@ -268,27 +273,20 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
         return new int[]{40};
     }
 
-    public MachineFuel getProcessing(Location l) {
-        return processing.get(l);
-    }
-
-    public boolean isProcessing(Location l) {
-        return progress.containsKey(l);
-    }
-
     @Override
     public int getGeneratedOutput(Location l, Config data) {
         BlockMenu inv = BlockStorage.getInventory(l);
         BlockMenu accessPort = getAccessPort(l);
+        FuelOperation operation = processor.getOperation(l);
 
-        if (isProcessing(l)) {
+        if (operation != null) {
             extraTick(l);
             int timeleft = progress.get(l);
 
-            if (timeleft > 0) {
-                return generateEnergy(l, data, inv, accessPort, timeleft);
+            if (!operation.isFinished()) {
+                return generateEnergy(l, data, inv, accessPort, operation);
             } else {
-                createByproduct(l, inv, accessPort);
+                createByproduct(l, inv, accessPort, operation);
                 return 0;
             }
         } else {
@@ -361,11 +359,12 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
         });
     }
 
-    private void createByproduct(Location l, BlockMenu inv, BlockMenu accessPort) {
+    private void createByproduct(@Nonnull Location l, @Nonnull BlockMenu inv, @Nullable BlockMenu accessPort, @Nonnull FuelOperation operation) {
         inv.replaceExistingItem(22, new CustomItem(Material.BLACK_STAINED_GLASS_PANE, " "));
+        ItemStack result = operation.getResult();
 
-        if (processing.get(l).getOutput() != null) {
-            inv.pushItem(processing.get(l).getOutput().clone(), getOutputSlots());
+        if (result != null) {
+            inv.pushItem(result.clone(), getOutputSlots());
         }
 
         if (accessPort != null) {
@@ -376,10 +375,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
             }
         }
 
-        Bukkit.getPluginManager().callEvent(new AsyncReactorProcessCompleteEvent(l, Reactor.this, getProcessing(l)));
-
-        progress.remove(l);
-        processing.remove(l);
+        processor.endOperation(l);
     }
 
     private void burnNextFuel(Location l, BlockMenu inv, BlockMenu accessPort) {
@@ -395,8 +391,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
                 inv.consumeItem(entry.getKey(), entry.getValue());
             }
 
-            processing.put(l, fuel);
-            progress.put(l, fuel.getTicks());
+            processor.startOperation(l, new FuelOperation(fuel));
         }
     }
 
@@ -414,11 +409,11 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
      *
      * @return Whether the {@link Reactor} was successfully cooled, if not it should explode
      */
-    private boolean hasEnoughCoolant(@Nonnull Location reactor, @Nonnull BlockMenu menu, @Nullable BlockMenu accessPort, int timeleft) {
-        boolean requiresCoolant = (processing.get(reactor).getTicks() - timeleft) % COOLANT_DURATION == 0;
+    private boolean hasEnoughCoolant(@Nonnull Location reactor, @Nonnull BlockMenu menu, @Nullable BlockMenu accessPort, @Nonnull FuelOperation operation) {
+        boolean requiresCoolant = operation.getProgress() % COOLANT_DURATION == 0;
 
         if (requiresCoolant) {
-            ItemStack coolant = new ItemStackWrapper(getCoolant());
+            ItemStack coolant = ItemStackWrapper.wrap(getCoolant());
 
             if (accessPort != null) {
                 for (int slot : getCoolantSlots()) {
@@ -439,7 +434,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
 
             return false;
         } else {
-            updateHologram(reactor.getBlock(), "&b\u2744 &7" + getPercentage(timeleft, processing.get(reactor).getTicks()) + "%");
+            updateHologram(reactor.getBlock(), "&b\u2744 &7" + getPercentage(operation.getRemainingTicks(), operation.getTotalTicks()) + "%");
         }
 
         return true;

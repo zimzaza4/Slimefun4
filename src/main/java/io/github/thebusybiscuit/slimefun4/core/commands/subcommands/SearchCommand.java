@@ -8,10 +8,12 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 
 class SearchCommand extends SubCommand {
 
+    @ParametersAreNonnullByDefault
     SearchCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
         super(plugin, cmd, "search", false);
     }

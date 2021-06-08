@@ -228,7 +228,7 @@ public final class SlimefunUtils {
 
         // Performance optimization
         if (!(item instanceof SlimefunItemStack)) {
-            item = new ItemStackWrapper(item);
+            item = ItemStackWrapper.wrap(item);
         }
 
         for (ItemStack stack : inventory.getStorageContents()) {

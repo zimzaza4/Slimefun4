@@ -292,8 +292,7 @@ public class SlimefunItem implements Placeable {
      * @return An {@link Optional} describing the result
      */
     @SuppressWarnings("unchecked")
-    @Nonnull
-    public <T> Optional<ItemSetting<T>> getItemSetting(@Nonnull String key, @Nonnull Class<T> c) {
+    public @Nonnull <T> Optional<ItemSetting<T>> getItemSetting(@Nonnull String key, @Nonnull Class<T> c) {
         for (ItemSetting<?> setting : itemSettings) {
             if (setting.getKey().equals(key) && setting.isType(c)) {
                 return Optional.of((ItemSetting<T>) setting);
@@ -428,8 +427,10 @@ public class SlimefunItem implements Placeable {
 
             preRegister();
 
-            if (recipe == null || recipe.length < 9) {
-                recipe = new ItemStack[] { null, null, null, null, null, null, null, null, null};
+            if (recipe == null) {
+                recipe = new ItemStack[9];
+            } else if (recipe.length < 9) {
+                recipe = Arrays.copyOf(recipe, 9);
             }
 
             SlimefunPlugin.getRegistry().getAllSlimefunItems().add(this);
@@ -1093,7 +1094,7 @@ public class SlimefunItem implements Placeable {
                  * required Research to use this SlimefunItem.
                  */
                 if (sendMessage && !(this instanceof VanillaItem)) {
-                    SlimefunPlugin.getLocalization().sendMessage(p, "messages.not-researched", true);
+                    SlimefunPlugin.getLocalization().sendMessage(p, "messages.not-researched", true, s -> s.replace("%item%", getItemName()));
                 }
 
                 return false;
@@ -1148,7 +1149,7 @@ public class SlimefunItem implements Placeable {
         // Backwards compatibility
         if (SlimefunPlugin.getRegistry().isBackwardsCompatible()) {
             // This wrapper improves the heavy ItemStack#getItemMeta() call by caching it.
-            ItemStackWrapper wrapper = new ItemStackWrapper(item);
+            ItemStackWrapper wrapper = ItemStackWrapper.wrap(item);
 
             // Quite expensive performance-wise
             // But necessary for supporting legacy items

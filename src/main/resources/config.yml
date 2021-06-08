@@ -25,7 +25,7 @@ options:
   legacy-ore-grinder: true
   language: zh-CN
   enable-translations: true
-  backwards-compatibility: true
+  backwards-compatibility: false
   log-duplicate-block-entries: true
   drop-excess-sf-give-items: false
 guide:

@@ -7,6 +7,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
@@ -120,7 +121,7 @@ abstract class AbstractItemNetwork extends Network {
             Optional<Block> target = getAttachedBlock(l);
 
             if (target.isPresent()) {
-                item = CargoUtils.insert(this, inventories, l.getBlock(), target.get(), false, item);
+                item = CargoUtils.insert(this, inventories, l.getBlock(), target.get(), false, item, ItemStackWrapper.wrap(item));
 
                 if (item == null) {
                     terminal.replaceExistingItem(request.getSlot(), null);
@@ -217,10 +218,11 @@ abstract class AbstractItemNetwork extends Network {
             long timestamp = SlimefunPlugin.getProfiler().newEntry();
             BlockMenu menu = BlockStorage.getInventory(bus);
 
-            if (menu.getItemInSlot(17) != null) {
+            ItemStack itemSlot17 = menu.getItemInSlot(17);
+            if (itemSlot17 != null) {
                 Optional<Block> target = getAttachedBlock(bus);
 
-                target.ifPresent(block -> menu.replaceExistingItem(17, CargoUtils.insert(this, inventories, bus.getBlock(), block, false, menu.getItemInSlot(17))));
+                target.ifPresent(block -> menu.replaceExistingItem(17, CargoUtils.insert(this, inventories, bus.getBlock(), block, false, itemSlot17, ItemStackWrapper.wrap(itemSlot17))));
             }
 
             if (menu.getItemInSlot(17) == null) {

@@ -8,8 +8,11 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 class GuideCommand extends SubCommand {
 
+    @ParametersAreNonnullByDefault
     GuideCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
         super(plugin, cmd, "guide", false);
     }

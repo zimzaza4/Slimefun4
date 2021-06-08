@@ -14,8 +14,11 @@ import javax.annotation.Nullable;
 /**
  * This {@link Event} is fired whenever an {@link AContainer} has completed its process.
  *
+ * @deprecated This event is no longer fired. Use the {@link AsyncMachineOperationFinishEvent} instead.
+ *
  * @author poma123
  */
+@Deprecated
 public class AsyncMachineProcessCompleteEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();

@@ -12,6 +12,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 class OpenGuideCommand extends SubCommand {
 
+    @ParametersAreNonnullByDefault
     OpenGuideCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
         super(plugin, cmd, "open_guide", false);
     }

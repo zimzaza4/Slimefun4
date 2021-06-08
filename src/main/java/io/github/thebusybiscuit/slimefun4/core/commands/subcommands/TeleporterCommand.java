@@ -10,9 +10,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 class TeleporterCommand extends SubCommand {
 
+    @ParametersAreNonnullByDefault
     TeleporterCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
         super(plugin, cmd, "teleporter", false);
     }

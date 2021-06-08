@@ -13,8 +13,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * This {@link Event} is fired whenever a {@link Reactor} has completed its process.
  *
+ * @deprecated This event is no longer fired. Use the {@link AsyncMachineOperationFinishEvent} instead.
+ *
  * @author poma123
  */
+@Deprecated
 public class AsyncReactorProcessCompleteEvent extends AsyncMachineProcessCompleteEvent {
 
     private static final HandlerList handlers = new HandlerList();

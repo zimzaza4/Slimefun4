@@ -132,6 +132,9 @@ public class ErrorReport<T extends Throwable> {
         try (PrintStream stream = new PrintStream(file, StandardCharsets.UTF_8.name())) {
             stream.println();
 
+            stream.println("Error Generated: " + dateFormat.format(LocalDateTime.now()));
+            stream.println();
+
             stream.println("Java Environment:");
             stream.println("  Operating System: " + System.getProperty("os.name"));
             stream.println("  Java Version: " + System.getProperty("java.version"));

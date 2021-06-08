@@ -177,13 +177,8 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
             getLogger().log(Level.INFO, "检测到 Paper 服务端! 性能优化已应用.");
         }
 
-        // Disabling backwards-compatibility for fresh Slimefun installs
-        if (!new File("data-storage/Slimefun").exists()) {
-            config.setValue("options.backwards-compatibility", false);
-            config.save();
-
-            isNewlyInstalled = true;
-        }
+        // If the server has no "data-storage" folder, it's _probably_ a new install. So mark it for metrics.
+        isNewlyInstalled = !new File("data-storage/Slimefun").exists();
 
         // Creating all necessary Folders
         getLogger().log(Level.INFO, "正在创建文件夹...");
@@ -333,9 +328,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
         // Terminate our Plugin instance
         setInstance(null);
-
-        // Clean up any static fields
-        cleanUp();
     }
 
     /**
@@ -350,8 +342,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         instance = pluginInstance;
     }
 
-    @Nonnull
-    private String getStartupTime(long timestamp) {
+    private @Nonnull String getStartupTime(long timestamp) {
         long ms = (System.nanoTime() - timestamp) / 1000000;
 
         if (ms > 1000) {
@@ -359,23 +350,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         } else {
             return NumberUtils.roundDecimalNumber(ms) + "ms";
         }
-    }
-
-    /**
-     * Cleaning up our static fields prevents memory leaks from a reload.
-     *
-     * @deprecated These static Maps should really be removed at some point...
-     */
-    @Deprecated
-    private static void cleanUp() {
-        AContainer.processing = null;
-        AContainer.progress = null;
-
-        AGenerator.processing = null;
-        AGenerator.progress = null;
-
-        Reactor.processing = null;
-        Reactor.progress = null;
     }
 
     /**

@@ -13,8 +13,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * This {@link Event} is fired whenever an {@link AGenerator} has completed its process.
  *
+ * @deprecated This event is no longer fired. Use the {@link AsyncMachineOperationFinishEvent} instead.
+ *
  * @author poma123
  */
+@Deprecated
 public class AsyncGeneratorProcessCompleteEvent extends AsyncMachineProcessCompleteEvent {
 
     private static final HandlerList handlers = new HandlerList();
