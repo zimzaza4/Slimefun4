@@ -8,6 +8,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import io.github.thebusybiscuit.slimefun4.utils.WorldUtils;
 import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
@@ -90,7 +91,7 @@ public class ElevatorPlate extends SimpleSlimefunItem<BlockUseHandler> {
         LinkedList<ElevatorFloor> floors = new LinkedList<>();
         int index = 0;
 
-        for (int y = 0; y < b.getWorld().getMaxHeight(); y++) {
+        for (int y = WorldUtils.getMinHeight(b.getWorld()); y < b.getWorld().getMaxHeight(); y++) {
             if (y == b.getY()) {
                 String name = ChatColors.color(BlockStorage.getLocationInfo(b.getLocation(), DATA_KEY));
                 floors.addFirst(new ElevatorFloor(name, index, b));
