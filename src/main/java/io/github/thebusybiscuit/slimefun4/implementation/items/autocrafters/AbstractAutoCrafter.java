@@ -649,7 +649,7 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
             List<ItemStackWrapper> itemInRecipe = new ArrayList<>();
             for (ItemStack each : SlimefunItem.getByItem(recipe.getResult()).getRecipe()) {
                 if (each == null) continue;
-                ItemStackWrapper wrapper = new ItemStackWrapper(each);
+                ItemStackWrapper wrapper = ItemStackWrapper.wrap(each);
                 boolean found = false;
                 for (ItemStackWrapper foundItem : itemInRecipe) {
                     if (SlimefunUtils.isItemSimilar(wrapper, foundItem, true, false)) {

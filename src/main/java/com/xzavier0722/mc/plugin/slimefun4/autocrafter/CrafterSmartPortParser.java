@@ -22,7 +22,7 @@ public class CrafterSmartPortParser implements CrafterInteractable{
 
     @Override
     public boolean canOutput(ItemStack item) {
-        ItemStackWrapper wrapper = new ItemStackWrapper(item);
+        ItemStackWrapper wrapper = ItemStackWrapper.wrap(item);
 
         int amountLeft = wrapper.getAmount();
         for (int slot : CrafterSmartPort.OUTPUT_SLOTS) {

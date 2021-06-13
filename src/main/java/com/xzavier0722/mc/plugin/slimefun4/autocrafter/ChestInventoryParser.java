@@ -54,7 +54,7 @@ public class ChestInventoryParser implements CrafterInteractable{
     private boolean isFit(ItemStack item) {
         ItemStack[] contents = inv.getContents();
 
-        ItemStackWrapper wrapper = new ItemStackWrapper(item);
+        ItemStackWrapper wrapper = ItemStackWrapper.wrap(item);
         int amount = wrapper.getAmount();
 
         for (ItemStack each : contents) {

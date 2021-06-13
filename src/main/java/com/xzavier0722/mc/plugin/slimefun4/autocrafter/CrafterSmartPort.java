@@ -87,7 +87,7 @@ public class CrafterSmartPort extends SlimefunItem{
                 if (flow == ItemTransportFlow.WITHDRAW) return OUTPUT_SLOTS;
 
                 int itemAmount = 0;
-                ItemStackWrapper wrapper = new ItemStackWrapper(item);
+                ItemStackWrapper wrapper = ItemStackWrapper.wrap(item);
                 for (int slot : INPUT_SLOTS) {
                     ItemStack itemInSlot = menu.getItemInSlot(slot);
                     if (SlimefunUtils.isItemSimilar(itemInSlot, wrapper, true, false)) {
