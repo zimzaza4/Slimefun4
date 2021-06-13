@@ -111,7 +111,7 @@ https://github.com/Slimefun/Slimefun4/wiki
 
 ## 对项目作出贡献
 Slimefun 4 是一个以 [GNU GPLv3](https://github.com/Slimefun/Slimefun4/blob/master/LICENSE). 开源的项目<br>
-超过 100 人对这个超过 100 个人已经为这个项目做出了贡献. 这些人真是太棒了.<br>
+已经有超过 100 人对这个项目做出了贡献. 这些人真是太棒了.<br>
 我们鼓励通过提交 PR 的方式为 Slimefun 4 做出贡献, 你的贡献将会使插件保持活力 <3.
 
 ### 翻译
