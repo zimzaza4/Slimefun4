@@ -173,6 +173,11 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
         LangUtil.suggestPaper(this);
 
+        // Check if CS-CoreLib is installed (it is no longer needed)
+        if (getServer().getPluginManager().getPlugin("CS-CoreLib") != null) {
+            StartupWarnings.discourageCSCoreLib(getLogger());
+        }
+
         if (PaperLib.isPaper()) {
             getLogger().log(Level.INFO, "检测到 Paper 服务端! 性能优化已应用.");
         }
@@ -187,7 +192,10 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
         // Set up localization
         getLogger().log(Level.INFO, "正在加载语言文件...");
-        local = new LocalizationService(this, config.getString("options.chat-prefix"), config.getString("options.language"));
+
+        String chatPrefix = config.getString("options.chat-prefix");
+        String serverDefaultLanguage = config.getString("options.language");
+        local = new LocalizationService(this, chatPrefix, serverDefaultLanguage);
 
         int networkSize = config.getInt("networks.max-size");
 
@@ -362,15 +370,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
       try {
         // First check if they still use the unsupported CraftBukkit software.
         if (!PaperLib.isSpigot() && Bukkit.getName().equals("CraftBukkit")) {
-          getLogger().log(Level.SEVERE, "###############################################");
-          getLogger().log(Level.SEVERE, "### Slimefun 未被正确安装!");
-          getLogger().log(Level.SEVERE, "### 我们不再支持 CraftBukkit 服务端了!");
-          getLogger().log(Level.SEVERE, "###");
-          getLogger().log(Level.SEVERE, "### Slimefun 需要你使用 Spigot, Paper");
-          getLogger().log(Level.SEVERE, "### 或者 Spigot/Paper 分支的任意服务端.");
-          getLogger().log(Level.SEVERE, "### (我们推荐 Paper)");
-          getLogger().log(Level.SEVERE, "###############################################");
-
+          StartupWarnings.invalidServerSoftware(getLogger());
           return true;
         }
 
@@ -386,14 +386,8 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
             }
           }
 
-          getLogger().log(Level.SEVERE, "#############################################");
-          getLogger().log(Level.SEVERE, "### Slimefun 未被正确安装!");
-          getLogger().log(Level.SEVERE, "### 你正在使用不支持的 Minecraft 版本!");
-          getLogger().log(Level.SEVERE, "###");
-          getLogger().log(Level.SEVERE, "### 你正在使用 Minecraft 1.{0}.x", version);
-          getLogger().log(Level.SEVERE, "### 但 Slimefun v{0} 只支持", getDescription().getVersion());
-          getLogger().log(Level.SEVERE, "### Minecraft {0}", String.join(" / ", getSupportedVersions()));
-          getLogger().log(Level.SEVERE, "#############################################");
+          StartupWarnings.invalidMinecraftVersion(getLogger(), version, getDescription().getVersion());
+
           return true;
         } else {
           getLogger().log(Level.WARNING, "我们无法识别你正在使用的 Minecraft 版本 (1.{0}.x)", version);
@@ -426,7 +420,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
      * @return A {@link Collection} of all compatible minecraft versions as strings
      */
     @Nonnull
-    private Collection<String> getSupportedVersions() {
+    static Collection<String> getSupportedVersions() {
         List<String> list = new ArrayList<>();
 
         for (MinecraftVersion version : MinecraftVersion.values()) {
@@ -512,7 +506,6 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new IntegrationHelper(this);
 
         // Item-specific Listeners
-        new VampireBladeListener(this, (VampireBlade) SlimefunItems.BLADE_OF_VAMPIRES.getItem());
         new CoolerListener(this, (Cooler) SlimefunItems.COOLER.getItem());
         new SeismicAxeListener(this, (SeismicAxe) SlimefunItems.SEISMIC_AXE.getItem());
         new AncientAltarListener(this, (AncientAltar) SlimefunItems.ANCIENT_ALTAR.getItem(), (AncientPedestal) SlimefunItems.ANCIENT_PEDESTAL.getItem());
@@ -522,6 +515,7 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         new TalismanListener(this);
         new SoulboundListener(this);
         new AutoCrafterListener(this);
+        new SlimefunItemHitListener(this);
 
         backpackListener.register(this);
 

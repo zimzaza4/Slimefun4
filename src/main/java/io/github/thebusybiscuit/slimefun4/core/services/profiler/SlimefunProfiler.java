@@ -1,18 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.core.services.profiler;
 
-import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.tasks.TickerTask;
-import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import org.apache.commons.lang.Validate;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Server;
-import org.bukkit.block.Block;
-import org.bukkit.scheduler.BukkitScheduler;
-
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -21,8 +8,25 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
+
+import javax.annotation.Nonnull;
+
+import org.apache.commons.lang.Validate;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.Server;
+import org.bukkit.block.Block;
+import org.bukkit.scheduler.BukkitScheduler;
+
+import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.tasks.TickerTask;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 
 /**
  * The {@link SlimefunProfiler} works closely to the {@link TickerTask} and is
@@ -74,13 +78,15 @@ public class SlimefunProfiler {
      * This {@link AtomicInteger} holds the amount of blocks that still need to be
      * profiled.
      */
-
     private final AtomicInteger queued = new AtomicInteger(0);
 
     private long totalElapsedTime;
 
     private final Map<ProfiledBlock, Long> timings = new ConcurrentHashMap<>();
     private final Queue<PerformanceInspector> requests = new ConcurrentLinkedQueue<>();
+
+    private final AtomicLong totalMsTicked = new AtomicLong();
+    private final AtomicInteger ticksPassed = new AtomicInteger();
 
     /**
      * This method terminates the {@link SlimefunProfiler}.
@@ -118,10 +124,11 @@ public class SlimefunProfiler {
      * This method schedules a given amount of entries for the future.
      * Be careful to {@link #closeEntry(Location, SlimefunItem, long)} all of them again!
      * No {@link PerformanceSummary} will be sent until all entries were closed.
-     * <p>
+     *
      * If the specified amount is negative, scheduled entries will be removed
      *
-     * @param amount The amount of entries that should be scheduled. Can be negative
+     * @param amount
+     *            The amount of entries that should be scheduled. Can be negative
      */
     public void scheduleEntries(int amount) {
         if (isProfiling) {
@@ -184,7 +191,7 @@ public class SlimefunProfiler {
         // Wait for all timing results to come in
         while (!isProfiling && queued.get() > 0) {
             try {
-                /**
+                /*
                  * Since we got more than one Thread in our pool,
                  * blocking this one is (hopefully) completely fine
                  */
@@ -214,6 +221,13 @@ public class SlimefunProfiler {
         }
 
         totalElapsedTime = timings.values().stream().mapToLong(Long::longValue).sum();
+
+        /*
+         * We log how many milliseconds have been ticked, and how many ticks have passed
+         * This is so when bStats requests the average timings, they're super quick to figure out
+         */
+        totalMsTicked.addAndGet(TimeUnit.NANOSECONDS.toMillis(totalElapsedTime));
+        ticksPassed.incrementAndGet();
 
         if (!requests.isEmpty()) {
             PerformanceSummary summary = new PerformanceSummary(this, totalElapsedTime, timings.size());
@@ -364,30 +378,42 @@ public class SlimefunProfiler {
      * @return Whether timings of this {@link Block} have been collected
      */
     public boolean hasTimings(@Nonnull Block b) {
-        Validate.notNull("Cannot get timings for a null Block");
+        Validate.notNull(b, "Cannot get timings for a null Block");
 
         return timings.containsKey(new ProfiledBlock(b));
     }
 
     public String getTime(@Nonnull Block b) {
-        Validate.notNull("Cannot get timings for a null Block");
+        Validate.notNull(b, "Cannot get timings for a null Block");
 
         long time = timings.getOrDefault(new ProfiledBlock(b), 0L);
         return NumberUtils.getAsMillis(time);
     }
 
     public String getTime(@Nonnull Chunk chunk) {
-        Validate.notNull("Cannot get timings for a null Chunk");
+        Validate.notNull(chunk, "Cannot get timings for a null Chunk");
 
         long time = getByChunk().getOrDefault(chunk.getWorld().getName() + " (" + chunk.getX() + ',' + chunk.getZ() + ')', 0L);
         return NumberUtils.getAsMillis(time);
     }
 
     public String getTime(@Nonnull SlimefunItem item) {
-        Validate.notNull("Cannot get timings for a null SlimefunItem");
+        Validate.notNull(item, "Cannot get timings for a null SlimefunItem");
 
         long time = getByItem().getOrDefault(item.getId(), 0L);
         return NumberUtils.getAsMillis(time);
     }
 
+    /**
+     * Get and reset the average millisecond timing for this {@link SlimefunProfiler}.
+     *
+     * @return The average millisecond timing for this {@link SlimefunProfiler}.
+     */
+    public long getAndResetAverageTimings() {
+        long l = totalMsTicked.get() / ticksPassed.get();
+        totalMsTicked.set(0);
+        ticksPassed.set(0);
+
+        return l;
+    }
 }
