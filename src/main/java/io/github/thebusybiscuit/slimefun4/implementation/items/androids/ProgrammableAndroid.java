@@ -7,11 +7,13 @@ import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.cscorelib2.skull.SkullBlock;
+import io.github.thebusybiscuit.cscorelib2.skull.SkullItem;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.items.androids.menu.AndroidShareMenu;
 import io.github.thebusybiscuit.slimefun4.utils.*;
 import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
@@ -117,6 +119,14 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
                     openScriptEditor(p, b);
                     return false;
                 });
+
+                menu.replaceExistingItem(25, new CustomItem(Material.PLAYER_HEAD, "&b机器人访问管理", "", "&8\u21E8 &7单击打开访问管理器"));
+                menu.addMenuClickHandler(25, (p, slot, item, action) -> {
+                    BlockStorage.addBlockInfo(b, "paused", "true");
+                    SlimefunPlugin.getLocalization().sendMessage(p, "android.stopped", true);
+                    AndroidShareMenu.openShareMenu(p, b, 1);
+                    return false;
+                });
             }
 
             @Override
@@ -168,6 +178,7 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
                 BlockStorage.addBlockInfo(b, "fuel", "0");
                 BlockStorage.addBlockInfo(b, "rotation", p.getFacing().getOppositeFace().toString());
                 BlockStorage.addBlockInfo(b, "paused", "true");
+                BlockStorage.addBlockInfo(b, "share-users", AndroidShareMenu.generateEmptyList());
 
                 BlockData blockData = Material.PLAYER_HEAD.createBlockData(data -> {
                     if (data instanceof Rotatable) {
