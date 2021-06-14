@@ -86,18 +86,20 @@ public class CrafterSmartPort extends SlimefunItem{
             public int[] getSlotsAccessedByItemTransport(DirtyChestMenu menu, ItemTransportFlow flow, ItemStack item) {
                 if (flow == ItemTransportFlow.WITHDRAW) return OUTPUT_SLOTS;
 
-                int itemAmount = 0;
                 ItemStackWrapper wrapper = ItemStackWrapper.wrap(item);
+                int amountLimit = INPUT_SLOTS.length / menu.getItemInSlot(6).getAmount() * wrapper.getMaxStackSize();
+
+                // Check the current amount
+                int itemAmount = wrapper.getAmount();
                 for (int slot : INPUT_SLOTS) {
                     ItemStack itemInSlot = menu.getItemInSlot(slot);
-                    if (SlimefunUtils.isItemSimilar(itemInSlot, wrapper, true, false)) {
-                        itemAmount += itemInSlot.getAmount();
+                    if (SlimefunUtils.isItemSimilar(itemInSlot, wrapper, true, false) && (itemAmount += itemInSlot.getAmount()) > amountLimit) {
+                        // Amount has reached the limited, just return.
+                        return new int[0];
                     }
                 }
 
-                int amountLimit = INPUT_SLOTS.length / menu.getItemInSlot(6).getAmount() * wrapper.getMaxStackSize();
-                if (itemAmount + wrapper.getAmount() <= amountLimit) return INPUT_SLOTS;
-                return new int[0];
+                return INPUT_SLOTS;
             }
         };
 
