@@ -55,16 +55,18 @@ public class IntegrationHelper implements Listener {
           qsMethod = Class.forName("org.maxgamer.quickshop.api.ShopAPI").getDeclaredMethod("getShopWithCaching", Location.class);
           qsMethod.setAccessible(true);
         } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+          logger.log(Level.INFO, "无法接入 Quickshop-Reremake, 相关功能将自动关闭");
+          qsInstalled = false;
         }
       }
     }
 
     if (!resInstalled) {
-      plugin.getLogger().log(Level.WARNING, "未检测到领地插件, 相关功能将自动关闭");
+      logger.log(Level.WARNING, "未检测到领地插件, 相关功能将自动关闭");
       return;
     }
 
-    plugin.getLogger().log(Level.INFO, "检测到领地插件, 相关功能已开启");
+    logger.log(Level.INFO, "检测到领地插件, 相关功能已开启");
 
     plugin.getServer().getPluginManager().registerEvents(this, plugin);
   }
