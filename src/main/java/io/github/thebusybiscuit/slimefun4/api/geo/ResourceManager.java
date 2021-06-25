@@ -158,7 +158,7 @@ public class ResourceManager {
      */
     public void scan(@Nonnull Player p, @Nonnull Block block, int page) {
         if (SlimefunPlugin.getGPSNetwork().getNetworkComplexity(p.getUniqueId()) < 600) {
-            SlimefunPlugin.getLocalization().sendMessages(p, "teleporter.insufficient-complexity", true, msg -> msg.replace("%complexity%", "600"));
+            SlimefunPlugin.getLocalization().sendMessages(p, "gps.insufficient-complexity", true, msg -> msg.replace("%complexity%", "600"));
             return;
         }
 
