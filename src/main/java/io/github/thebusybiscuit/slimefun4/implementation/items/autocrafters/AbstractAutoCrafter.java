@@ -222,7 +222,7 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
             if (CrafterInteractorManager.hasInterator(targetBlock)) {
                 // Has valid interactor
                 interactor = CrafterInteractorManager.getInteractor(targetBlock);
-            }else{
+            } else {
                 // No custom interactor, check if the vanilla inventory
                 BlockState state = PaperLib.getBlockState(targetBlock, false).getState();
                 if (state instanceof InventoryHolder) {

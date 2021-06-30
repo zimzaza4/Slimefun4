@@ -116,7 +116,7 @@ public final class SlimefunGuide {
      *
      * @return The default {@link SlimefunGuideMode}.
      */
-    public static SlimefunGuideMode getDefaultLayout() {
+    public static SlimefunGuideMode getDefaultMode() {
         return SlimefunGuideMode.SURVIVAL_MODE;
     }
 }

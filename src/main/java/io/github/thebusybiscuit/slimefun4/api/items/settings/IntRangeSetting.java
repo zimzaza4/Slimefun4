@@ -2,6 +2,7 @@ package io.github.thebusybiscuit.slimefun4.api.items.settings;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import org.apache.commons.lang.Validate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -22,6 +23,7 @@ public class IntRangeSetting extends ItemSetting<Integer> {
     @ParametersAreNonnullByDefault
     public IntRangeSetting(SlimefunItem item, String key, int min, int defaultValue, int max) {
         super(item, key, defaultValue);
+        Validate.isTrue(defaultValue >= min && defaultValue <= max, "The default value is not in range.");
 
         this.min = min;
         this.max = max;

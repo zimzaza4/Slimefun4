@@ -139,20 +139,16 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
 
     @Override
     public void onEnable() {
-        if (minecraftVersion == MinecraftVersion.UNIT_TEST) {
+        setInstance(this);
+
+        if (isUnitTest()) {
             // We handle Unit Tests seperately.
-            setInstance(this);
-            getLogger().log(Level.INFO, "This is a UNIT TEST Environment.");
             onUnitTestStart();
         } else if (isVersionUnsupported()) {
             // We wanna ensure that the Server uses a compatible version of Minecraft.
-            setInstance(this);
-            getLogger().log(Level.WARNING, "Slimefun was not installed properly! Disabling...");
             getServer().getPluginManager().disablePlugin(this);
         } else {
-            // The Environment and dependencies have been validated.
-            setInstance(this);
-            getLogger().log(Level.INFO, "发现前置 CS-CoreLib 已正常安装!");
+            // The Environment has been validated.
             onPluginStart();
         }
     }
@@ -364,6 +360,16 @@ public final class SlimefunPlugin extends JavaPlugin implements SlimefunAddon {
         } else {
             return NumberUtils.roundDecimalNumber(ms) + "ms";
         }
+    }
+
+    /**
+     * This method checks if this is currently running in a unit test
+     * environment.
+     *
+     * @return Whether we are inside a unit test
+     */
+    public boolean isUnitTest() {
+        return minecraftVersion == MinecraftVersion.UNIT_TEST;
     }
 
     /**
