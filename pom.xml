@@ -114,7 +114,7 @@
                         <!-- package info files are only important for Javadocs -->
                         <!-- We can safely exclude them from the final jar -->
                         <exclude>**/package-info.java</exclude>
-                    </excludes><source>8</source><target>8</target>
+                    </excludes>
                 </configuration>
             </plugin>
 
