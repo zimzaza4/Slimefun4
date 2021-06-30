@@ -1,6 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.weapons;
 
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BowShootHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Effect;
@@ -33,6 +35,10 @@ public class IcyBow extends SlimefunBow {
                 Player p = (Player) n;
                 if (p.isBlocking() && e.getFinalDamage() == 0) {
                     return;
+                }
+
+                if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_17)) {
+                    p.setFreezeTicks(60);
                 }
             }
 

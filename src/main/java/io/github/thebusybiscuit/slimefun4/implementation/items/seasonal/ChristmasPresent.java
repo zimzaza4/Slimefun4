@@ -13,6 +13,7 @@ import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -35,7 +36,7 @@ public class ChristmasPresent extends SimpleSlimefunItem<ItemUseHandler> impleme
     }
 
     @Override
-    public ItemUseHandler getItemHandler() {
+    public @Nonnull ItemUseHandler getItemHandler() {
         return e -> {
             e.cancel();
 

@@ -50,7 +50,6 @@ public abstract class SimpleSlimefunItem<T extends ItemHandler> extends Slimefun
      *
      * @return The {@link ItemHandler} that should be added to this {@link SlimefunItem}
      */
-    @Nonnull
-    public abstract T getItemHandler();
+    public @Nonnull abstract T getItemHandler();
 
 }

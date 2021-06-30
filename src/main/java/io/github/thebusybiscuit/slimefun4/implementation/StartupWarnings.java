@@ -1,5 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation;
 
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,6 +55,21 @@ final class StartupWarnings {
         logger.log(Level.SEVERE, PREFIX + "或者 Spigot/Paper 分支的任意服务端.");
         logger.log(Level.SEVERE, PREFIX + "(我们推荐 Paper)");
         logger.log(Level.SEVERE, BORDER);
+    }
+
+    @ParametersAreNonnullByDefault
+    static void oldJavaVersion(Logger logger) {
+        int javaVersion = NumberUtils.getJavaVersion();
+
+        logger.log(Level.WARNING, BORDER);
+        logger.log(Level.WARNING, PREFIX + "你的 Java 版本 (Java {0}) 已过时.", javaVersion);
+        logger.log(Level.WARNING, PREFIX);
+        logger.log(Level.WARNING, PREFIX + "我们推荐你升级到 Java 16.");
+        logger.log(Level.WARNING, PREFIX + "自 MC 1.17 开始 Minecraft 强制需要 Java 16,");
+        logger.log(Level.WARNING, PREFIX + "我们也想尽快充分利用 Java 16 带来的新特性");
+        logger.log(Level.WARNING, PREFIX + "因此 Slimefun 在不久的将来will also require Java 16 in");
+        logger.log(Level.WARNING, PREFIX + "也会强制需要 Java 16, 所以请更新吧!");
+        logger.log(Level.WARNING, BORDER);
     }
 
 }
