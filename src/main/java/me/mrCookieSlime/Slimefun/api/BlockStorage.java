@@ -26,9 +26,8 @@ import org.bukkit.inventory.ItemStack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -329,10 +328,13 @@ public class BlockStorage {
                 }
             } else {
                 File tmpFile = new File(cfg.getFile().getParentFile(), cfg.getFile().getName() + ".tmp");
+                tmpFile.deleteOnExit();
                 cfg.save(tmpFile);
 
-                try {
-                    Files.move(tmpFile.toPath(), cfg.getFile().toPath(), StandardCopyOption.ATOMIC_MOVE);
+                try (FileChannel tmpChannel = new FileInputStream(tmpFile).getChannel();
+                     FileChannel cfgChannel = new FileOutputStream(cfg.getFile()).getChannel();
+                ) {
+                    cfgChannel.transferFrom(tmpChannel, 0, tmpChannel.size());
                 } catch (IOException x) {
                     SlimefunPlugin.logger().log(Level.SEVERE, x, () -> "在复制临时文件时出现了意外, Slimefun 版本 " + SlimefunPlugin.getVersion());
                 }
