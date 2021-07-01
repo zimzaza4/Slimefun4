@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.logging.Level;
 
 /**
@@ -35,8 +36,8 @@ public class CargoNet extends AbstractItemNetwork implements HologramOwner {
     private static final int RANGE = 5;
     private static final int TICK_DELAY = SlimefunPlugin.getCfg().getInt("networks.cargo-ticker-delay");
 
-    private final Set<Location> inputNodes = new HashSet<>();
-    private final Set<Location> outputNodes = new HashSet<>();
+    private final Set<Location> inputNodes = new ConcurrentSkipListSet<>();
+    private final Set<Location> outputNodes = new ConcurrentSkipListSet<>();
 
     protected final Map<Location, Integer> roundRobin = new HashMap<>();
     private int tickDelayThreshold = 0;
