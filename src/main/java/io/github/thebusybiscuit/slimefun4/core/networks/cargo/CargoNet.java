@@ -169,7 +169,7 @@ public class CargoNet extends AbstractItemNetwork implements HologramOwner {
             Set<Location> chestTerminalOutputs = new HashSet<>();
 
             Map<Location, Integer> inputs = mapInputNodes(chestTerminalInputs);
-            Map<Integer, List<Location>> outputs = mapOutputNodes(chestTerminalOutputs);
+            Map<Integer, Collection<Location>> outputs = mapOutputNodes(chestTerminalOutputs);
 
             if (BlockStorage.getLocationInfo(b.getLocation(), "visualizer") == null) {
                 display();
@@ -199,10 +199,10 @@ public class CargoNet extends AbstractItemNetwork implements HologramOwner {
         return inputs;
     }
 
-    private Map<Integer, List<Location>> mapOutputNodes(Set<Location> chestTerminalOutputs) {
-        Map<Integer, List<Location>> output = new HashMap<>();
+    private Map<Integer, Collection<Location>> mapOutputNodes(Set<Location> chestTerminalOutputs) {
+        Map<Integer, Collection<Location>> output = new HashMap<>();
 
-        List<Location> list = new LinkedList<>();
+        Collection<Location> list = new ArrayList<>();
         int lastFrequency = -1;
 
         for (Location node : outputNodes) {
@@ -219,7 +219,7 @@ public class CargoNet extends AbstractItemNetwork implements HologramOwner {
                     return prev;
                 });
 
-                list = new LinkedList<>();
+                list = new ArrayList<>();
             }
 
             list.add(node);

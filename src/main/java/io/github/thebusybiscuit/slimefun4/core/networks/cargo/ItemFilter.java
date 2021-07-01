@@ -179,10 +179,7 @@ class ItemFilter implements Predicate<ItemStack> {
             }
         }
 
-        if (potentialMatches == 0) {
-            // If there is no match, we can safely assume the default value
-            return rejectOnMatch;
-        } else {
+        if (potentialMatches != 0) {
             /*
              * If there is more than one potential match, create a wrapper to save
              * performance on the ItemMeta otherwise just use the item directly.
@@ -203,10 +200,10 @@ class ItemFilter implements Predicate<ItemStack> {
                     return !rejectOnMatch;
                 }
             }
-
-            // If no particular item was matched, we fallback to our default value.
-            return rejectOnMatch;
         }
+
+        // If there is no match, we can safely assume the default value
+        return rejectOnMatch;
     }
 
 }
