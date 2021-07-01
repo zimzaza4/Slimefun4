@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import io.github.starwishsama.utils.IntegrationHelper;
+import ren.natsuyuk1.utils.IntegrationHelper;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;

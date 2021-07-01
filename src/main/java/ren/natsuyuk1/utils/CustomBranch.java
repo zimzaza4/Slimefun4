@@ -1,4 +1,4 @@
-package io.github.starwishsama.utils;
+package ren.natsuyuk1.utils;
 
 /**
  * @author StarWishsama

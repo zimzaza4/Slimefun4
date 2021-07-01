@@ -1,4 +1,4 @@
-package io.github.starwishsama.utils;
+package ren.natsuyuk1.utils;
 
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import net.milkbowl.vault.economy.Economy;

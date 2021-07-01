@@ -1,4 +1,4 @@
-package io.github.starwishsama.utils;
+package ren.natsuyuk1.utils;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;

@@ -1,4 +1,4 @@
-package io.github.starwishsama.utils;
+package ren.natsuyuk1.utils;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.containers.Flags;
