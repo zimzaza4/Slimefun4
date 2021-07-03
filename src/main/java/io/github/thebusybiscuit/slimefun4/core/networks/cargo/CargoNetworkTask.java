@@ -39,13 +39,13 @@ class CargoNetworkTask implements Runnable {
     private final Map<Location, Inventory> inventories = new HashMap<>();
 
     private final Map<Location, Integer> inputs;
-    private final Map<Integer, List<Location>> outputs;
+    private final Map<Integer, Collection<Location>> outputs;
 
     private final Set<Location> chestTerminalInputs;
     private final Set<Location> chestTerminalOutputs;
 
     @ParametersAreNonnullByDefault
-    CargoNetworkTask(CargoNet network, Map<Location, Integer> inputs, Map<Integer, List<Location>> outputs, Set<Location> chestTerminalInputs, Set<Location> chestTerminalOutputs) {
+    CargoNetworkTask(CargoNet network, Map<Location, Integer> inputs, Map<Integer, Collection<Location>> outputs, Set<Location> chestTerminalInputs, Set<Location> chestTerminalOutputs) {
         this.network = network;
         this.manager = SlimefunPlugin.getNetworkManager();
 
@@ -63,6 +63,9 @@ class CargoNetworkTask implements Runnable {
             // Chest Terminal Code
             if (SlimefunPlugin.getIntegrations().isChestTerminalInstalled()) {
                 network.handleItemRequests(inventories, chestTerminalInputs, chestTerminalOutputs);
+
+                // This will deduct any CT timings and attribute them towards the actual terminal
+                timestamp += network.updateTerminals(chestTerminalInputs);
             }
 
             /**
@@ -81,11 +84,6 @@ class CargoNetworkTask implements Runnable {
                 timestamp += SlimefunPlugin.getProfiler().closeEntry(entry.getKey(), inputNode, nodeTimestamp);
             }
 
-            // Chest Terminal Code
-            if (SlimefunPlugin.getIntegrations().isChestTerminalInstalled()) {
-                // This will deduct any CT timings and attribute them towards the actual terminal
-                timestamp += network.updateTerminals(chestTerminalInputs);
-            }
         } catch (Exception | LinkageError x) {
             SlimefunPlugin.logger().log(Level.SEVERE, x, () -> "An Exception was caught while ticking a Cargo network @ " + new BlockPosition(network.getRegulator()));
         }
@@ -95,7 +93,7 @@ class CargoNetworkTask implements Runnable {
     }
 
     @ParametersAreNonnullByDefault
-    private void routeItems(Location inputNode, Block inputTarget, int frequency, Map<Integer, List<Location>> outputNodes) {
+    private void routeItems(Location inputNode, Block inputTarget, int frequency, Map<Integer, Collection<Location>> outputNodes) {
         ItemStackAndInteger slot = CargoUtils.withdraw(network, inventories, inputNode.getBlock(), inputTarget);
 
         if (slot == null) {
@@ -104,7 +102,7 @@ class CargoNetworkTask implements Runnable {
 
         ItemStack stack = slot.getItem();
         int previousSlot = slot.getInt();
-        List<Location> destinations = outputNodes.get(frequency);
+        Collection<Location> destinations = outputNodes.get(frequency);
 
         if (destinations != null) {
             stack = distributeItem(stack, inputNode, destinations);
@@ -147,13 +145,15 @@ class CargoNetworkTask implements Runnable {
 
     @Nullable
     @ParametersAreNonnullByDefault
-    private ItemStack distributeItem(ItemStack stack, Location inputNode, List<Location> outputNodes) {
+    private ItemStack distributeItem(ItemStack stack, Location inputNode, Collection<Location> outputNodes) {
         ItemStack item = stack;
 
         Config cfg = BlockStorage.getLocationInfo(inputNode);
         boolean roundrobin = Objects.equals(cfg.getString("round-robin"), "true");
         boolean smartFill = Objects.equals(cfg.getString("smart-fill"), "true");
-        Collection<Location> destinations;
+
+        // Using an ArrayList by default.
+        Collection<Location> destinations = outputNodes;
 
         if (roundrobin) {
             // Use an ArrayDeque to perform round-robin sorting
@@ -161,13 +161,9 @@ class CargoNetworkTask implements Runnable {
             // An ArrayDequeue is preferable as opposed to a LinkedList:
             // - The number of elements does not change.
             // - ArrayDequeue has better iterative performance
-            Deque<Location> tempDestinations = new ArrayDeque<>(outputNodes);
-            roundRobinSort(inputNode, tempDestinations);
-            destinations = tempDestinations;
-        } else {
-            // Using an ArrayList here since we won't need to sort the destinations
-            // The ArrayList has the best performance for iteration bar a primitive array
-            destinations = new ArrayList<>(outputNodes);
+            Deque<Location> copyOutputNodes = new ArrayDeque<>(outputNodes);
+            roundRobinSort(inputNode, copyOutputNodes);
+            destinations = copyOutputNodes;
         }
 
         for (Location output : destinations) {

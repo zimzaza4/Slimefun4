@@ -49,7 +49,7 @@ public class OilPump extends AContainer implements RecipeDisplayItem {
                 }
 
                 if (!SlimefunPlugin.getGPSNetwork().getResourceManager().getSupplies(oil, b.getWorld(), b.getX() >> 4, b.getZ() >> 4).isPresent()) {
-                    SlimefunPlugin.getLocalization().sendMessage(p, "teleporter.geo.scan-required", true);
+                    SlimefunPlugin.getLocalization().sendMessage(p, "gps.geo.scan-required", true);
                     return false;
                 }
 

@@ -1,4 +1,4 @@
-package io.github.starwishsama.utils.data;
+package ren.natsuyuk1.utils.data;
 
 import com.google.gson.annotations.SerializedName;
 

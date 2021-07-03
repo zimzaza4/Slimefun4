@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.cargo;
 
-import io.github.starwishsama.utils.IntegrationHelper;
+import ren.natsuyuk1.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;

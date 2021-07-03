@@ -104,8 +104,7 @@ public class GoldPan extends SimpleSlimefunItem<ItemUseHandler> implements Recip
      *
      * @return a random {@link ItemStack} obtained by this {@link GoldPan}
      */
-    @Nonnull
-    public ItemStack getRandomOutput() {
+    public @Nonnull ItemStack getRandomOutput() {
         ItemStack item = randomizer.getRandom();
 
         // Fixes #2804

@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ren.natsuyuk1.utils.IntegrationHelper;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -386,7 +387,7 @@ final class CargoUtils {
     }
 
     static boolean matchesFilter(@Nonnull AbstractItemNetwork network, @Nonnull Block node, @Nullable ItemStack item) {
-        if (item == null || item.getType() == Material.AIR) {
+        if (item == null || item.getType() == Material.AIR || IntegrationHelper.checkForQuickShop(node.getLocation())) {
             return false;
         }
 

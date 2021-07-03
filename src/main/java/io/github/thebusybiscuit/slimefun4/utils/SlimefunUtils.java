@@ -1,5 +1,29 @@
 package io.github.thebusybiscuit.slimefun4.utils;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang.Validate;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.World;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
 import io.github.thebusybiscuit.cscorelib2.item.ImmutableItemMeta;
 import io.github.thebusybiscuit.cscorelib2.skull.SkullItem;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
@@ -12,24 +36,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.tasks.CapacitorTextureU
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import org.apache.commons.lang.Validate;
-import org.bukkit.*;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * This utility class holds method that are directly linked to Slimefun.
@@ -42,19 +48,17 @@ import java.util.Optional;
  */
 public final class SlimefunUtils {
 
-    private static final String EMERALDENCHANTS_LORE = ChatColor.YELLOW.toString() + ChatColor.YELLOW.toString() + ChatColor.GRAY.toString();
     private static final String NO_PICKUP_METADATA = "no_pickup";
+    private static final String SOULBOUND_LORE = ChatColor.GRAY + "灵魂绑定";
 
-     private static final String SOULBOUND_LORE = ChatColor.GRAY + "灵魂绑定";
-
-    private SlimefunUtils() {
-    }
+    private SlimefunUtils() {}
 
     /**
      * This method quickly returns whether an {@link Item} was marked as "no_pickup" by
      * a Slimefun device.
      *
-     * @param item The {@link Item} to query
+     * @param item
+     *            The {@link Item} to query
      * @return Whether the {@link Item} is excluded from being picked up
      */
     public static boolean hasNoPickupFlag(@Nonnull Item item) {
@@ -91,10 +95,10 @@ public final class SlimefunUtils {
      * is enabled in the provided {@link World}.
      *
      * @param item
-     *              The {@link ItemStack} to check for
+     *            The {@link ItemStack} to check for
      * @param world
-     *              The {@link World} to check if the {@link SlimefunItem} is enabled in if applicable.
-     *              If {@code null} then this will not do a world check.
+     *            The {@link World} to check if the {@link SlimefunItem} is enabled in if applicable.
+     *            If {@code null} then this will not do a world check.
      * @return Whether the given item is soulbound
      */
     public static boolean isSoulbound(@Nullable ItemStack item, @Nullable World world) {
@@ -200,7 +204,7 @@ public final class SlimefunUtils {
      *
      * @return An {@link ItemStack} with this Head texture
      */
-    public static ItemStack getCustomHead(@Nonnull String texture) {
+    public static @Nonnull ItemStack getCustomHead(@Nonnull String texture) {
         Validate.notNull(texture, "The provided texture is null");
 
         if (SlimefunPlugin.instance() == null) {
@@ -319,8 +323,11 @@ public final class SlimefunUtils {
      * This checks if the two provided lores are equal.
      * This method will ignore any lines such as the soulbound one.
      *
-     * @param lore1 The first lore
-     * @param lore2 The second lore
+     * @param lore1
+     *            The first lore
+     * @param lore2
+     *            The second lore
+     *
      * @return Whether the two lores are equal
      */
     public static boolean equalsLore(@Nonnull List<String> lore1, @Nonnull List<String> lore2) {
@@ -369,7 +376,6 @@ public final class SlimefunUtils {
         SlimefunPlugin.runSync(new CapacitorTextureUpdateTask(l, charge, capacity));
     }
 
-
     /**
      * This checks whether the {@link Player} is able to use the given {@link ItemStack}.
      * It will always return <code>true</code> for non-Slimefun items.
@@ -396,4 +402,5 @@ public final class SlimefunUtils {
             return true;
         }
     }
+
 }

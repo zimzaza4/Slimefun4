@@ -21,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -33,16 +34,16 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author TheBusyBiscuit
  * @see AdvancedIndustrialMiner
- * @see ActiveMiner
+ * @see MiningTask
  */
 public class IndustrialMiner extends MultiBlockMachine {
 
-    protected final Map<Location, ActiveMiner> activeMiners = new HashMap<>();
+    protected final Map<Location, MiningTask> activeMiners = new HashMap<>();
     protected final List<MachineFuel> fuelTypes = new ArrayList<>();
 
+    private final ItemSetting<Boolean> canMineAncientDebris = new ItemSetting<>(this, "can-mine-ancient-debris", false);
     private final int range;
     private final boolean silkTouch;
-    private final ItemSetting<Boolean> canMineAncientDebris = new ItemSetting<>(this, "can-mine-ancient-debris", false);
 
     public IndustrialMiner(Category category, SlimefunItemStack item, Material baseMaterial, boolean silkTouch, int range) {
         super(category, item, new ItemStack[]{null, null, null, new CustomItem(Material.PISTON, "活塞 (面朝上方)"), new ItemStack(Material.CHEST), new CustomItem(Material.PISTON, "活塞 (面朝上方)"), new ItemStack(baseMaterial), new ItemStack(Material.BLAST_FURNACE), new ItemStack(baseMaterial)}, BlockFace.UP);
@@ -105,7 +106,7 @@ public class IndustrialMiner extends MultiBlockMachine {
      *
      * @return The outcome when mining this ore
      */
-    public ItemStack getOutcome(Material ore) {
+    public @Nonnull ItemStack getOutcome(@Nonnull Material ore) {
         if (hasSilkTouch()) {
             return new ItemStack(ore);
         }
@@ -139,8 +140,10 @@ public class IndustrialMiner extends MultiBlockMachine {
      * @param item
      *            The item that shall be consumed
      */
-    public void addFuelType(int ores, ItemStack item) {
-        Validate.isTrue(ores > 1 && ores % 2 == 0, "矿石的数量必须最少为二且二的倍数.");
+    public void addFuelType(int ores, @Nonnull ItemStack item) {
+        Validate.isTrue(ores > 1 && ores % 2 == 0, "矿石的数量必须 >= 2 且为 2 的倍数.");
+        Validate.notNull(item, "The fuel item cannot be null");
+
         fuelTypes.add(new MachineFuel(ores / 2, item));
     }
 
@@ -180,11 +183,11 @@ public class IndustrialMiner extends MultiBlockMachine {
         Block start = b.getRelative(-mod, -1, -mod);
         Block end = b.getRelative(mod, -1, mod);
 
-        ActiveMiner instance = new ActiveMiner(this, p.getUniqueId(), chest, pistons, start, end);
-        instance.start(b);
+        MiningTask task = new MiningTask(this, p.getUniqueId(), chest, pistons, start, end);
+        task.start(b);
     }
 
-    private Block[] findPistons(Block chest) {
+    private @Nonnull Block[] findPistons(@Nonnull Block chest) {
         Block northern = chest.getRelative(BlockFace.NORTH);
 
         if (northern.getType() == Material.PISTON) {
@@ -202,7 +205,7 @@ public class IndustrialMiner extends MultiBlockMachine {
      *
      * @return Whether this {@link IndustrialMiner} is capable of mining this {@link Material}
      */
-    public boolean canMine(Material type) {
+    public boolean canMine(@Nonnull Material type) {
         if (SlimefunTag.INDUSTRIAL_MINER_ORES.isTagged(type)) {
             return true;
         } else if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_16)) {

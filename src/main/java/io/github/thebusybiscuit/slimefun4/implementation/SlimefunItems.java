@@ -55,7 +55,7 @@ public final class SlimefunItems {
     public static final SlimefunItemStack RAG = new SlimefunItemStack("RAG", Material.PAPER, "&c破布", "", "&a1级医疗供给", "", "&r恢复2点血量", "&r可以熄灭身上的火", "", LoreBuilder.RIGHT_CLICK_TO_USE);
     public static final SlimefunItemStack BANDAGE = new SlimefunItemStack("BANDAGE", Material.PAPER, "&c绷带", "", "&a2级医疗供给", "", "&r恢复4点血量", "&r可以熄灭身上的火", "", LoreBuilder.RIGHT_CLICK_TO_USE);
     public static final SlimefunItemStack SPLINT = new SlimefunItemStack("SPLINT", Material.STICK, "&c夹板", "", "&a1级医疗供给", "", "&r恢复2点血量", "", LoreBuilder.RIGHT_CLICK_TO_USE);
-    public static final SlimefunItemStack VITAMINS = new SlimefunItemStack("VITAMINS", Material.NETHER_WART, "&c维他命", "", "&a3级医疗供给", "", "&r恢复4点M血量", "&r可以熄灭身上的火", "&r治愈中毒/凋零/辐射的负面效果", "", LoreBuilder.RIGHT_CLICK_TO_USE);
+    public static final SlimefunItemStack VITAMINS = new SlimefunItemStack("VITAMINS", Material.NETHER_WART, "&c维他命", "", "&a3级医疗供给", "", "&r恢复4点血量", "&r可以熄灭身上的火", "&r治愈中毒/凋零/辐射的负面效果", "", LoreBuilder.RIGHT_CLICK_TO_USE);
     public static final SlimefunItemStack MEDICINE = new SlimefunItemStack("MEDICINE", Material.POTION, Color.RED, "&c药物", "", "&a3级医疗供给", "", "&r恢复4点血量", "&r可以熄灭身上的火", "&r治愈中毒/凋零/辐射的负面效果", "", "&7&e右键&7 饮用");
     public static final SlimefunItemStack MAGICAL_ZOMBIE_PILLS = new SlimefunItemStack("MAGICAL_ZOMBIE_PILLS", Material.NETHER_WART, "&6还魂丹", "", "&e右键立即治愈 &7僵尸村民/猪灵");
 

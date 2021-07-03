@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.androids;
 
-import io.github.starwishsama.utils.IntegrationHelper;
+import ren.natsuyuk1.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatInput;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;

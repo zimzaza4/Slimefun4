@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.guide;
 
-import io.github.starwishsama.utils.VaultHelper;
+import ren.natsuyuk1.utils.VaultHelper;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatInput;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
@@ -28,7 +28,6 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu.MenuClickHan
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;

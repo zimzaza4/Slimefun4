@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.logging.Level;
 
 /**
@@ -35,8 +36,8 @@ public class CargoNet extends AbstractItemNetwork implements HologramOwner {
     private static final int RANGE = 5;
     private static final int TICK_DELAY = SlimefunPlugin.getCfg().getInt("networks.cargo-ticker-delay");
 
-    private final Set<Location> inputNodes = new HashSet<>();
-    private final Set<Location> outputNodes = new HashSet<>();
+    private final Set<Location> inputNodes = new ConcurrentSkipListSet<>();
+    private final Set<Location> outputNodes = new ConcurrentSkipListSet<>();
 
     protected final Map<Location, Integer> roundRobin = new HashMap<>();
     private int tickDelayThreshold = 0;
@@ -169,7 +170,7 @@ public class CargoNet extends AbstractItemNetwork implements HologramOwner {
             Set<Location> chestTerminalOutputs = new HashSet<>();
 
             Map<Location, Integer> inputs = mapInputNodes(chestTerminalInputs);
-            Map<Integer, List<Location>> outputs = mapOutputNodes(chestTerminalOutputs);
+            Map<Integer, Collection<Location>> outputs = mapOutputNodes(chestTerminalOutputs);
 
             if (BlockStorage.getLocationInfo(b.getLocation(), "visualizer") == null) {
                 display();
@@ -199,10 +200,10 @@ public class CargoNet extends AbstractItemNetwork implements HologramOwner {
         return inputs;
     }
 
-    private Map<Integer, List<Location>> mapOutputNodes(Set<Location> chestTerminalOutputs) {
-        Map<Integer, List<Location>> output = new HashMap<>();
+    private Map<Integer, Collection<Location>> mapOutputNodes(Set<Location> chestTerminalOutputs) {
+        Map<Integer, Collection<Location>> output = new HashMap<>();
 
-        List<Location> list = new LinkedList<>();
+        Collection<Location> list = new ArrayList<>();
         int lastFrequency = -1;
 
         for (Location node : outputNodes) {
@@ -219,7 +220,7 @@ public class CargoNet extends AbstractItemNetwork implements HologramOwner {
                     return prev;
                 });
 
-                list = new LinkedList<>();
+                list = new ArrayList<>();
             }
 
             list.add(node);

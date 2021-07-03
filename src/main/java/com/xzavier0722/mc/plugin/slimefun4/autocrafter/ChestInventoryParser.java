@@ -17,8 +17,7 @@ import java.util.function.Predicate;
  * @author Xzavier0722
  *
  */
-public class ChestInventoryParser implements CrafterInteractable{
-
+public class ChestInventoryParser implements CrafterInteractable {
     private final Inventory inv;
 
     public ChestInventoryParser(Inventory inv) {

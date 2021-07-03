@@ -21,11 +21,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PressureChamber extends MultiBlockMachine {
 
+    @ParametersAreNonnullByDefault
     public PressureChamber(Category category, SlimefunItemStack item) {
         super(category, item, new ItemStack[]{SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_14) ? new ItemStack(Material.SMOOTH_STONE_SLAB) : new ItemStack(Material.STONE_SLAB), new CustomItem(Material.DISPENSER, "发射器 (朝下)"),
                 new ItemStack(Material.SMOOTH_STONE_SLAB), new ItemStack(Material.PISTON), new ItemStack(Material.GLASS), new ItemStack(Material.PISTON), new ItemStack(Material.PISTON), new ItemStack(Material.CAULDRON), new ItemStack(Material.PISTON)}, BlockFace.UP);
@@ -69,6 +71,7 @@ public class PressureChamber extends MultiBlockMachine {
         }
     }
 
+    @ParametersAreNonnullByDefault
     private void craft(Player p, Block b, ItemStack output, Inventory outputInv) {
         for (int i = 0; i < 4; i++) {
             int j = i;

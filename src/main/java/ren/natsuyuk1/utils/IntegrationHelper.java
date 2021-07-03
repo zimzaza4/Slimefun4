@@ -1,4 +1,4 @@
-package io.github.starwishsama.utils;
+package ren.natsuyuk1.utils;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.containers.Flags;
@@ -34,20 +34,24 @@ import java.util.logging.Logger;
  * @author StarWishsama
  */
 public class IntegrationHelper implements Listener {
+
+  private static final String RESIDENCE = "Residence";
+  private static final String QUICKSHOP = "QuickShop";
+
   private static boolean resInstalled;
   private static boolean qsInstalled;
   private static Method qsMethod = null;
   private static Logger logger;
 
-  public IntegrationHelper(SlimefunPlugin plugin) {
-    resInstalled = plugin.getServer().getPluginManager().getPlugin("Residence") != null;
-    qsInstalled = plugin.getServer().getPluginManager().getPlugin("QuickShop") != null;
+  public IntegrationHelper(@Nonnull SlimefunPlugin plugin) {
+    resInstalled = plugin.getServer().getPluginManager().getPlugin(RESIDENCE) != null;
+    qsInstalled = plugin.getServer().getPluginManager().getPlugin(QUICKSHOP) != null;
     logger = plugin.getLogger();
 
     if (!qsInstalled) {
       plugin.getLogger().log(Level.WARNING, "未检测到 Quickshop-Reremake, 相关功能将自动关闭");
     } else {
-      String[] version = plugin.getServer().getPluginManager().getPlugin("Quickshop").getDescription().getVersion().split("\\.");
+      String[] version = plugin.getServer().getPluginManager().getPlugin(QUICKSHOP).getDescription().getVersion().split("\\.");
       int major = Integer.parseInt(version[2]);
 
       if (major < 8 || (major == 8 && Integer.parseInt(version[3]) < 2)) {
