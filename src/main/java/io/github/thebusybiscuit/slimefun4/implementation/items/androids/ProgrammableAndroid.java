@@ -124,7 +124,7 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
                 menu.addMenuClickHandler(25, (p, slot, item, action) -> {
                     BlockStorage.addBlockInfo(b, "paused", "true");
                     SlimefunPlugin.getLocalization().sendMessage(p, "android.stopped", true);
-                    AndroidShareMenu.openShareMenu(p, b, 1);
+                    AndroidShareMenu.openShareMenu(p, b, 0);
                     return false;
                 });
             }
