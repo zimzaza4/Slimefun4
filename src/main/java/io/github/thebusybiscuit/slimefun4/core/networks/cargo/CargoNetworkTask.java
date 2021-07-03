@@ -63,6 +63,9 @@ class CargoNetworkTask implements Runnable {
             // Chest Terminal Code
             if (SlimefunPlugin.getIntegrations().isChestTerminalInstalled()) {
                 network.handleItemRequests(inventories, chestTerminalInputs, chestTerminalOutputs);
+
+                // This will deduct any CT timings and attribute them towards the actual terminal
+                timestamp += network.updateTerminals(chestTerminalInputs);
             }
 
             /**
@@ -81,11 +84,6 @@ class CargoNetworkTask implements Runnable {
                 timestamp += SlimefunPlugin.getProfiler().closeEntry(entry.getKey(), inputNode, nodeTimestamp);
             }
 
-            // Chest Terminal Code
-            if (SlimefunPlugin.getIntegrations().isChestTerminalInstalled()) {
-                // This will deduct any CT timings and attribute them towards the actual terminal
-                timestamp += network.updateTerminals(chestTerminalInputs);
-            }
         } catch (Exception | LinkageError x) {
             SlimefunPlugin.logger().log(Level.SEVERE, x, () -> "An Exception was caught while ticking a Cargo network @ " + new BlockPosition(network.getRegulator()));
         }
