@@ -133,7 +133,7 @@ public final class AndroidShareMenu {
     BlockStorage.addBlockInfo(android, key, gson.toJson(users));
   }
 
-  private static List<UUID> getTrustedUsers(@Nonnull Block b) {
+  public static List<UUID> getTrustedUsers(@Nonnull Block b) {
     String info = BlockStorage.getBlockInfoAsJson(b);
 
     JsonElement element = new JsonParser().parse(info);
