@@ -50,10 +50,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 
@@ -88,7 +85,7 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
             public boolean canOpen(Block b, Player p) {
                 boolean isOwner = BlockStorage.getLocationInfo(b.getLocation(), "owner").equals(p.getUniqueId().toString()) || p.hasPermission("slimefun.android.bypass");
 
-                if (isOwner || AndroidShareMenu.getTrustedUsers(b).contains(p.getUniqueId())) {
+                if (isOwner || AndroidShareMenu.isTrustedUsers(b, p.getUniqueId())) {
                     return true;
                 } else {
                     SlimefunPlugin.getLocalization().sendMessage(p, "inventory.no-access", true);
@@ -179,7 +176,7 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
                 BlockStorage.addBlockInfo(b, "fuel", "0");
                 BlockStorage.addBlockInfo(b, "rotation", p.getFacing().getOppositeFace().toString());
                 BlockStorage.addBlockInfo(b, "paused", "true");
-                BlockStorage.addBlockInfo(b, "share-users", AndroidShareMenu.generateEmptyList());
+                BlockStorage.addBlockInfo(b, "share-users", Collections.emptyList().toString());
 
                 BlockData blockData = Material.PLAYER_HEAD.createBlockData(data -> {
                     if (data instanceof Rotatable) {

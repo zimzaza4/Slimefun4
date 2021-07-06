@@ -1,9 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.androids.menu;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import io.github.thebusybiscuit.cscorelib2.inventory.ChestMenu;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.skull.SkullItem;
@@ -44,7 +40,6 @@ public final class AndroidShareMenu {
     int pages = Math.max(0, users.size() / 36);
 
     // Draw background
-
     for (int i = 0; i < 9; i++) {
       menu.addItem(i, new CustomItem(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), " "));
       menu.addMenuClickHandler(i, (pl, slot, item, cursor, action) -> false);
@@ -57,20 +52,20 @@ public final class AndroidShareMenu {
 
     menu.addItem(0, new CustomItem(HeadTexture.SCRIPT_UP.getAsItemStack(), "&a添加信任玩家", ""));
     menu.addMenuClickHandler(0, (p1, slot, item, cursor, action) -> {
-          p1.closeInventory();
+        p1.closeInventory();
 
-          p1.sendMessage("请输入欲添加的信任玩家 ID.");
+        p1.sendMessage("请输入欲添加的信任玩家 ID.");
 
-          ChatUtils.awaitInput(p1, message -> {
-                Player target = Bukkit.getPlayerExact(message);
+        ChatUtils.awaitInput(p1, message -> {
+            Player target = Bukkit.getPlayerExact(message);
 
-                if (target == null) {
-                  p1.sendMessage("找不到指定玩家 " + message);
-                } else {
-                  addPlayer(p1, target, b, users);
-                }
-              });
-          return false;
+            if (target == null) {
+                p1.sendMessage("找不到指定玩家 " + message);
+            } else {
+                addPlayer(p1, target, b, users);
+            }
+        });
+        return false;
     });
 
     if (!users.isEmpty()) {
@@ -115,10 +110,6 @@ public final class AndroidShareMenu {
       }
 
       menu.open(p);
-    }
-
-  public static String generateEmptyList() {
-    return new ArrayList<String>().toString();
   }
 
   private static void addPlayer(@Nonnull Player owner, @Nonnull OfflinePlayer p, @Nonnull Block android, @Nonnull List<String> users) {
@@ -146,19 +137,28 @@ public final class AndroidShareMenu {
       }
   }
 
-  private static List<String> parseBlockInfoToList(@Nonnull String value) {
+  private @Nonnull static List<String> parseBlockInfoToList(@Nonnull String value) {
       return Arrays.asList(value.replace("[", "").replace("]", "").split(", "));
   }
 
-  public static List<String> getTrustedUsers(@Nonnull Block b) {
-    String info = BlockStorage.getBlockInfoAsJson(b);
+    /**
+     * Get a trusted users list of specific android.
+     *
+     * @param b the block of a Android
+     * @return Trusted users
+     */
+  public @Nonnull static List<String> getTrustedUsers(@Nonnull Block b) {
+      return parseBlockInfoToList(BlockStorage.getLocationInfo(b.getLocation(), key));
+  }
 
-    JsonElement element = new JsonParser().parse(info);
-
-    if (element.isJsonObject()) {
-        return parseBlockInfoToList(element.getAsJsonObject().get(key).getAsString());
-    } else {
-        return Collections.emptyList();
-    }
+    /**
+     * Checks user is in trusted users list.
+     *
+     * @param b the block of a Android
+     * @param uuid user's UUID
+     * @return whether is the trusted user of android or not
+     */
+  public static boolean isTrustedUsers(@Nonnull Block b, @Nonnull UUID uuid) {
+      return BlockStorage.getLocationInfo(b.getLocation(), key).contains(uuid.toString());
   }
 }
