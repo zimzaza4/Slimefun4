@@ -21,10 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public final class AndroidShareMenu {
   private static final int startSlot = 9;
@@ -43,7 +40,7 @@ public final class AndroidShareMenu {
 
     menu.setEmptySlotsClickable(false);
 
-    List<UUID> users = getTrustedUsers(b);
+    List<String> users = getTrustedUsers(b);
 
     int pages = Math.max(0, users.size() / 36);
 
@@ -65,9 +62,7 @@ public final class AndroidShareMenu {
 
           p1.sendMessage("请输入欲添加的信任玩家 ID.");
 
-          ChatUtils.awaitInput(
-              p1,
-              message -> {
+          ChatUtils.awaitInput(p1, message -> {
                 Player target = Bukkit.getPlayerExact(message);
 
                 if (target == null) {
@@ -80,79 +75,91 @@ public final class AndroidShareMenu {
     });
 
     if (!users.isEmpty()) {
-      List<UUID> displayUsers = users.subList(page, Math.min(users.size() - 1, perPageDisplay));
+      List<String> displayUsers = users.subList(page, Math.min(users.size() - 1, perPageDisplay));
+
       for (int index = 0; index < displayUsers.size(); index++) {
         int slot = index + startSlot;
-        OfflinePlayer current = Bukkit.getOfflinePlayer(displayUsers.get(index));
-        menu.addItem(
-            slot,
-            new CustomItem(SkullItem.fromPlayer(current), "&b" + current.getName(), "&c左键 删除玩家"));
-        menu.addMenuClickHandler(
-            slot,
-            (p1, slot1, item, cursor, action) -> {
+        OfflinePlayer current = Bukkit.getOfflinePlayer(UUID.fromString(displayUsers.get(index)));
+        menu.addItem(slot, new CustomItem(SkullItem.fromPlayer(current), "&b" + current.getName(), "&c左键 删除玩家"));
+        menu.addMenuClickHandler(slot, (p1, slot1, item, cursor, action) -> {
               if (action.isLeftClick()) {
                 removePlayer(p1, current, b, users);
               }
 
               return false;
-            });
+        });
       }
     }
 
     if (pages > 0) {
-        menu.addItem(47, ChestMenuUtils.getPreviousButton(p, page, pages));
-        menu.addMenuClickHandler(46, (pl, slot, item, cursor, action) -> {
-                    int next = page - 1;
-                    if (next < 1) next = pages;
-                    if (next != page) {
-                        openShareMenu(p, b, next);
-                    }
-                    return false;
-        });
+      menu.addItem(47, ChestMenuUtils.getPreviousButton(p, page, pages));
+      menu.addMenuClickHandler(46, (pl, slot, item, cursor, action) -> {
+            int next = page - 1;
+            if (next < 1) next = pages;
+            if (next != page) {
+              openShareMenu(p, b, next);
+            }
+            return false;
+      });
 
-        menu.addItem(51, ChestMenuUtils.getNextButton(p, page, pages));
-        menu.addMenuClickHandler(50, (pl, slot, item, cursor, action) -> {
-                    int next = page + 1;
-                    if (next > pages) {
-                        next = 1;
-                    }
-                    if (next != page) {
-                        openShareMenu(p, b, next);
-                    }
-                    return false;
+      menu.addItem(51, ChestMenuUtils.getNextButton(p, page, pages));
+      menu.addMenuClickHandler(50, (pl, slot, item, cursor, action) -> {
+            int next = page + 1;
+            if (next > pages) {
+              next = 1;
+            }
+            if (next != page) {
+              openShareMenu(p, b, next);
+            }
+            return false;
         });
+      }
 
-        menu.open(p);
-        }
+      menu.open(p);
     }
 
   public static String generateEmptyList() {
-    return gson.toJson(new ArrayList<UUID>());
+    return new ArrayList<UUID>().toString();
   }
 
-  private static void addPlayer(@Nonnull Player owner, @Nonnull OfflinePlayer p, @Nonnull Block android, @Nonnull List<UUID> users) {
-    users.add(p.getUniqueId());
-    owner.sendMessage("添加玩家 " + p.getName() + " 成功");
+  private static void addPlayer(@Nonnull Player owner, @Nonnull OfflinePlayer p, @Nonnull Block android, @Nonnull List<String> users) {
+      if (users.contains(p.getUniqueId().toString())) {
+          owner.sendMessage("玩家 " + p.getName() + " 已经在信任列表里了!");
+      } else if (owner.getUniqueId() == p.getUniqueId()) {
+          owner.sendMessage("你不能添加自己!");
+      } else {
+          users.add(p.getUniqueId().toString());
+          owner.sendMessage("添加玩家 " + p.getName() + " 成功");
 
-    BlockStorage.addBlockInfo(android, key, gson.toJson(users));
+          BlockStorage.addBlockInfo(android, key, users.toString());
+      }
   }
 
-  private static void removePlayer(@Nonnull Player owner, @Nonnull OfflinePlayer p, @Nonnull Block android, @Nonnull List<UUID> users) {
-    boolean result = users.remove(p.getUniqueId());
-    owner.sendMessage("删除玩家 " + p.getName() + " " + (result ? "成功" : "失败"));
+  private static void removePlayer(@Nonnull Player owner, @Nonnull OfflinePlayer p, @Nonnull Block android, @Nonnull List<String> users) {
+      if (users.contains(p.getUniqueId().toString())) {
+          users.remove(p.getUniqueId().toString());
+          boolean result = users.remove(p.getUniqueId().toString());
+          owner.sendMessage("删除玩家 " + p.getName() + " " + (result ? "成功" : "失败"));
 
-    BlockStorage.addBlockInfo(android, key, gson.toJson(users));
+          BlockStorage.addBlockInfo(android, key, users.toString());
+      } else {
+          owner.sendMessage("该玩家不在信任列表中!");
+      }
   }
 
-  public static List<UUID> getTrustedUsers(@Nonnull Block b) {
+  private static List<String> parseBlockInfoToList(@Nonnull String value) {
+      return Arrays.asList(value.replace("[", "").replace("]", "").split(", "));
+  }
+
+  public static List<String> getTrustedUsers(@Nonnull Block b) {
     String info = BlockStorage.getBlockInfoAsJson(b);
 
     JsonElement element = new JsonParser().parse(info);
 
     if (element.isJsonObject()) {
-      return gson.fromJson(element.getAsJsonObject().get(key).getAsString(), new TypeToken<List<UUID>>(){}.getType());
+        return parseBlockInfoToList(element.getAsJsonObject().get(key).getAsString());
     } else {
-      return Collections.emptyList();
+        return Collections.emptyList();
     }
   }
 }
