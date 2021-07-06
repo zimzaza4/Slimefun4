@@ -37,7 +37,7 @@ public final class AndroidShareMenu {
   public static void openShareMenu(@Nonnull Player p, @Nonnull Block b, int page) {
     Validate.notNull(p, "The player cannot be null!");
     Validate.notNull(b, "The android block cannot be null!");
-    Validate.isTrue(page > 0, "The page must be above or equals 0!");
+    Validate.isTrue(page >= 0, "The page must be above or equals 0!");
 
     ChestMenu menu = new ChestMenu(SlimefunPlugin.instance(), "&b共享权限管理");
 
