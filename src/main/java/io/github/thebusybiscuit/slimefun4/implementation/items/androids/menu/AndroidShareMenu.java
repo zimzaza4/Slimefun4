@@ -26,7 +26,6 @@ import java.util.*;
 public final class AndroidShareMenu {
   private static final int startSlot = 9;
   private static final int perPageDisplay = 45;
-  private static final Gson gson = new Gson();
   private static final String key = "share-users";
 
   private AndroidShareMenu() {}
@@ -119,7 +118,7 @@ public final class AndroidShareMenu {
     }
 
   public static String generateEmptyList() {
-    return new ArrayList<UUID>().toString();
+    return new ArrayList<String>().toString();
   }
 
   private static void addPlayer(@Nonnull Player owner, @Nonnull OfflinePlayer p, @Nonnull Block android, @Nonnull List<String> users) {
