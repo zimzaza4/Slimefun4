@@ -7,11 +7,13 @@ import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.cscorelib2.skull.SkullBlock;
+import io.github.thebusybiscuit.cscorelib2.skull.SkullItem;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.items.androids.menu.AndroidShareMenu;
 import io.github.thebusybiscuit.slimefun4.utils.*;
 import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
@@ -48,10 +50,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 
@@ -84,13 +83,14 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
 
             @Override
             public boolean canOpen(Block b, Player p) {
-                boolean open = BlockStorage.getLocationInfo(b.getLocation(), "owner").equals(p.getUniqueId().toString()) || p.hasPermission("slimefun.android.bypass");
+                boolean isOwner = BlockStorage.getLocationInfo(b.getLocation(), "owner").equals(p.getUniqueId().toString()) || p.hasPermission("slimefun.android.bypass");
 
-                if (!open) {
+                if (isOwner || AndroidShareMenu.isTrustedUsers(b, p.getUniqueId())) {
+                    return true;
+                } else {
                     SlimefunPlugin.getLocalization().sendMessage(p, "inventory.no-access", true);
+                    return false;
                 }
-
-                return open;
             }
 
             @Override
@@ -115,6 +115,14 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
                     BlockStorage.addBlockInfo(b, "paused", "true");
                     SlimefunPlugin.getLocalization().sendMessage(p, "android.stopped", true);
                     openScriptEditor(p, b);
+                    return false;
+                });
+
+                menu.replaceExistingItem(25, new CustomItem(Material.PLAYER_HEAD, "&b机器人访问管理", "", "&8\u21E8 &7单击打开访问管理器"));
+                menu.addMenuClickHandler(25, (p, slot, item, action) -> {
+                    BlockStorage.addBlockInfo(b, "paused", "true");
+                    SlimefunPlugin.getLocalization().sendMessage(p, "android.stopped", true);
+                    AndroidShareMenu.openShareMenu(p, b, 0);
                     return false;
                 });
             }
@@ -168,6 +176,7 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
                 BlockStorage.addBlockInfo(b, "fuel", "0");
                 BlockStorage.addBlockInfo(b, "rotation", p.getFacing().getOppositeFace().toString());
                 BlockStorage.addBlockInfo(b, "paused", "true");
+                BlockStorage.addBlockInfo(b, "share-users", Collections.emptyList().toString());
 
                 BlockData blockData = Material.PLAYER_HEAD.createBlockData(data -> {
                     if (data instanceof Rotatable) {
