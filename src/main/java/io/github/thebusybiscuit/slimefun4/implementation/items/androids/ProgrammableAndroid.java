@@ -176,7 +176,6 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
                 BlockStorage.addBlockInfo(b, "fuel", "0");
                 BlockStorage.addBlockInfo(b, "rotation", p.getFacing().getOppositeFace().toString());
                 BlockStorage.addBlockInfo(b, "paused", "true");
-                BlockStorage.addBlockInfo(b, "share-users", Collections.emptyList().toString());
 
                 BlockData blockData = Material.PLAYER_HEAD.createBlockData(data -> {
                     if (data instanceof Rotatable) {
