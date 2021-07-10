@@ -152,6 +152,15 @@ public class OreCrusher extends MultiBlockMachine {
 			));
 			// @formatter:on
 		}
+
+		// Copper Ores (1.17+)
+		if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_17)) {
+			displayRecipes.add(new ItemStack(Material.DEEPSLATE_COPPER_ORE));
+			displayRecipes.add(new SlimefunItemStack(SlimefunItems.COPPER_DUST, isOreDoublingEnabled() ? 2 : 1));
+
+			displayRecipes.add(new ItemStack(Material.COPPER_ORE));
+			displayRecipes.add(new SlimefunItemStack(SlimefunItems.COPPER_DUST, isOreDoublingEnabled() ? 2 : 1));
+		}
 	}
 
 	@Override
@@ -165,6 +174,7 @@ public class OreCrusher extends MultiBlockMachine {
 		BlockState state = PaperLib.getBlockState(dispBlock, false).getState();
 
 		if (state instanceof Dispenser) {
+
 			Dispenser disp = (Dispenser) state;
 			Inventory inv = disp.getInventory();
 
@@ -226,6 +236,11 @@ public class OreCrusher extends MultiBlockMachine {
 			SlimefunItem goldDust = SlimefunItem.getByID("GOLD_DUST");
 			if (goldDust != null) {
 				goldDust.setRecipeOutput(new SlimefunItemStack(SlimefunItems.GOLD_DUST, value ? 2 : 1));
+			}
+
+			SlimefunItem copperDust = SlimefunItem.getByID("COPPER_DUST");
+			if (copperDust != null) {
+				copperDust.setRecipeOutput(new SlimefunItemStack(SlimefunItems.COPPER_DUST, value ? 2 : 1));
 			}
 		}
 
