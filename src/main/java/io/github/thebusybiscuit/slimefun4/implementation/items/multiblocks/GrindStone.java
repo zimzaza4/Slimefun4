@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks;
 
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
@@ -75,6 +76,11 @@ public class GrindStone extends MultiBlockMachine {
 
 		recipes.add(new ItemStack(Material.QUARTZ_BLOCK));
 		recipes.add(new ItemStack(Material.QUARTZ, 4));
+
+		if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_17)) {
+			recipes.add(new ItemStack(Material.AMETHYST_BLOCK));
+			recipes.add(new ItemStack(Material.AMETHYST_SHARD, 4));
+		}
 
 		recipes.add(SlimefunItems.MAGIC_LUMP_2);
 		recipes.add(new SlimefunItemStack(SlimefunItems.MAGIC_LUMP_1, 4));
