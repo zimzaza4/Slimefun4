@@ -42,6 +42,7 @@ public class IndustrialMiner extends MultiBlockMachine {
     protected final List<MachineFuel> fuelTypes = new ArrayList<>();
 
     private final ItemSetting<Boolean> canMineAncientDebris = new ItemSetting<>(this, "can-mine-ancient-debris", false);
+    private final ItemSetting<Boolean> canMineDeepslateOres = new ItemSetting<>(this, "can-mine-deepslate-ores", true);
     private final int range;
     private final boolean silkTouch;
 
@@ -53,6 +54,7 @@ public class IndustrialMiner extends MultiBlockMachine {
 
         registerDefaultFuelTypes();
         addItemSetting(canMineAncientDebris);
+        addItemSetting(canMineDeepslateOres);
     }
 
     /**
@@ -205,12 +207,12 @@ public class IndustrialMiner extends MultiBlockMachine {
     }
 
     @Override
-    public String getLabelLocalPath() {
+    public @Nonnull String getLabelLocalPath() {
         return "guide.tooltips.recipes.generator";
     }
 
     @Override
-    public List<ItemStack> getDisplayRecipes() {
+    public @Nonnull List<ItemStack> getDisplayRecipes() {
         List<ItemStack> list = new ArrayList<>();
 
         for (MachineFuel fuel : fuelTypes) {
@@ -263,13 +265,16 @@ public class IndustrialMiner extends MultiBlockMachine {
      * @return Whether this {@link IndustrialMiner} is capable of mining this {@link Material}
      */
     public boolean canMine(@Nonnull Material type) {
-        if (SlimefunTag.INDUSTRIAL_MINER_ORES.isTagged(type)) {
-            return true;
-        } else if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_16)) {
-            return type == Material.ANCIENT_DEBRIS && canMineAncientDebris.getValue();
+        MinecraftVersion version = SlimefunPlugin.getMinecraftVersion();
+        if (version.isAtLeast(MinecraftVersion.MINECRAFT_1_16) && type == Material.ANCIENT_DEBRIS) {
+            return canMineAncientDebris.getValue();
         }
 
-        return false;
+        if (version.isAtLeast(MinecraftVersion.MINECRAFT_1_17) && SlimefunTag.DEEPSLATE_ORES.isTagged(type)) {
+            return canMineDeepslateOres.getValue();
+        }
+
+        return SlimefunTag.INDUSTRIAL_MINER_ORES.isTagged(type);
     }
 
 }
