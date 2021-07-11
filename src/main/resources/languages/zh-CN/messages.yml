@@ -353,6 +353,24 @@ android:
       already: "&4你已经给这个脚本留下评价了!"
     editor: 脚本编辑器
     too-long: "&c脚本长度已达上限, 你不能再编辑了!"
+
+  access-manager:
+    title: '&b机器人权限管理器'
+    subtitle: '&8⇨ &7单击打开管理器'
+
+    menu:
+      add-player-title: '&a添加信任玩家'
+      add-player: '&a左键 > 添加信任玩家'
+      delete-player: '&c左键 > 删除信任玩家'
+
+    messages:
+      input: '请输入你想要添加的信任玩家的 ID.'
+      cannot-find-player: '&c找不到你要添加的玩家: %player%'
+      is-trusted-player: '&a%player% 已经是你信任的玩家了!'
+      is-not-trusted-player: "&c%player% 不是你信任的玩家!"
+      cannot-add-yourself: '&c你不能信任你自己!'
+      add-success: '&a成功添加信任玩家 %player%.'
+      delete-success: '&a成功删除信任玩家 %player%.'
 languages:
   default: 服务器默认语言
   en: 英语
