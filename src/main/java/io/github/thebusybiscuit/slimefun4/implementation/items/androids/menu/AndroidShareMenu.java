@@ -85,7 +85,7 @@ public final class AndroidShareMenu {
                 Player target = Bukkit.getPlayerExact(message);
 
                 if (target == null) {
-                    SlimefunPlugin.getLocalization().sendMessage(p1, "android.access-manager.messages.cannot-find-player", msg -> msg.replace("%player%", p1.getName()));
+                    SlimefunPlugin.getLocalization().sendMessage(p1, "android.access-manager.messages.cannot-find-player", msg -> msg.replace("%player%", message));
                 } else {
                     addPlayer(p1, target, b, users);
                 }
