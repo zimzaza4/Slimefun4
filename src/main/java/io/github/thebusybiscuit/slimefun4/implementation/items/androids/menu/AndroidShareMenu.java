@@ -110,7 +110,7 @@ public final class AndroidShareMenu {
             }
         }
 
-        if (pages > 0) {
+        if (pages > 1) {
             menu.addItem(47, ChestMenuUtils.getPreviousButton(p, page, pages));
             menu.addMenuClickHandler(46, (pl, slot, item, cursor, action) -> {
                 int previousPage = page - 1;
