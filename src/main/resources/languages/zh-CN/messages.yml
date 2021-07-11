@@ -355,22 +355,22 @@ android:
     too-long: "&c脚本长度已达上限, 你不能再编辑了!"
 
   access-manager:
-    title: '&bAndroid Access Manager'
-    subtitle: '&8\u21E8 &7Click to open the Access Manager'
+    title: '&b机器人权限管理器'
+    subtitle: '&8⇨ &7单击打开管理器'
 
     menu:
-      add-player-title: '&aAdd a trusted player'
-      add-player: '&aLeft Click > Add player'
-      delete-player: '&cLeft Click > Delete player'
+      add-player-title: '&a添加信任玩家'
+      add-player: '&a左键 > 添加信任玩家'
+      delete-player: '&c左键 > 删除信任玩家'
 
     messages:
-      input: 'Please input the player name you want to add.'
-      cannot-find-player: '&cCannot find specific player: %player%'
-      is-trusted-player: '&aPlayer %player% is already trusted!'
-      is-not-trusted-player: "&cPlayer %player% isn't a trusted player!"
-      cannot-add-yourself: '&cYou cannot add yourself!'
-      add-success: '&aAdded trusted player %player% successfully.'
-      delete-success: '&aDeleted trusted player %player% successfully.'
+      input: '请输入你想要添加的信任玩家的 ID.'
+      cannot-find-player: '&c找不到你要添加的玩家: %player%'
+      is-trusted-player: '&a%player% 已经是你信任的玩家了!'
+      is-not-trusted-player: "&c%player% 不是你信任的玩家!"
+      cannot-add-yourself: '&c你不能信任你自己!'
+      add-success: '&a成功添加信任玩家 %player%.'
+      delete-success: '&a成功删除信任玩家 %player%.'
 languages:
   default: 服务器默认语言
   en: 英语
