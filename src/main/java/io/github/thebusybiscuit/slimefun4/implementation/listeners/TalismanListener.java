@@ -236,7 +236,7 @@ public class TalismanListener implements Listener {
 
                 // Add validate for offhand item.
                 if (e.getBrokenItem().equals(inv.getItemInOffHand())) {
-                    slot = 41;
+                    slot = 40;
                 }
             }
 
