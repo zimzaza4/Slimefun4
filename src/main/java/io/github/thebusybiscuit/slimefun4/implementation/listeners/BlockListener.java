@@ -68,6 +68,11 @@ public class BlockListener implements Listener {
                 }
 
                 BlockStorage.clearBlockInfo(block);
+
+                if(SlimefunItem.getByItem(e.getItemInHand()) != null) {
+                    // Due to the delay of #clearBlockInfo, new sf block info will also be cleared. Set cancelled.
+                    e.setCancelled(true);
+                }
             }
         } else if (BlockStorage.hasBlockInfo(e.getBlock())) {
             // If there is no air (e.g. grass) then don't let the block be placed
