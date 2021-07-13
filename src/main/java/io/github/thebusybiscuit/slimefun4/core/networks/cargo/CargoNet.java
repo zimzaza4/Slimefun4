@@ -36,8 +36,8 @@ public class CargoNet extends AbstractItemNetwork implements HologramOwner {
     private static final int RANGE = 5;
     private static final int TICK_DELAY = SlimefunPlugin.getCfg().getInt("networks.cargo-ticker-delay");
 
-    private final Set<Location> inputNodes = new ConcurrentSkipListSet<>();
-    private final Set<Location> outputNodes = new ConcurrentSkipListSet<>();
+    private final Set<Location> inputNodes = new HashSet<>();
+    private final Set<Location> outputNodes = new HashSet<>();
 
     protected final Map<Location, Integer> roundRobin = new HashMap<>();
     private int tickDelayThreshold = 0;
