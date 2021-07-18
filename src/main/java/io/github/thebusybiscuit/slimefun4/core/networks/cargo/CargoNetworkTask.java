@@ -1,11 +1,9 @@
 package io.github.thebusybiscuit.slimefun4.core.networks.cargo;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -82,7 +80,7 @@ class CargoNetworkTask implements Runnable {
                 timestamp += network.updateTerminals(chestTerminalInputs);
             }
 
-            /**
+            /*
              * All operations happen here: Everything gets iterated from the Input Nodes.
              * (Apart from ChestTerminal Buses)
              */
