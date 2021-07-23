@@ -1,6 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.altar;
 
-import org.bukkit.ChatColor;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -11,11 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Optional;
 
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
@@ -113,11 +113,6 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
             stack.setItemMeta(im);
         } else {
             ItemMeta im = stack.getItemMeta();
-
-            if (!customName.startsWith(String.valueOf(ChatColor.COLOR_CHAR))) {
-                customName = ChatColor.WHITE + customName;
-            }
-
             im.setDisplayName(customName);
             stack.setItemMeta(im);
         }
