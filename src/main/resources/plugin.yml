@@ -19,6 +19,7 @@ softdepend:
   - mcMMO
   - ItemsAdder
   - Vault
+  - Orebfuscator
 
 # We hook into these plugins too, but they depend on Slimefun.
 loadBefore:

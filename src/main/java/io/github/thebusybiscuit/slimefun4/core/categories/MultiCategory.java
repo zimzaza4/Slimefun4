@@ -61,7 +61,7 @@ public class MultiCategory extends FlexCategory {
     @Override
     @ParametersAreNonnullByDefault
     public boolean isVisible(Player p, PlayerProfile profile, SlimefunGuideMode mode) {
-        return true;
+        return mode == SlimefunGuideMode.SURVIVAL_MODE;
     }
 
     @Override
