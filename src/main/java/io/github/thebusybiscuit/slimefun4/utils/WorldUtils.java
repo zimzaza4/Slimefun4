@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.papermc.lib.PaperLib;
 import org.apache.commons.lang.Validate;
 import org.bukkit.World;
 
@@ -29,6 +30,15 @@ public final class WorldUtils {
     public static int getMinHeight(@Nonnull World world) {
         Validate.notNull(world, "World cannot be null!");
 
-        return SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_16) ? world.getMinHeight() : 0;
+        MinecraftVersion major = SlimefunPlugin.getMinecraftVersion();
+        int patch = PaperLib.getMinecraftPatchVersion();
+
+        if (major.isAtLeast(MinecraftVersion.MINECRAFT_1_17)) {
+            return world.getMinHeight();
+        } else if (major.isMinecraftVersion(16) && patch == 5) {
+            return world.getMinHeight();
+        } else {
+            return 0;
+        }
     }
 }
