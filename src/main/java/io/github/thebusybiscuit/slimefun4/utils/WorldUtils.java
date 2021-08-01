@@ -33,9 +33,7 @@ public final class WorldUtils {
         MinecraftVersion major = SlimefunPlugin.getMinecraftVersion();
         int patch = PaperLib.getMinecraftPatchVersion();
 
-        if (major.isAtLeast(MinecraftVersion.MINECRAFT_1_17)) {
-            return world.getMinHeight();
-        } else if (major.isMinecraftVersion(16) && patch == 5) {
+        if (major.isAtLeast(MinecraftVersion.MINECRAFT_1_17) || major.isMinecraftVersion(16) && patch == 5) {
             return world.getMinHeight();
         } else {
             return 0;
