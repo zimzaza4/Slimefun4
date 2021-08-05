@@ -2,6 +2,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.EnhancedFurnace;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
@@ -65,7 +66,8 @@ public class EnhancedFurnaceListener implements Listener {
 
             if (state instanceof Furnace) {
                 FurnaceInventory inventory = ((Furnace) state).getInventory();
-                int amount = inventory.getSmelting().getType().toString().endsWith("_ORE") ? ((EnhancedFurnace) sfItem).getRandomOutputAmount() : 1;
+                boolean multiplier = SlimefunTag.ENHANCED_FURNACE_LUCK_MATERIALS.isTagged(inventory.getSmelting().getType());
+                int amount = multiplier ? ((EnhancedFurnace) sfItem).getRandomOutputAmount() : 1;
                 Optional<ItemStack> result = SlimefunPlugin.getMinecraftRecipeService().getFurnaceOutput(inventory.getSmelting());
 
                 if (result.isPresent()) {
