@@ -3,10 +3,15 @@ package io.github.thebusybiscuit.slimefun4.utils.tags;
 import io.github.thebusybiscuit.slimefun4.api.exceptions.TagMisconfigurationException;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.BlockPlacer;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.EnhancedFurnace;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.accelerators.CropGrowthAccelerator;
 import io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans.Talisman;
 import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.miner.IndustrialMiner;
-import io.github.thebusybiscuit.slimefun4.implementation.items.tools.*;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.ClimbingPick;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.ExplosiveShovel;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.PickaxeOfTheSeeker;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.PickaxeOfVeinMining;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.SmeltersPickaxe;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -15,7 +20,13 @@ import org.bukkit.block.data.Waterlogged;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -223,7 +234,12 @@ public enum SlimefunTag implements Tag<Material> {
     /**
      * All materials (ores) which trigger the Talisman of the Caveman.
      */
-    CAVEMAN_TALISMAN_TRIGGERS;
+    CAVEMAN_TALISMAN_TRIGGERS,
+
+    /**
+     * All materials which benefit from the luck multiplier of {@link EnhancedFurnace}
+     */
+    ENHANCED_FURNACE_LUCK_MATERIALS;
 
     /**
      * Lookup table for tag names.
