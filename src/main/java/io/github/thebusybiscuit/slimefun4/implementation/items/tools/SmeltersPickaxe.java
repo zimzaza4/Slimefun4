@@ -9,6 +9,7 @@ import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -40,7 +41,7 @@ public class SmeltersPickaxe extends SimpleSlimefunItem<ToolUseHandler> implemen
                 Collection<ItemStack> blockDrops = b.getDrops(tool);
 
                 for (ItemStack drop : blockDrops) {
-                    if (drop != null && drop.getType().isAir()) {
+                    if (drop != null && !drop.getType().isAir()) {
                         smelt(b, drop, fortune);
                         drops.add(drop);
                     }
