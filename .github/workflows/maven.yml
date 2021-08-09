@@ -12,29 +12,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-java@v2
-      if: !startsWith(github.event.head_commit.message, '[build skip]')
+    - if: !startsWith(github.event.head_commit.message, '[build skip]')
+      uses: actions/setup-java@v2
       with:
         distribution: 'adopt'
         java-version: 11
         java-package: jdk
         architecture: x64
-    - run: mvn -B package --file pom.xml --errors
-    - run: mkdir staging && cp target/*.jar staging
-    - uses: actions/cache@v2
-      if: !startsWith(github.event.head_commit.message, '[build skip]')
+    - if: !startsWith(github.event.head_commit.message, '[build skip]')
+      run: mvn -B package --file pom.xml --errors
+    - if: !startsWith(github.event.head_commit.message, '[build skip]')
+      run: mkdir staging && cp target/*.jar staging
+    - if: !startsWith(github.event.head_commit.message, '[build skip]')
+      uses: actions/cache@v2
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
-    - uses: actions/upload-artifact@v2
-      if: !startsWith(github.event.head_commit.message, '[build skip]')
+    - if: !startsWith(github.event.head_commit.message, '[build skip]')
+      uses: actions/upload-artifact@v2
       with:
         name: Slimefun.jar
         path: staging
     - name: Automatic Releases
-      uses: marvinpinto/action-automatic-releases@v1.2.1
       if: !startsWith(github.event.head_commit.message, '[build skip]')
+      uses: marvinpinto/action-automatic-releases@v1.2.1
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         automatic_release_tag: "exp"
