@@ -9,7 +9,6 @@ jobs:
     steps:
       - name: Check out
         uses: actions/checkout@v2
-      - name: Check contains version code
       - if: contains(github.event.issue.body, 'Slimefun 版本') != true
         id: close
         name: Close Issue (template)
