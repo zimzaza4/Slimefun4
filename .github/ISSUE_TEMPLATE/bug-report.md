@@ -24,4 +24,3 @@ assignees: ''
 
  - Minecraft 版本:
  - Slimefun 版本:
- - CS-CoreLib 版本:

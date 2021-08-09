@@ -8,4 +8,7 @@ assignees: 'StarWishsama'
 ---
 ## 汉化错误的位置 (必须)
 
+## 版本
+- Slimefun 版本:
+
 ## 其他
