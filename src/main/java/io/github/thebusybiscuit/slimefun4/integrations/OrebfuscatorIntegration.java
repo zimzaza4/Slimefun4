@@ -25,12 +25,12 @@ import net.imprex.orebfuscator.api.OrebfuscatorService;
  * @author NgLoader
  *
  */
-public class OrebfuscatorIntegration implements Listener {
+class OrebfuscatorIntegration implements Listener {
 
     private final SlimefunPlugin plugin;
     private OrebfuscatorService service;
 
-    public OrebfuscatorIntegration(@Nonnull SlimefunPlugin plugin) {
+    OrebfuscatorIntegration(@Nonnull SlimefunPlugin plugin) {
         this.plugin = plugin;
     }
 

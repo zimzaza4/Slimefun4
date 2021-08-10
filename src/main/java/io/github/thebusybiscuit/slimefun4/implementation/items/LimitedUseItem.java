@@ -44,7 +44,7 @@ public abstract class LimitedUseItem extends SimpleSlimefunItem<ItemUseHandler> 
     private int maxUseCount = -1;
 
     @ParametersAreNonnullByDefault
-    public LimitedUseItem(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    protected LimitedUseItem(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
         addItemHandler(getItemHandler());
