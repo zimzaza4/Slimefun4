@@ -91,9 +91,23 @@ public final class SlimefunUtils {
      * @return Whether the given item is soulbound
      */
     public static boolean isSoulbound(@Nullable ItemStack item) {
-        if (item == null || item.getType() == Material.AIR) {
-            return false;
-        } else {
+        return isSoulbound(item, null);
+    }
+
+    /**
+     * This method checks whether the given {@link ItemStack} is considered {@link Soulbound}.
+     * If the provided item is a {@link SlimefunItem} then this method will also check that the item
+     * is enabled in the provided {@link World}.
+     *
+     * @param item
+     *            The {@link ItemStack} to check for
+     * @param world
+     *            The {@link World} to check if the {@link SlimefunItem} is enabled in if applicable.
+     *            If {@code null} then this will not do a world check.
+     * @return Whether the given item is soulbound
+     */
+    public static boolean isSoulbound(@Nullable ItemStack item, @Nullable World world) {
+        if (item != null && item.getType() != Material.AIR) {
             ItemMeta meta = item.hasItemMeta() ? item.getItemMeta() : null;
 
             if (hasSoulboundFlag(meta)) {
@@ -103,13 +117,17 @@ public final class SlimefunUtils {
             SlimefunItem sfItem = SlimefunItem.getByItem(item);
 
             if (sfItem instanceof Soulbound) {
-                return !sfItem.isDisabled();
+                if (world != null) {
+                    return !sfItem.isDisabledIn(world);
+                } else {
+                    return !sfItem.isDisabled();
+                }
             } else if (meta != null) {
                 return meta.hasLore() && meta.getLore().contains(SOULBOUND_LORE);
             }
 
-            return false;
         }
+        return false;
     }
 
     private static boolean hasSoulboundFlag(@Nullable ItemMeta meta) {
@@ -117,9 +135,7 @@ public final class SlimefunUtils {
             PersistentDataContainer container = meta.getPersistentDataContainer();
             NamespacedKey key = SlimefunPlugin.getRegistry().getSoulboundDataKey();
 
-            if (container.has(key, PersistentDataType.BYTE)) {
-                return true;
-            }
+            return container.has(key, PersistentDataType.BYTE);
         }
 
         return false;
@@ -193,7 +209,7 @@ public final class SlimefunUtils {
      *
      * @return An {@link ItemStack} with this Head texture
      */
-    public static ItemStack getCustomHead(@Nonnull String texture) {
+    public static @Nonnull ItemStack getCustomHead(@Nonnull String texture) {
         Validate.notNull(texture, "The provided texture is null");
 
         if (SlimefunPlugin.instance() == null) {
@@ -398,6 +414,59 @@ public final class SlimefunUtils {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Helper method to spawn an {@link ItemStack}.
+     * This method automatically calls a {@link SlimefunItemSpawnEvent} to allow
+     * other plugins to catch the item being dropped.
+     *
+     * @param loc
+     *            The {@link Location} where to drop the item
+     * @param item
+     *            The {@link ItemStack} to drop
+     * @param reason
+     *            The {@link ItemSpawnReason} why the item is being dropped
+     * @param addRandomOffset
+     *            Whether a random offset should be added (see {@link World#dropItemNaturally(Location, ItemStack)})
+     *
+     * @return The dropped {@link Item} (or null if the {@link SlimefunItemSpawnEvent} was cancelled)
+     */
+    @ParametersAreNonnullByDefault
+    public static @Nullable Item spawnItem(Location loc, ItemStack item, ItemSpawnReason reason, boolean addRandomOffset) {
+        SlimefunItemSpawnEvent event = new SlimefunItemSpawnEvent(loc, item, reason);
+        SlimefunPlugin.instance().getServer().getPluginManager().callEvent(event);
+
+        if (!event.isCancelled()) {
+            World world = event.getLocation().getWorld();
+
+            if (addRandomOffset) {
+                return world.dropItemNaturally(event.getLocation(), event.getItemStack());
+            } else {
+                return world.dropItem(event.getLocation(), event.getItemStack());
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Helper method to spawn an {@link ItemStack}.
+     * This method automatically calls a {@link SlimefunItemSpawnEvent} to allow
+     * other plugins to catch the item being dropped.
+     *
+     * @param loc
+     *            The {@link Location} where to drop the item
+     * @param item
+     *            The {@link ItemStack} to drop
+     * @param reason
+     *            The {@link ItemSpawnReason} why the item is being dropped
+     *
+     * @return The dropped {@link Item} (or null if the {@link SlimefunItemSpawnEvent} was cancelled)
+     */
+    @ParametersAreNonnullByDefault
+    public static @Nullable Item spawnItem(Location loc, ItemStack item, ItemSpawnReason reason) {
+        return spawnItem(loc, item, reason, false);
     }
 
 }
