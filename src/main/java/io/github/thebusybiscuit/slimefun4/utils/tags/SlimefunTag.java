@@ -1,5 +1,23 @@
 package io.github.thebusybiscuit.slimefun4.utils.tags;
 
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang.Validate;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Tag;
+import org.bukkit.block.data.Waterlogged;
+
 import io.github.thebusybiscuit.slimefun4.api.exceptions.TagMisconfigurationException;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.BlockPlacer;
@@ -12,22 +30,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.tools.ExplosiveSh
 import io.github.thebusybiscuit.slimefun4.implementation.items.tools.PickaxeOfTheSeeker;
 import io.github.thebusybiscuit.slimefun4.implementation.items.tools.PickaxeOfVeinMining;
 import io.github.thebusybiscuit.slimefun4.implementation.items.tools.SmeltersPickaxe;
-import org.apache.commons.lang.Validate;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Tag;
-import org.bukkit.block.data.Waterlogged;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Stream;
 
 /**
  * This enum contains various implementations of the {@link Tag} interface.
@@ -304,9 +306,8 @@ public enum SlimefunTag implements Tag<Material> {
         }
     }
 
-    @Nonnull
     @Override
-    public NamespacedKey getKey() {
+    public @Nonnull NamespacedKey getKey() {
         return key;
     }
 
@@ -327,9 +328,8 @@ public enum SlimefunTag implements Tag<Material> {
         }
     }
 
-    @Nonnull
     @Override
-    public Set<Material> getValues() {
+    public @Nonnull Set<Material> getValues() {
         if (additionalTags.isEmpty()) {
             return Collections.unmodifiableSet(includedMaterials);
         } else {
@@ -346,7 +346,7 @@ public enum SlimefunTag implements Tag<Material> {
 
     public boolean isEmpty() {
         if (!includedMaterials.isEmpty()) {
-            /**
+            /*
              * Without even needing to generate a Set we can safely
              * return false if there are directly included Materials
              */
@@ -364,8 +364,7 @@ public enum SlimefunTag implements Tag<Material> {
      *
      * @return An immutable {@link Set} of all sub tags.
      */
-    @Nonnull
-    public Set<Tag<Material>> getSubTags() {
+    public @Nonnull Set<Tag<Material>> getSubTags() {
         return Collections.unmodifiableSet(additionalTags);
     }
 
@@ -374,8 +373,7 @@ public enum SlimefunTag implements Tag<Material> {
      *
      * @return A {@link Material} array for this {@link Tag}
      */
-    @Nonnull
-    public Material[] toArray() {
+    public @Nonnull Material[] toArray() {
         return getValues().toArray(new Material[0]);
     }
 
@@ -384,8 +382,7 @@ public enum SlimefunTag implements Tag<Material> {
      *
      * @return A {@link Stream} of {@link Material Materials}
      */
-    @Nonnull
-    public Stream<Material> stream() {
+    public @Nonnull Stream<Material> stream() {
         return getValues().stream();
     }
 
@@ -400,8 +397,7 @@ public enum SlimefunTag implements Tag<Material> {
      *
      * @return The {@link SlimefunTag} or null if it does not exist.
      */
-    @Nullable
-    public static SlimefunTag getTag(@Nonnull String value) {
+    public static @Nullable SlimefunTag getTag(@Nonnull String value) {
         Validate.notNull(value, "A tag cannot be null!");
 
         return nameLookup.get(value);
