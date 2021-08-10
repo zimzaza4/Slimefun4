@@ -5,6 +5,10 @@
         <versionFormat>4.9-canary-${commit.short}</versionFormat>
     </branch>
     <branch>
+        <pattern>release</pattern>
+        <versionFormat>4.9-release-${commit.short}</versionFormat>
+    </branch>
+    <branch>
         <pattern>feature/(.+)></pattern>
         <versionFormat>4.9-${1}-${commit.short}</versionFormat>
     </branch>
