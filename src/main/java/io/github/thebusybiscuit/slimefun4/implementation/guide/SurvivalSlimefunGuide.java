@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.guide;
 
+import org.apache.commons.lang.Validate;
 import ren.natsuyuk1.utils.VaultHelper;
 import io.github.thebusybiscuit.cscorelib2.chat.ChatInput;
 import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
@@ -46,9 +47,11 @@ import java.util.logging.Level;
  * It uses an {@link Inventory} to display {@link SlimefunGuide} contents.
  *
  * @author TheBusyBiscuit
+ * 
  * @see SlimefunGuide
  * @see SlimefunGuideImplementation
  * @see CheatSheetSlimefunGuide
+ *
  */
 public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
 
@@ -70,24 +73,21 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
      *
      * @return The {@link Sound}
      */
-
     public @Nonnull Sound getSound() {
         return sound;
     }
-
 
     @Override
     public @Nonnull SlimefunGuideMode getMode() {
         return SlimefunGuideMode.SURVIVAL_MODE;
     }
 
-
     @Override
     public @Nonnull ItemStack getItem() {
         return item;
     }
 
-    protected boolean isSurvivalMode() {
+    protected final boolean isSurvivalMode() {
         return getMode() != SlimefunGuideMode.CHEAT_MODE;
     }
 
@@ -100,7 +100,6 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
      *            The {@link PlayerProfile} of the {@link Player}
      * @return a {@link List} of visible {@link Category} instances
      */
-
     protected @Nonnull List<Category> getVisibleCategories(@Nonnull Player p, @Nonnull PlayerProfile profile) {
         List<Category> categories = new LinkedList<>();
 
@@ -295,7 +294,6 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
             }
             menu.addMenuClickHandler(index, (pl, slot, item, action) -> {
                 research.unlockFromGuide(this, p, profile, sfitem, category, page);
-
                 return false;
             });
         } else {
@@ -488,6 +486,7 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public void displayItem(PlayerProfile profile, SlimefunItem item, boolean addToHistory) {
         Player p = profile.getPlayer();
 
@@ -566,6 +565,10 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
 
     @ParametersAreNonnullByDefault
     public void createHeader(Player p, PlayerProfile profile, ChestMenu menu) {
+        Validate.notNull(p, "The Player cannot be null!");
+        Validate.notNull(profile, "The Profile cannot be null!");
+        Validate.notNull(menu, "The Inventory cannot be null!");
+
         for (int i = 0; i < 9; i++) {
             menu.addItem(i, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
         }
@@ -583,7 +586,7 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
             pl.closeInventory();
 
             SlimefunPlugin.getLocalization().sendMessage(pl, "guide.search.message");
-            ChatInput.waitForPlayer(SlimefunPlugin.instance(), pl, msg -> SlimefunGuide.openSearch(profile, msg, isSurvivalMode(), isSurvivalMode()));
+            ChatInput.waitForPlayer(SlimefunPlugin.instance(), pl, msg -> SlimefunGuide.openSearch(profile, msg, getMode(), isSurvivalMode()));
 
             return false;
         });
@@ -626,7 +629,7 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
                 return item;
             }
 
-            String lore = hasPermission(p, slimefunItem) ? "&f需要在其他地方解锁" : "&f无权限";
+            String lore = hasPermission(p, slimefunItem) ? "&f需要在 " + slimefunItem.getCategory().getDisplayName(p) + " 中解锁" : "&f无权限";
             return slimefunItem.canUse(p, false) ? item : new CustomItem(Material.BARRIER, ItemUtils.getItemName(item), "&4&l" + SlimefunPlugin.getLocalization().getMessage(p, "guide.locked"), "", lore);
         } else {
             return item;
@@ -719,8 +722,7 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
         return SlimefunPlugin.getPermissionsService().hasPermission(p, item);
     }
 
-
-    private @Nonnull ChestMenu create(Player p) {
+    private @Nonnull ChestMenu create(@Nonnull Player p) {
         ChestMenu menu = new ChestMenu(SlimefunPlugin.getLocalization().getMessage(p, "guide.title.main"));
 
         menu.setEmptySlotsClickable(false);

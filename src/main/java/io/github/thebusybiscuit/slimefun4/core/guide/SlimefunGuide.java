@@ -84,10 +84,9 @@ public final class SlimefunGuide {
     }
 
     @ParametersAreNonnullByDefault
-    public static void openSearch(PlayerProfile profile, String input, boolean survival, boolean addToHistory) {
-        SlimefunGuideImplementation layout = SlimefunPlugin.getRegistry().getSlimefunGuide(SlimefunGuideMode.SURVIVAL_MODE);
-        if (!survival) layout = SlimefunPlugin.getRegistry().getSlimefunGuide(SlimefunGuideMode.CHEAT_MODE);
-        layout.openSearch(profile, input, addToHistory);
+    public static void openSearch(PlayerProfile profile, String input, SlimefunGuideMode mode, boolean addToHistory) {
+        SlimefunGuideImplementation guide = SlimefunPlugin.getRegistry().getSlimefunGuide(mode);
+        guide.openSearch(profile, input, addToHistory);
     }
 
     @ParametersAreNonnullByDefault
