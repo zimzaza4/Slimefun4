@@ -23,6 +23,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import ren.natsuyuk1.utils.IntegrationHelper;
 
 import javax.annotation.Nonnull;
 
@@ -49,7 +50,8 @@ public class ReactorAccessPort extends SlimefunItem {
 
             @Override
             public boolean canOpen(Block b, Player p) {
-                return p.hasPermission("slimefun.inventory.bypass") || SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK);
+                return p.hasPermission("slimefun.inventory.bypass")
+                        || (SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK) && IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK));
             }
 
             @Override
