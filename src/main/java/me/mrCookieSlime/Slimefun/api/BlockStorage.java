@@ -54,7 +54,6 @@ public class BlockStorage {
     private final Map<String, Config> blocksCache = new ConcurrentHashMap<>();
 
     private static int chunkChanges = 0;
-    private static boolean chunksLoaded = false;
     private static boolean universalInventoriesLoaded = false;
 
     private int changes = 0;
@@ -211,12 +210,6 @@ public class BlockStorage {
     }
 
     private void loadChunks() {
-        if (chunksLoaded) {
-            return;
-        }
-
-        chunksLoaded = true;
-
         File chunks = new File(PATH_CHUNKS + "chunks.sfc");
 
         if (chunks.exists()) {
@@ -356,6 +349,7 @@ public class BlockStorage {
 
     public void saveAndRemove() {
         save();
+        saveChunks();
         isMarkedForRemoval.set(true);
     }
 
