@@ -11,6 +11,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * The {@link DietCookie} gives you a {@link PotionEffect} of Type {@code PotionEffectType.LEVITATION}
  * when consumed.
@@ -21,6 +23,7 @@ import org.bukkit.potion.PotionEffectType;
  */
 public class DietCookie extends SimpleSlimefunItem<ItemConsumptionHandler> {
 
+    @ParametersAreNonnullByDefault
     public DietCookie(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
     }

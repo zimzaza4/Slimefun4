@@ -2,10 +2,10 @@ package io.github.thebusybiscuit.slimefun4.implementation.tasks;
 
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.TeleporterListener;
+import io.github.thebusybiscuit.slimefun4.implementation.listeners.WorldListener;
 import io.github.thebusybiscuit.slimefun4.implementation.setup.PostSetup;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -48,9 +48,12 @@ public class SlimefunStartupTask implements Runnable {
             try {
                 new BlockStorage(world);
             } catch (Exception x) {
-                Slimefun.getLogger().log(Level.SEVERE, x, () -> "An Error occured while trying to load World \"" + world.getName() + "\" for Slimefun v" + SlimefunPlugin.getVersion());
+                SlimefunPlugin.logger().log(Level.SEVERE, x, () -> "An Error occured while trying to load World \"" + world.getName() + "\" for Slimefun v" + SlimefunPlugin.getVersion());
             }
         }
+
+        // Load/Unload Worlds, only after all plugins have started up. Fixes #2862
+        new WorldListener(this.plugin);
 
         // Load all listeners that depend on items to be enabled
         if (isEnabled("ELEVATOR_PLATE", "GPS_ACTIVATION_DEVICE_SHARED", "GPS_ACTIVATION_DEVICE_PERSONAL")) {

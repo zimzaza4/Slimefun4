@@ -5,12 +5,12 @@ import io.github.thebusybiscuit.cscorelib2.config.Config;
 import io.github.thebusybiscuit.slimefun4.api.geo.GEOResource;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideLayout;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlock;
 import io.github.thebusybiscuit.slimefun4.core.researching.Research;
-import io.github.thebusybiscuit.slimefun4.implementation.guide.BookSlimefunGuide;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.CheatSheetSlimefunGuide;
-import io.github.thebusybiscuit.slimefun4.implementation.guide.ChestSlimefunGuide;
+import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunBlockHandler;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
@@ -20,6 +20,7 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.inventory.UniversalBlockMenu;
 import org.apache.commons.lang.Validate;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -47,14 +48,16 @@ public final class SlimefunRegistry {
 
     private final List<Research> researches = new LinkedList<>();
     private final List<String> researchRanks = new ArrayList<>();
-    private final Set<UUID> researchingPlayers = new HashSet<>();
+    private final Set<UUID> researchingPlayers = Collections.synchronizedSet(new HashSet<>());
 
     private boolean backwardsCompatibility;
     private boolean automaticallyLoadItems;
     private boolean enableResearches;
     private boolean freeCreativeResearches;
     private boolean researchFireworks;
+    private boolean disableLearningAnimation;
     private boolean logDuplicateBlockEntries;
+    private boolean talismanActionBarMessages;
     private boolean useMoneyUnlock;
 
     private final Set<String> tickers = new HashSet<>();
@@ -62,26 +65,34 @@ public final class SlimefunRegistry {
 
     private final Set<ItemStack> barterDrops = new HashSet<>();
 
+    private NamespacedKey soulboundKey;
+    private NamespacedKey itemChargeKey;
+    private NamespacedKey guideKey;
+
     private final KeyMap<GEOResource> geoResources = new KeyMap<>();
 
     private final Map<UUID, PlayerProfile> profiles = new ConcurrentHashMap<>();
     private final Map<String, BlockStorage> worlds = new ConcurrentHashMap<>();
     private final Map<String, BlockInfoConfig> chunks = new HashMap<>();
-    private final Map<SlimefunGuideLayout, SlimefunGuideImplementation> layouts = new EnumMap<>(SlimefunGuideLayout.class);
+    private final Map<SlimefunGuideMode, SlimefunGuideImplementation> guides = new EnumMap<>(SlimefunGuideMode.class);
     private final Map<EntityType, Set<ItemStack>> mobDrops = new EnumMap<>(EntityType.class);
     private final Map<String, BlockMenuPreset> blockMenuPresets = new HashMap<>();
     private final Map<String, UniversalBlockMenu> universalInventories = new HashMap<>();
     private final Map<Class<? extends ItemHandler>, Set<ItemHandler>> globalItemHandlers = new HashMap<>();
     private final Map<String, SlimefunBlockHandler> blockHandlers = new HashMap<>();
 
-    public void load(@Nonnull Config cfg) {
+    public void load(@Nonnull SlimefunPlugin plugin, @Nonnull Config cfg) {
+        Validate.notNull(plugin, "The Plugin cannot be null!");
         Validate.notNull(cfg, "The Config cannot be null!");
+
+        soulboundKey = new NamespacedKey(plugin, "soulbound");
+        itemChargeKey = new NamespacedKey(plugin, "item_charge");
+        guideKey = new NamespacedKey(plugin, "slimefun_guide_mode");
 
         boolean showVanillaRecipes = cfg.getBoolean("guide.show-vanilla-recipes");
 
-        layouts.put(SlimefunGuideLayout.CHEST, new ChestSlimefunGuide(showVanillaRecipes));
-        layouts.put(SlimefunGuideLayout.CHEAT_SHEET, new CheatSheetSlimefunGuide());
-        layouts.put(SlimefunGuideLayout.BOOK, new BookSlimefunGuide());
+        guides.put(SlimefunGuideMode.SURVIVAL_MODE, new SurvivalSlimefunGuide(showVanillaRecipes));
+        guides.put(SlimefunGuideMode.CHEAT_MODE, new CheatSheetSlimefunGuide());
 
         researchRanks.addAll(cfg.getStringList("research-ranks"));
 
@@ -89,6 +100,8 @@ public final class SlimefunRegistry {
         freeCreativeResearches = cfg.getBoolean("researches.free-in-creative-mode");
         researchFireworks = cfg.getBoolean("researches.enable-fireworks");
         logDuplicateBlockEntries = cfg.getBoolean("options.log-duplicate-block-entries");
+        disableLearningAnimation = cfg.getBoolean("researches.disable-learning-animation");
+        talismanActionBarMessages = cfg.getBoolean("talismans.use-actionbar");
         useMoneyUnlock = cfg.getBoolean("researches.use-money-unlock");
     }
 
@@ -177,12 +190,41 @@ public final class SlimefunRegistry {
         return researchFireworks;
     }
 
-    public List<MultiBlock> getMultiBlocks() {
+    /**
+     * Returns whether the research learning animations is disabled
+     *
+     * @return Whether the research learning animations is disabled
+     */
+    public boolean isLearningAnimationDisabled() {
+        return disableLearningAnimation;
+    }
+
+    /**
+     * This method returns a {@link List} of every enabled {@link MultiBlock}.
+     *
+     */
+     public List<MultiBlock> getMultiBlocks() {
         return multiblocks;
     }
 
-    public SlimefunGuideImplementation getGuideLayout(SlimefunGuideLayout layout) {
-        return layouts.get(layout);
+    /**
+     * This returns the corresponding {@link SlimefunGuideImplementation} for a certain
+     * {@link SlimefunGuideMode}.
+     *
+     * @param mode The {@link SlimefunGuideMode}
+     * @return The corresponding {@link SlimefunGuideImplementation}
+     */
+    @Nonnull
+    public SlimefunGuideImplementation getSlimefunGuide(@Nonnull SlimefunGuideMode mode) {
+        Validate.notNull(mode, "The Guide mode cannot be null");
+
+        SlimefunGuideImplementation guide = guides.get(mode);
+
+        if (guide == null) {
+            throw new IllegalStateException("Slimefun Guide '" + mode + "' has no registered implementation.");
+        }
+
+        return guide;
     }
 
     /**
@@ -229,10 +271,17 @@ public final class SlimefunRegistry {
         return profiles;
     }
 
-    public Map<Class<? extends ItemHandler>, Set<ItemHandler>> getPublicItemHandlers() {
+    @Nonnull
+    public Map<Class<? extends ItemHandler>, Set<ItemHandler>> getGlobalItemHandlers() {
         return globalItemHandlers;
     }
 
+    @Nonnull
+    public Set<ItemHandler> getGlobalItemHandlers(@Nonnull Class<? extends ItemHandler> identifier) {
+        return globalItemHandlers.computeIfAbsent(identifier, c -> new HashSet<>());
+    }
+
+    @Deprecated
     public Map<String, SlimefunBlockHandler> getBlockHandlers() {
         return blockHandlers;
     }
@@ -253,7 +302,26 @@ public final class SlimefunRegistry {
         return logDuplicateBlockEntries;
     }
 
+    public boolean useActionbarForTalismans() {
+        return talismanActionBarMessages;
+    }
+
     public boolean isUseMoneyUnlock() {
         return useMoneyUnlock;
+    }
+
+    @Nonnull
+    public NamespacedKey getSoulboundDataKey() {
+        return soulboundKey;
+    }
+
+    @Nonnull
+    public NamespacedKey getItemChargeDataKey() {
+        return itemChargeKey;
+    }
+
+    @Nonnull
+    public NamespacedKey getGuideDataKey() {
+        return guideKey;
     }
 }

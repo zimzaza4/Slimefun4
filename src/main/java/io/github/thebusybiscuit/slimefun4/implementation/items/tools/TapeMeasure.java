@@ -1,42 +1,52 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.tools;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
-import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import java.text.DecimalFormat;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.UUID;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.text.DecimalFormat;
-import java.util.Optional;
-import java.util.UUID;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
+import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
+
+import me.mrCookieSlime.Slimefun.Lists.RecipeType;
+import me.mrCookieSlime.Slimefun.Objects.Category;
+import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 
 /**
  * The {@link TapeMeasure} is used to measure the distance between two {@link Block Blocks}.
  *
  * @author TheBusyBiscuit
+ *
  */
 public class TapeMeasure extends SimpleSlimefunItem<ItemUseHandler> implements NotPlaceable {
 
     private final NamespacedKey key = new NamespacedKey(SlimefunPlugin.instance(), "anchor");
     private final DecimalFormat format = new DecimalFormat("##.###");
 
+    @ParametersAreNonnullByDefault
     public TapeMeasure(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
     }
 
     @Override
-    public ItemUseHandler getItemHandler() {
+    public @Nonnull ItemUseHandler getItemHandler() {
         return e -> {
             e.cancel();
 
@@ -52,6 +62,7 @@ public class TapeMeasure extends SimpleSlimefunItem<ItemUseHandler> implements N
         };
     }
 
+    @ParametersAreNonnullByDefault
     private void setAnchor(Player p, ItemStack item, Block block) {
         ItemMeta meta = item.getItemMeta();
 
@@ -67,10 +78,21 @@ public class TapeMeasure extends SimpleSlimefunItem<ItemUseHandler> implements N
         SlimefunPlugin.getLocalization().sendMessage(p, "messages.tape-measure.anchor-set", msg -> msg.replace("%anchor%", anchor));
 
         item.setItemMeta(meta);
-
     }
 
-    private Optional<Location> getAnchor(Player p, ItemStack item) {
+    @ParametersAreNonnullByDefault
+    private void measure(Player p, ItemStack item, Block block) {
+        OptionalDouble distance = getDistance(p, item, block);
+
+        if (distance.isPresent()) {
+            p.playSound(block.getLocation(), Sound.ITEM_BOOK_PUT, 1, 0.7F);
+            String label = format.format(distance.getAsDouble());
+            SlimefunPlugin.getLocalization().sendMessage(p, "messages.tape-measure.distance", msg -> msg.replace("%distance%", label));
+        }
+    }
+
+    @ParametersAreNonnullByDefault
+    public @Nonnull Optional<Location> getAnchor(Player p, ItemStack item) {
         ItemMeta meta = item.getItemMeta();
 
         String data = meta.getPersistentDataContainer().get(key, PersistentDataType.STRING);
@@ -96,13 +118,15 @@ public class TapeMeasure extends SimpleSlimefunItem<ItemUseHandler> implements N
         }
     }
 
-    private void measure(Player p, ItemStack item, Block block) {
+    @ParametersAreNonnullByDefault
+    public @Nonnull OptionalDouble getDistance(Player p, ItemStack item, Block block) {
         Optional<Location> anchor = getAnchor(p, item);
 
         if (anchor.isPresent()) {
             Location loc = anchor.get();
-            double distance = loc.distance(block.getLocation());
-            SlimefunPlugin.getLocalization().sendMessage(p, "messages.tape-measure.distance", msg -> msg.replace("%distance%", format.format(distance)));
+            return OptionalDouble.of(loc.distance(block.getLocation()));
+        } else {
+            return OptionalDouble.empty();
         }
     }
 

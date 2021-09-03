@@ -1,9 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.api.events;
 
 import io.github.thebusybiscuit.slimefun4.core.researching.Research;
-import io.github.thebusybiscuit.slimefun4.implementation.guide.BookSlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.CheatSheetSlimefunGuide;
-import io.github.thebusybiscuit.slimefun4.implementation.guide.ChestSlimefunGuide;
+import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
@@ -20,8 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * The {@link Event} is not called for {@link CheatSheetSlimefunGuide}.
  *
  * @author uiytt
- * @see ChestSlimefunGuide
- * @see BookSlimefunGuide
+ * @see SurvivalSlimefunGuide
  */
 public class PlayerPreResearchEvent extends Event implements Cancellable {
 

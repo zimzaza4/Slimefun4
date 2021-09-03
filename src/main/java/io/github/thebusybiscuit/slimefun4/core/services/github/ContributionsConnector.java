@@ -1,13 +1,13 @@
 package io.github.thebusybiscuit.slimefun4.core.services.github;
 
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import kong.unirest.JsonNode;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,27 +20,50 @@ class ContributionsConnector extends GitHubConnector {
      * GitHub Bots that do not count as Contributors
      * (includes "invalid-email-address" because it is an invalid contributor)
      */
-    private static final List<String> blacklist = Arrays.asList(
-            "invalid-email-address",
-            "renovate-bot",
-            "TheBusyBot",
-            "ImgBotApp",
-            "imgbot",
-            "imgbot[bot]",
-            "github-actions[bot]",
-            "gitlocalize-app",
-            "gitlocalize-app[bot]",
-            "mt-gitlocalize"
-    );
+    private final List<String> ignoredAccounts = new ArrayList<>();
 
     /*
      * @formatter:on
      * Matches a GitHub name with a Minecraft name.
      */
-    private static final Map<String, String> aliases = new HashMap<>();
+    private final Map<String, String> aliases = new HashMap<>();
 
-    // Should probably be switched to UUIDs at some point...
-    static {
+    private final String prefix;
+    private final String role;
+    private final int page;
+
+    private boolean finished = false;
+
+    @ParametersAreNonnullByDefault
+    ContributionsConnector(GitHubService github, String prefix, int page, String repository, ContributorRole role) {
+        super(github, repository);
+
+        this.prefix = prefix;
+        this.page = page;
+        this.role = role.getId();
+
+        loadConfiguration();
+    }
+
+    /**
+     * This method loads all aliases.
+     * This mapping matches a GitHub username with a Minecraft username.
+     * These people are... "special cases".
+     */
+    private void loadConfiguration() {
+        ignoredAccounts.add("invalid-email-address");
+        ignoredAccounts.add("renovate");
+        ignoredAccounts.add("renovate-bot");
+        ignoredAccounts.add("renovate[bot]");
+        ignoredAccounts.add("TheBusyBot");
+        ignoredAccounts.add("ImgBotApp");
+        ignoredAccounts.add("imgbot");
+        ignoredAccounts.add("imgbot[bot]");
+        ignoredAccounts.add("github-actions[bot]");
+        ignoredAccounts.add("gitlocalize-app");
+        ignoredAccounts.add("gitlocalize-app[bot]");
+        ignoredAccounts.add("mt-gitlocalize");
+
         aliases.put("WalshyDev", "HumanRightsAct");
         aliases.put("J3fftw1", "_lagpc_");
         aliases.put("ajan-12", "ajan_12");
@@ -50,21 +73,7 @@ class ContributionsConnector extends GitHubConnector {
         aliases.put("bverhoeven", "soczol");
         aliases.put("ramdon-person", "ramdon_person");
         aliases.put("NCBPFluffyBear", "FluffyBear_");
-    }
-
-    private final String prefix;
-    private final String role;
-    private final int page;
-
-    private boolean finished = false;
-
-    @ParametersAreNonnullByDefault
-    ContributionsConnector(GitHubService github, String prefix, int page, String repository, String role) {
-        super(github, repository);
-
-        this.prefix = prefix;
-        this.page = page;
-        this.role = role;
+        aliases.put("martinbrom", "OneTime97");
     }
 
     /**
@@ -83,7 +92,7 @@ class ContributionsConnector extends GitHubConnector {
         if (response.isArray()) {
             computeContributors(response.getArray());
         } else {
-            Slimefun.getLogger().log(Level.WARNING, "Received an unusual answer from GitHub, possibly a timeout? ({0})", response);
+            SlimefunPlugin.logger().log(Level.WARNING, "Received an unusual answer from GitHub, possibly a timeout? ({0})", response);
         }
     }
 
@@ -118,7 +127,7 @@ class ContributionsConnector extends GitHubConnector {
             int commits = object.getInt("contributions");
             String profile = object.getString("html_url");
 
-            if (!blacklist.contains(name)) {
+            if (!ignoredAccounts.contains(name)) {
                 String username = aliases.getOrDefault(name, name);
                 github.addContributor(username, profile, role, commits);
             }

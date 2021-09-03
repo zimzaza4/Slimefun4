@@ -25,7 +25,7 @@ import java.util.List;
  * @see GEOMiner
  * @see AGenerator
  */
-@FunctionalInterface
+
 public interface RecipeDisplayItem extends ItemAttribute {
 
     /**

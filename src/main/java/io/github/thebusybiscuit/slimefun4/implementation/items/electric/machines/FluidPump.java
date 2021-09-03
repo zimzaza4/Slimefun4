@@ -2,7 +2,9 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machine
 
 import io.github.thebusybiscuit.cscorelib2.blocks.Vein;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
+import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
@@ -51,24 +53,29 @@ public class FluidPump extends SimpleSlimefunItem<BlockTicker> implements Invent
     private final int[] inputBorder = {9, 10, 11, 12, 18, 21, 27, 28, 29, 30};
     private final int[] outputBorder = {14, 15, 16, 17, 23, 26, 32, 33, 34, 35};
 
-    private final ItemStack emptyBucket = new ItemStackWrapper(Material.BUCKET);
+    private final ItemStack emptyBucket = ItemStackWrapper.wrap(new ItemStack(Material.BUCKET));
 
     @ParametersAreNonnullByDefault
     public FluidPump(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
+        addItemHandler(onBreak());
         createPreset(this, this::constructMenu);
+    }
 
-        registerBlockHandler(getId(), (p, b, stack, reason) -> {
-            BlockMenu inv = BlockStorage.getInventory(b);
+    @Nonnull
+    private BlockBreakHandler onBreak() {
+        return new SimpleBlockBreakHandler() {
+            @Override
+            public void onBlockBreak(@Nonnull Block b) {
+                BlockMenu inv = BlockStorage.getInventory(b);
 
-            if (inv != null) {
-                inv.dropItems(b.getLocation(), getInputSlots());
-                inv.dropItems(b.getLocation(), getOutputSlots());
+                if (inv != null) {
+                    inv.dropItems(b.getLocation(), getInputSlots());
+                    inv.dropItems(b.getLocation(), getOutputSlots());
+                }
             }
-
-            return true;
-        });
+        };
     }
 
     private void constructMenu(@Nonnull BlockMenuPreset preset) {
@@ -176,13 +183,15 @@ public class FluidPump extends SimpleSlimefunItem<BlockTicker> implements Invent
 
     @Nonnull
     private ItemStack getFilledBucket(@Nonnull Block fluid) {
-        if (fluid.getType() == Material.LAVA) {
-            return new ItemStack(Material.LAVA_BUCKET);
-        } else if (fluid.getType() == Material.WATER || fluid.getType() == Material.BUBBLE_COLUMN) {
-            return new ItemStack(Material.WATER_BUCKET);
-        } else {
-            // Fallback for any new liquids
-            return new ItemStack(Material.BUCKET);
+        switch (fluid.getType()) {
+            case LAVA:
+                return new ItemStack(Material.LAVA_BUCKET);
+            case WATER:
+            case BUBBLE_COLUMN:
+                return new ItemStack(Material.WATER_BUCKET);
+            default:
+                // Fallback for any new liquids
+                return new ItemStack(Material.BUCKET);
         }
     }
 

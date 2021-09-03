@@ -1,18 +1,12 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks;
 
-import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
-import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
-import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import io.papermc.lib.PaperLib;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -23,30 +17,46 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.papermc.lib.PaperLib;
+
+import me.mrCookieSlime.Slimefun.Lists.RecipeType;
+import me.mrCookieSlime.Slimefun.Objects.Category;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 
 /**
  * The {@link OreCrusher} is a {@link MultiBlockMachine} which allows you to double ores
  * and crush some other {@link Material Materials} into various resources.
  *
  * @author TheBusyBiscuit
+ *
  */
 public class OreCrusher extends MultiBlockMachine {
 
-	private final DoubleOreSetting doubleOres = new DoubleOreSetting();
+	private final DoubleOreSetting doubleOres = new DoubleOreSetting(this);
 
+	@ParametersAreNonnullByDefault
 	public OreCrusher(Category category, SlimefunItemStack item) {
-		super(category, item, new ItemStack[]{null, null, null, null, new ItemStack(Material.NETHER_BRICK_FENCE), null, new ItemStack(Material.IRON_BARS), new CustomItem(Material.DISPENSER, "发射器 (朝上)"), new ItemStack(Material.IRON_BARS)}, BlockFace.SELF);
+		super(category, item, new ItemStack[] { null, null, null, null, new ItemStack(Material.NETHER_BRICK_FENCE), null, new ItemStack(Material.IRON_BARS), new CustomItem(Material.DISPENSER, "Dispenser (Facing up)"), new ItemStack(Material.IRON_BARS) }, BlockFace.SELF);
 
 		addItemSetting(doubleOres);
 	}
 
-    @Override
+	@Override
 	protected void registerDefaultRecipes(List<ItemStack> recipes) {
+		recipes.add(new ItemStack(Material.COBBLESTONE, 8));
+		recipes.add(new ItemStack(Material.SAND, 1));
+
 		recipes.add(SlimefunItems.GOLD_4K);
 		recipes.add(SlimefunItems.GOLD_DUST);
+
 		recipes.add(SlimefunItems.GOLD_6K);
 		recipes.add(new SlimefunItemStack(SlimefunItems.GOLD_DUST, 2));
 
@@ -80,7 +90,7 @@ public class OreCrusher extends MultiBlockMachine {
 		recipes.add(new ItemStack(Material.GRAVEL));
 		recipes.add(new ItemStack(Material.SAND));
 
-		recipes.add(new ItemStack(Material.MAGMA_BLOCK, 4));
+		recipes.add(new ItemStack(Material.MAGMA_BLOCK));
 		recipes.add(SlimefunItems.SULFATE);
 
 		recipes.add(SlimefunItems.CARBON);
@@ -98,14 +108,63 @@ public class OreCrusher extends MultiBlockMachine {
 	public void postRegister() {
 		super.postRegister();
 
-		displayRecipes.addAll(Arrays.asList(new ItemStack(Material.COAL_ORE), doubleOres.getCoal(), new ItemStack(Material.LAPIS_ORE), doubleOres.getLapisLazuli(), new ItemStack(Material.REDSTONE_ORE), doubleOres.getRedstone(), new ItemStack(Material.DIAMOND_ORE), doubleOres.getDiamond(), new ItemStack(Material.EMERALD_ORE), doubleOres.getEmerald(), new ItemStack(Material.NETHER_QUARTZ_ORE), doubleOres.getNetherQuartz()));
+		// @formatter:off
+		displayRecipes.addAll(Arrays.asList(
+				new ItemStack(Material.COAL_ORE), doubleOres.getCoal(),
+				new ItemStack(Material.LAPIS_ORE), doubleOres.getLapisLazuli(),
+				new ItemStack(Material.REDSTONE_ORE), doubleOres.getRedstone(),
+				new ItemStack(Material.DIAMOND_ORE), doubleOres.getDiamond(),
+				new ItemStack(Material.EMERALD_ORE), doubleOres.getEmerald(),
+				new ItemStack(Material.NETHER_QUARTZ_ORE), doubleOres.getNetherQuartz()
+		));
+		// @formatter:on
 
+		// Gold ore variants (1.16+)
 		if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_16)) {
 			displayRecipes.add(new ItemStack(Material.NETHER_GOLD_ORE));
 			displayRecipes.add(doubleOres.getGoldNuggets());
 
 			displayRecipes.add(new ItemStack(Material.GILDED_BLACKSTONE));
 			displayRecipes.add(doubleOres.getGoldNuggets());
+		}
+
+		// Raw metal ores (1.17+)
+		if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_17)) {
+			displayRecipes.add(new ItemStack(Material.RAW_IRON));
+			displayRecipes.add(SlimefunItems.IRON_DUST);
+
+			displayRecipes.add(new ItemStack(Material.RAW_COPPER));
+			displayRecipes.add(SlimefunItems.COPPER_DUST);
+
+			displayRecipes.add(new ItemStack(Material.RAW_GOLD));
+			displayRecipes.add(SlimefunItems.GOLD_DUST);
+		}
+
+		// Deepslate Ores (1.17+)
+		if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_17)) {
+			// @formatter:off
+			displayRecipes.addAll(Arrays.asList(
+					new ItemStack(Material.DEEPSLATE_COAL_ORE), doubleOres.getCoal(),
+					new ItemStack(Material.DEEPSLATE_LAPIS_ORE), doubleOres.getLapisLazuli(),
+					new ItemStack(Material.DEEPSLATE_REDSTONE_ORE), doubleOres.getRedstone(),
+					new ItemStack(Material.DEEPSLATE_DIAMOND_ORE), doubleOres.getDiamond(),
+					new ItemStack(Material.DEEPSLATE_EMERALD_ORE), doubleOres.getEmerald()
+			));
+			// @formatter:on
+			displayRecipes.add(new ItemStack(Material.DEEPSLATE_IRON_ORE));
+			displayRecipes.add(new SlimefunItemStack(SlimefunItems.IRON_DUST, isOreDoublingEnabled() ? 2 : 1));
+
+			displayRecipes.add(new ItemStack(Material.DEEPSLATE_GOLD_ORE));
+			displayRecipes.add(new SlimefunItemStack(SlimefunItems.GOLD_DUST, isOreDoublingEnabled() ? 2 : 1));
+		}
+
+		// Copper Ores (1.17+)
+		if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_17)) {
+			displayRecipes.add(new ItemStack(Material.DEEPSLATE_COPPER_ORE));
+			displayRecipes.add(new SlimefunItemStack(SlimefunItems.COPPER_DUST, isOreDoublingEnabled() ? 2 : 1));
+
+			displayRecipes.add(new ItemStack(Material.COPPER_ORE));
+			displayRecipes.add(new SlimefunItemStack(SlimefunItems.COPPER_DUST, isOreDoublingEnabled() ? 2 : 1));
 		}
 	}
 
@@ -120,6 +179,7 @@ public class OreCrusher extends MultiBlockMachine {
 		BlockState state = PaperLib.getBlockState(dispBlock, false).getState();
 
 		if (state instanceof Dispenser) {
+
 			Dispenser disp = (Dispenser) state;
 			Inventory inv = disp.getInventory();
 
@@ -129,7 +189,7 @@ public class OreCrusher extends MultiBlockMachine {
 						ItemStack adding = RecipeType.getRecipeOutput(this, convert);
 						Inventory outputInv = findOutputInventory(adding, dispBlock, inv);
 
-						if (Slimefun.hasUnlocked(p, adding, true)) {
+						if (SlimefunUtils.canPlayerUseItem(p, adding, true)) {
 							if (outputInv != null) {
 								ItemStack removing = current.clone();
 								removing.setAmount(convert.getAmount());
@@ -160,8 +220,8 @@ public class OreCrusher extends MultiBlockMachine {
 		private final ItemStack quartz = new ItemStack(Material.QUARTZ, 1);
 		private final ItemStack goldNuggets = new ItemStack(Material.GOLD_NUGGET, 4);
 
-		public DoubleOreSetting() {
-			super("double-ores", true);
+		DoubleOreSetting(@Nonnull OreCrusher oreCrusher) {
+			super(oreCrusher, "double-ores", true);
 		}
 
 		private void apply(boolean value) {
@@ -175,12 +235,17 @@ public class OreCrusher extends MultiBlockMachine {
 
 			SlimefunItem ironDust = SlimefunItem.getByID("IRON_DUST");
 			if (ironDust != null) {
-				ironDust.setRecipeOutput(new CustomItem(SlimefunItems.IRON_DUST, value ? 2 : 1));
+				ironDust.setRecipeOutput(new SlimefunItemStack(SlimefunItems.IRON_DUST, value ? 2 : 1));
 			}
 
 			SlimefunItem goldDust = SlimefunItem.getByID("GOLD_DUST");
 			if (goldDust != null) {
-				goldDust.setRecipeOutput(new CustomItem(SlimefunItems.GOLD_DUST, value ? 2 : 1));
+				goldDust.setRecipeOutput(new SlimefunItemStack(SlimefunItems.GOLD_DUST, value ? 2 : 1));
+			}
+
+			SlimefunItem copperDust = SlimefunItem.getByID("COPPER_DUST");
+			if (copperDust != null) {
+				copperDust.setRecipeOutput(new SlimefunItemStack(SlimefunItems.COPPER_DUST, value ? 2 : 1));
 			}
 		}
 
@@ -191,36 +256,36 @@ public class OreCrusher extends MultiBlockMachine {
 		}
 
 		@Override
-		public void load(SlimefunItem item) {
-			super.load(item);
+		public void reload() {
+			super.reload();
 			apply(getValue());
 		}
 
-		public ItemStack getCoal() {
+		public @Nonnull ItemStack getCoal() {
 			return coal;
 		}
 
-		public ItemStack getLapisLazuli() {
+		public @Nonnull ItemStack getLapisLazuli() {
 			return lapis;
 		}
 
-		public ItemStack getRedstone() {
+		public @Nonnull ItemStack getRedstone() {
 			return redstone;
 		}
 
-		public ItemStack getDiamond() {
+		public @Nonnull ItemStack getDiamond() {
 			return diamond;
 		}
 
-		public ItemStack getEmerald() {
+		public @Nonnull ItemStack getEmerald() {
 			return emerald;
 		}
 
-		public ItemStack getNetherQuartz() {
+		public @Nonnull ItemStack getNetherQuartz() {
 			return quartz;
 		}
 
-		public ItemStack getGoldNuggets() {
+		public @Nonnull ItemStack getGoldNuggets() {
 			return goldNuggets;
 		}
 

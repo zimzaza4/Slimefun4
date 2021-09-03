@@ -1,17 +1,15 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
-import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
-import io.github.thebusybiscuit.slimefun4.core.handlers.ToolUseHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunBlockHandler;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.UnregisterReason;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -23,15 +21,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
+import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
+import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
+import io.github.thebusybiscuit.slimefun4.core.handlers.ToolUseHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 
 /**
  * The {@link BlockListener} is responsible for listening to the {@link BlockPlaceEvent}
@@ -40,9 +40,11 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author TheBusyBiscuit
  * @author Linox
  * @author Patbox
+ *
  * @see BlockPlaceHandler
  * @see BlockBreakHandler
  * @see ToolUseHandler
+ *
  */
 public class BlockListener implements Listener {
 
@@ -52,26 +54,28 @@ public class BlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockPlaceExisting(BlockPlaceEvent e) {
-        /**
-         * This prevents Players from placing a block where another block already exists.
-         * While this can cause ghost blocks it also prevents them from replacing grass
-         * or saplings etc...
-         */
-
         Block block = e.getBlock();
 
+        // Fixes #2636 - This will solve the "ghost blocks" issue
         if (e.getBlockReplacedState().getType().isAir()) {
             SlimefunItem sfItem = BlockStorage.check(block);
 
-            if (sfItem != null) {
+            if (sfItem != null && !SlimefunPlugin.getTickerTask().isDeletedSoon(block.getLocation())) {
                 for (ItemStack item : sfItem.getDrops()) {
                     if (item != null && !item.getType().isAir()) {
                         block.getWorld().dropItemNaturally(block.getLocation(), item);
                     }
                 }
+
                 BlockStorage.clearBlockInfo(block);
+
+                if(SlimefunItem.getByItem(e.getItemInHand()) != null) {
+                    // Due to the delay of #clearBlockInfo, new sf block info will also be cleared. Set cancelled.
+                    e.setCancelled(true);
+                }
             }
         } else if (BlockStorage.hasBlockInfo(e.getBlock())) {
+            // If there is no air (e.g. grass) then don't let the block be placed
             e.setCancelled(true);
         }
     }
@@ -81,8 +85,8 @@ public class BlockListener implements Listener {
         ItemStack item = e.getItemInHand();
         SlimefunItem sfItem = SlimefunItem.getByItem(item);
 
-        if (sfItem != null && !(sfItem instanceof NotPlaceable) && Slimefun.isEnabled(e.getPlayer(), sfItem, true)) {
-            if (!Slimefun.hasUnlocked(e.getPlayer(), sfItem, true)) {
+        if (sfItem != null && !(sfItem instanceof NotPlaceable)) {
+            if (!sfItem.canUse(e.getPlayer(), true)) {
                 e.setCancelled(true);
             } else {
                 if (SlimefunPlugin.getBlockDataService().isTileEntity(e.getBlock().getType())) {
@@ -99,26 +103,31 @@ public class BlockListener implements Listener {
     public void onBlockBreak(BlockBreakEvent e) {
         // Simply ignore any events that were faked by other plugins
         if (SlimefunPlugin.getIntegrations().isEventFaked(e)) {
-            // This is a "fake" event, we can ignore it.
             return;
         }
+
         // Also ignore custom blocks which were placed by other plugins
         if (SlimefunPlugin.getIntegrations().isCustomBlock(e.getBlock())) {
             return;
         }
 
-        checkForSensitiveBlockAbove(e.getPlayer(), e.getBlock());
+        // Ignore blocks which we have marked as deleted (Fixes #2771)
+        if (SlimefunPlugin.getTickerTask().isDeletedSoon(e.getBlock().getLocation())) {
+            return;
+        }
 
         ItemStack item = e.getPlayer().getInventory().getItemInMainHand();
+        checkForSensitiveBlockAbove(e, item);
+
         int fortune = getBonusDropsWithFortune(item, e.getBlock());
         List<ItemStack> drops = new ArrayList<>();
 
-        if (item.getType() != Material.AIR) {
+        if (!e.isCancelled() && !item.getType().isAir()) {
             callToolHandler(e, item, fortune, drops);
         }
 
         if (!e.isCancelled()) {
-            callBlockHandler(e, item, fortune, drops);
+            callBlockHandler(e, item, drops);
         }
 
         dropItems(e, drops);
@@ -129,7 +138,7 @@ public class BlockListener implements Listener {
         SlimefunItem tool = SlimefunItem.getByItem(item);
 
         if (tool != null) {
-            if (Slimefun.hasUnlocked(e.getPlayer(), tool, true)) {
+            if (tool.canUse(e.getPlayer(), true)) {
                 tool.callItemHandler(ToolUseHandler.class, handler -> handler.onToolUse(e, item, fortune, drops));
             } else {
                 e.setCancelled(true);
@@ -138,7 +147,7 @@ public class BlockListener implements Listener {
     }
 
     @ParametersAreNonnullByDefault
-    private void callBlockHandler(BlockBreakEvent e, ItemStack item, int fortune, List<ItemStack> drops) {
+    private void callBlockHandler(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
         SlimefunItem sfItem = BlockStorage.check(e.getBlock());
 
         if (sfItem == null && SlimefunPlugin.getBlockDataService().isTileEntity(e.getBlock().getType())) {
@@ -150,15 +159,10 @@ public class BlockListener implements Listener {
         }
 
         if (sfItem != null && !sfItem.useVanillaBlockBreaking()) {
-            SlimefunBlockHandler blockHandler = SlimefunPlugin.getRegistry().getBlockHandlers().get(sfItem.getId());
+            sfItem.callItemHandler(BlockBreakHandler.class, handler -> handler.onPlayerBreak(e, item, drops));
 
-            if (blockHandler != null) {
-                if (!blockHandler.onBreak(e.getPlayer(), e.getBlock(), sfItem, UnregisterReason.PLAYER_BREAK)) {
-                    e.setCancelled(true);
-                    return;
-                }
-            } else {
-                sfItem.callItemHandler(BlockBreakHandler.class, handler -> handler.onBlockBreak(e, item, fortune, drops));
+            if (e.isCancelled()) {
+                return;
             }
 
             drops.addAll(sfItem.getDrops());
@@ -168,14 +172,17 @@ public class BlockListener implements Listener {
 
     @ParametersAreNonnullByDefault
     private void dropItems(BlockBreakEvent e, List<ItemStack> drops) {
-        if (!drops.isEmpty()) {
-            e.getBlock().setType(Material.AIR);
-
+        if (!drops.isEmpty() && !e.isCancelled()) {
             // Notify plugins like CoreProtect
             SlimefunPlugin.getProtectionManager().logAction(e.getPlayer(), e.getBlock(), ProtectableAction.BREAK_BLOCK);
 
+            // Fixes #2560
             if (e.isDropItems()) {
+                // Disable normal block drops
+                e.setDropItems(false);
+
                 for (ItemStack drop : drops) {
+                    // Prevent null or air from being dropped
                     if (drop != null && drop.getType() != Material.AIR) {
                         e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), drop);
                     }
@@ -189,30 +196,40 @@ public class BlockListener implements Listener {
      * Sensitive {@link Block Blocks} are pressure plates or saplings, which should be broken
      * when the block beneath is broken as well.
      *
-     * @param p
+     * @param e
      *            The {@link Player} who broke this {@link Block}
-     * @param b
+     * @param item
      *            The {@link Block} that was broken
      */
     @ParametersAreNonnullByDefault
-    private void checkForSensitiveBlockAbove(Player p, Block b) {
-        Block blockAbove = b.getRelative(BlockFace.UP);
+    private void checkForSensitiveBlockAbove(BlockBreakEvent e, ItemStack item) {
+        Block blockAbove = e.getBlock().getRelative(BlockFace.UP);
 
         if (SlimefunTag.SENSITIVE_MATERIALS.isTagged(blockAbove.getType())) {
             SlimefunItem sfItem = BlockStorage.check(blockAbove);
 
             if (sfItem != null && !sfItem.useVanillaBlockBreaking()) {
-                SlimefunBlockHandler blockHandler = SlimefunPlugin.getRegistry().getBlockHandlers().get(sfItem.getId());
+                /*
+                 * We create a dummy here to pass onto the BlockBreakHandler.
+                 * This will set the correct block context.
+                 */
+                BlockBreakEvent dummyEvent = new BlockBreakEvent(blockAbove, e.getPlayer());
+                List<ItemStack> drops = new ArrayList<>();
+                drops.addAll(sfItem.getDrops(e.getPlayer()));
 
-                if (blockHandler != null) {
-                    if (blockHandler.onBreak(p, blockAbove, sfItem, UnregisterReason.PLAYER_BREAK)) {
-                        blockAbove.getWorld().dropItemNaturally(blockAbove.getLocation(), BlockStorage.retrieve(blockAbove));
-                        blockAbove.setType(Material.AIR);
+                sfItem.callItemHandler(BlockBreakHandler.class, handler -> handler.onPlayerBreak(dummyEvent, item, drops));
+                blockAbove.setType(Material.AIR);
+
+                if (!dummyEvent.isCancelled() && dummyEvent.isDropItems()) {
+                    for (ItemStack drop : drops) {
+                        if (drop != null && !drop.getType().isAir()) {
+                            blockAbove.getWorld().dropItemNaturally(blockAbove.getLocation(), drop);
+                        }
                     }
-                } else {
-                    blockAbove.getWorld().dropItemNaturally(blockAbove.getLocation(), BlockStorage.retrieve(blockAbove));
-                    blockAbove.setType(Material.AIR);
                 }
+
+                // Fixes #2944 - Don't forget to clear the Block Data
+                BlockStorage.clearBlockInfo(blockAbove);
             }
         }
     }
@@ -220,10 +237,17 @@ public class BlockListener implements Listener {
     private int getBonusDropsWithFortune(@Nullable ItemStack item, @Nonnull Block b) {
         int amount = 1;
 
-        if (item != null) {
-            int fortuneLevel = item.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
+        if (item != null && !item.getType().isAir() && item.hasItemMeta()) {
+            /*
+             * Small performance optimization:
+             * ItemStack#getEnchantmentLevel() calls ItemStack#getItemMeta(), so if
+             * we are handling more than one Enchantment, we should access the ItemMeta
+             * directly and re use it.
+             */
+            ItemMeta meta = item.getItemMeta();
+            int fortuneLevel = meta.getEnchantLevel(Enchantment.LOOT_BONUS_BLOCKS);
 
-            if (fortuneLevel > 0 && !item.containsEnchantment(Enchantment.SILK_TOUCH)) {
+            if (fortuneLevel > 0 && !meta.hasEnchant(Enchantment.SILK_TOUCH)) {
                 Random random = ThreadLocalRandom.current();
 
                 amount = Math.max(1, random.nextInt(fortuneLevel + 2) - 1);

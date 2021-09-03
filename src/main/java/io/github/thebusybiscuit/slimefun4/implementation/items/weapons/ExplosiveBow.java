@@ -33,7 +33,7 @@ import java.util.Collection;
  */
 public class ExplosiveBow extends SlimefunBow {
 
-    private final ItemSetting<Integer> range = new IntRangeSetting("explosion-range", 1, 3, Integer.MAX_VALUE);
+    private final ItemSetting<Integer> range = new IntRangeSetting(this, "explosion-range", 1, 3, Integer.MAX_VALUE);
 
     @ParametersAreNonnullByDefault
     public ExplosiveBow(Category category, SlimefunItemStack item, ItemStack[] recipe) {
@@ -42,6 +42,7 @@ public class ExplosiveBow extends SlimefunBow {
         addItemSetting(range);
     }
 
+    @Nonnull
     @Override
     public BowShootHandler onShoot() {
         return (e, target) -> {

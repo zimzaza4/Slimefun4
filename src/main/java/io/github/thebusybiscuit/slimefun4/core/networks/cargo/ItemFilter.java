@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.core.networks.cargo;
 
+import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.CargoNode;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
@@ -21,8 +22,10 @@ import java.util.function.Predicate;
  * It is a snapshot of a cargo node's configuration.
  *
  * @author TheBusyBiscuit
+ *
  * @see CargoNet
  * @see CargoNetworkTask
+ *
  */
 class ItemFilter implements Predicate<ItemStack> {
 
@@ -56,7 +59,8 @@ class ItemFilter implements Predicate<ItemStack> {
      * This creates a new {@link ItemFilter} for the given {@link Block}.
      * This will copy all settings from that {@link Block} to this filter.
      *
-     * @param b The {@link Block}
+     * @param b
+     *            The {@link Block}
      */
     public ItemFilter(@Nonnull Block b) {
         update(b);
@@ -66,7 +70,8 @@ class ItemFilter implements Predicate<ItemStack> {
      * This updates or refreshes the {@link ItemFilter} to copy the settings
      * from the given {@link Block}. It takes a new snapshot.
      *
-     * @param b The {@link Block}
+     * @param b
+     *            The {@link Block}
      */
     public void update(@Nonnull Block b) {
         // Store the returned Config instance to avoid heavy calls
@@ -75,23 +80,45 @@ class ItemFilter implements Predicate<ItemStack> {
         SlimefunItem item = SlimefunItem.getByID(id);
         BlockMenu menu = BlockStorage.getInventory(b.getLocation());
 
-        if (item == null || menu == null) {
+        if (!(item instanceof CargoNode) || menu == null) {
             // Don't filter for a non-existing item (safety check)
             clear(false);
-        } else if (id.equals("CARGO_NODE_OUTPUT")) {
-            // Output Nodes have no filter, allow everything
-            clear(true);
         } else {
-            this.items.clear();
-            this.checkLore = Objects.equals(blockData.getString("filter-lore"), "true");
-            this.rejectOnMatch = !Objects.equals(blockData.getString("filter-type"), "whitelist");
+            try {
+                CargoNode node = (CargoNode) item;
 
-            for (int slot : CargoUtils.FILTER_SLOTS) {
-                ItemStack stack = menu.getItemInSlot(slot);
+                if (!node.hasItemFilter()) {
+                    // Node does not have a filter, allow everything
+                    clear(true);
+                } else {
+                    int[] slots = CargoUtils.getFilteringSlots();
+                    int inventorySize = menu.toInventory().getSize();
 
-                if (stack != null && stack.getType() != Material.AIR) {
-                    this.items.add(new ItemStackWrapper(stack));
+                    if (inventorySize < slots[slots.length - 1]) {
+                        /*
+                         * Related to #2876
+                         * The reason was a missing negation int he filtering statement above.
+                         * However if that ever happens again, we will know the reason and be able
+                         * to send a warning in response to it.
+                         */
+                        item.warn("Cargo Node was marked as a 'filtering' node but has an insufficient inventory size (" + inventorySize + ")");
+                        return;
+                    }
+
+                    this.items.clear();
+                    this.checkLore = Objects.equals(blockData.getString("filter-lore"), "true");
+                    this.rejectOnMatch = !Objects.equals(blockData.getString("filter-type"), "whitelist");
+
+                    for (int slot : slots) {
+                        ItemStack stack = menu.getItemInSlot(slot);
+
+                        if (stack != null && stack.getType() != Material.AIR) {
+                            this.items.add(ItemStackWrapper.wrap(stack));
+                        }
+                    }
                 }
+            } catch (Exception | LinkageError x) {
+                item.error("Something went wrong while updating the ItemFilter for this cargo node.", x);
             }
         }
 
@@ -102,7 +129,8 @@ class ItemFilter implements Predicate<ItemStack> {
      * This will clear the {@link ItemFilter} and reject <strong>any</strong>
      * {@link ItemStack}.
      *
-     * @param rejectOnMatch Whether the item should be rejected on matches
+     * @param rejectOnMatch
+     *            Whether the item should be rejected on matches
      */
     private void clear(boolean rejectOnMatch) {
         this.items.clear();
@@ -151,15 +179,12 @@ class ItemFilter implements Predicate<ItemStack> {
             }
         }
 
-        if (potentialMatches == 0) {
-            // If there is no match, we can safely assume the default value
-            return rejectOnMatch;
-        } else {
+        if (potentialMatches != 0) {
             /*
              * If there is more than one potential match, create a wrapper to save
              * performance on the ItemMeta otherwise just use the item directly.
              */
-            ItemStack subject = potentialMatches == 1 ? item : new ItemStackWrapper(item);
+            ItemStack subject = potentialMatches == 1 ? item : ItemStackWrapper.wrap(item);
 
             /*
              * If there is only one match, we won't need to create a Wrapper
@@ -175,10 +200,10 @@ class ItemFilter implements Predicate<ItemStack> {
                     return !rejectOnMatch;
                 }
             }
-
-            // If no particular item was matched, we fallback to our default value.
-            return rejectOnMatch;
         }
+
+        // If there is no match, we can safely assume the default value
+        return rejectOnMatch;
     }
 
 }

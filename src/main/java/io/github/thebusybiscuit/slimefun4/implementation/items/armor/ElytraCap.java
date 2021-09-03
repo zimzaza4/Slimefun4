@@ -5,6 +5,7 @@ import io.github.thebusybiscuit.slimefun4.core.attributes.ProtectionType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.ProtectiveArmor;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.ElytraImpactListener;
+import io.github.thebusybiscuit.slimefun4.utils.UnbreakingAlgorithm;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
@@ -43,6 +44,11 @@ public class ElytraCap extends SlimefunArmorPiece implements DamageableItem, Pro
         if (p.getGameMode() != GameMode.CREATIVE) {
             DamageableItem.super.damageItem(p, item);
         }
+    }
+
+    @Override
+    public boolean evaluateUnbreakingEnchantment(int unbreakingLevel) {
+        return UnbreakingAlgorithm.ARMOR.evaluate(unbreakingLevel);
     }
 
     @Nonnull

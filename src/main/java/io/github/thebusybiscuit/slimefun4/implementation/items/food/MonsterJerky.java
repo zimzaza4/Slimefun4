@@ -10,8 +10,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 public class MonsterJerky extends SimpleSlimefunItem<ItemConsumptionHandler> {
 
+    @ParametersAreNonnullByDefault
     public MonsterJerky(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
     }

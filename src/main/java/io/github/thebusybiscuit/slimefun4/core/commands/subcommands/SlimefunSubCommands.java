@@ -4,6 +4,7 @@ import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,6 +21,7 @@ public final class SlimefunSubCommands {
     private SlimefunSubCommands() {
     }
 
+    @Nonnull
     public static Collection<SubCommand> getAllCommands(SlimefunCommand cmd) {
         SlimefunPlugin plugin = cmd.getPlugin();
         List<SubCommand> commands = new LinkedList<>();

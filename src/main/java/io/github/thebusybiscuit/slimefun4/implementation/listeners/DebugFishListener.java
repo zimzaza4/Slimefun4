@@ -8,10 +8,11 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Skull;
@@ -26,6 +27,9 @@ import org.bukkit.inventory.EquipmentSlot;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 
 /**
@@ -84,14 +88,38 @@ public class DebugFishListener implements Listener {
     @ParametersAreNonnullByDefault
     private void onRightClick(Player p, Block b, BlockFace face) {
         if (p.isSneaking()) {
-            Block block = b.getRelative(face);
-            block.setType(Material.PLAYER_HEAD);
-            SkullBlock.setFromHash(block, HeadTexture.MISSING_TEXTURE.getTexture());
+            // Fixes #2655 - Delaying the placement to prevent a new event from being fired
+            SlimefunPlugin.runSync(() -> {
+                Block block = b.getRelative(face);
+                block.setType(Material.PLAYER_HEAD);
+                SkullBlock.setFromHash(block, HeadTexture.MISSING_TEXTURE.getTexture());
+                p.playSound(block.getLocation(), Sound.BLOCK_BAMBOO_PLACE, 1, 1);
+            }, 2L);
         } else if (BlockStorage.hasBlockInfo(b)) {
             try {
                 sendInfo(p, b);
             } catch (Exception x) {
-                Slimefun.getLogger().log(Level.SEVERE, "An Exception occured while using a Debug-Fish", x);
+                SlimefunPlugin.logger().log(Level.SEVERE, "An Exception occured while using a Debug-Fish", x);
+            }
+        } else {
+            // Read applicable Slimefun tags
+            Set<SlimefunTag> tags = EnumSet.noneOf(SlimefunTag.class);
+
+            for (SlimefunTag tag : SlimefunTag.values()) {
+                if (tag.isTagged(b.getType())) {
+                    tags.add(tag);
+                }
+            }
+
+            if (!tags.isEmpty()) {
+                p.sendMessage(" ");
+                p.sendMessage(ChatColors.color("&dSlimefun tags for: &e") + b.getType().name());
+
+                for (SlimefunTag tag : tags) {
+                    p.sendMessage(ChatColors.color("&d* &e") + tag.name());
+                }
+
+                p.sendMessage(" ");
             }
         }
     }

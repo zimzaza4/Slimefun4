@@ -19,11 +19,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Compressor extends MultiBlockMachine {
 
+    @ParametersAreNonnullByDefault
     public Compressor(Category category, SlimefunItemStack item) {
         super(category, item, new ItemStack[]{null, null, null, null, new ItemStack(Material.NETHER_BRICK_FENCE), null, new ItemStack(Material.PISTON), new CustomItem(Material.DISPENSER, "发射器 (朝上)"), new ItemStack(Material.PISTON)}, BlockFace.SELF);
     }
@@ -35,6 +37,12 @@ public class Compressor extends MultiBlockMachine {
 
         recipes.add(new ItemStack(Material.FLINT, 8));
         recipes.add(new ItemStack(Material.COBBLESTONE));
+
+        recipes.add(new ItemStack(Material.COAL_BLOCK, 8));
+        recipes.add(new SlimefunItemStack(SlimefunItems.CARBON, 9));
+
+        recipes.add(new ItemStack(Material.CHARCOAL, 4));
+        recipes.add(new ItemStack(Material.COAL));
     }
 
     @Override
@@ -62,7 +70,7 @@ public class Compressor extends MultiBlockMachine {
                             removing.setAmount(recipeInput.getAmount());
                             inv.removeItem(removing);
 
-                            craft(p, output, outputInv);
+                            craft(p, output, dispBlock, inv);
                         } else {
                             SlimefunPlugin.getLocalization().sendMessage(p, "machines.full-inventory", true);
                         }
@@ -76,7 +84,8 @@ public class Compressor extends MultiBlockMachine {
         }
     }
 
-    private void craft(Player p, ItemStack output, Inventory outputInv) {
+    @ParametersAreNonnullByDefault
+    private void craft(Player p, ItemStack output, Block dispenser, Inventory dispInv) {
         for (int i = 0; i < 4; i++) {
             int j = i;
 
@@ -85,7 +94,7 @@ public class Compressor extends MultiBlockMachine {
                     p.getWorld().playSound(p.getLocation(), j == 1 ? Sound.BLOCK_PISTON_CONTRACT : Sound.BLOCK_PISTON_EXTEND, 1F, j == 0 ? 1F : 2F);
                 } else {
                     p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
-                    outputInv.addItem(output);
+                    handleCraftedItem(output, dispenser, dispInv);
                 }
             }, i * 20L);
         }

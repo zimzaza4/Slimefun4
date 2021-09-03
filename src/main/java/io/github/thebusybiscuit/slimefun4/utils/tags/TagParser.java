@@ -1,18 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.utils.tags;
 
-import com.google.gson.*;
-import io.github.thebusybiscuit.slimefun4.api.exceptions.TagMisconfigurationException;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
-import org.apache.commons.lang.Validate;
-import org.bukkit.*;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.EnumSet;
@@ -21,6 +10,27 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
+import org.bukkit.Keyed;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Tag;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+
+import io.github.thebusybiscuit.slimefun4.api.exceptions.TagMisconfigurationException;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
 
 /**
  * The {@link TagParser} is responsible for parsing a JSON input into a {@link SlimefunTag}.
@@ -32,12 +42,17 @@ import java.util.stream.Collectors;
  */
 public class TagParser implements Keyed {
 
+    /**
+     * Every {@link Tag} has a {@link NamespacedKey}.
+     * This is the {@link NamespacedKey} for the resulting {@link Tag}.
+     */
     private final NamespacedKey key;
 
     /**
      * This constructs a new {@link TagParser}.
      *
-     * @param key The {@link NamespacedKey} of the resulting {@link SlimefunTag}
+     * @param key
+     *            The {@link NamespacedKey} of the resulting {@link SlimefunTag}
      */
     public TagParser(@Nonnull NamespacedKey key) {
         this.key = key;
@@ -56,14 +71,7 @@ public class TagParser implements Keyed {
     void parse(@Nonnull SlimefunTag tag, @Nonnull BiConsumer<Set<Material>, Set<Tag<Material>>> callback) throws TagMisconfigurationException {
         String path = "/tags/" + tag.getKey().getKey() + ".json";
 
-        InputStream resource = SlimefunPlugin.class.getResourceAsStream(path);
-
-        if (resource == null) {
-            Slimefun.getLogger().warning("无法获取标签文件 " + path);
-            return;
-        }
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(SlimefunPlugin.class.getResourceAsStream(path), StandardCharsets.UTF_8))) {
             parse(reader.lines().collect(Collectors.joining("")), callback);
         } catch (IOException x) {
             throw new TagMisconfigurationException(key, x);
@@ -102,8 +110,10 @@ public class TagParser implements Keyed {
                         // Strings will be parsed directly
                         parsePrimitiveValue(element.getAsString(), materials, tags, true);
                     } else if (element instanceof JsonObject) {
-                        // JSONObjects can have a "required" property which can make
-                        // it optional to resolve the underlying value
+                        /**
+                         * JSONObjects can have a "required" property which can
+                         * make it optional to resolve the underlying value
+                         */
                         parseComplexValue(element.getAsJsonObject(), materials, tags);
                     } else {
                         throw new TagMisconfigurationException(key, "Unexpected value format: " + element.getClass().getSimpleName() + " - " + element.toString());
@@ -175,8 +185,10 @@ public class TagParser implements Keyed {
         if (id instanceof JsonPrimitive && ((JsonPrimitive) id).isString() && required instanceof JsonPrimitive && ((JsonPrimitive) required).isBoolean()) {
             boolean isRequired = required.getAsBoolean();
 
-            // If the Tag is required, an exception may be thrown.
-            // Otherwise it will just ignore the value
+            /**
+             * If the Tag is required, an exception may be thrown.
+             * Otherwise it will just ignore the value
+             */
             parsePrimitiveValue(id.getAsString(), materials, tags, isRequired);
         } else {
             throw new TagMisconfigurationException(key, "Found a JSON Object value without an id!");

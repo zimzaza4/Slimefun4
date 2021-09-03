@@ -1,9 +1,9 @@
 package io.github.thebusybiscuit.slimefun4.core.services.github;
 
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import kong.unirest.JsonNode;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -41,7 +41,7 @@ class GitHubIssuesConnector extends GitHubConnector {
 
             callback.accept(issues, pullRequests);
         } else {
-            Slimefun.getLogger().log(Level.WARNING, "Received an unusual answer from GitHub, possibly a timeout? ({0})", response);
+            SlimefunPlugin.logger().log(Level.WARNING, "Received an unusual answer from GitHub, possibly a timeout? ({0})", response);
         }
     }
 

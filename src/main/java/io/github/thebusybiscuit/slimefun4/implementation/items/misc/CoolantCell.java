@@ -10,6 +10,9 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A {@link CoolantCell} is an {@link ItemStack} that is used to cool a {@link Reactor}.
  *
@@ -21,11 +24,13 @@ import org.bukkit.inventory.ItemStack;
  */
 public class CoolantCell extends UnplaceableBlock {
 
+    @ParametersAreNonnullByDefault
     public CoolantCell(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
-        super(category, item, recipeType, recipe);
+        this(category, item, recipeType, recipe, null);
     }
 
-    public CoolantCell(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
+    @ParametersAreNonnullByDefault
+    public CoolantCell(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, @Nullable ItemStack recipeOutput) {
         super(category, item, recipeType, recipe, recipeOutput);
     }
 

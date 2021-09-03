@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.cargo;
 
-import io.github.starwishsama.sfmagic.ProtectionChecker;
+import ren.natsuyuk1.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
@@ -14,6 +14,7 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -21,6 +22,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -28,12 +30,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
  *
  * @author TheBusyBiscuit
  */
-abstract class AbstractCargoNode extends SimpleSlimefunItem<BlockPlaceHandler> {
+abstract class AbstractCargoNode extends SimpleSlimefunItem<BlockPlaceHandler> implements CargoNode {
 
     protected static final String FREQUENCY = "frequency";
 
     @ParametersAreNonnullByDefault
-    public AbstractCargoNode(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
+    AbstractCargoNode(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, @Nullable ItemStack recipeOutput) {
         super(category, item, recipeType, recipe, recipeOutput);
 
         new BlockMenuPreset(getId(), ChatUtils.removeColorCodes(item.getItemMeta().getDisplayName())) {
@@ -53,7 +55,7 @@ abstract class AbstractCargoNode extends SimpleSlimefunItem<BlockPlaceHandler> {
             public boolean canOpen(Block b, Player p) {
                 return p.hasPermission("slimefun.cargo.bypass")
                         || (SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK)
-                        && ProtectionChecker.canInteract(p, b, ProtectableAction.INTERACT_BLOCK));
+                        && IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK));
             }
 
             @Override
@@ -129,7 +131,10 @@ abstract class AbstractCargoNode extends SimpleSlimefunItem<BlockPlaceHandler> {
         });
     }
 
-    private int getSelectedChannel(@Nonnull Block b) {
+    @Override
+    public int getSelectedChannel(@Nonnull Block b) {
+        Validate.notNull(b, "Block must not be null");
+
         if (!BlockStorage.hasBlockInfo(b)) {
             return 0;
         } else {
@@ -144,12 +149,12 @@ abstract class AbstractCargoNode extends SimpleSlimefunItem<BlockPlaceHandler> {
         }
     }
 
-    protected abstract void onPlace(BlockPlaceEvent e);
+    abstract void onPlace(BlockPlaceEvent e);
 
-    protected abstract void createBorder(BlockMenuPreset preset);
+    abstract void createBorder(BlockMenuPreset preset);
 
-    protected abstract void updateBlockMenu(@Nonnull BlockMenu menu, @Nonnull Block b);
+    abstract void updateBlockMenu(@Nonnull BlockMenu menu, @Nonnull Block b);
 
-    protected abstract void markDirty(@Nonnull Location loc);
+    abstract void markDirty(@Nonnull Location loc);
 
 }

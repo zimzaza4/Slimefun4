@@ -1,12 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.core.services.github;
 
-import io.github.thebusybiscuit.cscorelib2.config.Config;
-import io.github.thebusybiscuit.slimefun4.core.services.localization.Translators;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -16,6 +9,16 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang.Validate;
+
+import io.github.thebusybiscuit.cscorelib2.config.Config;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 
 /**
  * This Service is responsible for grabbing every {@link Contributor} to this project
@@ -37,6 +40,7 @@ public class GitHubService {
     private boolean logging = false;
 
     private LocalDateTime lastUpdate = LocalDateTime.now();
+
     private int openIssues = 0;
     private int pendingPullRequests = 0;
     private int publicForks = 0;
@@ -45,7 +49,8 @@ public class GitHubService {
     /**
      * This creates a new {@link GitHubService} for the given repository.
      *
-     * @param repository The repository to create this {@link GitHubService} for
+     * @param repository
+     *            The repository to create this {@link GitHubService} for
      */
     public GitHubService(@Nonnull String repository) {
         this.repository = repository;
@@ -55,6 +60,13 @@ public class GitHubService {
         loadConnectors(false);
     }
 
+    /**
+     * This will start the {@link GitHubService} and run the asynchronous {@link GitHubTask}
+     * every so often to update its data.
+     *
+     * @param plugin
+     *            Our instance of {@link SlimefunPlugin}
+     */
     public void start(@Nonnull SlimefunPlugin plugin) {
         long period = TimeUnit.HOURS.toMillis(1);
         GitHubTask task = new GitHubTask(this);
@@ -68,11 +80,20 @@ public class GitHubService {
      * the usual methods.
      */
     private void addDefaultContributors() {
+        // Artists
         addContributor("Fuffles_", "&dArtist");
-        addContributor("IMS_Art", "&dArtist");
+        addContributor("IMS_Art", "https://github.com/IAmSorryArt", "&dArtist", 0);
+
+        // Addon Jam winners
         addContributor("nahkd123", "&aWinner of the 2020 Addon Jam");
 
-        new Translators(this);
+        // Translators
+        try {
+            TranslatorsReader translators = new TranslatorsReader(this);
+            translators.load();
+        } catch (Exception x) {
+            SlimefunPlugin.logger().log(Level.SEVERE, "Failed to read 'translators.json'", x);
+        }
     }
 
     private void addContributor(@Nonnull String name, @Nonnull String role) {
@@ -84,6 +105,11 @@ public class GitHubService {
 
     @Nonnull
     public Contributor addContributor(@Nonnull String minecraftName, @Nonnull String profileURL, @Nonnull String role, int commits) {
+        Validate.notNull(minecraftName, "Minecraft username must not be null.");
+        Validate.notNull(profileURL, "GitHub profile url must not be null.");
+        Validate.notNull(role, "Role should not be null.");
+        Validate.isTrue(commits >= 0, "Commit count cannot be negative.");
+
         String username = profileURL.substring(profileURL.lastIndexOf('/') + 1);
 
         Contributor contributor = contributors.computeIfAbsent(username, key -> new Contributor(minecraftName, profileURL));
@@ -92,19 +118,31 @@ public class GitHubService {
         return contributor;
     }
 
+    @Nonnull
+    public Contributor addContributor(@Nonnull String username, @Nonnull String role, int commits) {
+        Validate.notNull(username, "Username must not be null.");
+        Validate.notNull(role, "Role should not be null.");
+        Validate.isTrue(commits >= 0, "Commit count cannot be negative.");
+
+        Contributor contributor = contributors.computeIfAbsent(username, key -> new Contributor(username));
+        contributor.setContributions(role, commits);
+        return contributor;
+    }
+
     private void loadConnectors(boolean logging) {
         this.logging = logging;
         addDefaultContributors();
 
-        // TheBusyBiscuit/Slimefun4 (twice because there may me multiple pages)
-        connectors.add(new ContributionsConnector(this, "code", 1, repository, "developer"));
-        connectors.add(new ContributionsConnector(this, "code2", 2, repository, "developer"));
+        // TheBusyBiscuit/Slimefun4 (multiple times because there may me multiple pages)
+        connectors.add(new ContributionsConnector(this, "code", 1, repository, ContributorRole.DEVELOPER));
+        connectors.add(new ContributionsConnector(this, "code2", 2, repository, ContributorRole.DEVELOPER));
+        connectors.add(new ContributionsConnector(this, "code3", 3, repository, ContributorRole.DEVELOPER));
 
         // TheBusyBiscuit/Slimefun4-Wiki
-        connectors.add(new ContributionsConnector(this, "wiki", 1, "Slimefun/Wiki", "wiki"));
+        connectors.add(new ContributionsConnector(this, "wiki", 1, "Slimefun/Wiki", ContributorRole.WIKI_EDITOR));
 
         // TheBusyBiscuit/Slimefun4-Resourcepack
-        connectors.add(new ContributionsConnector(this, "resourcepack", 1, "Slimefun/Resourcepack", "resourcepack"));
+        connectors.add(new ContributionsConnector(this, "resourcepack", 1, "Slimefun/Resourcepack", ContributorRole.RESOURCEPACK_ARTIST));
 
         // Issues and Pull Requests
         connectors.add(new GitHubIssuesConnector(this, repository, (issues, pullRequests) -> {
@@ -112,6 +150,7 @@ public class GitHubService {
             this.pendingPullRequests = pullRequests;
         }));
 
+        // Forks, star count and last commit date
         connectors.add(new GitHubActivityConnector(this, repository, (forks, stars, date) -> {
             this.publicForks = forks;
             this.stargazers = stars;
@@ -204,7 +243,7 @@ public class GitHubService {
             uuid.ifPresent(value -> uuidCache.setValue(contributor.getName(), value));
 
             if (contributor.hasTexture()) {
-                String texture = contributor.getTexture();
+                String texture = contributor.getTexture(this);
 
                 if (!texture.equals(HeadTexture.UNKNOWN.getTexture())) {
                     texturesCache.setValue(contributor.getName(), texture);
@@ -219,7 +258,9 @@ public class GitHubService {
     /**
      * This returns the cached skin texture for a given username.
      *
-     * @param username The minecraft username
+     * @param username
+     *            The minecraft username
+     *
      * @return The cached skin texture for that user (or null)
      */
     @Nullable

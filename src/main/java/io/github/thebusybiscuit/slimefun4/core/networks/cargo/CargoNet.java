@@ -2,16 +2,18 @@ package io.github.thebusybiscuit.slimefun4.core.networks.cargo;
 
 import io.github.thebusybiscuit.slimefun4.api.network.Network;
 import io.github.thebusybiscuit.slimefun4.api.network.NetworkComponent;
+import io.github.thebusybiscuit.slimefun4.core.attributes.HologramOwner;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.utils.holograms.SimpleHologram;
+import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.logging.Level;
 
 /**
@@ -27,8 +29,9 @@ import java.util.logging.Level;
  * @author TheBusyBiscuit
  * @author Walshy
  * @author DNx5
+ *
  */
-public class CargoNet extends AbstractItemNetwork {
+public class CargoNet extends AbstractItemNetwork implements HologramOwner {
 
     private static final int RANGE = 5;
     private static final int TICK_DELAY = SlimefunPlugin.getCfg().getInt("networks.cargo-ticker-delay");
@@ -39,10 +42,12 @@ public class CargoNet extends AbstractItemNetwork {
     protected final Map<Location, Integer> roundRobin = new HashMap<>();
     private int tickDelayThreshold = 0;
 
+    @Nullable
     public static CargoNet getNetworkFromLocation(@Nonnull Location l) {
         return SlimefunPlugin.getNetworkManager().getNetworkFromLocation(l, CargoNet.class).orElse(null);
     }
 
+    @Nonnull
     public static CargoNet getNetworkFromLocationOrCreate(@Nonnull Location l) {
         Optional<CargoNet> cargoNetwork = SlimefunPlugin.getNetworkManager().getNetworkFromLocation(l, CargoNet.class);
 
@@ -58,10 +63,16 @@ public class CargoNet extends AbstractItemNetwork {
     /**
      * This constructs a new {@link CargoNet} at the given {@link Location}.
      *
-     * @param l The {@link Location} marking the manager of this {@link Network}.
+     * @param l
+     *            The {@link Location} marking the manager of this {@link Network}.
      */
     protected CargoNet(@Nonnull Location l) {
         super(l);
+    }
+
+    @Override
+    public String getId() {
+        return "CARGO_NETWORK";
     }
 
     @Override
@@ -131,18 +142,18 @@ public class CargoNet extends AbstractItemNetwork {
         }
     }
 
-    public void tick(Block b) {
+    public void tick(@Nonnull Block b) {
         if (!regulator.equals(b.getLocation())) {
-            SimpleHologram.update(b, "&4检测到有多个货运管理器");
+            updateHologram(b, "&4发现附近有多个货运网络调节机");
             return;
         }
 
         super.tick();
 
         if (connectorNodes.isEmpty() && terminusNodes.isEmpty()) {
-            SimpleHologram.update(b, "&c找不到货运节点");
+            updateHologram(b, "&c找不到附近的货运网络节点");
         } else {
-            SimpleHologram.update(b, "&7状态: &a&l在线");
+            updateHologram(b, "&7状态: &a&l已连接");
 
             // Skip ticking if the threshold is not reached. The delay is not same as minecraft tick,
             // but it's based on 'custom-ticker-delay' config.
@@ -159,7 +170,7 @@ public class CargoNet extends AbstractItemNetwork {
             Set<Location> chestTerminalOutputs = new HashSet<>();
 
             Map<Location, Integer> inputs = mapInputNodes(chestTerminalInputs);
-            Map<Integer, List<Location>> outputs = mapOutputNodes(chestTerminalOutputs);
+            Map<Integer, Collection<Location>> outputs = mapOutputNodes(chestTerminalOutputs);
 
             if (BlockStorage.getLocationInfo(b.getLocation(), "visualizer") == null) {
                 display();
@@ -172,6 +183,7 @@ public class CargoNet extends AbstractItemNetwork {
         }
     }
 
+    @Nonnull
     private Map<Location, Integer> mapInputNodes(Set<Location> chestTerminalNodes) {
         Map<Location, Integer> inputs = new HashMap<>();
 
@@ -188,10 +200,10 @@ public class CargoNet extends AbstractItemNetwork {
         return inputs;
     }
 
-    private Map<Integer, List<Location>> mapOutputNodes(Set<Location> chestTerminalOutputs) {
-        Map<Integer, List<Location>> output = new HashMap<>();
+    private Map<Integer, Collection<Location>> mapOutputNodes(Set<Location> chestTerminalOutputs) {
+        Map<Integer, Collection<Location>> output = new HashMap<>();
 
-        List<Location> list = new LinkedList<>();
+        Collection<Location> list = new ArrayList<>();
         int lastFrequency = -1;
 
         for (Location node : outputNodes) {
@@ -208,7 +220,7 @@ public class CargoNet extends AbstractItemNetwork {
                     return prev;
                 });
 
-                list = new LinkedList<>();
+                list = new ArrayList<>();
             }
 
             list.add(node);
@@ -227,7 +239,7 @@ public class CargoNet extends AbstractItemNetwork {
 
     /**
      * This method returns the frequency a given node is set to.
-     * Should there be an {@link Exception} to this method it will fall back to zero in
+     * Should there be invalid data this method it will fall back to zero in
      * order to preserve the integrity of the {@link CargoNet}.
      *
      * @param node
@@ -235,13 +247,17 @@ public class CargoNet extends AbstractItemNetwork {
      *
      * @return The frequency of the given node
      */
-    private static int getFrequency(Location node) {
-        try {
-            String str = BlockStorage.getLocationInfo(node).getString("frequency");
-            return str == null ? 0 : Integer.parseInt(str);
-        } catch (Exception x) {
-            Slimefun.getLogger().log(Level.SEVERE, x, () -> "An Error occurred while parsing a Cargo Node Frequency (" + node.getWorld().getName() + " - " + node.getBlockX() + "," + node.getBlockY() + "," + +node.getBlockZ() + ")");
+    private static int getFrequency(@Nonnull Location node) {
+
+        String frequency = BlockStorage.getLocationInfo(node,"frequency");
+
+        if (frequency == null) {
             return 0;
+        } else if (!PatternUtils.NUMERIC.matcher(frequency).matches()) {
+            SlimefunPlugin.logger().log(Level.SEVERE, () -> "An Error occurred while parsing a Cargo Node Frequency (" + node.getWorld().getName() + " - " + node.getBlockX() + ',' + node.getBlockY() + ',' + node.getBlockZ() + ')');
+            return 0;
+        } else {
+            return Integer.parseInt(frequency);
         }
     }
 }

@@ -7,6 +7,7 @@ import io.github.thebusybiscuit.slimefun4.core.handlers.EntityKillHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemConsumptionHandler;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
 /**
@@ -14,7 +15,6 @@ import java.util.Optional;
  * can perform.
  *
  * @author TheBusyBiscuit
- * @see ItemUseHandler
  * @see ItemConsumptionHandler
  * @see BlockUseHandler
  * @see EntityKillHandler
@@ -24,24 +24,12 @@ import java.util.Optional;
 public interface ItemHandler {
 
     /**
-     * This method is used to determine whether this {@link ItemHandler} can be
-     * safely associated with one particular {@link SlimefunItem}.
-     * <p>
-     * Should this {@link ItemHandler} not be private, then it will never be
-     * permanently linked to a {@link SlimefunItem}.
-     *
-     * @return Whether this {@link ItemHandler} is considered private.
-     */
-    default boolean isPrivate() {
-        return true;
-    }
-
-    /**
      * This method returns the identifier for this {@link ItemHandler}.
      * We use a {@link Class} identifier to group Item Handlers together.
      *
      * @return The {@link Class} identifier for this {@link ItemHandler}
      */
+    @Nonnull
     Class<? extends ItemHandler> getIdentifier();
 
     /**
@@ -53,6 +41,7 @@ public interface ItemHandler {
      * @return An {@link Optional} describing the result, it will contain an {@link IncompatibleItemHandlerException}
      * should there be an issue
      */
+    @Nonnull
     default Optional<IncompatibleItemHandlerException> validate(SlimefunItem item) {
         return Optional.empty();
     }

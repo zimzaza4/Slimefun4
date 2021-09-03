@@ -1,20 +1,32 @@
 package io.github.thebusybiscuit.slimefun4.implementation.tasks;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
 import io.github.thebusybiscuit.slimefun4.api.events.AncientAltarCraftEvent;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAltar;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientPedestal;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.AncientAltarListener;
-import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.*;
 
 /**
  * The {@link AncientAltarTask} is responsible for the animation that happens when a ritual
@@ -34,7 +46,7 @@ public class AncientAltarTask implements Runnable {
     private final AncientPedestal pedestalItem = (AncientPedestal) SlimefunItems.ANCIENT_PEDESTAL.getItem();
 
     private final Block altar;
-    private final int speed;
+    private final int stepDelay;
     private final Location dropLocation;
     private final ItemStack output;
     private final List<Block> pedestals;
@@ -48,10 +60,10 @@ public class AncientAltarTask implements Runnable {
     private final Player player;
 
     @ParametersAreNonnullByDefault
-    public AncientAltarTask(AncientAltarListener listener, Block altar, int speed, ItemStack output, List<Block> pedestals, List<ItemStack> items, Player player) {
+    public AncientAltarTask(AncientAltarListener listener, Block altar, int stepDelay, ItemStack output, List<Block> pedestals, List<ItemStack> items, Player player) {
         this.listener = listener;
         this.dropLocation = altar.getLocation().add(0.5, 1.3, 0.5);
-        this.speed = speed;
+        this.stepDelay = stepDelay;
         this.altar = altar;
         this.output = output;
         this.pedestals = pedestals;
@@ -90,7 +102,7 @@ public class AncientAltarTask implements Runnable {
         }
 
         this.stage += 1;
-        SlimefunPlugin.runSync(this, speed);
+        SlimefunPlugin.runSync(this, stepDelay);
     }
 
     private boolean checkLockedItems() {

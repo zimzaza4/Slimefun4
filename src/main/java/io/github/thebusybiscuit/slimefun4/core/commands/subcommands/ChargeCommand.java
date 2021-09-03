@@ -9,6 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * {@link ChargeCommand} adds an in game command which charges any {@link Rechargeable}
  * item to maximum charge, defined by {@link Rechargeable#getMaxItemCharge(ItemStack)}.
@@ -17,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
  */
 class ChargeCommand extends SubCommand {
 
+    @ParametersAreNonnullByDefault
     ChargeCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
         super(plugin, cmd, "charge", false);
     }
@@ -29,7 +32,7 @@ class ChargeCommand extends SubCommand {
     @Override
     public void onExecute(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
-            if (sender.hasPermission("slimefun.charge.command")) {
+            if (sender.hasPermission("slimefun.command.charge")) {
                 Player p = (Player) sender;
                 ItemStack item = p.getInventory().getItemInMainHand();
                 SlimefunItem slimefunItem = SlimefunItem.getByItem(item);

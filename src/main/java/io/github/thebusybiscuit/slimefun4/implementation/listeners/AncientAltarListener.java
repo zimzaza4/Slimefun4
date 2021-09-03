@@ -97,12 +97,13 @@ public class AncientAltarListener implements Listener {
         }
 
         String id = slimefunBlock.get().getId();
+        Player p = e.getPlayer();
 
         if (id.equals(pedestalItem.getId())) {
             e.cancel();
-            usePedestal(b, e.getPlayer());
+            usePedestal(b, p);
         } else if (id.equals(altarItem.getId())) {
-            if (!Slimefun.hasUnlocked(e.getPlayer(), altarItem, true) || altarsInUse.contains(b.getLocation())) {
+            if (!altarItem.canUse(p, true) || altarsInUse.contains(b.getLocation())) {
                 e.cancel();
                 return;
             }
@@ -111,7 +112,7 @@ public class AncientAltarListener implements Listener {
             altarsInUse.add(b.getLocation());
             e.cancel();
 
-            useAltar(b, e.getPlayer());
+            useAltar(b, p);
         }
     }
 
@@ -205,7 +206,7 @@ public class AncientAltarListener implements Listener {
 
         Optional<ItemStack> result = getRecipeOutput(catalyst, input);
         if (result.isPresent()) {
-            if (Slimefun.hasUnlocked(p, result.get(), true)) {
+            if (SlimefunUtils.canPlayerUseItem(p, result.get(), true)) {
                 List<ItemStack> consumed = new ArrayList<>();
                 consumed.add(catalyst);
 
@@ -215,7 +216,7 @@ public class AncientAltarListener implements Listener {
 
                 b.getWorld().playSound(b.getLocation(), Sound.ENTITY_ILLUSIONER_PREPARE_MIRROR, 1, 1);
 
-                AncientAltarTask task = new AncientAltarTask(this, b, altarItem.getSpeed(), result.get(), pedestals, consumed, p);
+                AncientAltarTask task = new AncientAltarTask(this, b, altarItem.getStepDelay(), result.get(), pedestals, consumed, p);
                 SlimefunPlugin.runSync(task, 10L);
             } else {
                 altars.remove(b);
@@ -240,7 +241,7 @@ public class AncientAltarListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent e) {
         if (altarItem == null || altarItem.isDisabled()) {
             return;
@@ -296,7 +297,7 @@ public class AncientAltarListener implements Listener {
             return Optional.empty();
         }
 
-        ItemStackWrapper wrapper = new ItemStackWrapper(catalyst);
+        ItemStackWrapper wrapper = ItemStackWrapper.wrap(catalyst);
         List<ItemStackWrapper> items = ItemStackWrapper.wrapList(inputs);
 
         if (SlimefunUtils.isItemSimilar(wrapper, SlimefunItems.BROKEN_SPAWNER, false)) {

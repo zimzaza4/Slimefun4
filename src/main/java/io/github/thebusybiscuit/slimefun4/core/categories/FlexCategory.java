@@ -2,7 +2,7 @@ package io.github.thebusybiscuit.slimefun4.core.categories;
 
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideLayout;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import org.bukkit.NamespacedKey;
@@ -24,12 +24,12 @@ import java.util.List;
 public abstract class FlexCategory extends Category {
 
     @ParametersAreNonnullByDefault
-    public FlexCategory(NamespacedKey key, ItemStack item) {
+    protected FlexCategory(NamespacedKey key, ItemStack item) {
         this(key, item, 3);
     }
 
     @ParametersAreNonnullByDefault
-    public FlexCategory(NamespacedKey key, ItemStack item, int tier) {
+    protected FlexCategory(NamespacedKey key, ItemStack item, int tier) {
         super(key, item, tier);
     }
 
@@ -39,11 +39,11 @@ public abstract class FlexCategory extends Category {
      *
      * @param p       The {@link Player} who opened his {@link SlimefunGuide}
      * @param profile The {@link PlayerProfile} of the {@link Player}
-     * @param layout  The {@link SlimefunGuideLayout} in which this {@link FlexCategory} is viewed
+     * @param layout  The {@link SlimefunGuideMode} in which this {@link FlexCategory} is viewed
      * @return Whether to display this {@link FlexCategory}
      */
     @ParametersAreNonnullByDefault
-    public abstract boolean isVisible(Player p, PlayerProfile profile, SlimefunGuideLayout layout);
+    public abstract boolean isVisible(Player p, PlayerProfile profile, SlimefunGuideMode layout);
 
     /**
      * This method is called when a {@link Player} opens this {@link FlexCategory}.
@@ -52,9 +52,9 @@ public abstract class FlexCategory extends Category {
      *
      * @param p       The {@link Player} who wants to open this {@link FlexCategory}
      * @param profile The corresponding {@link PlayerProfile} for that {@link Player}
-     * @param layout  The current {@link SlimefunGuideLayout}
+     * @param layout  The current {@link SlimefunGuideMode}
      */
-    public abstract void open(Player p, PlayerProfile profile, SlimefunGuideLayout layout);
+    public abstract void open(Player p, PlayerProfile profile, SlimefunGuideMode layout);
 
     @Override
     public final boolean isHidden(@Nonnull Player p) {
@@ -64,12 +64,12 @@ public abstract class FlexCategory extends Category {
     }
 
     @Override
-    public final void add(SlimefunItem item) {
+    public final void add(@Nonnull SlimefunItem item) {
         throw new UnsupportedOperationException("You cannot add items to a FlexCategory!");
     }
 
     @Override
-    public final List<SlimefunItem> getItems() {
+    public final @Nonnull List<SlimefunItem> getItems() {
         throw new UnsupportedOperationException("A FlexCategory has no items!");
     }
 
@@ -79,7 +79,7 @@ public abstract class FlexCategory extends Category {
     }
 
     @Override
-    public final void remove(SlimefunItem item) {
+    public final void remove(@Nonnull SlimefunItem item) {
         throw new UnsupportedOperationException("A FlexCategory has no items, so there is nothing remove!");
     }
 

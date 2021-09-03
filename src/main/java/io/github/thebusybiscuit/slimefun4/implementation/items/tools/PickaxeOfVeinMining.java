@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.tools;
 
-import io.github.starwishsama.sfmagic.ProtectionChecker;
+import ren.natsuyuk1.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.blocks.Vein;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class PickaxeOfVeinMining extends SimpleSlimefunItem<ToolUseHandler> {
 
-    private final ItemSetting<Integer> maxBlocks = new IntRangeSetting("max-blocks", 1, 16, Integer.MAX_VALUE);
+    private final ItemSetting<Integer> maxBlocks = new IntRangeSetting(this, "max-blocks", 1, 16, Integer.MAX_VALUE);
 
     @ParametersAreNonnullByDefault
     public PickaxeOfVeinMining(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
@@ -54,7 +54,7 @@ public class PickaxeOfVeinMining extends SimpleSlimefunItem<ToolUseHandler> {
     @ParametersAreNonnullByDefault
     private void breakBlocks(Player p, List<Block> blocks, int fortune, ItemStack tool) {
         for (Block b : blocks) {
-            if (SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.BREAK_BLOCK) && ProtectionChecker.canInteract(p, b, ProtectableAction.BREAK_BLOCK)) {
+            if (SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.BREAK_BLOCK) && IntegrationHelper.checkPermission(p, b, ProtectableAction.BREAK_BLOCK)) {
                 b.getWorld().playEffect(b.getLocation(), Effect.STEP_SOUND, b.getType());
 
                 if (tool.containsEnchantment(Enchantment.SILK_TOUCH)) {

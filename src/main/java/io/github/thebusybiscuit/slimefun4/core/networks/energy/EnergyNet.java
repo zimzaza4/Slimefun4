@@ -5,10 +5,10 @@ import io.github.thebusybiscuit.slimefun4.api.network.Network;
 import io.github.thebusybiscuit.slimefun4.api.network.NetworkComponent;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
+import io.github.thebusybiscuit.slimefun4.core.attributes.HologramOwner;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
-import io.github.thebusybiscuit.slimefun4.utils.holograms.SimpleHologram;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
@@ -35,7 +35,7 @@ import java.util.function.LongConsumer;
  * @see EnergyNetComponentType
  *
  */
-public class EnergyNet extends Network {
+public class EnergyNet extends Network implements HologramOwner {
 
     private static final int RANGE = 6;
 
@@ -51,6 +51,12 @@ public class EnergyNet extends Network {
     public int getRange() {
         return RANGE;
     }
+
+    @Override
+    public String getId() {
+        return "ENERGY_NETWORK";
+    }
+
 
     @Override
     public NetworkComponent classifyLocation(@Nonnull Location l) {
@@ -110,7 +116,7 @@ public class EnergyNet extends Network {
         AtomicLong timestamp = new AtomicLong(SlimefunPlugin.getProfiler().newEntry());
 
         if (!regulator.equals(b.getLocation())) {
-            SimpleHologram.update(b, "&4检测到附近有其他调节器");
+            updateHologram(b, "&4检测到附近有其他调节器");
             SlimefunPlugin.getProfiler().closeEntry(b.getLocation(), SlimefunItems.ENERGY_REGULATOR.getItem(), timestamp.get());
             return;
         }
@@ -118,7 +124,7 @@ public class EnergyNet extends Network {
         super.tick();
 
         if (connectorNodes.isEmpty() && terminusNodes.isEmpty()) {
-            SimpleHologram.update(b, "&4找不到能源网络");
+            updateHologram(b, "&4找不到能源网络");
         } else {
             int supply = tickAllGenerators(timestamp::getAndAdd) + tickAllCapacitors();
             int remainingEnergy = supply;
@@ -252,10 +258,10 @@ public class EnergyNet extends Network {
     private void updateHologram(@Nonnull Block b, double supply, double demand) {
         if (demand > supply) {
             String netLoss = NumberUtils.getCompactDouble(demand - supply);
-            SimpleHologram.update(b, "&4&l- &c" + netLoss + " &7J &e\u26A1");
+            updateHologram(b, "&4&l- &c" + netLoss + " &7J &e\u26A1");
         } else {
             String netGain = NumberUtils.getCompactDouble(supply - demand);
-            SimpleHologram.update(b, "&2&l+ &a" + netGain + " &7J &e\u26A1");
+            updateHologram(b, "&2&l+ &a" + netGain + " &7J &e\u26A1");
         }
     }
 

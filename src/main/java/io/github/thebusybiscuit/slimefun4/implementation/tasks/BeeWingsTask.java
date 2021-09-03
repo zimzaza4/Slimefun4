@@ -13,7 +13,7 @@ import org.bukkit.potion.PotionEffectType;
 import javax.annotation.Nonnull;
 
 /**
- * This {@link PlayerTask} is responsible for the repeating checks for our {@link BeeWings}.
+ * This {@link AbstractPlayerTask} is responsible for the repeating checks for our {@link BeeWings}.
  *
  * @author beSnow
  * @author TheBusyBiscuit

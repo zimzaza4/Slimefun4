@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -22,6 +23,7 @@ class GiveCommand extends SubCommand {
     private static final String PLACEHOLDER_ITEM = "%item%";
     private static final String PLACEHOLDER_AMOUNT = "%amount%";
 
+    @ParametersAreNonnullByDefault
     GiveCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
         super(plugin, cmd, "give", false);
     }

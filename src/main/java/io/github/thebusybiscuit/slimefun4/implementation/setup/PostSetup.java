@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.AutomatedCraftingChamber;
 import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.GrindStone;
 import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.MakeshiftSmeltery;
 import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.OreCrusher;
@@ -13,7 +12,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.Smelt
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -34,7 +32,7 @@ public final class PostSetup {
     }
 
     public static void setupWiki() {
-        Slimefun.getLogger().log(Level.INFO, "Loading Wiki pages...");
+        SlimefunPlugin.logger().log(Level.INFO, "Loading Wiki pages...");
 
         JsonParser parser = new JsonParser();
 
@@ -46,11 +44,11 @@ public final class PostSetup {
                 SlimefunItem item = SlimefunItem.getByID(entry.getKey());
 
                 if (item != null) {
-                    item.addOficialWikipage(entry.getValue().getAsString());
+                    item.addOfficialWikipage(entry.getValue().getAsString());
                 }
             }
         } catch (IOException e) {
-            Slimefun.getLogger().log(Level.SEVERE, "Failed to load wiki.json file", e);
+            SlimefunPlugin.logger().log(Level.SEVERE, "Failed to load wiki.json file", e);
         }
     }
 
@@ -61,7 +59,7 @@ public final class PostSetup {
             SlimefunItem item = iterator.next();
 
             if (item == null) {
-                Slimefun.getLogger().log(Level.WARNING, "Removed bugged Item ('NULL?')");
+                SlimefunPlugin.logger().log(Level.WARNING, "Removed bugged Item ('NULL?')");
                 iterator.remove();
             } else {
                 try {
@@ -72,7 +70,6 @@ public final class PostSetup {
             }
         }
 
-        loadAutomaticCraftingChamber();
         loadOreGrinderRecipes();
         loadSmelteryRecipes();
 
@@ -104,14 +101,6 @@ public final class PostSetup {
         return (int) SlimefunPlugin.getRegistry().getEnabledSlimefunItems().stream()
                 .filter(item -> item.getAddon() instanceof SlimefunPlugin)
                 .count();
-    }
-
-    private static void loadAutomaticCraftingChamber() {
-        AutomatedCraftingChamber crafter = (AutomatedCraftingChamber) SlimefunItems.AUTOMATED_CRAFTING_CHAMBER.getItem();
-
-        if (crafter != null) {
-            crafter.loadRecipes();
-        }
     }
 
     private static void loadOreGrinderRecipes() {

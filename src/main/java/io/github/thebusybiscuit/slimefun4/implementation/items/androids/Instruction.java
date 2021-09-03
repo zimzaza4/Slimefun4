@@ -1,4 +1,3 @@
-
 package io.github.thebusybiscuit.slimefun4.implementation.items.androids;
 
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
@@ -26,6 +25,7 @@ import java.util.function.Predicate;
  * added by Slimefun itself.
  *
  * @author TheBusyBiscuit
+ *
  */
 public enum Instruction {
 
@@ -151,7 +151,7 @@ public enum Instruction {
      * ahead of them.
      */
     ATTACK_MOBS(AndroidType.FIGHTER, HeadTexture.SCRIPT_ATTACK, (android, b, inv, face) -> {
-        Predicate<LivingEntity> predicate = e -> e instanceof Monster;
+        Predicate<LivingEntity> predicate = Monster.class::isInstance;
         android.attack(b, face, predicate);
     }),
 
@@ -160,7 +160,7 @@ public enum Instruction {
      * ahead of them.
      */
     ATTACK_ANIMALS(AndroidType.FIGHTER, HeadTexture.SCRIPT_ATTACK, (android, b, inv, face) -> {
-        Predicate<LivingEntity> predicate = e -> e instanceof Animals;
+        Predicate<LivingEntity> predicate = Animals.class::isInstance;
         android.attack(b, face, predicate);
     }),
 
@@ -190,7 +190,7 @@ public enum Instruction {
      */
     FARM_FORWARD(AndroidType.FARMER, HeadTexture.SCRIPT_FARM_FORWARD, (android, b, inv, face) -> {
         Block target = b.getRelative(face);
-        android.farm(inv, target);
+        android.farm(b, inv, target, false);
     }),
 
     /**
@@ -199,7 +199,7 @@ public enum Instruction {
      */
     FARM_DOWN(AndroidType.FARMER, HeadTexture.SCRIPT_FARM_DOWN, (android, b, inv, face) -> {
         Block target = b.getRelative(BlockFace.DOWN);
-        android.farm(inv, target);
+        android.farm(b, inv, target, false);
     }),
 
     /**
@@ -210,7 +210,7 @@ public enum Instruction {
      */
     FARM_EXOTIC_FORWARD(AndroidType.ADVANCED_FARMER, HeadTexture.SCRIPT_FARM_FORWARD, (android, b, inv, face) -> {
         Block target = b.getRelative(face);
-        android.exoticFarm(inv, target);
+        android.farm(b, inv, target, true);
     }),
 
     /**
@@ -221,7 +221,7 @@ public enum Instruction {
      */
     FARM_EXOTIC_DOWN(AndroidType.ADVANCED_FARMER, HeadTexture.SCRIPT_FARM_DOWN, (android, b, inv, face) -> {
         Block target = b.getRelative(BlockFace.DOWN);
-        android.exoticFarm(inv, target);
+        android.farm(b, inv, target, true);
     }),
 
     /**

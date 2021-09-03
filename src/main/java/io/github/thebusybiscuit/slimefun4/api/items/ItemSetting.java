@@ -3,12 +3,12 @@ package io.github.thebusybiscuit.slimefun4.api.items;
 import io.github.thebusybiscuit.cscorelib2.config.Config;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.apache.commons.lang.Validate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.logging.Level;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents a Setting for a {@link SlimefunItem} that can be modified via
@@ -19,6 +19,8 @@ import java.util.logging.Level;
  */
 public class ItemSetting<T> {
 
+    private final SlimefunItem item;
+
     private final String key;
     private final T defaultValue;
 
@@ -27,16 +29,20 @@ public class ItemSetting<T> {
     /**
      * This creates a new {@link ItemSetting} with the given key and default value
      *
+     * @param item
+     *            The {@link SlimefunItem} this {@link ItemSetting} belongs to
      * @param key
      *            The key under which this setting will be stored (relative to the {@link SlimefunItem})
      * @param defaultValue
      *            The default value for this {@link ItemSetting}
      */
     @ParametersAreNonnullByDefault
-    public ItemSetting(String key, T defaultValue) {
+    public ItemSetting(SlimefunItem item, String key, T defaultValue) {
+        Validate.notNull(item, "The provided SlimefunItem must not be null!");
         Validate.notNull(key, "The key of an ItemSetting is not allowed to be null!");
         Validate.notNull(defaultValue, "The default value of an ItemSetting is not allowed to be null!");
 
+        this.item = item;
         this.key = key;
         this.defaultValue = defaultValue;
     }
@@ -83,15 +89,28 @@ public class ItemSetting<T> {
     }
 
     /**
+     * This returns the associated {@link SlimefunItem} for this {@link ItemSetting}.
+     *
+     * @return The associated {@link SlimefunItem}
+     */
+    @Nonnull
+    protected SlimefunItem getItem() {
+        return item;
+    }
+
+    /**
      * This returns the <strong>current</strong> value of this {@link ItemSetting}.
      *
      * @return The current value
      */
     @Nonnull
     public T getValue() {
-        Validate.notNull(value, "An ItemSetting was invoked but was not initialized yet.");
-
-        return value;
+        if (value != null) {
+            return value;
+        } else {
+            item.warn("ItemSetting '" + key + "' was invoked but was not initialized yet.");
+            return defaultValue;
+        }
     }
 
     /**
@@ -123,42 +142,49 @@ public class ItemSetting<T> {
      */
     @Nonnull
     protected String getErrorMessage() {
-        return "Only '" + defaultValue.getClass().getSimpleName() + "' values are allowed!";
+        return "请使用在 '" + defaultValue.getClass().getSimpleName() + "' 范围内的值!";
     }
 
     /**
      * This method is called by a {@link SlimefunItem} which wants to load its {@link ItemSetting}
      * from the {@link Config} file.
-     *
-     * @param item The {@link SlimefunItem} who called this method
      */
-    public void load(@Nonnull SlimefunItem item) {
+    @SuppressWarnings("unchecked")
+    public void reload() {
         Validate.notNull(item, "Cannot apply settings for a non-existing SlimefunItem");
 
         SlimefunPlugin.getItemCfg().setDefaultValue(item.getId() + '.' + getKey(), getDefaultValue());
         Object configuredValue = SlimefunPlugin.getItemCfg().getValue(item.getId() + '.' + getKey());
 
-        if (defaultValue.getClass().isInstance(configuredValue)) {
-            // We can suppress the warning here, we did an isInstance(...) check before!
-            @SuppressWarnings("unchecked")
+        if (defaultValue.getClass().isInstance(configuredValue) || (configuredValue instanceof List && defaultValue instanceof List)) {
+            // We can do an unsafe cast here, we did an isInstance(...) check before!
             T newValue = (T) configuredValue;
 
             if (validateInput(newValue)) {
                 this.value = newValue;
             } else {
-                Slimefun.getLogger().log(Level.WARNING, "Slimefun has found an invalid config setting in your Items.yml!");
-                Slimefun.getLogger().log(Level.WARNING, "  at \"{0}.{1}\"", new Object[]{item.getId(), getKey()});
-                Slimefun.getLogger().log(Level.WARNING, "{0} is not a valid input!", configuredValue);
-                Slimefun.getLogger().log(Level.WARNING, getErrorMessage());
+                // @formatter:off
+                item.warn(
+                        "发现在 Items.yml 中有无效的物品设置!" +
+                                "\n  在 \"" + item.getId() + "." + getKey() + "\"" +
+                                "\n  " + configuredValue + " 不是一个有效值!" +
+                                "\n" + getErrorMessage()
+                );
+                // @formatter:on
             }
         } else {
             this.value = defaultValue;
             String found = configuredValue == null ? "null" : configuredValue.getClass().getSimpleName();
 
-            Slimefun.getLogger().log(Level.WARNING, "Slimefun has found an invalid config setting in your Items.yml!");
-            Slimefun.getLogger().log(Level.WARNING, "Please only use settings that are valid.");
-            Slimefun.getLogger().log(Level.WARNING, "  at \"{0}.{1}\"", new Object[]{item.getId(), getKey()});
-            Slimefun.getLogger().log(Level.WARNING, "Expected \"{0}\" but found: \"{1}\"", new Object[]{defaultValue.getClass().getSimpleName(), found});
+            // @formatter:off
+            item.warn(
+                    "发现在 Items.yml 中有无效的物品设置!" +
+                            "\n请只设置有效的值." +
+                            "\n  在 \"" + item.getId() + "." + getKey() + "\"" +
+                            "\n  期望值为 \"" + defaultValue.getClass().getSimpleName() + "\" 但填写了: \"" + found + "\""
+            );
+            // @formatter:on
+
         }
     }
 
@@ -166,6 +192,21 @@ public class ItemSetting<T> {
     public String toString() {
         T currentValue = this.value != null ? this.value : defaultValue;
         return getClass().getSimpleName() + " {" + getKey() + " = " + currentValue + " (default: " + getDefaultValue() + ")";
+    }
+
+    @Override
+    public final int hashCode() {
+        return Objects.hash(item, key);
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+        if (obj instanceof ItemSetting) {
+            ItemSetting<?> setting = (ItemSetting<?>) obj;
+            return Objects.equals(getKey(), setting.getKey()) && Objects.equals(getItem(), setting.getItem());
+        } else {
+            return false;
+        }
     }
 
 }

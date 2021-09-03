@@ -1,15 +1,25 @@
 package io.github.thebusybiscuit.slimefun4.core.services;
 
-import io.github.thebusybiscuit.cscorelib2.config.Config;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import org.apache.commons.lang.Validate;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.logging.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
+
+import org.apache.commons.lang.Validate;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import io.github.thebusybiscuit.cscorelib2.config.Config;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 
 /**
  * This Service is responsible for applying custom model data to any {@link SlimefunItemStack}
@@ -17,6 +27,7 @@ import java.util.Collection;
  * We simply use {@link ItemMeta#setCustomModelData(Integer)} for this.
  *
  * @author TheBusyBiscuit
+ *
  */
 public class CustomTextureService {
 
@@ -41,7 +52,8 @@ public class CustomTextureService {
     /**
      * This creates a new {@link CustomTextureService} for the provided {@link Config}
      *
-     * @param config The {@link Config} to read custom model data from
+     * @param config
+     *            The {@link Config} to read custom model data from
      */
     public CustomTextureService(@Nonnull Config config) {
         this.config = config;
@@ -53,27 +65,15 @@ public class CustomTextureService {
      * This method registers the given {@link SlimefunItem SlimefunItems} to this {@link CustomTextureService}.
      * If saving is enabled, it will save them to the {@link Config} file.
      *
-     * @param items The {@link SlimefunItem SlimefunItems} to register
-     * @param save  Whether to save this file
+     * @param items
+     *            The {@link SlimefunItem SlimefunItems} to register
+     * @param save
+     *            Whether to save this file
      */
     public void register(@Nonnull Collection<SlimefunItem> items, boolean save) {
         Validate.notEmpty(items, "items must neither be null or empty.");
 
-        config.setDefaultValue("SLIMEFUN_GUIDE", 0);
-
-        config.setDefaultValue("_UI_BACKGROUND", 0);
-        config.setDefaultValue("_UI_NO_PERMISSION", 0);
-        config.setDefaultValue("_UI_NOT_RESEARCHED", 0);
-        config.setDefaultValue("_UI_INPUT_SLOT", 0);
-        config.setDefaultValue("_UI_OUTPUT_SLOT", 0);
-        config.setDefaultValue("_UI_BACK", 0);
-        config.setDefaultValue("_UI_MENU", 0);
-        config.setDefaultValue("_UI_SEARCH", 0);
-        config.setDefaultValue("_UI_WIKI", 0);
-        config.setDefaultValue("_UI_PREVIOUS_ACTIVE", 0);
-        config.setDefaultValue("_UI_PREVIOUS_INACTIVE", 0);
-        config.setDefaultValue("_UI_NEXT_ACTIVE", 0);
-        config.setDefaultValue("_UI_NEXT_INACTIVE", 0);
+        loadDefaultValues();
 
         for (SlimefunItem item : items) {
             if (item != null) {
@@ -89,6 +89,20 @@ public class CustomTextureService {
 
         if (save) {
             config.save();
+        }
+    }
+
+    private void loadDefaultValues() {
+        InputStream inputStream = SlimefunPlugin.class.getResourceAsStream("/item-models.yml");
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+            FileConfiguration cfg = YamlConfiguration.loadConfiguration(reader);
+
+            for (String key : cfg.getKeys(false)) {
+                config.setDefaultValue(key, cfg.getInt(key));
+            }
+        } catch (Exception e) {
+            SlimefunPlugin.logger().log(Level.SEVERE, "Failed to load default item-models.yml file", e);
         }
     }
 
@@ -110,11 +124,14 @@ public class CustomTextureService {
     /**
      * This returns the configured custom model data for a given id.
      *
-     * @param id The id to get the data for
+     * @param id
+     *            The id to get the data for
+     *
      * @return The configured custom model data
      */
     public int getModelData(@Nonnull String id) {
         Validate.notNull(id, "Cannot get the ModelData for 'null'");
+
         return config.getInt(id);
     }
 
@@ -122,8 +139,10 @@ public class CustomTextureService {
      * This method sets the custom model data for this {@link ItemStack}
      * to the value configured for the provided item id.
      *
-     * @param im The {@link ItemStack} to set the custom model data for
-     * @param id The id for which to get the configured model data
+     * @param item
+     *            The {@link ItemStack} to set the custom model data for
+     * @param id
+     *            The id for which to get the configured model data
      */
     public void setTexture(@Nonnull ItemStack item, @Nonnull String id) {
         Validate.notNull(item, "The Item cannot be null!");
@@ -138,8 +157,10 @@ public class CustomTextureService {
      * This method sets the custom model data for this {@link ItemMeta}
      * to the value configured for the provided item id.
      *
-     * @param im The {@link ItemMeta} to set the custom model data for
-     * @param id The id for which to get the configured model data
+     * @param im
+     *            The {@link ItemMeta} to set the custom model data for
+     * @param id
+     *            The id for which to get the configured model data
      */
     public void setTexture(@Nonnull ItemMeta im, @Nonnull String id) {
         Validate.notNull(im, "The ItemMeta cannot be null!");

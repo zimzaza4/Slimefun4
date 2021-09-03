@@ -10,8 +10,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+
+/**
+ * The {@link PortableDustbin} is one of the oldest items in Slimefun.
+ * It simply opens an empty {@link Inventory} in which you can dump any
+ * unwanted {@link ItemStack}. When closing the {@link Inventory}, all items
+ * will be voided.
+ *
+ * @author TheBusyBiscuit
+ *
+ */
 public class PortableDustbin extends SimpleSlimefunItem<ItemUseHandler> implements NotPlaceable {
 
     public PortableDustbin(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
@@ -19,7 +31,7 @@ public class PortableDustbin extends SimpleSlimefunItem<ItemUseHandler> implemen
     }
 
     @Override
-    public ItemUseHandler getItemHandler() {
+    public @Nonnull ItemUseHandler getItemHandler() {
         return e -> {
             e.cancel();
 

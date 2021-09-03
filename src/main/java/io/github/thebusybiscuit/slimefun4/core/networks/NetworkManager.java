@@ -1,18 +1,24 @@
 package io.github.thebusybiscuit.slimefun4.core.networks;
 
-import io.github.thebusybiscuit.cscorelib2.config.Config;
-import io.github.thebusybiscuit.slimefun4.api.network.Network;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.NetworkListener;
-import org.apache.commons.lang.Validate;
-import org.bukkit.Location;
-import org.bukkit.Server;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang.Validate;
+import org.bukkit.Location;
+import org.bukkit.Server;
+
+import io.github.thebusybiscuit.cscorelib2.config.Config;
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
+import io.github.thebusybiscuit.slimefun4.api.network.Network;
+import io.github.thebusybiscuit.slimefun4.core.networks.cargo.CargoNet;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.listeners.NetworkListener;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 
 /**
  * The {@link NetworkManager} is responsible for holding all instances of {@link Network}
@@ -34,9 +40,12 @@ public class NetworkManager {
     /**
      * This creates a new {@link NetworkManager} with the given capacity.
      *
-     * @param maxStepSize       The maximum amount of nodes a {@link Network} can have
-     * @param enableVisualizer  Whether the {@link Network} visualizer is enabled
-     * @param deleteExcessItems Whether excess items from a {@link CargoNet} should be voided
+     * @param maxStepSize
+     *            The maximum amount of nodes a {@link Network} can have
+     * @param enableVisualizer
+     *            Whether the {@link Network} visualizer is enabled
+     * @param deleteExcessItems
+     *            Whether excess items from a {@link CargoNet} should be voided
      */
     public NetworkManager(int maxStepSize, boolean enableVisualizer, boolean deleteExcessItems) {
         Validate.isTrue(maxStepSize > 0, "The maximal Network size must be above zero!");
@@ -49,7 +58,8 @@ public class NetworkManager {
     /**
      * This creates a new {@link NetworkManager} with the given capacity.
      *
-     * @param maxStepSize The maximum amount of nodes a {@link Network} can have
+     * @param maxStepSize
+     *            The maximum amount of nodes a {@link Network} can have
      */
     public NetworkManager(int maxStepSize) {
         this(maxStepSize, true, false);
@@ -101,6 +111,7 @@ public class NetworkManager {
         }
 
         Validate.notNull(type, "Type must not be null");
+
         for (Network network : networks) {
             if (type.isInstance(network) && network.connectsTo(l)) {
                 return Optional.of(type.cast(network));
@@ -132,7 +143,8 @@ public class NetworkManager {
     /**
      * This registers a given {@link Network}.
      *
-     * @param network The {@link Network} to register
+     * @param network
+     *            The {@link Network} to register
      */
     public void registerNetwork(@Nonnull Network network) {
         Validate.notNull(network, "Cannot register a null Network");
@@ -142,7 +154,8 @@ public class NetworkManager {
     /**
      * This removes a {@link Network} from the network system.
      *
-     * @param network The {@link Network} to remove
+     * @param network
+     *            The {@link Network} to remove
      */
     public void unregisterNetwork(@Nonnull Network network) {
         Validate.notNull(network, "Cannot unregister a null Network");
@@ -153,14 +166,32 @@ public class NetworkManager {
      * This method updates every {@link Network} found at the given {@link Location}.
      * More precisely, {@link Network#markDirty(Location)} will be called.
      *
-     * @param l The {@link Location} to update
+     * @param l
+     *            The {@link Location} to update
      */
     public void updateAllNetworks(@Nonnull Location l) {
-        // No need to create a sublist and loop through it if there are no Networks
-        if (!networks.isEmpty()) {
-            for (Network network : getNetworksFromLocation(l, Network.class)) {
-                network.markDirty(l);
-            }
+        Validate.notNull(l, "The Location cannot be null");
+
+        /*
+         * No need to create a sublist and loop through it if
+         * there aren't even any networks on the server.
+         */
+        if (networks.isEmpty()) {
+            return;
+        }
+
+        /*
+         * Only a Slimefun block can be part of a Network.
+         * This check helps to speed up performance.
+         *
+         * (Skip for Unit Tests as they don't support block info yet)
+         */
+        if (!BlockStorage.hasBlockInfo(l) && SlimefunPlugin.getMinecraftVersion() != MinecraftVersion.UNIT_TEST) {
+            return;
+        }
+
+        for (Network network : getNetworksFromLocation(l, Network.class)) {
+            network.markDirty(l);
         }
     }
 

@@ -9,10 +9,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 
 class StatsCommand extends SubCommand {
 
+    @ParametersAreNonnullByDefault
     StatsCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
         super(plugin, cmd, "stats", false);
     }

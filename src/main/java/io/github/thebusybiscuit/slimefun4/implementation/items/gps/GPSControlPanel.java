@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.gps;
 
-import io.github.starwishsama.sfmagic.ProtectionChecker;
+import ren.natsuyuk1.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockUseHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
@@ -41,6 +41,6 @@ public class GPSControlPanel extends SimpleSlimefunItem<BlockUseHandler> {
 
     @ParametersAreNonnullByDefault
     private boolean hasAccess(Player p, Block b) {
-        return p.hasPermission("slimefun.gps.bypass") || (SlimefunPlugin.getProtectionManager().hasPermission(p, b, ProtectableAction.INTERACT_BLOCK)) || ProtectionChecker.canInteract(p, b, ProtectableAction.INTERACT_BLOCK);
+        return p.hasPermission("slimefun.teleporter.bypass") || (SlimefunPlugin.getProtectionManager().hasPermission(p, b, ProtectableAction.INTERACT_BLOCK)) || IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK);
     }
 }

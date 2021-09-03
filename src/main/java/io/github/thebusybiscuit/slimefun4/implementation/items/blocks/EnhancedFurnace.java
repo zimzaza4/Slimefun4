@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.blocks;
 
+import io.github.thebusybiscuit.slimefun4.implementation.handlers.VanillaInventoryDropHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.papermc.lib.PaperLib;
 import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
@@ -16,6 +17,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -40,6 +42,8 @@ public class EnhancedFurnace extends SimpleSlimefunItem<BlockTicker> {
         this.speed = speed - 1;
         this.efficiency = efficiency - 1;
         this.fortuneLevel = fortune - 1;
+
+        addItemHandler(new VanillaInventoryDropHandler<>(Furnace.class));
     }
 
     /**
@@ -99,7 +103,7 @@ public class EnhancedFurnace extends SimpleSlimefunItem<BlockTicker> {
         };
     }
 
-    private void setProgress(Furnace furnace) {
+    private void setProgress(@Nonnull Furnace furnace) {
         // Update the cooktime
         int cookTime = furnace.getCookTime() + getProcessingSpeed() * 10;
         furnace.setCookTime((short) Math.min(cookTime, furnace.getCookTimeTotal() - 1));

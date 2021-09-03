@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Predicate;
 
+// This class will be rewritten in the "Recipe Rewrite"
 public class MachineFuel implements Predicate<ItemStack> {
 
     private final int ticks;
@@ -26,7 +27,7 @@ public class MachineFuel implements Predicate<ItemStack> {
 
         this.ticks = seconds * 2;
         this.fuel = fuel;
-        this.wrapper = new ItemStackWrapper(fuel);
+        this.wrapper = ItemStackWrapper.wrap(fuel);
         this.output = output;
     }
 

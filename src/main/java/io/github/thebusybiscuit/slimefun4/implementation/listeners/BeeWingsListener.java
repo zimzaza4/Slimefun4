@@ -41,7 +41,7 @@ public class BeeWingsListener implements Listener {
         Player player = (Player) e.getEntity();
         ItemStack chestplate = player.getInventory().getChestplate();
 
-        if (wings.isItem(chestplate) && Slimefun.hasUnlocked(player, chestplate, true)) {
+        if (wings.isItem(chestplate) && wings.canUse(player, true)) {
             new BeeWingsTask(player).scheduleRepeating(3, 1);
         }
     }

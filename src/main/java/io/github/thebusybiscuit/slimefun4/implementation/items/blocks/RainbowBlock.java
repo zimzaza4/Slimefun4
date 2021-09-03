@@ -5,12 +5,22 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunIte
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+/**
+ * A {@link RainbowBlock} cycles through different colored {@link Material Materials}.
+ *
+ * @author TheBusyBiscuit
+ *
+ */
 public class RainbowBlock extends SimpleSlimefunItem<RainbowTickHandler> {
 
     private final RainbowTickHandler ticker;
 
+    @ParametersAreNonnullByDefault
     public RainbowBlock(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput, RainbowTickHandler ticker) {
         super(category, item, recipeType, recipe, recipeOutput);
 

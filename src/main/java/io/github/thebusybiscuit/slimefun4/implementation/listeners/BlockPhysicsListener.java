@@ -82,10 +82,11 @@ public class BlockPhysicsListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onLiquidFlow(BlockFromToEvent e) {
         Block block = e.getToBlock();
+        Material type = block.getType();
 
         // Check if this Material can be destroyed by fluids
 
-        if (SlimefunTag.FLUID_SENSITIVE_MATERIALS.isTagged(block.getType())) {
+        if (SlimefunTag.FLUID_SENSITIVE_MATERIALS.isTagged(type)) {
             // Check if this Block holds any data
             if (BlockStorage.hasBlockInfo(block)) {
                 e.setCancelled(true);
@@ -93,7 +94,7 @@ public class BlockPhysicsListener implements Listener {
                 Location loc = block.getLocation();
 
                 // Fixes #2496 - Make sure it is not a moving block
-                if (SlimefunPlugin.getTickerTask().isReserved(loc)) {
+                if (SlimefunPlugin.getTickerTask().isOccupiedSoon(loc)) {
                     e.setCancelled(true);
                 }
             }

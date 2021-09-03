@@ -1,16 +1,18 @@
 package io.github.thebusybiscuit.slimefun4.core.guide;
 
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import java.util.Deque;
+import java.util.LinkedList;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Deque;
-import java.util.LinkedList;
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import me.mrCookieSlime.Slimefun.Objects.Category;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 
 /**
  * {@link GuideHistory} represents the browsing history of a {@link Player} through the
@@ -26,11 +28,13 @@ public class GuideHistory {
 
     private final PlayerProfile profile;
     private final Deque<GuideEntry<?>> queue = new LinkedList<>();
+    private int mainMenuPage = 1;
 
     /**
      * This creates a new {@link GuideHistory} for the given {@link PlayerProfile}
      *
-     * @param profile The {@link PlayerProfile} this {@link GuideHistory} was made for
+     * @param profile
+     *            The {@link PlayerProfile} this {@link GuideHistory} was made for
      */
     public GuideHistory(@Nonnull PlayerProfile profile) {
         Validate.notNull(profile, "Cannot create a GuideHistory without a PlayerProfile!");
@@ -45,12 +49,35 @@ public class GuideHistory {
     }
 
     /**
+     * This method sets the page of the main menu of this {@link GuideHistory}
+     *
+     * @param page
+     *            The current page of the main menu that should be stored
+     */
+    public void setMainMenuPage(int page) {
+        Validate.isTrue(page >= 1, "page must be greater than 0!");
+
+        mainMenuPage = page;
+    }
+
+    /**
+     * This returns the current main menu page of this {@link GuideHistory}
+     *
+     * @return The main menu page of this {@link GuideHistory}
+     */
+    public int getMainMenuPage() {
+        return mainMenuPage;
+    }
+
+    /**
      * This method adds a {@link Category} to this {@link GuideHistory}.
      * Should the {@link Category} already be the last element in this {@link GuideHistory},
      * then the entry will be overridden with the new page.
      *
-     * @param category The {@link Category} that should be added to this {@link GuideHistory}
-     * @param page     The current page of the {@link Category} that should be stored
+     * @param category
+     *            The {@link Category} that should be added to this {@link GuideHistory}
+     * @param page
+     *            The current page of the {@link Category} that should be stored
      */
     public void add(@Nonnull Category category, int page) {
         refresh(category, page);
@@ -160,7 +187,7 @@ public class GuideHistory {
 
     private <T> void open(@Nonnull SlimefunGuideImplementation guide, @Nullable GuideEntry<T> entry) {
         if (entry == null) {
-            guide.openMainMenu(profile, 1);
+            guide.openMainMenu(profile, mainMenuPage);
         } else if (entry.getIndexedObject() instanceof Category) {
             guide.openCategory(profile, (Category) entry.getIndexedObject(), entry.getPage());
         } else if (entry.getIndexedObject() instanceof SlimefunItem) {

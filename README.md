@@ -1,10 +1,12 @@
 # Slimefun
 
-Looking for English Version? [**Click here**](https://github.com/Slimefun/Slimefun4/)
+Looking for English (or Original) Version? [**Click here**](https://github.com/Slimefun/Slimefun4/)
 
 想要直接下载吗? [**单击此处**](https://github.com/StarWishsama/Slimefun4/blob/master/README.md#%e4%b8%8b%e8%bd%bd-Slimefun4)
 
 MCBBS 链接: https://www.mcbbs.net/thread-827594-1-1.html
+
+⚡ 汉化不易, 欢迎支持[爱发电](http://afdian.net/@name1ess)
 
 交流群：807302496
 
@@ -12,21 +14,21 @@ MCBBS 链接: https://www.mcbbs.net/thread-827594-1-1.html
 ![编译状态](https://github.com/StarWishsama/Slimefun4/workflows/Java%20CI/badge.svg)
 [![Issues](https://img.shields.io/github/issues/StarWishsama/Slimefun4.svg?style=popout)](https://github.com/StarWishsama/Slimefun4/issues)
 
-如果你使用了本版本, 请 **不要** 在官方问题追踪器创建新问题!<br>
-如果你执意要这么做, 请在反馈时使用**官方**开发版并且使用**英语** 提交问题<br>
-如果不能, 请优先考虑在此处创建新问题.
+使用汉化版之后, **禁止** 在官方问题追踪器创建新问题!<br>
+如果你执意要这么做, 请在反馈时使用**官方**开发版并且使用**英语** 提交问题.<br>
+否则, 请在此处创建问题或加群讨论.
 
 魔改内容:
 * 粘液机器支持领地保护
 * 粘液方块支持领地/地皮保护
 * 支持使用游戏币解锁研究项目
-* 支持自定义附/祛魔机可使用的附魔等级上限
+* 支持自定义附/祛魔机可使用的附魔等级上限 (官方已合并)
 * 修复了部分官方未修复的 Bug
 
-Slimefun 是一个致力于提供模组般体验的插件. 它提供了你能想到的一切, 无论是喷气背包还是魔法祭坛!
+Slimefun 是一个致力于提供模组般体验的插件. 它提供了你能想到的一切, 不管是喷气背包还是魔法祭坛!
 Slimefun 让每个玩家可以自己决定在魔法或科技方面发展<br>
 从魔杖到核反应堆, 我们应有尽有.<br>
-不仅如此, 我们还有魔法祭坛, 能源网络甚至物品运输系统.
+除此之外, 我们还有魔法祭坛, 能源网络甚至物品运输系统.
 
 该项目从2013年开始开发，此后一直发展.<br>
 从那时一个人开发插件到发展成一个拥有数千名参与者和一百多位贡献者的社区.<br>
@@ -52,7 +54,7 @@ Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 
 | | 开发版 (最新更新) | "稳定版" |
 | ------------------ | -------- | -------- |
-| **支持的 Minecraft 版本** | :video_game: 1.13.X - 1.16.X | :video_game: 1.13.X - 1.16.X |
+| **支持的 Minecraft 版本** | :video_game: 1.13.X - 1.17.X | :video_game: 1.13.X - 1.16.X |
 | **自动更新系统** | :heavy_check_mark: | :heavy_check_mark: |
 | **频繁更新** | :heavy_check_mark: | :x: |
 | **享有最新内容** | :heavy_check_mark: | :x: |
@@ -75,7 +77,7 @@ Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 | *截图由 GalaxyKat11#3816 提供* | *截图由 TamThan#7987 提供* | *截图由 Kilaruna#4981 提供* |
 
 ## Discord
-你可以在 Discord 上与 **超过 1800** 个在 Slimefun 社区中来自全世界的用户.<br>
+你可以在 Discord 上与 **超过 6000** 个在 Slimefun 社区中来自全世界的用户.<br>
 单击下面的徽标加入 Discord 服务器反馈问题和提出意见, 或者讨论关于此插件的内容.<br>
 我们经常会举办一些社区活动, 加入我们了解更多.<br>
 **注意**: 我们在 Discord 服务器 **不** 接受任何形式的问题反馈, 请使用我们的 [问题追踪器](https://github.com/StarWishsama/Slimefun4/issues) 反馈问题!
@@ -84,10 +86,9 @@ Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 不遵守以上规则的人可能会被从服务器中踢出甚至封禁.
 
 <p align="center">
-  <a href="https://discord.gg/fsD4Bkh">
-    <img src="https://img.shields.io/discord/565557184348422174?color=7289DA&label=Discord&style=for-the-badge" alt="Discord Invite"/>
-  </a><br>
-  (单击加入服务器)
+  <a href="https://discord.gg/slimefun">
+    <img src="https://discordapp.com/api/guilds/565557184348422174/widget.png?style=banner3" alt="Discord Invite"/>
+  </a>
 </p>
 
 ## Wiki
@@ -110,7 +111,7 @@ https://github.com/Slimefun/Slimefun4/wiki
 
 ## 对项目作出贡献
 Slimefun 4 是一个以 [GNU GPLv3](https://github.com/Slimefun/Slimefun4/blob/master/LICENSE). 开源的项目<br>
-超过 100 人对这个超过 100 个人已经为这个项目做出了贡献. 这些人真是太棒了.<br>
+已经有超过 100 人对这个项目做出了贡献. 这些人真是太棒了.<br>
 我们鼓励通过提交 PR 的方式为 Slimefun 4 做出贡献, 你的贡献将会使插件保持活力 <3.
 
 ### 翻译

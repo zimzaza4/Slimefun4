@@ -2,6 +2,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.magical;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.api.items.settings.DoubleRangeSetting;
+import io.github.thebusybiscuit.slimefun4.implementation.handlers.VanillaInventoryDropHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
@@ -27,23 +28,27 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * The {@link InfusedHopper} is a special kind of {@link Hopper} which teleports any
- * neaby {@link Item} to itself.
+ * nearby {@link Item} to itself.
  * The radius can be configured in the config.
  *
  * @author TheBusyBiscuit
+ * @author Walshy
  * @see InfusedMagnet
  */
 public class InfusedHopper extends SimpleSlimefunItem<BlockTicker> {
 
-    private final ItemSetting<Boolean> silent = new ItemSetting<>("silent", false);
-    private final ItemSetting<Boolean> toggleable = new ItemSetting<>("toggleable-with-redstone", false);
-    private final ItemSetting<Double> radius = new DoubleRangeSetting("radius", 0.1, 3.5, Double.MAX_VALUE);
+    private final ItemSetting<Boolean> silent = new ItemSetting<>(this, "silent", false);
+    private final ItemSetting<Boolean> toggleable = new ItemSetting<>(this, "toggleable-with-redstone", false);
+    private final ItemSetting<Double> radius = new DoubleRangeSetting(this, "radius", 0.1, 3.5, Double.MAX_VALUE);
 
     @ParametersAreNonnullByDefault
     public InfusedHopper(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
         addItemSetting(silent, radius, toggleable);
+
+        // Fixes #2895 - Make sure we drop all inventory contents
+        addItemHandler(new VanillaInventoryDropHandler<>(org.bukkit.block.Hopper.class));
     }
 
     @Override
@@ -101,7 +106,10 @@ public class InfusedHopper extends SimpleSlimefunItem<BlockTicker> {
     private boolean isValidItem(@Nonnull Location l, @Nonnull Entity entity) {
         if (entity instanceof Item && entity.isValid()) {
             Item item = (Item) entity;
-            return !SlimefunUtils.hasNoPickupFlag(item) && item.getLocation().distanceSquared(l) > 0.25;
+            // Check if the item cannot be picked up or has the "no pickup" metadata
+            return item.getPickupDelay() <= 0
+                    && !SlimefunUtils.hasNoPickupFlag(item)
+                    && item.getLocation().distanceSquared(l) > 0.25;
         }
 
         return false;

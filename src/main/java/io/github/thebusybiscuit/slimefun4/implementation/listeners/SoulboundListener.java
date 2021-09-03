@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -40,12 +39,12 @@ public class SoulboundListener implements Listener {
             ItemStack item = p.getInventory().getItem(slot);
 
             // Store soulbound items for later retrieval
-            if (SlimefunUtils.isSoulbound(item)) {
+            if (SlimefunUtils.isSoulbound(item, p.getWorld())) {
                 items.put(slot, item);
             }
         }
 
-        // There shouldn't even be any items in there, but let's be sfmagic safe!
+        // There shouldn't even be any items in there, but let's be utils safe!
         Map<Integer, ItemStack> existingItems = soulbound.get(p.getUniqueId());
 
         if (existingItems == null) {
@@ -55,14 +54,7 @@ public class SoulboundListener implements Listener {
         }
 
         // Remove soulbound items from our drops
-        Iterator<ItemStack> drops = e.getDrops().iterator();
-        while (drops.hasNext()) {
-            ItemStack item = drops.next();
-
-            if (SlimefunUtils.isSoulbound(item)) {
-                drops.remove();
-            }
-        }
+        e.getDrops().removeIf(itemStack -> SlimefunUtils.isSoulbound(itemStack, p.getWorld()));
     }
 
     @EventHandler

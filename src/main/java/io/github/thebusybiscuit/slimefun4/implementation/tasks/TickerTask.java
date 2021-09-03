@@ -8,7 +8,6 @@ import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -124,7 +123,7 @@ public class TickerTask implements Runnable {
             reset();
             SlimefunPlugin.getProfiler().stop();
         } catch (Exception | LinkageError x) {
-            Slimefun.getLogger().log(Level.SEVERE, x, () -> "An Exception was caught while ticking the Block Tickers Task for Slimefun v" + SlimefunPlugin.getVersion());
+            SlimefunPlugin.logger().log(Level.SEVERE, x, () -> "An Exception was caught while ticking the Block Tickers Task for Slimefun v" + SlimefunPlugin.getVersion());
             reset();
         }
     }
@@ -139,7 +138,7 @@ public class TickerTask implements Runnable {
                 }
             }
         } catch (ArrayIndexOutOfBoundsException | NumberFormatException x) {
-            Slimefun.getLogger().log(Level.SEVERE, x, () -> "An Exception has occurred while trying to resolve Chunk: " + chunk);
+            SlimefunPlugin.logger().log(Level.SEVERE, x, () -> "An Exception has occurred while trying to resolve Chunk: " + chunk);
         }
     }
 
@@ -196,10 +195,10 @@ public class TickerTask implements Runnable {
             new ErrorReport<>(x, l, item);
             bugs.put(position, errors);
         } else if (errors == 4) {
-            Slimefun.getLogger().log(Level.SEVERE, "X: {0} Y: {1} Z: {2} ({3})", new Object[]{l.getBlockX(), l.getBlockY(), l.getBlockZ(), item.getId()});
-            Slimefun.getLogger().log(Level.SEVERE, "has thrown 4 error messages in the last 4 Ticks, the Block has been terminated.");
-            Slimefun.getLogger().log(Level.SEVERE, "Check your /plugins/Slimefun/error-reports/ folder for details.");
-            Slimefun.getLogger().log(Level.SEVERE, " ");
+            SlimefunPlugin.logger().log(Level.SEVERE, "X: {0} Y: {1} Z: {2} ({3})", new Object[]{l.getBlockX(), l.getBlockY(), l.getBlockZ(), item.getId()});
+            SlimefunPlugin.logger().log(Level.SEVERE, "has thrown 4 error messages in the last 4 Ticks, the Block has been terminated.");
+            SlimefunPlugin.logger().log(Level.SEVERE, "Check your /plugins/Slimefun/error-reports/ folder for details.");
+            SlimefunPlugin.logger().log(Level.SEVERE, " ");
             bugs.remove(position);
 
             BlockStorage.deleteLocationInfoUnsafely(l, true);
@@ -241,8 +240,22 @@ public class TickerTask implements Runnable {
      * @param l The {@link Location} to check
      * @return Whether this {@link Location} has been reserved and will be filled upon the next tick
      */
-    public boolean isReserved(@Nonnull Location l) {
+    public boolean isOccupiedSoon(@Nonnull Location l) {
+        Validate.notNull(l, "Null is not a valid Location!");
+
         return movingQueue.containsValue(l);
+    }
+
+    /**
+     * This method checks if a given {@link Location} will be deleted on the next tick.
+     *
+     * @param l The {@link Location} to check
+     * @return Whether this {@link Location} will be deleted on the next tick
+     */
+    public boolean isDeletedSoon(@Nonnull Location l) {
+        Validate.notNull(l, "Null is not a valid Location!");
+
+        return deletionQueue.containsKey(l);
     }
 
     /**

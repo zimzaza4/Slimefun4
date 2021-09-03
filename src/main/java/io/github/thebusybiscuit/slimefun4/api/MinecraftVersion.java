@@ -1,8 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.api;
 
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.papermc.lib.PaperLib;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Server;
+
+import javax.annotation.Nonnull;
 
 /**
  * This enum holds all versions of Minecraft that we currently support.
@@ -18,19 +21,26 @@ public enum MinecraftVersion {
      * This constant represents Minecraft (Java Edition) Version 1.14
      * (The "Village &amp; Pillage" Update)
      */
-    MINECRAFT_1_14("1.14.x"),
+    MINECRAFT_1_14(14, "1.14.x"),
 
     /**
      * This constant represents Minecraft (Java Edition) Version 1.15
      * (The "Buzzy Bees" Update)
      */
-    MINECRAFT_1_15("1.15.x"),
+    MINECRAFT_1_15(15, "1.15.x"),
 
     /**
      * This constant represents Minecraft (Java Edition) Version 1.16
      * (The "Nether Update")
      */
-    MINECRAFT_1_16("1.16.x"),
+    MINECRAFT_1_16(16, "1.16.x"),
+
+    /**
+     * This constant represents Minecraft (Java Edition) Version 1.17
+     * (The "Caves & Cliffs: Part I" Update)
+     *
+     */
+    MINECRAFT_1_17(17, "1.17.x"),
 
     /**
      * This constant represents an exceptional state in which we were unable
@@ -44,21 +54,24 @@ public enum MinecraftVersion {
      */
     UNIT_TEST("Unit Test Environment", true);
 
-    public static final MinecraftVersion[] valuesCache = values();
-
     private final String name;
     private final boolean virtual;
-    private final String prefix;
+    private final int majorVersion;
 
     /**
      * This constructs a new {@link MinecraftVersion} with the given name.
      * This constructor forces the {@link MinecraftVersion} to be real.
      * It must be a real version of Minecraft.
      *
-     * @param name The display name of this {@link MinecraftVersion}
+     * @param majorVersion
+     *            The major version of minecraft as an {@link Integer}
+     * @param name
+     *            The display name of this {@link MinecraftVersion}
      */
-    MinecraftVersion(String name) {
-        this(name, false);
+    MinecraftVersion(int majorVersion, @Nonnull String name) {
+        this.name = name;
+        this.majorVersion = majorVersion;
+        this.virtual = false;
     }
 
     /**
@@ -66,13 +79,15 @@ public enum MinecraftVersion {
      * A virtual {@link MinecraftVersion} (unknown or unit test) is not an actual
      * version of Minecraft but rather a state of the {@link Server} software.
      *
-     * @param name    The display name of this {@link MinecraftVersion}
-     * @param virtual Whether this {@link MinecraftVersion} is virtual
+     * @param name
+     *            The display name of this {@link MinecraftVersion}
+     * @param virtual
+     *            Whether this {@link MinecraftVersion} is virtual
      */
-    MinecraftVersion(String name, boolean virtual) {
+    MinecraftVersion(@Nonnull String name, boolean virtual) {
         this.name = name;
+        this.majorVersion = 0;
         this.virtual = virtual;
-        this.prefix = name().replace("MINECRAFT_", "v") + '_';
     }
 
     /**
@@ -80,6 +95,7 @@ public enum MinecraftVersion {
      *
      * @return The name of this {@link MinecraftVersion}
      */
+    @Nonnull
     public String getName() {
         return name;
     }
@@ -98,15 +114,21 @@ public enum MinecraftVersion {
     }
 
     /**
-     * This method checks whether the given version matches with this
+     * This tests if the given minecraft version number matches with this
      * {@link MinecraftVersion}.
+     * <p>
+     * You can obtain the version number by doing {@link PaperLib#getMinecraftVersion()}.
+     * It is equivalent to the "major" version
+     * <p>
+     * Example: {@literal "1.13"} returns {@literal 13}
      *
-     * @param version The version to compare
-     * @return Whether the version matches with this one
+     * @param minecraftVersion
+     *            The {@link Integer} version to match
+     *
+     * @return Whether this {@link MinecraftVersion} matches the specified version id
      */
-    public boolean matches(String version) {
-        Validate.notNull(version, "The input version must not be null!");
-        return version.startsWith(prefix);
+    public boolean isMinecraftVersion(int minecraftVersion) {
+        return !isVirtual() && this.majorVersion == minecraftVersion;
     }
 
     /**
@@ -120,7 +142,7 @@ public enum MinecraftVersion {
      *
      * @return Whether this {@link MinecraftVersion} is newer or equal to the given {@link MinecraftVersion}
      */
-    public boolean isAtLeast(MinecraftVersion version) {
+    public boolean isAtLeast(@Nonnull MinecraftVersion version) {
         Validate.notNull(version, "A Minecraft version cannot be null!");
 
         if (this == UNKNOWN) {
@@ -140,7 +162,7 @@ public enum MinecraftVersion {
      *
      * @return Whether this {@link MinecraftVersion} is older than the given one
      */
-    public boolean isBefore(MinecraftVersion version) {
+    public boolean isBefore(@Nonnull MinecraftVersion version) {
         Validate.notNull(version, "A Minecraft version cannot be null!");
 
         if (this == UNKNOWN) {

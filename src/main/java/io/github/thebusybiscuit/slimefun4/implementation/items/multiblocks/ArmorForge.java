@@ -7,7 +7,6 @@ import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -42,7 +41,7 @@ public class ArmorForge extends AbstractCraftingTable {
                 if (isCraftable(inv, inputs.get(i))) {
                     ItemStack output = RecipeType.getRecipeOutputList(this, inputs.get(i)).clone();
 
-                    if (Slimefun.hasUnlocked(p, output, true)) {
+                    if (SlimefunUtils.canPlayerUseItem(p, output, true)) {
                         craft(p, output, inv, dispenser);
                     }
 
@@ -50,7 +49,11 @@ public class ArmorForge extends AbstractCraftingTable {
                 }
             }
 
-            SlimefunPlugin.getLocalization().sendMessage(p, "machines.pattern-not-found", true);
+            if (inv.isEmpty()) {
+                SlimefunPlugin.getLocalization().sendMessage(p, "machines.inventory-empty", true);
+            } else {
+                SlimefunPlugin.getLocalization().sendMessage(p, "machines.pattern-not-found", true);
+            }
         }
     }
 
@@ -86,7 +89,7 @@ public class ArmorForge extends AbstractCraftingTable {
                         p.getWorld().playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1F, 2F);
                     } else {
                         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
-                        outputInv.addItem(output);
+                        handleCraftedItem(output, dispenser, inv);
                     }
                 }, j * 20L);
             }

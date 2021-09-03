@@ -1,18 +1,21 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.reactors;
 
-import io.github.starwishsama.sfmagic.ProtectionChecker;
+import ren.natsuyuk1.utils.IntegrationHelper;
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
-import io.github.thebusybiscuit.slimefun4.api.events.AsyncReactorProcessCompleteEvent;
 import io.github.thebusybiscuit.slimefun4.api.events.ReactorExplodeEvent;
+import io.github.thebusybiscuit.slimefun4.core.attributes.HologramOwner;
+import io.github.thebusybiscuit.slimefun4.core.attributes.MachineProcessHolder;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
+import io.github.thebusybiscuit.slimefun4.core.machines.MachineProcessor;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.ReactorAccessPort;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.AbstractEnergyProvider;
+import io.github.thebusybiscuit.slimefun4.implementation.operations.FuelOperation;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import io.github.thebusybiscuit.slimefun4.utils.holograms.ReactorHologram;
-import io.github.thebusybiscuit.slimefun4.utils.holograms.SimpleHologram;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
@@ -53,10 +56,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @see NuclearReactor
  * @see NetherStarReactor
  */
-public abstract class Reactor extends AbstractEnergyProvider {
-
-    public static Map<Location, MachineFuel> processing = new HashMap<>();
-    public static Map<Location, Integer> progress = new HashMap<>();
+public abstract class Reactor extends AbstractEnergyProvider implements HologramOwner, MachineProcessHolder<FuelOperation> {
 
     private static final String MODE = "reactor-mode";
     private static final int INFO_SLOT = 49;
@@ -72,10 +72,13 @@ public abstract class Reactor extends AbstractEnergyProvider {
     private static final int[] border_4 = {25, 34, 43};
 
     private final Set<Location> explosionsQueue = new HashSet<>();
+    private final MachineProcessor<FuelOperation> processor = new MachineProcessor<>(this);
 
     @ParametersAreNonnullByDefault
-    public Reactor(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    protected Reactor(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
+
+        processor.setProgressBar(getProgressBar());
 
         new BlockMenuPreset(getId(), getInventoryTitle()) {
 
@@ -95,7 +98,7 @@ public abstract class Reactor extends AbstractEnergyProvider {
 
             @Override
             public boolean canOpen(Block b, Player p) {
-                return p.hasPermission("slimefun.inventory.bypass") || SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK) || ProtectionChecker.canInteract(p, b, ProtectableAction.INTERACT_BLOCK);
+                return p.hasPermission("slimefun.inventory.bypass") || SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK) || IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK);
             }
 
             @Override
@@ -104,22 +107,33 @@ public abstract class Reactor extends AbstractEnergyProvider {
             }
         };
 
-        registerBlockHandler(getId(), (p, b, tool, reason) -> {
-            BlockMenu inv = BlockStorage.getInventory(b);
-
-            if (inv != null) {
-                inv.dropItems(b.getLocation(), getFuelSlots());
-                inv.dropItems(b.getLocation(), getCoolantSlots());
-                inv.dropItems(b.getLocation(), getOutputSlots());
-            }
-
-            progress.remove(b.getLocation());
-            processing.remove(b.getLocation());
-            SimpleHologram.remove(b);
-            return true;
-        });
+        addItemHandler(onBreak());
 
         registerDefaultFuelTypes();
+    }
+
+    @Override
+    public MachineProcessor<FuelOperation> getMachineProcessor() {
+        return processor;
+    }
+
+    @Nonnull
+    private BlockBreakHandler onBreak() {
+        return new SimpleBlockBreakHandler() {
+            @Override
+            public void onBlockBreak(@Nonnull Block b) {
+                BlockMenu inv = BlockStorage.getInventory(b);
+
+                if (inv != null) {
+                    inv.dropItems(b.getLocation(), getFuelSlots());
+                    inv.dropItems(b.getLocation(), getCoolantSlots());
+                    inv.dropItems(b.getLocation(), getOutputSlots());
+                }
+
+                processor.endOperation(b);
+                removeHologram(b);
+            }
+        };
     }
 
     protected void updateInventory(@Nonnull BlockMenu menu, @Nonnull Block b) {
@@ -168,7 +182,7 @@ public abstract class Reactor extends AbstractEnergyProvider {
 
     private void constructMenu(@Nonnull BlockMenuPreset preset) {
         for (int i : border) {
-            preset.addItem(i, new CustomItem(Material.GRAY_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
+            preset.addItem(i, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
         }
 
         for (int i : border_1) {
@@ -260,27 +274,19 @@ public abstract class Reactor extends AbstractEnergyProvider {
         return new int[]{40};
     }
 
-    public MachineFuel getProcessing(Location l) {
-        return processing.get(l);
-    }
-
-    public boolean isProcessing(Location l) {
-        return progress.containsKey(l);
-    }
-
     @Override
     public int getGeneratedOutput(Location l, Config data) {
         BlockMenu inv = BlockStorage.getInventory(l);
         BlockMenu accessPort = getAccessPort(l);
+        FuelOperation operation = processor.getOperation(l);
 
-        if (isProcessing(l)) {
+        if (operation != null) {
             extraTick(l);
-            int timeleft = progress.get(l);
 
-            if (timeleft > 0) {
-                return generateEnergy(l, data, inv, accessPort, timeleft);
+            if (!operation.isFinished()) {
+                return generateEnergy(l, data, inv, accessPort, operation);
             } else {
-                createByproduct(l, inv, accessPort);
+                createByproduct(l, inv, accessPort, operation);
                 return 0;
             }
         } else {
@@ -289,7 +295,7 @@ public abstract class Reactor extends AbstractEnergyProvider {
         }
     }
 
-    private int generateEnergy(@Nonnull Location l, @Nonnull Config data, @Nonnull BlockMenu inv, @Nullable BlockMenu accessPort, int timeleft) {
+    private int generateEnergy(@Nonnull Location l, @Nonnull Config data, @Nonnull BlockMenu inv, @Nullable BlockMenu accessPort, @Nonnull FuelOperation operation) {
         int produced = getEnergyProduction();
         String energyData = data.getString("energy-charge");
         int charge = 0;
@@ -301,12 +307,11 @@ public abstract class Reactor extends AbstractEnergyProvider {
         int space = getCapacity() - charge;
 
         if (space >= produced || getReactorMode(l) != ReactorMode.GENERATOR) {
-            progress.put(l, timeleft - 1);
+            operation.addProgress(1);
             checkForWaterBlocks(l);
+            processor.updateProgressBar(inv, 22, operation);
 
-            ChestMenuUtils.updateProgressbar(inv, 22, timeleft, processing.get(l).getTicks(), getProgressBar());
-
-            if (needsCooling() && !hasEnoughCoolant(l, inv, accessPort, timeleft)) {
+            if (needsCooling() && !hasEnoughCoolant(l, inv, accessPort, operation)) {
                 explosionsQueue.add(l);
                 return 0;
             }
@@ -329,12 +334,11 @@ public abstract class Reactor extends AbstractEnergyProvider {
                 Bukkit.getPluginManager().callEvent(event);
 
                 BlockStorage.getInventory(l).close();
-                SimpleHologram.remove(l.getBlock());
+                removeHologram(l.getBlock());
             });
 
             explosionsQueue.remove(l);
-            processing.remove(l);
-            progress.remove(l);
+            processor.endOperation(l);
         }
 
         return explosion;
@@ -353,11 +357,12 @@ public abstract class Reactor extends AbstractEnergyProvider {
         });
     }
 
-    private void createByproduct(Location l, BlockMenu inv, BlockMenu accessPort) {
+    private void createByproduct(@Nonnull Location l, @Nonnull BlockMenu inv, @Nullable BlockMenu accessPort, @Nonnull FuelOperation operation) {
         inv.replaceExistingItem(22, new CustomItem(Material.BLACK_STAINED_GLASS_PANE, " "));
+        ItemStack result = operation.getResult();
 
-        if (processing.get(l).getOutput() != null) {
-            inv.pushItem(processing.get(l).getOutput().clone(), getOutputSlots());
+        if (result != null) {
+            inv.pushItem(result.clone(), getOutputSlots());
         }
 
         if (accessPort != null) {
@@ -368,10 +373,7 @@ public abstract class Reactor extends AbstractEnergyProvider {
             }
         }
 
-        Bukkit.getPluginManager().callEvent(new AsyncReactorProcessCompleteEvent(l, Reactor.this, getProcessing(l)));
-
-        progress.remove(l);
-        processing.remove(l);
+        processor.endOperation(l);
     }
 
     private void burnNextFuel(Location l, BlockMenu inv, BlockMenu accessPort) {
@@ -387,8 +389,7 @@ public abstract class Reactor extends AbstractEnergyProvider {
                 inv.consumeItem(entry.getKey(), entry.getValue());
             }
 
-            processing.put(l, fuel);
-            progress.put(l, fuel.getTicks());
+            processor.startOperation(l, new FuelOperation(fuel));
         }
     }
 
@@ -401,16 +402,16 @@ public abstract class Reactor extends AbstractEnergyProvider {
      *            The {@link Inventory} of this {@link Reactor}
      * @param accessPort
      *            The {@link ReactorAccessPort}, if available
-     * @param timeleft
-     *            The time left
+     * @param operation
+     *            The {@link FuelOperation} of this {@link Reactor}
      *
      * @return Whether the {@link Reactor} was successfully cooled, if not it should explode
      */
-    private boolean hasEnoughCoolant(@Nonnull Location reactor, @Nonnull BlockMenu menu, @Nullable BlockMenu accessPort, int timeleft) {
-        boolean requiresCoolant = (processing.get(reactor).getTicks() - timeleft) % COOLANT_DURATION == 0;
+    private boolean hasEnoughCoolant(@Nonnull Location reactor, @Nonnull BlockMenu menu, @Nullable BlockMenu accessPort, @Nonnull FuelOperation operation) {
+        boolean requiresCoolant = operation.getProgress() % COOLANT_DURATION == 0;
 
         if (requiresCoolant) {
-            ItemStack coolant = new ItemStackWrapper(getCoolant());
+            ItemStack coolant = ItemStackWrapper.wrap(getCoolant());
 
             if (accessPort != null) {
                 for (int slot : getCoolantSlots()) {
@@ -424,14 +425,14 @@ public abstract class Reactor extends AbstractEnergyProvider {
             for (int slot : getCoolantSlots()) {
                 if (SlimefunUtils.isItemSimilar(menu.getItemInSlot(slot), coolant, true, false)) {
                     menu.consumeItem(slot);
-                    ReactorHologram.update(reactor, "&b\u2744 &7100%");
+                    updateHologram(reactor.getBlock(), "&b\u2744 &7100%");
                     return true;
                 }
             }
 
             return false;
         } else {
-            ReactorHologram.update(reactor, "&b\u2744 &7" + getPercentage(timeleft, processing.get(reactor).getTicks()) + "%");
+            updateHologram(reactor.getBlock(), "&b\u2744 &7" + getPercentage(operation.getRemainingTicks(), operation.getTotalTicks()) + "%");
         }
 
         return true;

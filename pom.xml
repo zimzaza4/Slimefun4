@@ -1,100 +1,136 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.github.thebusybiscuit</groupId>
+    <groupId>com.github.slimefun</groupId>
     <artifactId>Slimefun</artifactId>
 
-    <!-- Our default version will be UNOFFICIAL, this will prevent the auto updater -->
+    <!-- Our default version will be UNOFFICIAL, this will prevent auto updates -->
     <!-- from overriding our local test file -->
-    <version>4.8-nightly</version>
+    <version>4.9</version>
+    <inceptionYear>2013</inceptionYear>
+    <packaging>jar</packaging>
+
+    <!-- Project Info -->
+    <description>Slimefun is a Spigot/Paper plugin that simulates a modpack-like atmosphere by adding over 500 new items
+        and recipes to your Minecraft Server.
+    </description>
+    <url>https://github.com/Slimefun/Slimefun4</url>
 
     <properties>
+        <!-- UTF-8 is our standard encoding for source files -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Target Java 8 -->
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
 
-        <!-- Bukkit properties -->
-        <spigot.version>1.16.4</spigot.version>
-        <spigot.javadocs>https://hub.spigotmc.org/javadocs/bukkit/</spigot.javadocs>
-
+        <!-- Spigot properties -->
+        <spigot.version>1.17</spigot.version>
+        <spigot.javadocs>https://hub.spigotmc.org/javadocs/spigot/</spigot.javadocs>
     </properties>
 
+    <issueManagement>
+        <!-- Bug Tracker -->
+        <system>GitHub Issues</system>
+        <url>https://github.com/Slimefun/Slimefun4/issues</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <!-- License -->
+            <name>GNU General Public License v3.0</name>
+            <url>https://github.com/Slimefun/Slimefun4/blob/master/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <!-- Repositories that host our dependencies -->
+    <!-- Well, any that aren't found on maven-central. -->
     <repositories>
         <repository>
-            <id>destroystokyo-repo</id>
-            <url>https://repo.destroystokyo.com/repository/maven-public</url>
-        </repository>
-        <repository>
-            <id>papermc</id>
-            <url>https://papermc.io/repo/repository/maven-public</url>
-        </repository>
-        <repository>
+            <!-- Spigot-API -->
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots</url>
         </repository>
         <repository>
+            <!-- PaperLib -->
+            <id>paper-repo</id>
+            <url>https://papermc.io/repo/repository/maven-public</url>
+        </repository>
+        <repository>
+            <!-- CS-CoreLib2, ItemsAdder -->
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
         <repository>
-            <id>worldedit-worldguard-repo</id>
+            <!-- WorldEdit -->
+            <id>worldedit-repo</id>
             <url>https://maven.sk89q.com/repo</url>
         </repository>
         <repository>
-            <id>codemc-repo</id>
-            <url>https://repo.codemc.org/repository/maven-public</url>
-        </repository>
-        <repository>
+            <!-- PlaceholderAPI -->
             <id>placeholderapi-repo</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi</url>
         </repository>
-        <!-- WorldEdit -->
         <repository>
-            <id>enginehub</id>
-            <url>https://maven.enginehub.org/repo</url>
+            <!-- mcMMO -->
+            <id>mcmmo-repo</id>
+            <url>https://nexus.neetgames.com/repository/maven-public</url>
         </repository>
         <repository>
+            <!-- ClearLag -->
             <id>walshy-public</id>
             <url>https://repo.walshy.dev/public</url>
+        </repository>
+        <repository>
+            <!-- QuickShop-Reremake -->
+            <id>quickshop-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <!-- Orebfuscator -->
+            <id>imprex-repo</id>
+            <url>https://imprex.ingrim4.me/repository/maven-public/</url>
         </repository>
     </repositories>
 
     <build>
+        <!-- /src/main/java/ contains all sources (production code) -->
         <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+
+        <!-- The default goal for compiling is "clean package" -->
         <defaultGoal>clean package</defaultGoal>
+
+        <!-- The name of the final jar -->
         <finalName>${project.name}-v${project.version}</finalName>
 
         <plugins>
             <plugin>
+                <!-- Compiler plugin -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
+
                 <configuration>
                     <excludes>
-                        <!-- package info files are only important to the Javadocs -->
-                        <!-- We can exclude them from the final jar -->
+                        <!-- package info files are only important for Javadocs -->
+                        <!-- We can safely exclude them from the final jar -->
                         <exclude>**/package-info.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M4</version>
-            </plugin>
-
-            <plugin>
+                <!-- Dependency shading -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.3</version>
+                <version>3.2.4</version>
 
                 <configuration>
-
-                    <!-- Shade bStats and CS-CoreLib2 into the output jar -->
+                    <!-- Relocate these to avoid clashes and conflicts -->
                     <relocations>
                         <relocation>
                             <pattern>io.github.thebusybiscuit.cscorelib2</pattern>
@@ -110,7 +146,7 @@
                         </relocation>
                     </relocations>
 
-                    <!-- Exclude unneeded metadata from shaded dependencies -->
+                    <!-- Exclude unneeded metadata files from shaded dependencies -->
                     <filters>
                         <filter>
                             <artifact>*:*</artifact>
@@ -134,21 +170,28 @@
 
         <resources>
 
-            <!-- Resources we want to include, such as configs or language files -->
+            <!-- Resources we want to include, e.g. configs or language files -->
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
                 <filtering>true</filtering>
 
                 <includes>
-                    <include>*</include>
-                    <include>tags/*</include>
-                    <include>languages/*</include>
+                    <include>plugin.yml</include>
+                    <include>config.yml</include>
+                    <include>item-models.yml</include>
+
+                    <include>wiki.json</include>
+                    <include>languages/translators.json</include>
+                    <include>tags/*.json</include>
+
+                    <include>languages/**/*.yml</include>
                 </includes>
             </resource>
 
-            <!--  We also want to include our LICENSE file -->
+            <!-- We also want to include our LICENSE file -->
             <resource>
                 <directory>${basedir}</directory>
+                <filtering>false</filtering>
 
                 <includes>
                     <include>LICENSE</include>
@@ -158,12 +201,6 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
-            <version>1.3.2</version>
-            <scope>provided</scope>
-        </dependency>
         <!-- Hard dependencies -->
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -171,31 +208,21 @@
             <version>${spigot.version}-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Development dependencies -->
         <dependency>
-            <groupId>com.github.TheBusyBiscuit</groupId>
-            <artifactId>CS-CoreLib</artifactId>
-            <version>1.7</version>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
             <scope>provided</scope>
         </dependency>
 
         <!-- Shaded packages -->
         <dependency>
-            <groupId>com.github.TheBusyBiscuit</groupId>
+            <groupId>com.github.thebusybiscuit</groupId>
             <artifactId>CS-CoreLib2</artifactId>
-            <version>0.27.4</version>
+            <version>0.32.1</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.konghq</groupId>
-            <artifactId>unirest-java</artifactId>
-            <version>3.11.06</version>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.code.gson</groupId>
-                    <artifactId>gson</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.papermc</groupId>
@@ -203,60 +230,75 @@
             <version>1.0.6</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>3.11.13</version>
+            <scope>compile</scope>
 
-        <!-- Third party plugin integrations -->
+            <exclusions>
+                <exclusion>
+                    <!-- No need to shade Gson, Spigot does that already -->
+                    <groupId>com.google.code.gson</groupId>
+                    <artifactId>gson</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Third party plugin integrations / soft dependencies -->
+        <dependency>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-core</artifactId>
+            <version>7.2.6</version>
+            <scope>provided</scope>
+
+            <exclusions>
+                <exclusion>
+                    <!-- We don't need any of the dependencies -->
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
-            <version>7.2.0</version>
+            <version>7.2.6</version>
             <scope>provided</scope>
+
             <exclusions>
-                <!-- This one is ignored because it pops up everytime -->
-                <!-- I try to import File... yes, I want the java.io one... -->
                 <exclusion>
-                    <groupId>de.schlichtherle</groupId>
-                    <artifactId>truezip</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.java.truevfs</groupId>
-                    <artifactId>truevfs-profile-default_2.13</artifactId>
+                    <!-- We don't need any of the dependencies -->
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>com.gmail.nossr50.mcMMO</groupId>
             <artifactId>mcMMO</artifactId>
-            <version>2.1.161</version>
+            <version>2.1.201</version>
             <scope>provided</scope>
+
             <exclusions>
                 <exclusion>
-                    <!-- We use javax.annotation instead. Excluding this -->
-                    <!-- prevents us from using inconsistent annotations -->
-                    <groupId>org.jetbrains</groupId>
-                    <artifactId>annotations</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sk89q.worldguard</groupId>
-                    <artifactId>worldguard-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sk89q.worldguard</groupId>
-                    <artifactId>worldguard-legacy</artifactId>
+                    <!-- We don't need any of the dependencies -->
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.10.9</version>
+            <version>2.10.10</version>
             <scope>provided</scope>
+
             <exclusions>
                 <exclusion>
-                    <!-- We use javax.annotation instead. Excluding this -->
-                    <!-- prevents us from using inconsistent annotations -->
-                    <groupId>org.jetbrains</groupId>
-                    <artifactId>annotations</artifactId>
+                    <!-- We don't need any of the dependencies -->
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -265,39 +307,83 @@
             <artifactId>clearlag-core</artifactId>
             <version>3.1.6</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.LoneDev6</groupId>
-            <artifactId>itemsadder-api</artifactId>
-            <version>0.1.2</version>
-            <scope>provided</scope>
+
             <exclusions>
                 <exclusion>
-                    <!-- We use javax.annotation instead. Excluding this -->
-                    <!-- prevents us from using inconsistent annotations -->
-                    <groupId>org.jetbrains</groupId>
-                    <artifactId>annotations</artifactId>
+                    <!-- We don't need any of the dependencies -->
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
+            <groupId>com.github.LoneDev6</groupId>
+            <artifactId>itemsadder-api</artifactId>
+            <version>2.4.7</version>
+            <scope>provided</scope>
+
+            <exclusions>
+                <exclusion>
+                    <!-- We don't need any of the dependencies -->
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>net.imprex</groupId>
+            <artifactId>orebfuscator-api</artifactId>
+            <version>1.0.0</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
-                    <artifactId>snakeyaml</artifactId>
-                    <groupId>org.yaml</groupId>
+                    <!-- We don't need any of the dependencies -->
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7.1</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <!-- We don't need any of the dependencies -->
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>com.bekvon.bukkit</groupId>
             <artifactId>residence</artifactId>
-            <version>4.9.2.1</version>
+            <version>4.9.3.5</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/lib/Residence4.9.2.1.jar</systemPath>
+            <systemPath>${project.basedir}/lib/Residence.jar</systemPath>
+            <exclusions>
+                <exclusion>
+                    <!-- We don't need any of the dependencies -->
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.maxgamer</groupId>
+            <artifactId>QuickShop</artifactId>
+            <version>4.0.9.10</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <!-- We don't need any of the dependencies -->
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 </project>

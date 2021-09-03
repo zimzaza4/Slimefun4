@@ -13,24 +13,24 @@ api-version: '1.14'
 
 # (Soft) dependencies of Slimefun, we hook into these plugins.
 softdepend:
-  - CS-CoreLib
   - PlaceholderAPI
   - WorldEdit
   - ClearLag
   - mcMMO
   - ItemsAdder
+  - Vault
+  - Orebfuscator
 
 # We hook into these plugins too, but they depend on Slimefun.
 loadBefore:
   - ChestTerminal
-  - ExoticGarden
 
 # Our commands
 commands:
   slimefun:
     description: basic Slimefun command
     aliases: sf
-    usage: '你没有安装前置 CS-CoreLib 或者你安装的版本服务器不支持.'
+    usage: 'The Slimefun version you have installed does not seem to be compatible with your server setup. Check your console for more detailed info.'
 
 # Default permissions
 permissions:

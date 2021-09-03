@@ -1,7 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.tasks;
 
-import io.github.thebusybiscuit.cscorelib2.math.DoubleHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets.JetBoots;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -28,7 +28,7 @@ public class JetBootsTask extends AbstractPlayerTask {
             return;
         }
 
-        double accuracy = DoubleHandler.fixDouble(boots.getSpeed() - 0.7);
+        double accuracy = NumberUtils.reparseDouble(boots.getSpeed() - 0.7);
 
         if (boots.removeItemCharge(p.getInventory().getBoots(), COST)) {
             p.getWorld().playSound(p.getLocation(), Sound.ENTITY_TNT_PRIMED, (float) 0.25, 1);

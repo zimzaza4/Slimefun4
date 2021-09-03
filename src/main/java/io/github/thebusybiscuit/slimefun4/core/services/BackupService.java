@@ -1,10 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.core.services;
 
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
-import org.apache.commons.lang.Validate;
-
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -13,11 +8,18 @@ import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import javax.annotation.Nonnull;
+
+import org.apache.commons.lang.Validate;
+
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 
 /**
  * This Service creates a Backup of your Slimefun world data on every server shutdown.
@@ -27,38 +29,51 @@ import java.util.zip.ZipOutputStream;
  */
 public class BackupService implements Runnable {
 
+    /**
+     * The maximum amount of backups to maintain
+     */
     private static final int MAX_BACKUPS = 20;
 
+    /**
+     * Our {@link DateTimeFormatter} for formatting file names.
+     */
     private final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm", Locale.ROOT);
+
+    /**
+     * The directory in which to create the backups
+     */
     private final File directory = new File("data-storage/Slimefun/block-backups");
 
     @Override
     public void run() {
-        List<File> backups = Arrays.asList(directory.listFiles());
+        // Make sure that the directory exists.
+        if (directory.exists()) {
+            List<File> backups = Arrays.asList(directory.listFiles());
 
-        if (backups.size() > MAX_BACKUPS) {
-            try {
-                purgeBackups(backups);
-            } catch (IOException e) {
-                Slimefun.getLogger().log(Level.WARNING, "无法删除旧的备份文件", e);
-            }
-        }
-
-        File file = new File(directory, format.format(LocalDateTime.now()) + ".zip");
-
-        if (!file.exists()) {
-            try {
-                if (file.createNewFile()) {
-                    try (ZipOutputStream output = new ZipOutputStream(new FileOutputStream(file))) {
-                        createBackup(output);
-                    }
-
-                    Slimefun.getLogger().log(Level.INFO, "已备份 Slimefun 数据到: {0}", file.getName());
-                } else {
-                    Slimefun.getLogger().log(Level.WARNING, "无法创建备份文件: {0}", file.getName());
+            if (backups.size() > MAX_BACKUPS) {
+                try {
+                    purgeBackups(backups);
+                } catch (IOException e) {
+                    SlimefunPlugin.logger().log(Level.WARNING, "无法删除旧备份文件", e);
                 }
-            } catch (IOException x) {
-                Slimefun.getLogger().log(Level.SEVERE, x, () -> "An Error occurred while creating a backup for Slimefun " + SlimefunPlugin.getVersion());
+            }
+
+            File file = new File(directory, format.format(LocalDateTime.now()) + ".zip");
+
+            if (!file.exists()) {
+                try {
+                    if (file.createNewFile()) {
+                        try (ZipOutputStream output = new ZipOutputStream(new FileOutputStream(file))) {
+                            createBackup(output);
+                        }
+
+                        SlimefunPlugin.logger().log(Level.INFO, "已备份 Slimefun 数据至: {0}", file.getName());
+                    } else {
+                        SlimefunPlugin.logger().log(Level.WARNING, "无法创建备份文件: {0}", file.getName());
+                    }
+                } catch (IOException x) {
+                    SlimefunPlugin.logger().log(Level.SEVERE, x, () -> "An Exception occurred while creating a backup for Slimefun " + SlimefunPlugin.getVersion());
+                }
             }
         }
     }
@@ -114,11 +129,14 @@ public class BackupService implements Runnable {
     /**
      * This method will delete old backups.
      *
-     * @param backups The {@link List} of all backups
-     * @throws IOException An {@link IOException} is thrown if a {@link File} could not be deleted
+     * @param backups
+     *            The {@link List} of all backups
+     *
+     * @throws IOException
+     *             An {@link IOException} is thrown if a {@link File} could not be deleted
      */
     private void purgeBackups(@Nonnull List<File> backups) throws IOException {
-        backups.sort((a, b) -> {
+        Collections.sort(backups, (a, b) -> {
             LocalDateTime time1 = LocalDateTime.parse(a.getName().substring(0, a.getName().length() - 4), format);
             LocalDateTime time2 = LocalDateTime.parse(b.getName().substring(0, b.getName().length() - 4), format);
 

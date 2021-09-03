@@ -1,47 +1,63 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks;
 
-import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
-import io.github.thebusybiscuit.slimefun4.api.items.settings.IntRangeSetting;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.papermc.lib.PaperLib;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import org.bukkit.Effect;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Dropper;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import org.bukkit.Effect;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.api.items.settings.IntRangeSetting;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.IgnitionChamber;
+import io.github.thebusybiscuit.slimefun4.implementation.items.misc.AlloyIngot;
+
+import me.mrCookieSlime.Slimefun.Objects.Category;
+import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+
+/**
+ * The {@link Smeltery} is an upgraded version of the {@link MakeshiftSmeltery}
+ * with the additional capabilities to create {@link AlloyIngot}s and utilise an
+ * {@link IgnitionChamber}.
+ *
+ * @author TheBusyBiscuit
+ * @author AtomicScience
+ * @author Sfiguz7
+ * @author Liruxo
+ * @author emanueljg
+ * @author SoSeDiK
+ * @author Redemption198
+ *
+ * @see AbstractSmeltery
+ * @see MakeshiftSmeltery
+ * @see IgnitionChamber
+ *
+ */
 public class Smeltery extends AbstractSmeltery {
 
-    private final BlockFace[] faces = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
-    private final ItemSetting<Integer> fireBreakingChance = new IntRangeSetting("fire-breaking-chance", 0, 34, 100);
+    private final ItemSetting<Integer> fireBreakingChance = new IntRangeSetting(this, "fire-breaking-chance", 0, 34, 100);
 
+    @ParametersAreNonnullByDefault
     public Smeltery(Category category, SlimefunItemStack item) {
-        super(category, item, new ItemStack[]{null, new ItemStack(Material.NETHER_BRICK_FENCE), null, new ItemStack(Material.NETHER_BRICKS), new CustomItem(Material.DISPENSER, "发射器 (朝上)"), new ItemStack(Material.NETHER_BRICKS), null, new ItemStack(Material.FLINT_AND_STEEL), null}, BlockFace.DOWN);
+        super(category, item, new ItemStack[] { null, new ItemStack(Material.NETHER_BRICK_FENCE), null, new ItemStack(Material.NETHER_BRICKS), new CustomItem(Material.DISPENSER, "Dispenser (Facing up)"), new ItemStack(Material.NETHER_BRICKS), null, new ItemStack(Material.FLINT_AND_STEEL), null }, BlockFace.DOWN);
 
         addItemSetting(fireBreakingChance);
     }
 
     @Override
-    protected void registerDefaultRecipes(List<ItemStack> recipes) {
+    protected void registerDefaultRecipes(@Nonnull List<ItemStack> recipes) {
         recipes.add(SlimefunItems.IRON_DUST);
         recipes.add(new ItemStack(Material.IRON_INGOT));
     }
@@ -71,48 +87,15 @@ public class Smeltery extends AbstractSmeltery {
         }
     }
 
+    @ParametersAreNonnullByDefault
     private void consumeFire(Player p, Block dispenser, Block b) {
-        Inventory chamber = findIgnitionChamber(dispenser);
+        boolean isFireRenewed = IgnitionChamber.useFlintAndSteel(p, dispenser);
 
-        if (chamber != null) {
-            if (chamber.contains(Material.FLINT_AND_STEEL)) {
-                ItemStack item = chamber.getItem(chamber.first(Material.FLINT_AND_STEEL));
-                ItemMeta meta = item.getItemMeta();
-                ((Damageable) meta).setDamage(((Damageable) meta).getDamage() + 1);
-                item.setItemMeta(meta);
-
-                if (((Damageable) item.getItemMeta()).getDamage() >= item.getType().getMaxDurability()) {
-                    item.setAmount(0);
-                    p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
-                }
-
-                p.getWorld().playSound(p.getLocation(), Sound.ITEM_FLINTANDSTEEL_USE, 1, 1);
-            } else {
-                SlimefunPlugin.getLocalization().sendMessage(p, "machines.ignition-chamber-no-flint", true);
-
-                Block fire = b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN);
-                fire.getWorld().playEffect(fire.getLocation(), Effect.STEP_SOUND, fire.getType());
-                fire.setType(Material.AIR);
-            }
-        } else {
+        if (!isFireRenewed) {
             Block fire = b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN);
             fire.getWorld().playEffect(fire.getLocation(), Effect.STEP_SOUND, fire.getType());
             fire.setType(Material.AIR);
         }
-    }
-
-    private Inventory findIgnitionChamber(@Nonnull Block b) {
-        for (BlockFace face : faces) {
-            if (b.getRelative(face).getType() == Material.DROPPER && BlockStorage.check(b.getRelative(face), "IGNITION_CHAMBER")) {
-                BlockState state = PaperLib.getBlockState(b.getRelative(face), false).getState();
-
-                if (state instanceof Dropper) {
-                    return ((Dropper) state).getInventory();
-                }
-            }
-        }
-
-        return null;
     }
 
 }

@@ -1,9 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.core.services.github;
 
 import io.github.thebusybiscuit.cscorelib2.players.MinecraftAccount;
-import io.github.thebusybiscuit.cscorelib2.players.MinecraftAccount.TooManyRequestsException;
+import io.github.thebusybiscuit.cscorelib2.players.TooManyRequestsException;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Bukkit;
 
 import javax.annotation.Nonnull;
@@ -94,8 +93,8 @@ class GitHubTask implements Runnable {
                 contributor.setTexture(null);
             } catch (IOException x) {
                 // Too many requests
-                Slimefun.getLogger().log(Level.WARNING, "Attempted to connect to mojang.com, got this response: {0}: {1}", new Object[]{x.getClass().getSimpleName(), x.getMessage()});
-                Slimefun.getLogger().log(Level.WARNING, "This usually means mojang.com is temporarily down or started to rate-limit this connection, this is not an error message!");
+                SlimefunPlugin.logger().log(Level.WARNING, "Attempted to connect to mojang.com, got this response: {0}: {1}", new Object[]{x.getClass().getSimpleName(), x.getMessage()});
+                SlimefunPlugin.logger().log(Level.WARNING, "This usually means mojang.com is temporarily down or started to rate-limit this connection, this is not an error message!");
 
                 // Retry after 5 minutes if it was rate-limiting
                 if (x.getMessage().contains("429")) {
@@ -104,7 +103,7 @@ class GitHubTask implements Runnable {
 
                 return -1;
             } catch (TooManyRequestsException x) {
-                Slimefun.getLogger().log(Level.WARNING, "Received a rate-limit from mojang.com, retrying in 4 minutes");
+                SlimefunPlugin.logger().log(Level.WARNING, "Received a rate-limit from mojang.com, retrying in 4 minutes");
                 Bukkit.getScheduler().runTaskLaterAsynchronously(SlimefunPlugin.instance(), this::grabTextures, 4 * 60 * 20L);
 
                 return -1;

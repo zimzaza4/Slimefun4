@@ -61,10 +61,10 @@ public class MetricsService {
      */
     public void start() {
         if (!metricsModuleFile.exists()) {
-            plugin.getLogger().info(REPO_NAME + " does not exist, downloading...");
+            plugin.getLogger().info(REPO_NAME + " 不存在, 下载中...");
 
             if (!download(getLatestVersion())) {
-                plugin.getLogger().warning("Failed to start metrics as the file could not be downloaded.");
+                plugin.getLogger().warning("启动统计服务失败, 文件下载失败.");
                 return;
             }
         }
@@ -80,7 +80,7 @@ public class MetricsService {
             // If it has not been newly downloaded, auto-updates are on AND there's a new version
             // then cleanup, download and start
             if (!hasDownloadedUpdate && hasAutoUpdates() && checkForUpdate(metricVersion)) {
-                plugin.getLogger().info("Cleaned up, now re-loading Metrics-Module!");
+                plugin.getLogger().info("清理完成, 正在重载统计组件!");
                 start();
                 return;
             }
@@ -93,13 +93,13 @@ public class MetricsService {
             SlimefunPlugin.runSync(() -> {
                 try {
                     start.invoke(null);
-                    plugin.getLogger().info("Metrics build #" + version + " started.");
+                    plugin.getLogger().info("Metrics #" + version + " 已启动.");
                 } catch (Exception | LinkageError e) {
-                    plugin.getLogger().log(Level.WARNING, "Failed to start metrics.", e);
+                    plugin.getLogger().log(Level.WARNING, "启动 Metrics 失败.", e);
                 }
             });
         } catch (Exception | LinkageError e) {
-            plugin.getLogger().log(Level.WARNING, "Failed to load the metrics module. Maybe the jar is corrupt?", e);
+            plugin.getLogger().log(Level.WARNING, "加载 Metrics 组件失败", e);
         }
     }
 
@@ -162,7 +162,7 @@ public class MetricsService {
 
             return node.getObject().getInt("tag_name");
         } catch (UnirestException e) {
-            plugin.getLogger().log(Level.WARNING, "Failed to fetch latest builds for Metrics: {0}", e.getMessage());
+            plugin.getLogger().log(Level.WARNING, "无法获取最新版本的 Metrics: {0}, 这不是一个错误", e.getMessage());
             return -1;
         }
     }
@@ -177,7 +177,7 @@ public class MetricsService {
         File file = new File(parentFolder, "Metrics-" + version + ".jar");
 
         try {
-            plugin.getLogger().log(Level.INFO, "# Starting download of MetricsModule build: #{0}", version);
+            plugin.getLogger().log(Level.INFO, "# 开始下载 MetricsModule : #{0}", version);
 
             if (file.exists()) {
                 // Delete the file in case we accidentally downloaded it before
@@ -191,13 +191,13 @@ public class MetricsService {
                 int percent = (int) (20 * (Math.round((((double) bytesWritten / totalBytes) * 100) / 20)));
 
                 if (percent != 0 && percent != lastPercentPosted.get()) {
-                    plugin.getLogger().info("# Downloading... " + percent + "% " + "(" + bytesWritten + "/" + totalBytes + " bytes)");
+                    plugin.getLogger().info("# 正在下载... " + percent + "% " + "(" + bytesWritten + "/" + totalBytes + " 字节)");
                     lastPercentPosted.set(percent);
                 }
             }).asFile(file.getPath());
 
             if (response.isSuccess()) {
-                plugin.getLogger().log(Level.INFO, "Successfully downloaded {0} build: #{1}", new Object[]{REPO_NAME, version});
+                plugin.getLogger().log(Level.INFO, "成功下载 {0} 构建: #{1}", new Object[]{REPO_NAME, version});
 
                 // Replace the metric file with the new one
                 cleanUp();
