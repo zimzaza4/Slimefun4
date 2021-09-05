@@ -1,32 +1,34 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines;
 
-import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
+
 public class Freezer extends AContainer implements RecipeDisplayItem {
 
-    public Freezer(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    public Freezer(ItemGroup category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
     }
 
     @Override
     protected void registerDefaultRecipes() {
-        registerRecipe(2, new ItemStack[]{new ItemStack(Material.WATER_BUCKET)}, new ItemStack[]{new ItemStack(Material.BUCKET), new ItemStack(Material.ICE)});
-        registerRecipe(8, new ItemStack[]{new ItemStack(Material.LAVA_BUCKET)}, new ItemStack[]{new ItemStack(Material.BUCKET), new ItemStack(Material.OBSIDIAN)});
-        registerRecipe(4, new ItemStack[]{new ItemStack(Material.ICE)}, new ItemStack[]{new ItemStack(Material.PACKED_ICE)});
-        registerRecipe(6, new ItemStack[]{new ItemStack(Material.PACKED_ICE)}, new ItemStack[]{new ItemStack(Material.BLUE_ICE)});
-        registerRecipe(8, new ItemStack[]{new ItemStack(Material.BLUE_ICE)}, new ItemStack[]{SlimefunItems.REACTOR_COOLANT_CELL});
-        registerRecipe(6, new ItemStack[]{new ItemStack(Material.SNOW_BLOCK, 2)}, new ItemStack[]{new ItemStack(Material.ICE)});
+        registerRecipe(2, new ItemStack[] { new ItemStack(Material.WATER_BUCKET) }, new ItemStack[] { new ItemStack(Material.BUCKET), new ItemStack(Material.ICE) });
+        registerRecipe(8, new ItemStack[] { new ItemStack(Material.LAVA_BUCKET) }, new ItemStack[] { new ItemStack(Material.BUCKET), new ItemStack(Material.OBSIDIAN) });
+        registerRecipe(4, new ItemStack[] { new ItemStack(Material.ICE) }, new ItemStack[] { new ItemStack(Material.PACKED_ICE) });
+        registerRecipe(6, new ItemStack[] { new ItemStack(Material.PACKED_ICE) }, new ItemStack[] { new ItemStack(Material.BLUE_ICE) });
+        registerRecipe(8, new ItemStack[] { new ItemStack(Material.BLUE_ICE) }, new ItemStack[] { SlimefunItems.REACTOR_COOLANT_CELL });
+        registerRecipe(6, new ItemStack[] { new ItemStack(Material.SNOW_BLOCK, 2) }, new ItemStack[] { new ItemStack(Material.ICE) });
         registerRecipe(6, new ItemStack[] { new ItemStack(Material.MAGMA_CREAM) }, new ItemStack[] { new ItemStack(Material.SLIME_BALL) });
         registerRecipe(6, new ItemStack[] { new ItemStack(Material.MAGMA_BLOCK, 2) }, new ItemStack[] { new ItemStack(Material.SLIME_BLOCK) });
     }

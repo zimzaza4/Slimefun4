@@ -1,27 +1,30 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.SeismicAxe;
+import javax.annotation.Nonnull;
+
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 
-import javax.annotation.Nonnull;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.SeismicAxe;
 
 /**
  * This {@link Listener} is responsible for removing every {@link FallingBlock} that was
  * created using a {@link SeismicAxe}.
- *
+ * 
  * @author TheBusyBiscuit
+ * 
  * @see SeismicAxe
+ *
  */
 public class SeismicAxeListener implements Listener {
 
     private final SeismicAxe seismicAxe;
 
-    public SeismicAxeListener(@Nonnull SlimefunPlugin plugin, @Nonnull SeismicAxe seismicAxe) {
+    public SeismicAxeListener(@Nonnull Slimefun plugin, @Nonnull SeismicAxe seismicAxe) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         this.seismicAxe = seismicAxe;
     }
@@ -34,7 +37,7 @@ public class SeismicAxeListener implements Listener {
 
         if (e.getEntity().getType() == EntityType.FALLING_BLOCK && e.getEntity().hasMetadata("seismic_axe")) {
             e.setCancelled(true);
-            e.getEntity().removeMetadata("seismic_axe", SlimefunPlugin.instance());
+            e.getEntity().removeMetadata("seismic_axe", Slimefun.instance());
             e.getEntity().remove();
         }
     }

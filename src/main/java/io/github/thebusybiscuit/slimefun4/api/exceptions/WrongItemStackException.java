@@ -1,22 +1,25 @@
 package io.github.thebusybiscuit.slimefun4.api.exceptions;
 
-import io.github.thebusybiscuit.slimefun4.core.attributes.DamageableItem;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.core.attributes.DamageableItem;
 
 /**
  * A {@link WrongItemStackException} is thrown when someone tries to alter an {@link ItemStack}
  * but actually wanted to alter a different one.
- * <p>
+ * 
  * If for example a {@link DamageableItem} accidentally damages the original {@link SlimefunItem}
  * instead of the held {@link ItemStack}, this will be thrown.
- *
+ * 
  * @author TheBusyBiscuit
+ * 
  * @see SlimefunItemStack
  * @see SlimefunItem
+ *
  */
 public class WrongItemStackException extends RuntimeException {
 

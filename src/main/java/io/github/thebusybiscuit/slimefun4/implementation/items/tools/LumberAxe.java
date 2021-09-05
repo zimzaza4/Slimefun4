@@ -1,6 +1,19 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.tools;
 
-import ren.natsuyuk1.utils.IntegrationHelper;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import org.bukkit.Axis;
+import org.bukkit.Effect;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.Tag;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.Orientable;
+import org.bukkit.inventory.ItemStack;
+
 import io.github.thebusybiscuit.cscorelib2.blocks.Vein;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
 import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
@@ -12,21 +25,14 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.block.data.Orientable;
-import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
 
 /**
  * The {@link LumberAxe} is a powerful tool which can chop entire trees.
  * Breaking a log will result in all attached logs being broken as well.
  * Similarly stripping a log will strip all attached logs too.
- *
+ * 
  * @author TheBusyBiscuit
+ *
  */
 public class LumberAxe extends SlimefunItem implements NotPlaceable {
 
@@ -49,8 +55,8 @@ public class LumberAxe extends SlimefunItem implements NotPlaceable {
 
                 for (Block b : logs) {
                     if (!BlockStorage.hasBlockInfo(b)
-                            && SlimefunPlugin.getProtectionManager().hasPermission(e.getPlayer(), b, ProtectableAction.BREAK_BLOCK)
-                            && IntegrationHelper.checkPermission(e.getPlayer(), b, ProtectableAction.BREAK_BLOCK)
+                            && Slimefun.getProtectionManager().hasPermission(e.getPlayer(), b, Interaction.BREAK_BLOCK)
+                            && IntegrationHelper.checkPermission(e.getPlayer(), b, Interaction.BREAK_BLOCK)
                     ) {
                         breakLog(b);
                     }
@@ -73,7 +79,7 @@ public class LumberAxe extends SlimefunItem implements NotPlaceable {
                     }
 
                     for (Block b : logs) {
-                        if (!BlockStorage.hasBlockInfo(b) && SlimefunPlugin.getProtectionManager().hasPermission(e.getPlayer(), b, ProtectableAction.BREAK_BLOCK)) {
+                        if (!BlockStorage.hasBlockInfo(b) && Slimefun.getProtectionManager().hasPermission(e.getPlayer(), b, Interaction.BREAK_BLOCK)) {
                             stripLog(b);
                         }
                     }

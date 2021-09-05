@@ -1,25 +1,27 @@
 package io.github.thebusybiscuit.slimefun4.api.player;
 
-import io.github.thebusybiscuit.cscorelib2.data.PersistentDataAPI;
-import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
-import org.bukkit.Keyed;
-import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Player;
-
-import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nonnull;
+
+import org.bukkit.Keyed;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
+
+import io.github.bakedlibs.dough.common.CommonPatterns;
+import io.github.bakedlibs.dough.data.persistent.PersistentDataAPI;
+
 /**
  * A very simple API that is meant for adding/getting/clearing custom status effects
  * to/from players.
- *
+ * 
  * The effects are stored via {@link PersistentDataAPI} and use NBT data that is
  * saved across server restarts.
- *
+ * 
  * You can specify a level for your status effect too.
- *
+ * 
  * @author TheBusyBiscuit
  *
  */
@@ -31,9 +33,8 @@ public class StatusEffect implements Keyed {
         this.key = key;
     }
 
-    @Nonnull
     @Override
-    public NamespacedKey getKey() {
+    public @Nonnull NamespacedKey getKey() {
         return key;
     }
 
@@ -41,7 +42,7 @@ public class StatusEffect implements Keyed {
      * This applies this {@link StatusEffect} to the given {@link Player}.
      * You can specify a duration, this will reference
      * {@link StatusEffect#add(Player, int, int, TimeUnit)} with a level of 1.
-     *
+     * 
      * @param p
      *            The {@link Player} whom to apply the effect to
      * @param duration
@@ -55,7 +56,7 @@ public class StatusEffect implements Keyed {
 
     /**
      * This applies this {@link StatusEffect} to the given {@link Player}.
-     *
+     * 
      * @param p
      *            The {@link Player} whom to apply the effect to
      * @param level
@@ -72,9 +73,11 @@ public class StatusEffect implements Keyed {
     /**
      * This applies this {@link StatusEffect} to the given {@link Player}.
      * This will apply it permanently, there is no duration.
-     *
-     * @param p     The {@link Player} whom to apply the effect to
-     * @param level The level of this effect
+     * 
+     * @param p
+     *            The {@link Player} whom to apply the effect to
+     * @param level
+     *            The level of this effect
      */
     public void addPermanent(@Nonnull Player p, int level) {
         PersistentDataAPI.setString(p, getKey(), level + ";0");
@@ -85,21 +88,20 @@ public class StatusEffect implements Keyed {
      * to that {@link Player}.
      * If the effect has expired, it will automatically remove all associated
      * NBT data of this effect.
-     *
-     * @param p The {@link Player} to check for
+     * 
+     * @param p
+     *            The {@link Player} to check for
      * @return Whether this {@link StatusEffect} is currently applied
      */
     public boolean isPresent(@Nonnull Player p) {
         Optional<String> optional = PersistentDataAPI.getOptionalString(p, getKey());
 
         if (optional.isPresent()) {
-            String[] data = PatternUtils.SEMICOLON.split(optional.get());
+            String[] data = CommonPatterns.SEMICOLON.split(optional.get());
             long timestamp = Long.parseLong(data[1]);
 
             if (timestamp == 0 || timestamp >= System.currentTimeMillis()) {
-                {
-                    return true;
-                }
+                return true;
             } else {
                 clear(p);
                 return false;
@@ -112,26 +114,25 @@ public class StatusEffect implements Keyed {
     /**
      * This method returns an {@link OptionalInt} describing the level of this status
      * effect on that player.
-     *
+     * 
      * @param p
      *            The {@link Player} to check for
      * @return An {@link OptionalInt} that describes the result
      */
-    @Nonnull
-    public OptionalInt getLevel(@Nonnull Player p) {
+    public @Nonnull OptionalInt getLevel(@Nonnull Player p) {
         Optional<String> optional = PersistentDataAPI.getOptionalString(p, getKey());
 
         if (optional.isPresent()) {
-            String[] data = PatternUtils.SEMICOLON.split(optional.get());
+            String[] data = CommonPatterns.SEMICOLON.split(optional.get());
             return OptionalInt.of(Integer.parseInt(data[0]));
-
-        } else
+        } else {
             return OptionalInt.empty();
+        }
     }
 
     /**
      * This will remove this {@link StatusEffect} from the given {@link Player}.
-     *
+     * 
      * @param p
      *            The {@link Player} to clear it from
      */

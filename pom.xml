@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.slimefun</groupId>
@@ -14,9 +14,7 @@
     <packaging>jar</packaging>
 
     <!-- Project Info -->
-    <description>Slimefun is a Spigot/Paper plugin that simulates a modpack-like atmosphere by adding over 500 new items
-        and recipes to your Minecraft Server.
-    </description>
+    <description>Slimefun is a Spigot/Paper plugin that simulates a modpack-like atmosphere by adding over 500 new items and recipes to your Minecraft Server.</description>
     <url>https://github.com/Slimefun/Slimefun4</url>
 
     <properties>
@@ -61,7 +59,7 @@
             <url>https://papermc.io/repo/repository/maven-public</url>
         </repository>
         <repository>
-            <!-- CS-CoreLib2, ItemsAdder -->
+            <!-- ItemsAdder -->
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
@@ -133,8 +131,8 @@
                     <!-- Relocate these to avoid clashes and conflicts -->
                     <relocations>
                         <relocation>
-                            <pattern>io.github.thebusybiscuit.cscorelib2</pattern>
-                            <shadedPattern>me.mrCookieSlime.Slimefun.cscorelib2</shadedPattern>
+                            <pattern>io.github.bakedlibs.dough</pattern>
+                            <shadedPattern>io.github.thebusybiscuit.slimefun4.libraries.dough</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>io.papermc.lib</pattern>
@@ -219,9 +217,9 @@
 
         <!-- Shaded packages -->
         <dependency>
-            <groupId>com.github.thebusybiscuit</groupId>
-            <artifactId>CS-CoreLib2</artifactId>
-            <version>0.32.1</version>
+            <groupId>io.github.baked-libs</groupId>
+            <artifactId>dough-api</artifactId>
+            <version>1.0.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

@@ -1,21 +1,24 @@
 package io.github.thebusybiscuit.slimefun4.api.items;
 
-import io.github.thebusybiscuit.cscorelib2.config.Config;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import org.apache.commons.lang.Validate;
+import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
-import java.util.Objects;
+
+import org.apache.commons.lang.Validate;
+
+import io.github.bakedlibs.dough.config.Config;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
 /**
  * This class represents a Setting for a {@link SlimefunItem} that can be modified via
  * the {@code Items.yml} {@link Config} file.
- *
- * @param <T> The type of data stored under this {@link ItemSetting}
+ * 
  * @author TheBusyBiscuit
+ *
+ * @param <T>
+ *            The type of data stored under this {@link ItemSetting}
  */
 public class ItemSetting<T> {
 
@@ -28,7 +31,7 @@ public class ItemSetting<T> {
 
     /**
      * This creates a new {@link ItemSetting} with the given key and default value
-     *
+     * 
      * @param item
      *            The {@link SlimefunItem} this {@link ItemSetting} belongs to
      * @param key
@@ -50,10 +53,10 @@ public class ItemSetting<T> {
     /**
      * This method checks if a given input would be valid as a value for this
      * {@link ItemSetting}. You can override this method to implement your own checks.
-     *
+     * 
      * @param input
      *            The input value to validate
-     *
+     * 
      * @return Whether the given input was valid
      */
     public boolean validateInput(T input) {
@@ -64,7 +67,7 @@ public class ItemSetting<T> {
      * This method updates this {@link ItemSetting} with the given value.
      * Override this method to catch changes of a value.
      * A value may never be null.
-     *
+     * 
      * @param newValue
      *            The new value for this {@link ItemSetting}
      */
@@ -80,31 +83,28 @@ public class ItemSetting<T> {
 
     /**
      * This returns the key of this {@link ItemSetting}.
-     *
+     * 
      * @return The key under which this setting is stored (relative to the {@link SlimefunItem})
      */
-    @Nonnull
-    public String getKey() {
+    public @Nonnull String getKey() {
         return key;
     }
 
     /**
      * This returns the associated {@link SlimefunItem} for this {@link ItemSetting}.
-     *
+     * 
      * @return The associated {@link SlimefunItem}
      */
-    @Nonnull
-    protected SlimefunItem getItem() {
+    protected @Nonnull SlimefunItem getItem() {
         return item;
     }
 
     /**
      * This returns the <strong>current</strong> value of this {@link ItemSetting}.
-     *
+     * 
      * @return The current value
      */
-    @Nonnull
-    public T getValue() {
+    public @Nonnull T getValue() {
         if (value != null) {
             return value;
         } else {
@@ -115,19 +115,19 @@ public class ItemSetting<T> {
 
     /**
      * This returns the <strong>default</strong> value of this {@link ItemSetting}.
-     *
+     * 
      * @return The default value
      */
-    @Nonnull
-    public T getDefaultValue() {
+    public @Nonnull T getDefaultValue() {
         return defaultValue;
     }
 
     /**
      * This method checks if this {@link ItemSetting} stores the given data type.
-     *
+     * 
      * @param c
      *            The class of data type you want to compare
+     * 
      * @return Whether this {@link ItemSetting} stores the given type
      */
     public boolean isType(@Nonnull Class<?> c) {
@@ -137,24 +137,24 @@ public class ItemSetting<T> {
     /**
      * This is an error message which should provide further context on what values
      * are allowed.
-     *
+     * 
      * @return An error message which is displayed when this {@link ItemSetting} is misconfigured.
      */
-    @Nonnull
-    protected String getErrorMessage() {
+    protected @Nonnull String getErrorMessage() {
         return "请使用在 '" + defaultValue.getClass().getSimpleName() + "' 范围内的值!";
     }
 
     /**
      * This method is called by a {@link SlimefunItem} which wants to load its {@link ItemSetting}
      * from the {@link Config} file.
+     * 
      */
     @SuppressWarnings("unchecked")
     public void reload() {
         Validate.notNull(item, "Cannot apply settings for a non-existing SlimefunItem");
 
-        SlimefunPlugin.getItemCfg().setDefaultValue(item.getId() + '.' + getKey(), getDefaultValue());
-        Object configuredValue = SlimefunPlugin.getItemCfg().getValue(item.getId() + '.' + getKey());
+        Slimefun.getItemCfg().setDefaultValue(item.getId() + '.' + getKey(), getDefaultValue());
+        Object configuredValue = Slimefun.getItemCfg().getValue(item.getId() + '.' + getKey());
 
         if (defaultValue.getClass().isInstance(configuredValue) || (configuredValue instanceof List && defaultValue instanceof List)) {
             // We can do an unsafe cast here, we did an isInstance(...) check before!
@@ -184,7 +184,6 @@ public class ItemSetting<T> {
                             "\n  期望值为 \"" + defaultValue.getClass().getSimpleName() + "\" 但填写了: \"" + found + "\""
             );
             // @formatter:on
-
         }
     }
 

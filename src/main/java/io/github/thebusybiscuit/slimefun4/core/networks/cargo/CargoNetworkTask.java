@@ -1,9 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.core.networks.cargo;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -18,27 +20,27 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.cscorelib2.blocks.BlockPosition;
+import io.github.bakedlibs.dough.blocks.BlockPosition;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSpawnReason;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.networks.NetworkManager;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
 
 /**
  * The {@link CargoNetworkTask} is the actual {@link Runnable} responsible for moving {@link ItemStack ItemStacks}
  * around the {@link CargoNet}.
- *
+ * 
  * Inbefore this was just a method in the {@link CargoNet} class.
  * However for aesthetic reasons but mainly to prevent the Cargo Task from showing up as
  * "lambda:xyz-123" in timing reports... this was moved.
- *
+ * 
  * @see CargoNet
  * @see CargoUtils
  * @see AbstractItemNetwork
@@ -51,15 +53,15 @@ class CargoNetworkTask implements Runnable {
     private final Map<Location, Inventory> inventories = new HashMap<>();
 
     private final Map<Location, Integer> inputs;
-    private final Map<Integer, Collection<Location>> outputs;
+    private final Map<Integer, List<Location>> outputs;
 
     private final Set<Location> chestTerminalInputs;
     private final Set<Location> chestTerminalOutputs;
 
     @ParametersAreNonnullByDefault
-    CargoNetworkTask(CargoNet network, Map<Location, Integer> inputs, Map<Integer, Collection<Location>> outputs, Set<Location> chestTerminalInputs, Set<Location> chestTerminalOutputs) {
+    CargoNetworkTask(CargoNet network, Map<Location, Integer> inputs, Map<Integer, List<Location>> outputs, Set<Location> chestTerminalInputs, Set<Location> chestTerminalOutputs) {
         this.network = network;
-        this.manager = SlimefunPlugin.getNetworkManager();
+        this.manager = Slimefun.getNetworkManager();
 
         this.inputs = inputs;
         this.outputs = outputs;
@@ -73,14 +75,11 @@ class CargoNetworkTask implements Runnable {
 
         try {
             // Chest Terminal Code
-            if (SlimefunPlugin.getIntegrations().isChestTerminalInstalled()) {
+            if (Slimefun.getIntegrations().isChestTerminalInstalled()) {
                 network.handleItemRequests(inventories, chestTerminalInputs, chestTerminalOutputs);
-
-                // This will deduct any CT timings and attribute them towards the actual terminal
-                timestamp += network.updateTerminals(chestTerminalInputs);
             }
 
-            /*
+            /**
              * All operations happen here: Everything gets iterated from the Input Nodes.
              * (Apart from ChestTerminal Buses)
              */
@@ -93,19 +92,24 @@ class CargoNetworkTask implements Runnable {
                 attachedBlock.ifPresent(block -> routeItems(input, block, entry.getValue(), outputs));
 
                 // This will prevent this timings from showing up for the Cargo Manager
-                timestamp += SlimefunPlugin.getProfiler().closeEntry(entry.getKey(), inputNode, nodeTimestamp);
+                timestamp += Slimefun.getProfiler().closeEntry(entry.getKey(), inputNode, nodeTimestamp);
             }
 
+            // Chest Terminal Code
+            if (Slimefun.getIntegrations().isChestTerminalInstalled()) {
+                // This will deduct any CT timings and attribute them towards the actual terminal
+                timestamp += network.updateTerminals(chestTerminalInputs);
+            }
         } catch (Exception | LinkageError x) {
-            SlimefunPlugin.logger().log(Level.SEVERE, x, () -> "An Exception was caught while ticking a Cargo network @ " + new BlockPosition(network.getRegulator()));
+            Slimefun.logger().log(Level.SEVERE, x, () -> "An Exception was caught while ticking a Cargo network @ " + new BlockPosition(network.getRegulator()));
         }
 
         // Submit a timings report
-        SlimefunPlugin.getProfiler().closeEntry(network.getRegulator(), SlimefunItems.CARGO_MANAGER.getItem(), timestamp);
+        Slimefun.getProfiler().closeEntry(network.getRegulator(), SlimefunItems.CARGO_MANAGER.getItem(), timestamp);
     }
 
     @ParametersAreNonnullByDefault
-    private void routeItems(Location inputNode, Block inputTarget, int frequency, Map<Integer, Collection<Location>> outputNodes) {
+    private void routeItems(Location inputNode, Block inputTarget, int frequency, Map<Integer, List<Location>> outputNodes) {
         ItemStackAndInteger slot = CargoUtils.withdraw(network, inventories, inputNode.getBlock(), inputTarget);
 
         if (slot == null) {
@@ -114,7 +118,7 @@ class CargoNetworkTask implements Runnable {
 
         ItemStack stack = slot.getItem();
         int previousSlot = slot.getInt();
-        Collection<Location> destinations = outputNodes.get(frequency);
+        List<Location> destinations = outputNodes.get(frequency);
 
         if (destinations != null) {
             stack = distributeItem(stack, inputNode, destinations);
@@ -139,7 +143,6 @@ class CargoNetworkTask implements Runnable {
 
                 if (rest != null && !manager.isItemDeletionEnabled()) {
                     // If the item still couldn't be inserted, simply drop it on the ground
-
                     SlimefunUtils.spawnItem(inputTarget.getLocation().add(0, 1, 0), rest, ItemSpawnReason.CARGO_OVERFLOW);
                 }
             }
@@ -158,7 +161,7 @@ class CargoNetworkTask implements Runnable {
 
     @Nullable
     @ParametersAreNonnullByDefault
-    private ItemStack distributeItem(ItemStack stack, Location inputNode, Collection<Location> outputNodes) {
+    private ItemStack distributeItem(ItemStack stack, Location inputNode, List<Location> outputNodes) {
         ItemStack item = stack;
 
         Config cfg = BlockStorage.getLocationInfo(inputNode);
@@ -198,7 +201,7 @@ class CargoNetworkTask implements Runnable {
     /**
      * This method sorts a given {@link Deque} of output node locations using a semi-accurate
      * round-robin method.
-     *
+     * 
      * @param inputNode
      *            The {@link Location} of the input node
      * @param outputNodes

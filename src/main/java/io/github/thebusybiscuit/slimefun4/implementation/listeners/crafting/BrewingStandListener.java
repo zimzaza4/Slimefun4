@@ -1,7 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners.crafting;
 
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import javax.annotation.Nonnull;
+
 import org.bukkit.block.BrewingStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
@@ -13,19 +13,21 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
-import javax.annotation.Nonnull;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
 /**
  * This {@link Listener} prevents any {@link SlimefunItem} from being used in a
  * brewing stand.
- *
+ * 
  * @author VoidAngel
  * @author SoSeDiK
  * @author CURVX
+ *
  */
 public class BrewingStandListener implements SlimefunCraftingListener {
 
-    public BrewingStandListener(@Nonnull SlimefunPlugin plugin) {
+    public BrewingStandListener(@Nonnull Slimefun plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -47,7 +49,7 @@ public class BrewingStandListener implements SlimefunCraftingListener {
             }
 
             if (e.getResult() == Result.DENY) {
-                SlimefunPlugin.getLocalization().sendMessage((Player) e.getWhoClicked(), "brewing_stand.not-working", true);
+                Slimefun.getLocalization().sendMessage((Player) e.getWhoClicked(), "brewing_stand.not-working", true);
             }
         }
     }
@@ -58,5 +60,4 @@ public class BrewingStandListener implements SlimefunCraftingListener {
             e.setCancelled(true);
         }
     }
-
 }

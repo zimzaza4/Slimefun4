@@ -1,41 +1,52 @@
 package io.github.thebusybiscuit.slimefun4.core.services;
 
-import io.github.thebusybiscuit.cscorelib2.collections.OptionalMap;
-import io.github.thebusybiscuit.cscorelib2.config.Config;
-import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
-import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import java.io.File;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.annotation.Nonnull;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.Server;
 import org.bukkit.World;
 
-import javax.annotation.Nonnull;
-import java.io.File;
-import java.util.*;
+import io.github.bakedlibs.dough.collections.OptionalMap;
+import io.github.bakedlibs.dough.config.Config;
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
+import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
 /**
  * This Service is responsible for disabling a {@link SlimefunItem} in a certain {@link World}.
- *
+ * 
  * @author TheBusyBiscuit
  *
  */
 public class PerWorldSettingsService {
 
-    private final SlimefunPlugin plugin;
+    private final Slimefun plugin;
 
     private final OptionalMap<UUID, Set<String>> disabledItems = new OptionalMap<>(HashMap::new);
     private final Map<SlimefunAddon, Set<String>> disabledAddons = new HashMap<>();
     private final Set<UUID> disabledWorlds = new HashSet<>();
 
-    public PerWorldSettingsService(@Nonnull SlimefunPlugin plugin) {
+    public PerWorldSettingsService(@Nonnull Slimefun plugin) {
         this.plugin = plugin;
     }
 
     /**
      * This method will forcefully load all currently active Worlds to load up their settings.
-     *
-     * @param worlds An {@link Iterable} of {@link World Worlds} to load
+     * 
+     * @param worlds
+     *            An {@link Iterable} of {@link World Worlds} to load
      */
     public void load(@Nonnull Iterable<World> worlds) {
         for (World world : worlds) {
@@ -45,7 +56,7 @@ public class PerWorldSettingsService {
 
     /**
      * This method loads the given {@link World} if it was not loaded before.
-     *
+     * 
      * @param world
      *            The {@link World} to load
      */
@@ -56,12 +67,12 @@ public class PerWorldSettingsService {
 
     /**
      * This method checks whether the given {@link SlimefunItem} is enabled in the given {@link World}.
-     *
+     * 
      * @param world
      *            The {@link World} to check
      * @param item
      *            The {@link SlimefunItem} that should be checked
-     *
+     * 
      * @return Whether the given {@link SlimefunItem} is enabled in that {@link World}
      */
     public boolean isEnabled(@Nonnull World world, @Nonnull SlimefunItem item) {
@@ -79,7 +90,7 @@ public class PerWorldSettingsService {
 
     /**
      * This method enables or disables the given {@link SlimefunItem} in the specified {@link World}.
-     *
+     * 
      * @param world
      *            The {@link World} in which to disable or enable the given {@link SlimefunItem}
      * @param item
@@ -102,7 +113,7 @@ public class PerWorldSettingsService {
 
     /**
      * This method enables or disables the given {@link World}.
-     *
+     * 
      * @param world
      *            The {@link World} to enable or disable
      * @param enabled
@@ -121,10 +132,10 @@ public class PerWorldSettingsService {
 
     /**
      * This checks whether the given {@link World} is enabled or not.
-     *
+     * 
      * @param world
      *            The {@link World} to check
-     *
+     * 
      * @return Whether this {@link World} is enabled
      */
     public boolean isWorldEnabled(@Nonnull World world) {
@@ -136,12 +147,12 @@ public class PerWorldSettingsService {
 
     /**
      * This method checks whether the given {@link SlimefunAddon} is enabled in that {@link World}.
-     *
+     * 
      * @param world
      *            The {@link World} to check
      * @param addon
      *            The {@link SlimefunAddon} to check
-     *
+     * 
      * @return Whether this addon is enabled in that {@link World}
      */
     public boolean isAddonEnabled(@Nonnull World world, @Nonnull SlimefunAddon addon) {
@@ -154,7 +165,7 @@ public class PerWorldSettingsService {
      * This will forcefully save the settings for that {@link World}.
      * This should only be called if you altered the settings while the {@link Server} was still running.
      * This writes to a {@link File} so it can be a heavy operation.
-     *
+     * 
      * @param world
      *            The {@link World} to save
      */
@@ -164,7 +175,7 @@ public class PerWorldSettingsService {
 
         Config config = getConfig(world);
 
-        for (SlimefunItem item : SlimefunPlugin.getRegistry().getEnabledSlimefunItems()) {
+        for (SlimefunItem item : Slimefun.getRegistry().getEnabledSlimefunItems()) {
             if (item != null) {
                 String addon = item.getAddon().getName().toLowerCase(Locale.ROOT);
                 config.setValue(addon + '.' + item.getId(), !items.contains(item.getId()));
@@ -195,7 +206,7 @@ public class PerWorldSettingsService {
                 loadItemsFromWorldConfig(name, config, items);
 
                 // We don't actually wanna write to disk during a Unit test
-                if (SlimefunPlugin.getMinecraftVersion() != MinecraftVersion.UNIT_TEST) {
+                if (Slimefun.getMinecraftVersion() != MinecraftVersion.UNIT_TEST) {
                     config.save();
                 }
             } else {
@@ -207,7 +218,7 @@ public class PerWorldSettingsService {
     }
 
     private void loadItemsFromWorldConfig(@Nonnull String worldName, @Nonnull Config config, @Nonnull Set<String> items) {
-        for (SlimefunItem item : SlimefunPlugin.getRegistry().getEnabledSlimefunItems()) {
+        for (SlimefunItem item : Slimefun.getRegistry().getEnabledSlimefunItems()) {
             if (item != null) {
                 String addon = item.getAddon().getName().toLowerCase(Locale.ROOT);
                 config.setDefaultValue(addon + ".enabled", true);
@@ -230,8 +241,10 @@ public class PerWorldSettingsService {
 
     /**
      * This method returns the relevant {@link Config} for the given {@link World}
-     *
-     * @param world Our {@link World}
+     * 
+     * @param world
+     *            Our {@link World}
+     * 
      * @return The corresponding {@link Config}
      */
     @Nonnull

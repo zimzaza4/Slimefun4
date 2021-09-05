@@ -1,9 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.items.armor.*;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
+import javax.annotation.Nonnull;
+
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -18,7 +16,13 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import javax.annotation.Nonnull;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.armor.EnderBoots;
+import io.github.thebusybiscuit.slimefun4.implementation.items.armor.FarmerShoes;
+import io.github.thebusybiscuit.slimefun4.implementation.items.armor.LongFallBoots;
+import io.github.thebusybiscuit.slimefun4.implementation.items.armor.SlimefunArmorPiece;
+import io.github.thebusybiscuit.slimefun4.implementation.items.armor.StomperBoots;
 
 /**
  * This {@link Listener} is responsible for handling all boots provided by
@@ -31,7 +35,7 @@ import javax.annotation.Nonnull;
  */
 public class SlimefunBootsListener implements Listener {
 
-    public SlimefunBootsListener(@Nonnull SlimefunPlugin plugin) {
+    public SlimefunBootsListener(@Nonnull Slimefun plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -67,10 +71,9 @@ public class SlimefunBootsListener implements Listener {
             if (boots instanceof StomperBoots) {
                 e.setCancelled(true);
                 ((StomperBoots) boots).stomp(e);
-            } else if (boots.getId().equals("SLIME_BOOTS") || boots.getId().equals("SLIME_STEEL_BOOTS")) {
-                e.setCancelled(true);
             } else if (boots instanceof LongFallBoots) {
                 e.setCancelled(true);
+
                 if (boots.getId().equals("BEE_BOOTS")) {
                     e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.BLOCK_HONEY_BLOCK_FALL, 1, 2);
                 }

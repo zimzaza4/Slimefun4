@@ -1,14 +1,26 @@
 package io.github.thebusybiscuit.slimefun4.implementation.resources;
 
-import io.github.thebusybiscuit.slimefun4.api.geo.GEOResource;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import io.github.thebusybiscuit.slimefun4.api.geo.GEOResource;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
+/**
+ * This is an abstract parent class for any {@link GEOResource}
+ * that is added by Slimefun itself. It is package-private, therefore
+ * only classes inside this package can access it.
+ * <p>
+ * It just provides a bit of a convenience for us to reduce redundancies
+ * in our {@link GEOResource} implementations.
+ * 
+ * @author TheBusyBiscuit
+ *
+ */
 abstract class SlimefunResource implements GEOResource {
 
     private final NamespacedKey key;
@@ -23,7 +35,7 @@ abstract class SlimefunResource implements GEOResource {
         Validate.notNull(defaultName, "The default name cannot be null!");
         Validate.notNull(item, "item cannot be null!");
 
-        this.key = new NamespacedKey(SlimefunPlugin.instance(), key);
+        this.key = new NamespacedKey(Slimefun.instance(), key);
         this.defaultName = defaultName;
         this.item = item;
         this.maxDeviation = maxDeviation;

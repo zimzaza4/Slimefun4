@@ -1,15 +1,15 @@
-package io.github.thebusybiscuit.slimefun4.core.researching;
+package io.github.thebusybiscuit.slimefun4.api.researches;
 
-import ren.natsuyuk1.utils.VaultHelper;
-import io.github.thebusybiscuit.slimefun4.api.events.PlayerPreResearchEvent;
-import io.github.thebusybiscuit.slimefun4.api.events.ResearchUnlockEvent;
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
-import io.github.thebusybiscuit.slimefun4.core.services.localization.Language;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.setup.ResearchSetup;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -18,24 +18,25 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
+import io.github.thebusybiscuit.slimefun4.api.events.PlayerPreResearchEvent;
+import io.github.thebusybiscuit.slimefun4.api.events.ResearchUnlockEvent;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
+import io.github.thebusybiscuit.slimefun4.core.services.localization.Language;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.setup.ResearchSetup;
 
 /**
  * Represents a research, which is bound to one
  * {@link SlimefunItem} or more and requires XP levels to unlock said item(s).
- *
+ * 
  * @author TheBusyBiscuit
- *
+ * 
  * @see ResearchSetup
  * @see ResearchUnlockEvent
- *
+ * 
  */
 public class Research implements Keyed {
 
@@ -49,15 +50,20 @@ public class Research implements Keyed {
 
     /**
      * The constructor for a {@link Research}.
-     * <p>
+     * 
      * Create a new research, then bind this research to the Slimefun items you want by calling
      * {@link #addItems(SlimefunItem...)}. Once you're finished, call {@link #register()}
      * to register it.
-     *
-     * @param key         A unique identifier for this {@link Research}
-     * @param id          old way of identifying researches
-     * @param defaultName The displayed name of this {@link Research}
-     * @param defaultCost The Cost in XP levels to unlock this {@link Research}
+     * 
+     * @param key
+     *            A unique identifier for this {@link Research}
+     * @param id
+     *            old way of identifying researches
+     * @param defaultName
+     *            The displayed name of this {@link Research}
+     * @param defaultCost
+     *            The Cost in XP levels to unlock this {@link Research}
+     * 
      */
     public Research(@Nonnull NamespacedKey key, int id, @Nonnull String defaultName, int defaultCost) {
         Validate.notNull(key, "A NamespacedKey must be provided");
@@ -70,27 +76,28 @@ public class Research implements Keyed {
     }
 
     @Override
-    public NamespacedKey getKey() {
+    public @Nonnull NamespacedKey getKey() {
         return key;
     }
 
     /**
      * This method returns whether this {@link Research} is enabled.
      * {@code false} can mean that this particular {@link Research} was disabled or that
-     * researches alltogether have been disabled.
-     *
+     * researches altogether have been disabled.
+     * 
      * @return Whether this {@link Research} is enabled or not
      */
     public boolean isEnabled() {
-        return SlimefunPlugin.getRegistry().isResearchingEnabled() && enabled;
+        return Slimefun.getRegistry().isResearchingEnabled() && enabled;
     }
 
     /**
      * Gets the ID of this {@link Research}.
      * This is the old way of identifying Researches, use a {@link NamespacedKey} in the future.
-     *
-     * @return The ID of this {@link Research}
+     * 
      * @deprecated Numeric Ids for Researches are deprecated, use {@link #getKey()} for identification instead.
+     * 
+     * @return The ID of this {@link Research}
      */
     @Deprecated
     public int getID() {
@@ -101,20 +108,20 @@ public class Research implements Keyed {
      * This method gives you a localized name for this {@link Research}.
      * The name is automatically taken from the currently selected {@link Language} of
      * the specified {@link Player}.
-     *
+     * 
      * @param p
      *            The {@link Player} to translate this name for.
+     * 
      * @return The localized Name of this {@link Research}.
      */
-    @Nonnull
-    public String getName(@Nonnull Player p) {
-        String localized = SlimefunPlugin.getLocalization().getResearchName(p, key);
+    public @Nonnull String getName(@Nonnull Player p) {
+        String localized = Slimefun.getLocalization().getResearchName(p, key);
         return localized != null ? localized : name;
     }
 
     /**
      * Gets the cost in XP levels to unlock this {@link Research}.
-     *
+     * 
      * @return The cost in XP levels for this {@link Research}
      */
     public int getCost() {
@@ -123,7 +130,7 @@ public class Research implements Keyed {
 
     /**
      * Sets the cost in XP levels to unlock this {@link Research}.
-     *
+     * 
      * @param cost
      *            The cost in XP levels
      */
@@ -137,7 +144,7 @@ public class Research implements Keyed {
 
     /**
      * Bind the specified {@link SlimefunItem SlimefunItems} to this {@link Research}.
-     *
+     * 
      * @param items
      *            Instances of {@link SlimefunItem} to bind to this {@link Research}
      */
@@ -151,10 +158,10 @@ public class Research implements Keyed {
 
     /**
      * Bind the specified ItemStacks to this {@link Research}.
-     *
+     * 
      * @param items
      *            Instances of {@link ItemStack} to bind to this {@link Research}
-     *
+     * 
      * @return The current instance of {@link Research}
      */
     @Nonnull
@@ -172,7 +179,7 @@ public class Research implements Keyed {
 
     /**
      * Lists every {@link SlimefunItem} that is bound to this {@link Research}.
-     *
+     * 
      * @return The Slimefun items bound to this {@link Research}.
      */
     @Nonnull
@@ -184,27 +191,34 @@ public class Research implements Keyed {
      * Handle what to do when a {@link Player} clicks on an un-researched item in
      * a {@link SlimefunGuideImplementation}.
      *
-     * @param guide    The {@link SlimefunGuideImplementation} used.
-     * @param player   The {@link Player} who clicked on the item.
-     * @param profile  The {@link PlayerProfile} of that {@link Player}.
-     * @param sfItem   The {@link SlimefunItem} on which the {@link Player} clicked.
-     * @param category The {@link Category} where the {@link Player} was.
-     * @param page     The page number of where the {@link Player} was in the {@link Category};
+     * @param guide
+     *            The {@link SlimefunGuideImplementation} used.
+     * @param player
+     *            The {@link Player} who clicked on the item.
+     * @param profile
+     *            The {@link PlayerProfile} of that {@link Player}.
+     * @param sfItem
+     *            The {@link SlimefunItem} on which the {@link Player} clicked.
+     * @param category
+     *            The {@link ItemGroup} where the {@link Player} was.
+     * @param page
+     *            The page number of where the {@link Player} was in the {@link ItemGroup};
+     *
      */
     @ParametersAreNonnullByDefault
-    public void unlockFromGuide(SlimefunGuideImplementation guide, Player player, PlayerProfile profile, SlimefunItem sfItem, Category category, int page) {
-        if (!SlimefunPlugin.getRegistry().getCurrentlyResearchingPlayers().contains(player.getUniqueId())) {
+    public void unlockFromGuide(SlimefunGuideImplementation guide, Player player, PlayerProfile profile, SlimefunItem sfItem, ItemGroup category, int page) {
+        if (!Slimefun.getRegistry().getCurrentlyResearchingPlayers().contains(player.getUniqueId())) {
             if (profile.hasUnlocked(this)) {
-                guide.openCategory(profile, category, page);
+                guide.openItemGroup(profile, category, page);
             } else {
                 PlayerPreResearchEvent event = new PlayerPreResearchEvent(player, this, sfItem);
                 Bukkit.getPluginManager().callEvent(event);
 
                 if (!event.isCancelled()) {
                     if (this.canUnlock(player)) {
-                        guide.unlockItem(player, sfItem, pl -> guide.openCategory(profile, category, page));
+                        guide.unlockItem(player, sfItem, pl -> guide.openItemGroup(profile, category, page));
                     } else {
-                        SlimefunPlugin.getLocalization().sendMessage(player, "messages.not-enough-xp", true);
+                        Slimefun.getLocalization().sendMessage(player, "messages.not-enough-xp", true);
                     }
                 }
             }
@@ -213,10 +227,10 @@ public class Research implements Keyed {
 
     /**
      * Checks if the {@link Player} can unlock this {@link Research}.
-     * <p>
-     * 已魔改支持 Vault
-     *
-     * @param p The {@link Player} to check
+     * 
+     * @param p
+     *            The {@link Player} to check
+     * 
      * @return Whether that {@link Player} can unlock this {@link Research}
      */
     public boolean canUnlock(@Nonnull Player p) {
@@ -224,23 +238,17 @@ public class Research implements Keyed {
             return true;
         }
 
-        boolean canUnlock;
-        if (VaultHelper.isUsable()) {
-            canUnlock = VaultHelper.getEcon().getBalance(p) >= this.getCost() * SlimefunPlugin.getCfg().getDouble("researches.money-multiply");
-        } else {
-            canUnlock = p.getLevel() >= cost;
-        }
-
-        boolean creativeResearch = p.getGameMode() == GameMode.CREATIVE && SlimefunPlugin.getRegistry().isFreeCreativeResearchingEnabled();
-
-        return creativeResearch || canUnlock;
+        boolean creativeResearch = p.getGameMode() == GameMode.CREATIVE && Slimefun.getRegistry().isFreeCreativeResearchingEnabled();
+        return creativeResearch || p.getLevel() >= cost;
     }
 
     /**
      * This unlocks this {@link Research} for the given {@link Player} without any form of callback.
-     *
-     * @param p       The {@link Player} who should unlock this {@link Research}
-     * @param instant Whether to unlock it instantly
+     * 
+     * @param p
+     *            The {@link Player} who should unlock this {@link Research}
+     * @param instant
+     *            Whether to unlock it instantly
      */
     public void unlock(@Nonnull Player p, boolean instant) {
         unlock(p, instant, null);
@@ -248,10 +256,13 @@ public class Research implements Keyed {
 
     /**
      * Unlocks this {@link Research} for the specified {@link Player}.
-     *
-     * @param p         The {@link Player} for which to unlock this {@link Research}
-     * @param isInstant Whether to unlock this {@link Research} instantly
-     * @param callback  A callback which will be run when the {@link Research} animation completed
+     * 
+     * @param p
+     *            The {@link Player} for which to unlock this {@link Research}
+     * @param isInstant
+     *            Whether to unlock this {@link Research} instantly
+     * @param callback
+     *            A callback which will be run when the {@link Research} animation completed
      */
     public void unlock(@Nonnull Player p, boolean isInstant, @Nullable Consumer<Player> callback) {
         PlayerProfile.get(p, new PlayerResearchTask(this, isInstant, callback));
@@ -261,11 +272,10 @@ public class Research implements Keyed {
      * Registers this {@link Research}.
      */
     public void register() {
-        SlimefunPlugin.getResearchCfg().setDefaultValue("enable-researching", true);
-
+        Slimefun.getResearchCfg().setDefaultValue("enable-researching", true);
         String path = key.getNamespace() + '.' + key.getKey();
 
-        if (SlimefunPlugin.getResearchCfg().contains(path + ".enabled") && !SlimefunPlugin.getResearchCfg().getBoolean(path + ".enabled")) {
+        if (Slimefun.getResearchCfg().contains(path + ".enabled") && !Slimefun.getResearchCfg().getBoolean(path + ".enabled")) {
             for (SlimefunItem item : new ArrayList<>(items)) {
                 if (item != null) {
                     item.setResearch(null);
@@ -276,21 +286,21 @@ public class Research implements Keyed {
             return;
         }
 
-        SlimefunPlugin.getResearchCfg().setDefaultValue(path + ".cost", getCost());
-        SlimefunPlugin.getResearchCfg().setDefaultValue(path + ".enabled", true);
+        Slimefun.getResearchCfg().setDefaultValue(path + ".cost", getCost());
+        Slimefun.getResearchCfg().setDefaultValue(path + ".enabled", true);
 
-        setCost(SlimefunPlugin.getResearchCfg().getInt(path + ".cost"));
+        setCost(Slimefun.getResearchCfg().getInt(path + ".cost"));
         enabled = true;
 
-        SlimefunPlugin.getRegistry().getResearches().add(this);
+        Slimefun.getRegistry().getResearches().add(this);
     }
 
     /**
      * Attempts to get a {@link Research} with the given {@link NamespacedKey}.
-     *
+     * 
      * @param key
      *            the {@link NamespacedKey} of the {@link Research} you are looking for
-     *
+     * 
      * @return An {@link Optional} with or without the found {@link Research}
      */
     @Nonnull
@@ -299,7 +309,7 @@ public class Research implements Keyed {
             return Optional.empty();
         }
 
-        for (Research research : SlimefunPlugin.getRegistry().getResearches()) {
+        for (Research research : Slimefun.getRegistry().getResearches()) {
             if (research.getKey().equals(key)) {
                 return Optional.of(research);
             }

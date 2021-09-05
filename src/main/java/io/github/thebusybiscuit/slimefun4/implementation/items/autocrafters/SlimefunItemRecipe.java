@@ -1,26 +1,29 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.autocrafters;
 
-import io.github.thebusybiscuit.slimefun4.implementation.tasks.AsyncRecipeChoiceTask;
-import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import org.apache.commons.lang.Validate;
-import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
+import javax.annotation.Nonnull;
+
+import org.apache.commons.lang.Validate;
+import org.bukkit.inventory.ItemStack;
+
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.tasks.AsyncRecipeChoiceTask;
+import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+
+import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
+
 /**
  * This {@link AbstractRecipe} implementation stands for a {@link SlimefunItem} which
  * is crafted using any {@link RecipeType}.
- *
+ * 
  * @author TheBusyBiscuit
- *
+ * 
  * @see SlimefunAutoCrafter
  *
  */
@@ -65,5 +68,4 @@ class SlimefunItemRecipe extends AbstractRecipe {
     public String toString() {
         return item.getId();
     }
-
 }

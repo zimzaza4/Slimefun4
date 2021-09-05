@@ -1,8 +1,13 @@
 package io.github.thebusybiscuit.slimefun4.core.commands;
 
-import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
-import io.github.thebusybiscuit.slimefun4.core.commands.subcommands.SlimefunSubCommands;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,21 +16,30 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import io.github.bakedlibs.dough.common.ChatColors;
+import io.github.thebusybiscuit.slimefun4.core.commands.subcommands.SlimefunSubCommands;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
+/**
+ * This {@link CommandExecutor} holds the functionality of our {@code /slimefun} command.
+ * 
+ * @author TheBusyBiscuit
+ *
+ */
 public class SlimefunCommand implements CommandExecutor, Listener {
 
     private boolean registered = false;
-    private final SlimefunPlugin plugin;
+    private final Slimefun plugin;
     private final List<SubCommand> commands = new LinkedList<>();
     private final Map<SubCommand, Integer> commandUsage = new HashMap<>();
 
-    public SlimefunCommand(@Nonnull SlimefunPlugin plugin) {
+    /**
+     * Creates a new instance of {@link SlimefunCommand}
+     * 
+     * @param plugin
+     *            The instance of our {@link Slimefun}
+     */
+    public SlimefunCommand(@Nonnull Slimefun plugin) {
         this.plugin = plugin;
     }
 
@@ -37,22 +51,19 @@ public class SlimefunCommand implements CommandExecutor, Listener {
 
         plugin.getCommand("slimefun").setExecutor(this);
         plugin.getCommand("slimefun").setTabCompleter(new SlimefunTabCompleter(this));
-
         commands.addAll(SlimefunSubCommands.getAllCommands(this));
     }
 
-    @Nonnull
-    public SlimefunPlugin getPlugin() {
+    public @Nonnull Slimefun getPlugin() {
         return plugin;
     }
 
     /**
      * Returns a heatmap of how often certain commands are used.
-     *
+     * 
      * @return A {@link Map} holding the amount of times each command was run
      */
-    @Nonnull
-    public Map<SubCommand, Integer> getCommandUsage() {
+    public @Nonnull Map<SubCommand, Integer> getCommandUsage() {
         return commandUsage;
     }
 
@@ -70,15 +81,18 @@ public class SlimefunCommand implements CommandExecutor, Listener {
 
         sendHelp(sender);
 
-        // We could just return true here, but if there's no subcommands, then
-        // something went horribly wrong anyway. This will also stop sonarcloud
-        // from nagging about this always returning true...
+        /*
+         * We could just return true here, but if there's no subcommands,
+         * then something went horribly wrong anyway.
+         * This will also stop sonarcloud from nagging about
+         * this always returning true...
+         */
         return !commands.isEmpty();
     }
 
     public void sendHelp(@Nonnull CommandSender sender) {
         sender.sendMessage("");
-        sender.sendMessage(ChatColors.color("&aSlimefun &2v" + SlimefunPlugin.getVersion()));
+        sender.sendMessage(ChatColors.color("&aSlimefun &2v" + Slimefun.getVersion()));
         sender.sendMessage("");
 
         for (SubCommand cmd : commands) {
@@ -96,9 +110,17 @@ public class SlimefunCommand implements CommandExecutor, Listener {
         }
     }
 
-    @Nonnull
-    public List<String> getSubCommandNames() {
-        return commands.stream().map(SubCommand::getName).collect(Collectors.toList());
+    /**
+     * This returns A {@link List} containing every possible {@link SubCommand} of this {@link Command}.
+     * 
+     * @return A {@link List} containing every {@link SubCommand}
+     */
+    public @Nonnull List<String> getSubCommandNames() {
+        // @formatter:off
+        return commands.stream()
+                .map(SubCommand::getName)
+                .collect(Collectors.toList());
+        // @formatter:on
     }
 
 }

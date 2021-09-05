@@ -1,17 +1,18 @@
 package io.github.thebusybiscuit.slimefun4.api.events;
 
-import io.github.thebusybiscuit.slimefun4.core.researching.Research;
-import io.github.thebusybiscuit.slimefun4.implementation.guide.CheatSheetSlimefunGuide;
-import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.researches.Research;
+import io.github.thebusybiscuit.slimefun4.implementation.guide.CheatSheetSlimefunGuide;
+import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
 
 /**
  * This {@link Event} is called whenever a {@link Player} clicks to unlock a {@link Research}.
@@ -19,7 +20,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * The {@link Event} is not called for {@link CheatSheetSlimefunGuide}.
  *
  * @author uiytt
+ *
  * @see SurvivalSlimefunGuide
+ *
  */
 public class PlayerPreResearchEvent extends Event implements Cancellable {
 

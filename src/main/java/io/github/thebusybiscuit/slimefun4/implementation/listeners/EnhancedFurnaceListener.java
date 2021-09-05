@@ -1,11 +1,9 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.EnhancedFurnace;
-import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
-import io.papermc.lib.PaperLib;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
@@ -17,21 +15,26 @@ import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import java.util.Optional;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.EnhancedFurnace;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
+import io.papermc.lib.PaperLib;
+
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 
 /**
  * This {@link Listener} is responsible for enforcing the "fuel efficiency" and "fortune" policies
  * of an {@link EnhancedFurnace}.
- *
+ * 
  * @author TheBusyBiscuit
- *
+ * 
  * @see EnhancedFurnace
  *
  */
 public class EnhancedFurnaceListener implements Listener {
 
-    public EnhancedFurnaceListener(@Nonnull SlimefunPlugin plugin) {
+    public EnhancedFurnaceListener(@Nonnull Slimefun plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -66,9 +69,10 @@ public class EnhancedFurnaceListener implements Listener {
 
             if (state instanceof Furnace) {
                 FurnaceInventory inventory = ((Furnace) state).getInventory();
+
                 boolean multiplier = SlimefunTag.ENHANCED_FURNACE_LUCK_MATERIALS.isTagged(inventory.getSmelting().getType());
                 int amount = multiplier ? ((EnhancedFurnace) sfItem).getRandomOutputAmount() : 1;
-                Optional<ItemStack> result = SlimefunPlugin.getMinecraftRecipeService().getFurnaceOutput(inventory.getSmelting());
+                Optional<ItemStack> result = Slimefun.getMinecraftRecipeService().getFurnaceOutput(inventory.getSmelting());
 
                 if (result.isPresent()) {
                     ItemStack item = result.get();

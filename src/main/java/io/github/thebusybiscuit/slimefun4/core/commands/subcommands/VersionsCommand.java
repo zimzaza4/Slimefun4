@@ -5,8 +5,6 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -15,8 +13,10 @@ import org.bukkit.plugin.Plugin;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import io.papermc.lib.PaperLib;
+
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -25,7 +25,7 @@ import net.md_5.bungee.api.chat.hover.content.Text;
 
 /**
  * This is our class for the /sf versions subcommand.
- *
+ * 
  * @author TheBusyBiscuit
  * @author Walshy
  *
@@ -45,7 +45,7 @@ class VersionsCommand extends SubCommand {
     private static final String JAVA_VERSION_NOTICE = "在 Minecraft 1.17 发布时需要 Java 16!";
 
     @ParametersAreNonnullByDefault
-    VersionsCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
+    VersionsCommand(Slimefun plugin, SlimefunCommand cmd) {
         super(plugin, cmd, "versions", false);
     }
 
@@ -68,7 +68,7 @@ class VersionsCommand extends SubCommand {
                     .color(ChatColor.DARK_GREEN)
                     .append("Slimefun ")
                     .color(ChatColor.GREEN)
-                    .append(SlimefunPlugin.getVersion() + '\n')
+                    .append(Slimefun.getVersion() + '\n')
                     .color(ChatColor.DARK_GREEN);
             // @formatter:on
 
@@ -76,7 +76,7 @@ class VersionsCommand extends SubCommand {
                 // @formatter:off
                 builder.append("Metrics-组件 ")
                         .color(ChatColor.GREEN)
-                        .append("#" + SlimefunPlugin.getMetricsService().getVersion() + '\n')
+                        .append("#" + Slimefun.getMetricsService().getVersion() + '\n')
                         .color(ChatColor.DARK_GREEN);
                 // @formatter:on
             }
@@ -100,7 +100,7 @@ class VersionsCommand extends SubCommand {
 
             sender.spigot().sendMessage(builder.create());
         } else {
-            SlimefunPlugin.getLocalization().sendMessage(sender, "messages.no-permission", true);
+            Slimefun.getLocalization().sendMessage(sender, "messages.no-permission", true);
         }
     }
 
@@ -124,7 +124,7 @@ class VersionsCommand extends SubCommand {
     }
 
     private void addPluginVersions(@Nonnull ComponentBuilder builder) {
-        Collection<Plugin> addons = SlimefunPlugin.getInstalledAddons();
+        Collection<Plugin> addons = Slimefun.getInstalledAddons();
 
         if (addons.isEmpty()) {
             builder.append("没有安装任何附属插件").color(ChatColor.GRAY).italic(true);

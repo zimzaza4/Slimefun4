@@ -1,7 +1,10 @@
 package io.github.thebusybiscuit.slimefun4.utils.itemstack;
 
-import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
-import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
@@ -9,18 +12,17 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.List;
+import io.github.bakedlibs.dough.common.ChatColors;
+import io.github.bakedlibs.dough.items.CustomItemStack;
 
 /**
  * This simple {@link ItemStack} implementation allows us to obtain
  * a colored {@code Material.FIREWORK_STAR} {@link ItemStack} quickly.
- *
+ * 
  * @author TheBusyBiscuit
  *
  */
-public class ColoredFireworkStar extends CustomItem {
+public class ColoredFireworkStar extends CustomItemStack {
 
     @ParametersAreNonnullByDefault
     public ColoredFireworkStar(Color color, String name, String... lore) {

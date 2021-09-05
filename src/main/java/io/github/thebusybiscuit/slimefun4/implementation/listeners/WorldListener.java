@@ -1,24 +1,27 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import java.util.logging.Level;
+
+import javax.annotation.Nonnull;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 
-import javax.annotation.Nonnull;
-import java.util.logging.Level;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 
 public class WorldListener implements Listener {
 
-    public WorldListener(@Nonnull SlimefunPlugin plugin) {
+    public WorldListener(@Nonnull Slimefun plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler
     public void onWorldLoad(WorldLoadEvent e) {
-        SlimefunPlugin.getWorldSettingsService().load(e.getWorld());
+        Slimefun.getWorldSettingsService().load(e.getWorld());
         BlockStorage.getOrCreate(e.getWorld());
     }
 
@@ -27,9 +30,9 @@ public class WorldListener implements Listener {
         BlockStorage storage = BlockStorage.getStorage(e.getWorld());
 
         if (storage != null) {
-            storage.save();
+            storage.saveAndRemove();
         } else {
-            SlimefunPlugin.logger().log(Level.SEVERE, "Could not save Slimefun Blocks for World \"{0}\"", e.getWorld().getName());
+            Slimefun.logger().log(Level.SEVERE, "Could not save Slimefun Blocks for World \"{0}\"", e.getWorld().getName());
         }
     }
 

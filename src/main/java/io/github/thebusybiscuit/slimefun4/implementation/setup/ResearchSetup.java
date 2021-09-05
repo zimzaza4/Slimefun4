@@ -1,12 +1,15 @@
 package io.github.thebusybiscuit.slimefun4.implementation.setup;
 
-import io.github.thebusybiscuit.slimefun4.core.researching.Research;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.researches.Research;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
 /**
  * This static setup class is used to register all default implementations of
@@ -14,13 +17,13 @@ import org.bukkit.inventory.ItemStack;
  *
  * @see Research
  * @see SlimefunItems
+ *
  */
 public final class ResearchSetup {
 
     private static boolean alreadyRan = false;
 
-    private ResearchSetup() {
-    }
+    private ResearchSetup() {}
 
     public static void setupResearches() {
         if (alreadyRan) {
@@ -198,14 +201,14 @@ public final class ResearchSetup {
         register("energized_gps_transmitter", 189, "Top Tier Transmitter", 44, SlimefunItems.GPS_TRANSMITTER_4);
         register("energy_regulator", 190, "Energy Networks 101", 6, SlimefunItems.ENERGY_REGULATOR);
         register("butcher_androids", 191, "Butcher Androids", 32, SlimefunItems.PROGRAMMABLE_ANDROID_BUTCHER);
-        register("organic_food", 192, "Organic Food", 25, SlimefunItems.FOOD_FABRICATOR, SlimefunItems.WHEAT_ORGANIC_FOOD, SlimefunItems.CARROT_ORGANIC_FOOD, SlimefunItems.POTATO_ORGANIC_FOOD, SlimefunItems.SEEDS_ORGANIC_FOOD, SlimefunItems.BEETROOT_ORGANIC_FOOD, SlimefunItems.MELON_ORGANIC_FOOD, SlimefunItems.APPLE_ORGANIC_FOOD, SlimefunItems.SWEET_BERRIES_ORGANIC_FOOD, SlimefunItems.KELP_ORGANIC_FOOD);
+        register("organic_food", 192, "Organic Food", 25, SlimefunItems.FOOD_FABRICATOR, SlimefunItems.WHEAT_ORGANIC_FOOD, SlimefunItems.CARROT_ORGANIC_FOOD, SlimefunItems.POTATO_ORGANIC_FOOD, SlimefunItems.SEEDS_ORGANIC_FOOD, SlimefunItems.BEETROOT_ORGANIC_FOOD, SlimefunItems.MELON_ORGANIC_FOOD, SlimefunItems.APPLE_ORGANIC_FOOD, SlimefunItems.SWEET_BERRIES_ORGANIC_FOOD, SlimefunItems.KELP_ORGANIC_FOOD, SlimefunItems.COCOA_ORGANIC_FOOD);
         register("auto_breeder", 193, "Automated Feeding", 25, SlimefunItems.AUTO_BREEDER);
         register("advanced_android", 194, "Advanced Androids", 60, SlimefunItems.PROGRAMMABLE_ANDROID_2);
         register("advanced_butcher_android", 195, "Advanced Androids - Butcher", 30, SlimefunItems.PROGRAMMABLE_ANDROID_2_BUTCHER);
         register("advanced_fisherman_android", 196, "Advanced Androids - Fisherman", 30, SlimefunItems.PROGRAMMABLE_ANDROID_2_FISHERMAN);
         register("animal_growth_accelerator", 197, "Animal Growth Manipulation", 32, SlimefunItems.ANIMAL_GROWTH_ACCELERATOR);
         register("xp_collector", 198, "XP Collector", 36, SlimefunItems.EXP_COLLECTOR);
-        register("organic_fertilizer", 199, "Organic Fertilizer", 36, SlimefunItems.FOOD_COMPOSTER, SlimefunItems.WHEAT_FERTILIZER, SlimefunItems.CARROT_FERTILIZER, SlimefunItems.POTATO_FERTILIZER, SlimefunItems.SEEDS_FERTILIZER, SlimefunItems.BEETROOT_FERTILIZER, SlimefunItems.MELON_FERTILIZER, SlimefunItems.APPLE_FERTILIZER, SlimefunItems.SWEET_BERRIES_FERTILIZER, SlimefunItems.KELP_FERTILIZER);
+        register("organic_fertilizer", 199, "Organic Fertilizer", 36, SlimefunItems.FOOD_COMPOSTER, SlimefunItems.WHEAT_FERTILIZER, SlimefunItems.CARROT_FERTILIZER, SlimefunItems.POTATO_FERTILIZER, SlimefunItems.SEEDS_FERTILIZER, SlimefunItems.BEETROOT_FERTILIZER, SlimefunItems.MELON_FERTILIZER, SlimefunItems.APPLE_FERTILIZER, SlimefunItems.SWEET_BERRIES_FERTILIZER, SlimefunItems.KELP_FERTILIZER, SlimefunItems.COCOA_FERTILIZER);
         register("crop_growth_accelerator", 200, "Crop Growth Acceleration", 40, SlimefunItems.CROP_GROWTH_ACCELERATOR);
         register("better_crop_growth_accelerator", 201, "Upgraded Crop Growth Accelerator", 44, SlimefunItems.CROP_GROWTH_ACCELERATOR_2);
         register("reactor_essentials", 202, "Reactor Essentials", 36, SlimefunItems.REACTOR_COOLANT_CELL, SlimefunItems.NEPTUNIUM, SlimefunItems.PLUTONIUM);
@@ -216,7 +219,6 @@ public final class ResearchSetup {
         register("electric_ingot_machines", 207, "Electric Ingot Fabrication", 18, SlimefunItems.ELECTRIC_GOLD_PAN, SlimefunItems.ELECTRIC_DUST_WASHER, SlimefunItems.ELECTRIC_INGOT_FACTORY);
         register("medium_tier_electric_ingot_machines", 208, "Fast Ingot Fabrication", 25, SlimefunItems.ELECTRIC_GOLD_PAN_2, SlimefunItems.ELECTRIC_DUST_WASHER_2, SlimefunItems.ELECTRIC_INGOT_FACTORY_2, SlimefunItems.ELECTRIC_ORE_GRINDER_2);
         register("high_tier_electric_ingot_machines", 209, "Super Fast Ingot Fabrication", 32, SlimefunItems.ELECTRIC_GOLD_PAN_3, SlimefunItems.ELECTRIC_DUST_WASHER_3, SlimefunItems.ELECTRIC_INGOT_FACTORY_3, SlimefunItems.ELECTRIC_ORE_GRINDER_3);
-        //register("automated_crafting_chamber", 210, "Automated Crafting", 20, SlimefunItems.AUTOMATED_CRAFTING_CHAMBER);
         register("better_food_fabricator", 211, "Upgraded Food Fabrication", 28, SlimefunItems.FOOD_FABRICATOR_2, SlimefunItems.FOOD_COMPOSTER_2);
         register("reactor_access_port", 212, "Reactor Interaction", 18, SlimefunItems.REACTOR_ACCESS_PORT);
         register("fluid_pump", 213, "Fluid Pump", 28, SlimefunItems.FLUID_PUMP);
@@ -289,8 +291,9 @@ public final class ResearchSetup {
         register("trident", 279, "Trident", 20, new ItemStack(Material.TRIDENT));
     }
 
+    @ParametersAreNonnullByDefault
     private static void register(String key, int id, String name, int defaultCost, ItemStack... items) {
-        Research research = new Research(new NamespacedKey(SlimefunPlugin.instance(), key), id, name, defaultCost);
+        Research research = new Research(new NamespacedKey(Slimefun.instance(), key), id, name, defaultCost);
 
         for (ItemStack item : items) {
             SlimefunItem sfItem = SlimefunItem.getByItem(item);

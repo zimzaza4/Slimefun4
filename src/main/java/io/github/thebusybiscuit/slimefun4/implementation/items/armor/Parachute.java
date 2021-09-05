@@ -1,30 +1,33 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.armor;
 
-import io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets.Jetpack;
-import io.github.thebusybiscuit.slimefun4.implementation.tasks.ParachuteTask;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets.Jetpack;
+import io.github.thebusybiscuit.slimefun4.implementation.tasks.ParachuteTask;
 
 /**
  * The {@link Parachute} is a {@link SlimefunItem} that can be equipped as a chestplate.
  * It allows you slowly glide to the ground while holding shift.
- * <p>
+ * 
  * This class does not contain much code to see, check our the {@link ParachuteTask} class
  * for the actual logic behind this.
- *
+ * 
  * @author TheBusyBiscuit
+ * 
  * @see ParachuteTask
  * @see Jetpack
+ *
  */
 public class Parachute extends SlimefunItem {
 
     @ParametersAreNonnullByDefault
-    public Parachute(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    public Parachute(ItemGroup category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, RecipeType.ENHANCED_CRAFTING_TABLE, recipe);
     }
 

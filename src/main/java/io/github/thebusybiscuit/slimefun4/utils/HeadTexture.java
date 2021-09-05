@@ -1,17 +1,22 @@
 package io.github.thebusybiscuit.slimefun4.utils;
 
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
+
+import javax.annotation.Nonnull;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import java.nio.charset.StandardCharsets;
-import java.util.UUID;
+import io.github.bakedlibs.dough.common.CommonPatterns;
+import io.github.bakedlibs.dough.skins.PlayerSkin;
 
 /**
  * This enum holds all currently used Head textures in Slimefun.
  * Credit for most of these goes to our main head designer "AquaLazuryt".
- *
+ * 
  * @author TheBusyBiscuit
+ *
  */
 public enum HeadTexture {
 
@@ -123,18 +128,18 @@ public enum HeadTexture {
 
     HeadTexture(@Nonnull String texture) {
         Validate.notNull(texture, "Texture cannot be null");
-        Validate.isTrue(PatternUtils.HEXADECIMAL.matcher(texture).matches(), "Textures must be in hexadecimal.");
+        Validate.isTrue(CommonPatterns.HEXADECIMAL.matcher(texture).matches(), "Textures must be in hexadecimal.");
+
         this.texture = texture;
         this.uuid = UUID.nameUUIDFromBytes(texture.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
      * This returns the texture hash for this particular head.
-     *
+     * 
      * @return The associated texture hash
      */
-    @Nonnull
-    public String getTexture() {
+    public @Nonnull String getTexture() {
         return texture;
     }
 
@@ -142,23 +147,24 @@ public enum HeadTexture {
      * This returns the {@link UUID} for this {@link HeadTexture}.
      * The {@link UUID} is generated from the texture and cached for
      * performance reasons.
-     *
+     * 
      * @return The {@link UUID} for this {@link HeadTexture}
      */
-    @Nonnull
-    public UUID getUniqueId() {
+    public @Nonnull UUID getUniqueId() {
         return uuid;
     }
 
-
     /**
      * This method returns an {@link ItemStack} with the given texture assigned to it.
-     *
+     * 
      * @return A custom head {@link ItemStack}
      */
-    @Nonnull
-    public ItemStack getAsItemStack() {
+    public @Nonnull ItemStack getAsItemStack() {
         return SlimefunUtils.getCustomHead(getTexture());
+    }
+
+    public @Nonnull PlayerSkin getAsSkin() {
+        return PlayerSkin.fromHashCode(texture);
     }
 
 }

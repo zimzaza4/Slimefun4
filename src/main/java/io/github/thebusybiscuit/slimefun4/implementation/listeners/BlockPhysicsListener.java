@@ -1,8 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import javax.annotation.Nonnull;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -20,22 +19,26 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
+
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 
 /**
  * This {@link Listener} is responsible for listening to any physics-based events, such
  * as {@link EntityChangeBlockEvent} or a {@link BlockPistonEvent}.
- * <p>
+ * 
  * This ensures that a {@link Piston} cannot be abused to break Slimefun blocks.
- *
+ * 
  * @author VoidAngel
  * @author Poslovitch
  * @author TheBusyBiscuit
  * @author AccelShark
+ *
  */
 public class BlockPhysicsListener implements Listener {
 
-    public BlockPhysicsListener(@Nonnull SlimefunPlugin plugin) {
+    public BlockPhysicsListener(@Nonnull Slimefun plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -85,7 +88,6 @@ public class BlockPhysicsListener implements Listener {
         Material type = block.getType();
 
         // Check if this Material can be destroyed by fluids
-
         if (SlimefunTag.FLUID_SENSITIVE_MATERIALS.isTagged(type)) {
             // Check if this Block holds any data
             if (BlockStorage.hasBlockInfo(block)) {
@@ -94,7 +96,7 @@ public class BlockPhysicsListener implements Listener {
                 Location loc = block.getLocation();
 
                 // Fixes #2496 - Make sure it is not a moving block
-                if (SlimefunPlugin.getTickerTask().isOccupiedSoon(loc)) {
+                if (Slimefun.getTickerTask().isOccupiedSoon(loc)) {
                     e.setCancelled(true);
                 }
             }

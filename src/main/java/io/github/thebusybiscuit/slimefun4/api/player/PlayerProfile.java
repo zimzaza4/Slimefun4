@@ -1,39 +1,55 @@
 package io.github.thebusybiscuit.slimefun4.api.player;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
-import io.github.thebusybiscuit.cscorelib2.config.Config;
-import io.github.thebusybiscuit.slimefun4.api.events.AsyncProfileLoadEvent;
-import io.github.thebusybiscuit.slimefun4.api.gps.Waypoint;
-import io.github.thebusybiscuit.slimefun4.api.items.HashedArmorpiece;
-import io.github.thebusybiscuit.slimefun4.core.attributes.ProtectionType;
-import io.github.thebusybiscuit.slimefun4.core.attributes.ProtectiveArmor;
-import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
-import io.github.thebusybiscuit.slimefun4.core.researching.Research;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.items.armor.SlimefunArmorPiece;
-import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
-import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
-import org.apache.commons.lang.Validate;
-import org.bukkit.*;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.stream.IntStream;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+
+import io.github.bakedlibs.dough.common.ChatColors;
+import io.github.bakedlibs.dough.common.CommonPatterns;
+import io.github.bakedlibs.dough.config.Config;
+import io.github.thebusybiscuit.slimefun4.api.events.AsyncProfileLoadEvent;
+import io.github.thebusybiscuit.slimefun4.api.gps.Waypoint;
+import io.github.thebusybiscuit.slimefun4.api.items.HashedArmorpiece;
+import io.github.thebusybiscuit.slimefun4.api.researches.Research;
+import io.github.thebusybiscuit.slimefun4.core.attributes.ProtectionType;
+import io.github.thebusybiscuit.slimefun4.core.attributes.ProtectiveArmor;
+import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.armor.SlimefunArmorPiece;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
+
 /**
  * A class that can store a Player's {@link Research} progress for caching purposes.
  * It also holds the backpacks of a {@link Player}.
- *
+ * 
  * @author TheBusyBiscuit
- *
+ * 
  * @see Research
  * @see Waypoint
  * @see PlayerBackpack
@@ -69,7 +85,7 @@ public class PlayerProfile {
     }
 
     private void loadProfileData() {
-        for (Research research : SlimefunPlugin.getRegistry().getResearches()) {
+        for (Research research : Slimefun.getRegistry().getResearches()) {
             if (configFile.contains("researches." + research.getID())) {
                 researches.add(research);
             }
@@ -83,7 +99,7 @@ public class PlayerProfile {
                     waypoints.add(new Waypoint(this, key, loc, waypointName));
                 }
             } catch (Exception x) {
-                SlimefunPlugin.logger().log(Level.WARNING, x, () -> "Could not load Waypoint \"" + key + "\" for Player \"" + name + '"');
+                Slimefun.logger().log(Level.WARNING, x, () -> "Could not load Waypoint \"" + key + "\" for Player \"" + name + '"');
             }
         }
     }
@@ -91,39 +107,36 @@ public class PlayerProfile {
     /**
      * This method provides a fast way to access the armor of a {@link Player}.
      * It returns a cached version, represented by {@link HashedArmorpiece}.
-     *
+     * 
      * @return The cached armor for this {@link Player}
      */
-    @Nonnull
-    public HashedArmorpiece[] getArmor() {
+    public @Nonnull HashedArmorpiece[] getArmor() {
         return armor;
     }
 
     /**
      * This returns the {@link Config} which is used to store the data.
      * Only intended for internal usage.
-     *
+     * 
      * @return The {@link Config} associated with this {@link PlayerProfile}
      */
-    @Nonnull
-    public Config getConfig() {
+    public @Nonnull Config getConfig() {
         return configFile;
     }
 
     /**
      * This returns the {@link UUID} this {@link PlayerProfile} is linked to.
-     *
+     * 
      * @return The {@link UUID} of our {@link PlayerProfile}
      */
-    @Nonnull
-    public UUID getUUID() {
+    public @Nonnull UUID getUUID() {
         return uuid;
     }
 
     /**
      * This method returns whether the {@link Player} has logged off.
      * If this is true, then the Profile can be removed from RAM.
-     *
+     * 
      * @return Whether the Profile is marked for deletion
      */
     public boolean isMarkedForDeletion() {
@@ -132,7 +145,7 @@ public class PlayerProfile {
 
     /**
      * This method returns whether the Profile has unsaved changes
-     *
+     * 
      * @return Whether there are unsaved changes
      */
     public boolean isDirty() {
@@ -155,7 +168,7 @@ public class PlayerProfile {
     /**
      * This method sets the Player's "researched" status for this Research.
      * Use the boolean to unlock or lock the {@link Research}
-     *
+     * 
      * @param research
      *            The {@link Research} that should be unlocked or locked
      * @param unlock
@@ -176,7 +189,7 @@ public class PlayerProfile {
 
     /**
      * This method returns whether the {@link Player} has unlocked the given {@link Research}
-     *
+     * 
      * @param research
      *            The {@link Research} that is being queried
      * @return Whether this {@link Research} has been unlocked
@@ -192,29 +205,27 @@ public class PlayerProfile {
 
     /**
      * This Method will return all Researches that this {@link Player} has unlocked
-     *
+     * 
      * @return A {@code Hashset<Research>} of all Researches this {@link Player} has unlocked
      */
-    @Nonnull
-    public Set<Research> getResearches() {
+    public @Nonnull Set<Research> getResearches() {
         return ImmutableSet.copyOf(researches);
     }
 
     /**
      * This returns a {@link List} of all {@link Waypoint Waypoints} belonging to this
      * {@link PlayerProfile}.
-     *
+     * 
      * @return A {@link List} containing every {@link Waypoint}
      */
-    @Nonnull
-    public List<Waypoint> getWaypoints() {
+    public @Nonnull List<Waypoint> getWaypoints() {
         return ImmutableList.copyOf(waypoints);
     }
 
     /**
      * This adds the given {@link Waypoint} to the {@link List} of {@link Waypoint Waypoints}
      * of this {@link PlayerProfile}.
-     *
+     * 
      * @param waypoint
      *            The {@link Waypoint} to add
      */
@@ -239,7 +250,7 @@ public class PlayerProfile {
     /**
      * This removes the given {@link Waypoint} from the {@link List} of {@link Waypoint Waypoints}
      * of this {@link PlayerProfile}.
-     *
+     * 
      * @param waypoint
      *            The {@link Waypoint} to remove
      */
@@ -267,8 +278,7 @@ public class PlayerProfile {
         dirty = true;
     }
 
-    @Nonnull
-    public PlayerBackpack createBackpack(int size) {
+    public @Nonnull PlayerBackpack createBackpack(int size) {
         IntStream stream = IntStream.iterate(0, i -> i + 1).filter(i -> !configFile.contains("backpacks." + i + ".size"));
         int id = stream.findFirst().getAsInt();
 
@@ -278,8 +288,7 @@ public class PlayerProfile {
         return backpack;
     }
 
-    @Nonnull
-    public Optional<PlayerBackpack> getBackpack(int id) {
+    public @Nonnull Optional<PlayerBackpack> getBackpack(int id) {
         if (id < 0) {
             throw new IllegalArgumentException("Backpacks cannot have negative ids!");
         }
@@ -297,11 +306,10 @@ public class PlayerProfile {
         return Optional.empty();
     }
 
-    @Nonnull
-    public String getTitle() {
-        List<String> titles = SlimefunPlugin.getRegistry().getResearchRanks();
+    public @Nonnull String getTitle() {
+        List<String> titles = Slimefun.getRegistry().getResearchRanks();
 
-        float fraction = (float) researches.size() / SlimefunPlugin.getRegistry().getResearches().size();
+        float fraction = (float) researches.size() / Slimefun.getRegistry().getResearches().size();
         int index = (int) (fraction * (titles.size() - 1));
 
         return titles.get(index);
@@ -310,7 +318,7 @@ public class PlayerProfile {
     public void sendStats(@Nonnull CommandSender sender) {
         Set<Research> unlockedResearches = getResearches();
         int levels = unlockedResearches.stream().mapToInt(Research::getCost).sum();
-        int allResearches = SlimefunPlugin.getRegistry().getResearches().size();
+        int allResearches = Slimefun.getRegistry().getResearches().size();
 
         float progress = Math.round(((unlockedResearches.size() * 100.0F) / allResearches) * 100.0F) / 100.0F;
 
@@ -325,22 +333,20 @@ public class PlayerProfile {
     /**
      * This returns the {@link Player} who this {@link PlayerProfile} belongs to.
      * If the {@link Player} is offline, null will be returned.
-     *
+     * 
      * @return The {@link Player} of this {@link PlayerProfile} or null
      */
-    @Nullable
-    public Player getPlayer() {
+    public @Nullable Player getPlayer() {
         return Bukkit.getPlayer(getUUID());
     }
 
     /**
      * This returns the {@link GuideHistory} of this {@link Player}.
      * It is basically that player's browsing history.
-     *
+     * 
      * @return The {@link GuideHistory} of this {@link Player}
      */
-    @Nonnull
-    public GuideHistory getGuideHistory() {
+    public @Nonnull GuideHistory getGuideHistory() {
         return guideHistory;
     }
 
@@ -355,25 +361,25 @@ public class PlayerProfile {
      *            The {@link OfflinePlayer} who's {@link PlayerProfile} to retrieve
      * @param callback
      *            The callback with the {@link PlayerProfile}
-     *
+     * 
      * @return If the {@link OfflinePlayer} was cached or not.
      */
     public static boolean get(@Nonnull OfflinePlayer p, @Nonnull Consumer<PlayerProfile> callback) {
         Validate.notNull(p, "Cannot get a PlayerProfile for: null!");
 
         UUID uuid = p.getUniqueId();
-        PlayerProfile profile = SlimefunPlugin.getRegistry().getPlayerProfiles().get(uuid);
+        PlayerProfile profile = Slimefun.getRegistry().getPlayerProfiles().get(uuid);
 
         if (profile != null) {
             callback.accept(profile);
             return true;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(SlimefunPlugin.instance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Slimefun.instance(), () -> {
             AsyncProfileLoadEvent event = new AsyncProfileLoadEvent(new PlayerProfile(p));
             Bukkit.getPluginManager().callEvent(event);
 
-            SlimefunPlugin.getRegistry().getPlayerProfiles().put(uuid, event.getProfile());
+            Slimefun.getRegistry().getPlayerProfiles().put(uuid, event.getProfile());
             callback.accept(event.getProfile());
         });
 
@@ -383,20 +389,20 @@ public class PlayerProfile {
     /**
      * This requests an instance of {@link PlayerProfile} to be loaded for the given {@link OfflinePlayer}.
      * This method will return true if the {@link PlayerProfile} was already found.
-     *
+     * 
      * @param p
      *            The {@link OfflinePlayer} to request the {@link PlayerProfile} for.
-     *
+     * 
      * @return Whether the {@link PlayerProfile} was already loaded
      */
     public static boolean request(@Nonnull OfflinePlayer p) {
         Validate.notNull(p, "Cannot request a Profile for null");
 
-        if (!SlimefunPlugin.getRegistry().getPlayerProfiles().containsKey(p.getUniqueId())) {
+        if (!Slimefun.getRegistry().getPlayerProfiles().containsKey(p.getUniqueId())) {
             // Should probably prevent multiple requests for the same profile in the future
-            Bukkit.getScheduler().runTaskAsynchronously(SlimefunPlugin.instance(), () -> {
+            Bukkit.getScheduler().runTaskAsynchronously(Slimefun.instance(), () -> {
                 PlayerProfile pp = new PlayerProfile(p);
-                SlimefunPlugin.getRegistry().getPlayerProfiles().put(p.getUniqueId(), pp);
+                Slimefun.getRegistry().getPlayerProfiles().put(p.getUniqueId(), pp);
             });
 
             return false;
@@ -409,20 +415,18 @@ public class PlayerProfile {
      * This method tries to search for a {@link PlayerProfile} of the given {@link OfflinePlayer}.
      * The result of this method is an {@link Optional}, if no {@link PlayerProfile} was found, an empty
      * {@link Optional} will be returned.
-     *
+     * 
      * @param p
      *            The {@link OfflinePlayer} to get the {@link PlayerProfile} for
-     *
+     * 
      * @return An {@link Optional} describing the result
      */
-    @Nonnull
-    public static Optional<PlayerProfile> find(@Nonnull OfflinePlayer p) {
-        return Optional.ofNullable(SlimefunPlugin.getRegistry().getPlayerProfiles().get(p.getUniqueId()));
+    public static @Nonnull Optional<PlayerProfile> find(@Nonnull OfflinePlayer p) {
+        return Optional.ofNullable(Slimefun.getRegistry().getPlayerProfiles().get(p.getUniqueId()));
     }
 
-    @Nonnull
-    public static Iterator<PlayerProfile> iterator() {
-        return SlimefunPlugin.getRegistry().getPlayerProfiles().values().iterator();
+    public static @Nonnull Iterator<PlayerProfile> iterator() {
+        return Slimefun.getRegistry().getPlayerProfiles().values().iterator();
     }
 
     public static void getBackpack(@Nullable ItemStack item, @Nonnull Consumer<PlayerBackpack> callback) {
@@ -435,9 +439,9 @@ public class PlayerProfile {
 
         for (String line : item.getItemMeta().getLore()) {
             if (line.startsWith(ChatColors.color("&7ID: ")) && line.indexOf('#') != -1) {
-                String[] splitLine = PatternUtils.HASH.split(line);
+                String[] splitLine = CommonPatterns.HASH.split(line);
 
-                if (PatternUtils.NUMERIC.matcher(splitLine[1]).matches()) {
+                if (CommonPatterns.NUMERIC.matcher(splitLine[1]).matches()) {
                     id = OptionalInt.of(Integer.parseInt(splitLine[1]));
                     uuid = splitLine[0].replace(ChatColors.color("&7ID: "), "");
                 }

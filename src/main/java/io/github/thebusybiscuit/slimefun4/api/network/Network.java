@@ -10,21 +10,22 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 
-import io.github.thebusybiscuit.cscorelib2.blocks.BlockPosition;
+import io.github.bakedlibs.dough.blocks.BlockPosition;
 import io.github.thebusybiscuit.slimefun4.core.networks.NetworkManager;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.NetworkListener;
 
 /**
  * An abstract Network class to manage networks in a stateful way
- *
+ * 
  * @author meiamsome
  * @author TheBusyBiscuit
- *
+ * 
  * @see NetworkListener
  * @see NetworkManager
  *
@@ -60,7 +61,7 @@ public abstract class Network {
 
     /**
      * This constructs a new {@link Network} at the given {@link Location}.
-     *
+     * 
      * @param manager
      *            The {@link NetworkManager} instance
      * @param regulator
@@ -82,9 +83,9 @@ public abstract class Network {
      * This method returns the range of the {@link Network}.
      * The range determines how far the {@link Network} will search for
      * nearby nodes from any given node.
-     *
+     * 
      * It basically translates to the maximum distance between nodes.
-     *
+     * 
      * @return the range of this {@link Network}
      */
     public abstract int getRange();
@@ -92,19 +93,18 @@ public abstract class Network {
     /**
      * This method assigns the given {@link Location} a type of {@link NetworkComponent}
      * for classification.
-     *
+     * 
      * @param l
      *            The {@link Location} to classify
-     *
+     * 
      * @return The assigned type of {@link NetworkComponent} for this {@link Location}
      */
-    @Nullable
-    public abstract NetworkComponent classifyLocation(@Nonnull Location l);
+    public abstract @Nullable NetworkComponent classifyLocation(@Nonnull Location l);
 
     /**
      * This method is called whenever a {@link Location} in this {@link Network} changes
      * its classification.
-     *
+     * 
      * @param l
      *            The {@link Location} that is changing its classification
      * @param from
@@ -117,7 +117,7 @@ public abstract class Network {
     /**
      * This returns the size of this {@link Network}. It is equivalent to the amount
      * of {@link Location Locations} connected to this {@link Network}.
-     *
+     * 
      * @return The size of this {@link Network}
      */
     public int getSize() {
@@ -126,7 +126,7 @@ public abstract class Network {
 
     /**
      * This method adds the given {@link Location} to this {@link Network}.
-     *
+     * 
      * @param l
      *            The {@link Location} to add
      */
@@ -142,7 +142,7 @@ public abstract class Network {
     /**
      * This method marks the given {@link Location} as dirty and adds it to a {@link Queue}
      * to handle this update.
-     *
+     * 
      * @param l
      *            The {@link Location} to update
      */
@@ -156,10 +156,10 @@ public abstract class Network {
 
     /**
      * This method checks whether the given {@link Location} is part of this {@link Network}.
-     *
+     * 
      * @param l
      *            The {@link Location} to check for
-     *
+     * 
      * @return Whether the given {@link Location} is part of this {@link Network}
      */
     public boolean connectsTo(@Nonnull Location l) {
@@ -174,8 +174,7 @@ public abstract class Network {
         }
     }
 
-    @Nullable
-    private NetworkComponent getCurrentClassification(@Nonnull Location l) {
+    private @Nullable NetworkComponent getCurrentClassification(@Nonnull Location l) {
         if (regulatorNodes.contains(l)) {
             return NetworkComponent.REGULATOR;
         } else if (connectorNodes.contains(l)) {
@@ -248,17 +247,17 @@ public abstract class Network {
      */
     public void display() {
         if (manager.isVisualizerEnabled()) {
-            SlimefunPlugin.runSync(new NetworkVisualizer(this));
+            // TODO: Make Color configurable / network-dependent
+            Slimefun.runSync(new NetworkVisualizer(this, Color.BLUE));
         }
     }
 
     /**
      * This returns the {@link Location} of the regulator block for this {@link Network}
-     *
+     * 
      * @return The {@link Location} of our regulator
      */
-    @Nonnull
-    public Location getRegulator() {
+    public @Nonnull Location getRegulator() {
         return regulator;
     }
 

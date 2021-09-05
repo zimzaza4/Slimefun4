@@ -1,15 +1,14 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans;
 
-import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
-import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
-import io.github.thebusybiscuit.slimefun4.core.researching.Research;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -26,17 +25,20 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
+import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemUtils;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.api.researches.Research;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 
 public class Talisman extends SlimefunItem {
 
-    protected static final Category TALISMANS_CATEGORY = new Category(new NamespacedKey(SlimefunPlugin.instance(), "talismans"), new CustomItem(SlimefunItems.COMMON_TALISMAN, "&7Talismans - &aTier I"), 2);
+    protected static final ItemGroup TALISMANS_CATEGORY = new ItemGroup(new NamespacedKey(Slimefun.instance(), "talismans"), new CustomItemStack(SlimefunItems.COMMON_TALISMAN, "&7Talismans - &aTier I"), 2);
 
     private final SlimefunItemStack enderTalisman;
 
@@ -47,23 +49,23 @@ public class Talisman extends SlimefunItem {
     protected final int chance;
 
     @ParametersAreNonnullByDefault
-    public Talisman(SlimefunItemStack item, ItemStack[] recipe, boolean consumable, boolean cancelEvent, String messageSuffix, PotionEffect... effects) {
+    public Talisman(SlimefunItemStack item, ItemStack[] recipe, boolean consumable, boolean cancelEvent, @Nullable String messageSuffix, PotionEffect... effects) {
         this(item, recipe, consumable, cancelEvent, messageSuffix, 100, effects);
     }
 
     @ParametersAreNonnullByDefault
-    public Talisman(SlimefunItemStack item, ItemStack[] recipe, String messageSuffix, int chance, PotionEffect... effects) {
+    public Talisman(SlimefunItemStack item, ItemStack[] recipe, @Nullable String messageSuffix, int chance, PotionEffect... effects) {
         this(item, recipe, true, true, messageSuffix, chance, effects);
     }
 
     @ParametersAreNonnullByDefault
-    public Talisman(SlimefunItemStack item, ItemStack[] recipe, boolean consumable, boolean cancelEvent, String messageSuffix, int chance, PotionEffect... effects) {
+    public Talisman(SlimefunItemStack item, ItemStack[] recipe, boolean consumable, boolean cancelEvent, @Nullable String messageSuffix, int chance, PotionEffect... effects) {
         this(TALISMANS_CATEGORY, item, recipe, consumable, cancelEvent, messageSuffix, chance, effects);
     }
 
     @ParametersAreNonnullByDefault
-    protected Talisman(Category category, SlimefunItemStack item, ItemStack[] recipe, boolean consumable, boolean cancelEvent, String messageSuffix, int chance, PotionEffect... effects) {
-        super(category, item, RecipeType.MAGIC_WORKBENCH, recipe, new CustomItem(item, consumable ? 4 : 1));
+    protected Talisman(ItemGroup category, SlimefunItemStack item, ItemStack[] recipe, boolean consumable, boolean cancelEvent, @Nullable String messageSuffix, int chance, PotionEffect... effects) {
+        super(category, item, RecipeType.MAGIC_WORKBENCH, recipe, new CustomItemStack(item, consumable ? 4 : 1));
 
         this.consumable = consumable;
         this.cancel = cancelEvent;
@@ -92,7 +94,7 @@ public class Talisman extends SlimefunItem {
 
     /**
      * This returns whether the {@link Talisman} will be consumed upon use.
-     *
+     * 
      * @return Whether this {@link Talisman} is consumed on use.
      */
     public boolean isConsumable() {
@@ -102,7 +104,7 @@ public class Talisman extends SlimefunItem {
     /**
      * This returns the chance of this {@link Talisman} activating.
      * The chance will be between 1 and 100.
-     *
+     * 
      * @return The chance of this {@link Talisman} activating.
      */
     public int getChance() {
@@ -137,7 +139,7 @@ public class Talisman extends SlimefunItem {
 
     void loadEnderTalisman() {
         EnderTalisman talisman = (EnderTalisman) SlimefunItem.getByItem(getEnderVariant());
-        Optional<Research> research = Research.getResearch(new NamespacedKey(SlimefunPlugin.instance(), "ender_talismans"));
+        Optional<Research> research = Research.getResearch(new NamespacedKey(Slimefun.instance(), "ender_talismans"));
 
         if (talisman != null && research.isPresent()) {
             talisman.setResearch(research.get());
@@ -247,7 +249,7 @@ public class Talisman extends SlimefunItem {
      * This returns whether the {@link Talisman} is silent.
      * A silent {@link Talisman} will not send a message to a {@link Player}
      * when activated.
-     *
+     * 
      * @return Whether this {@link Talisman} is silent
      */
     public boolean isSilent() {
@@ -263,7 +265,7 @@ public class Talisman extends SlimefunItem {
      * This method sends the given {@link Player} the message of this {@link Talisman}.
      * Dependent on the selected config setting, the message will be sent via the actionbar
      * or in the chat window.
-     *
+     * 
      * @param p
      *            The {@link Player} who shall receive the message
      */
@@ -275,12 +277,12 @@ public class Talisman extends SlimefunItem {
             try {
                 String messageKey = "messages.talisman." + getMessageSuffix();
 
-                if (SlimefunPlugin.getRegistry().useActionbarForTalismans()) {
+                if (Slimefun.getRegistry().useActionbarForTalismans()) {
                     // Use the actionbar
-                    SlimefunPlugin.getLocalization().sendActionbarMessage(p, messageKey, false);
+                    Slimefun.getLocalization().sendActionbarMessage(p, messageKey, false);
                 } else {
                     // Send the message via chat
-                    SlimefunPlugin.getLocalization().sendMessage(p, messageKey, true);
+                    Slimefun.getLocalization().sendMessage(p, messageKey, true);
                 }
             } catch (Exception x) {
                 error("An Exception was thrown while trying to send a Talisman message", x);
