@@ -328,7 +328,7 @@ abstract class AbstractItemNetwork extends Network {
         }
 
         if (firstTerminal != null) {
-            return SlimefunPlugin.getProfiler().closeEntry(firstTerminal, item, timestamp);
+            return Slimefun.getProfiler().closeEntry(firstTerminal, item, timestamp);
         } else {
             return System.nanoTime() - timestamp;
         }

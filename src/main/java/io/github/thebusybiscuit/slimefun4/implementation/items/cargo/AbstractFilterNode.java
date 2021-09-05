@@ -80,7 +80,7 @@ abstract class AbstractFilterNode extends AbstractCargoNode {
     @Override
     protected void createBorder(BlockMenuPreset preset) {
         for (int i : getBorder()) {
-            preset.addItem(i, new CustomItem(Material.CYAN_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
+            preset.addItem(i, new CustomItemStack(Material.CYAN_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
         }
 
         preset.addItem(2, new CustomItemStack(Material.PAPER, "&3物品", "", "&b将你想要添加到黑白名单", "&b的物品放入此处"), ChestMenuUtils.getEmptyClickHandler());

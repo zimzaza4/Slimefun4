@@ -53,13 +53,13 @@ class CargoNetworkTask implements Runnable {
     private final Map<Location, Inventory> inventories = new HashMap<>();
 
     private final Map<Location, Integer> inputs;
-    private final Map<Integer, List<Location>> outputs;
+    private final Map<Integer, Collection<Location>> outputs;
 
     private final Set<Location> chestTerminalInputs;
     private final Set<Location> chestTerminalOutputs;
 
     @ParametersAreNonnullByDefault
-    CargoNetworkTask(CargoNet network, Map<Location, Integer> inputs, Map<Integer, List<Location>> outputs, Set<Location> chestTerminalInputs, Set<Location> chestTerminalOutputs) {
+    CargoNetworkTask(CargoNet network, Map<Location, Integer> inputs, Map<Integer, Collection<Location>> outputs, Set<Location> chestTerminalInputs, Set<Location> chestTerminalOutputs) {
         this.network = network;
         this.manager = Slimefun.getNetworkManager();
 
@@ -109,7 +109,7 @@ class CargoNetworkTask implements Runnable {
     }
 
     @ParametersAreNonnullByDefault
-    private void routeItems(Location inputNode, Block inputTarget, int frequency, Map<Integer, List<Location>> outputNodes) {
+    private void routeItems(Location inputNode, Block inputTarget, int frequency, Map<Integer, Collection<Location>> outputNodes) {
         ItemStackAndInteger slot = CargoUtils.withdraw(network, inventories, inputNode.getBlock(), inputTarget);
 
         if (slot == null) {
@@ -118,7 +118,7 @@ class CargoNetworkTask implements Runnable {
 
         ItemStack stack = slot.getItem();
         int previousSlot = slot.getInt();
-        List<Location> destinations = outputNodes.get(frequency);
+        Collection<Location> destinations = outputNodes.get(frequency);
 
         if (destinations != null) {
             stack = distributeItem(stack, inputNode, destinations);
@@ -161,7 +161,7 @@ class CargoNetworkTask implements Runnable {
 
     @Nullable
     @ParametersAreNonnullByDefault
-    private ItemStack distributeItem(ItemStack stack, Location inputNode, List<Location> outputNodes) {
+    private ItemStack distributeItem(ItemStack stack, Location inputNode, Collection<Location> outputNodes) {
         ItemStack item = stack;
 
         Config cfg = BlockStorage.getLocationInfo(inputNode);

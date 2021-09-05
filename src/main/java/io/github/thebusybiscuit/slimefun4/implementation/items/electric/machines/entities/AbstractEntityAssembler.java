@@ -162,7 +162,7 @@ public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSl
 
     private void updateBlockInventory(BlockMenu menu, Block b) {
         if (!BlockStorage.hasBlockInfo(b) || BlockStorage.getLocationInfo(b.getLocation(), KEY_ENABLED) == null || BlockStorage.getLocationInfo(b.getLocation(), KEY_ENABLED).equals(String.valueOf(false))) {
-            menu.replaceExistingItem(22, new CustomItem(Material.GUNPOWDER, "&7是否可用: &4\u2718", "", "&e> 单击开启机器"));
+            menu.replaceExistingItem(22, new CustomItemStack(Material.GUNPOWDER, "&7是否可用: &4\u2718", "", "&e> 单击开启机器"));
             menu.addMenuClickHandler(22, (p, slot, item, action) -> {
                 BlockStorage.addBlockInfo(b, KEY_ENABLED, String.valueOf(true));
                 updateBlockInventory(menu, b);

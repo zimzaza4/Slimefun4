@@ -8,9 +8,10 @@ import com.bekvon.bukkit.residence.protection.ResidencePermissions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
+import io.github.bakedlibs.dough.protection.ActionType;
+import io.github.bakedlibs.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.api.events.AndroidMineEvent;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -43,7 +44,7 @@ public class IntegrationHelper implements Listener {
   private static Method qsMethod = null;
   private static Logger logger;
 
-  public IntegrationHelper(@Nonnull SlimefunPlugin plugin) {
+  public IntegrationHelper(@Nonnull Slimefun plugin) {
     resInstalled = plugin.getServer().getPluginManager().getPlugin(RESIDENCE) != null;
     qsInstalled = plugin.getServer().getPluginManager().getPlugin(QUICKSHOP) != null;
     logger = plugin.getLogger();
@@ -82,9 +83,9 @@ public class IntegrationHelper implements Listener {
               Bukkit.getPlayer(
                       getOwnerFromJson(BlockStorage.getBlockInfoAsJson(e.getAndroid().getBlock())));
 
-      if (!checkPermission(p, e.getBlock(), ProtectableAction.BREAK_BLOCK)) {
+      if (!checkPermission(p, e.getBlock(), Interaction.BREAK_BLOCK)) {
         e.setCancelled(true);
-        SlimefunPlugin.getLocalization().sendMessage(p, "android.no-permission");
+        Slimefun.getLocalization().sendMessage(p, "android.no-permission");
       }
     }
   }
@@ -97,7 +98,7 @@ public class IntegrationHelper implements Listener {
    * @param action 交互类型
    * @return 是否可以破坏
    */
-  public static boolean checkPermission(OfflinePlayer p, Block block, ProtectableAction action) {
+  public static boolean checkPermission(OfflinePlayer p, Block block, Interaction action) {
     if (!resInstalled || p == null || !p.isOnline() || block == null || p.isOp()) {
       return true;
     }
@@ -115,7 +116,7 @@ public class IntegrationHelper implements Listener {
       if (perms != null) {
         Player online = p.getPlayer();
 
-        if (!action.isBlockAction() || perms.playerHas(online, Flags.admin, FlagPermissions.FlagCombo.OnlyTrue)) {
+        if (!(action.getType() == ActionType.BLOCK) || perms.playerHas(online, Flags.admin, FlagPermissions.FlagCombo.OnlyTrue)) {
           return true;
         }
 

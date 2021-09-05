@@ -44,7 +44,7 @@ abstract class AbstractCargoNode extends SimpleSlimefunItem<BlockPlaceHandler> i
     protected static final String FREQUENCY = "frequency";
 
     @ParametersAreNonnullByDefault
-    AbstractCargoNode(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, @Nullable ItemStack recipeOutput) {
+    AbstractCargoNode(ItemGroup category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, @Nullable ItemStack recipeOutput) {
         super(category, item, recipeType, recipe, recipeOutput);
 
         new BlockMenuPreset(getId(), ChatUtils.removeColorCodes(item.getItemMeta().getDisplayName())) {
@@ -64,7 +64,7 @@ abstract class AbstractCargoNode extends SimpleSlimefunItem<BlockPlaceHandler> i
             public boolean canOpen(Block b, Player p) {
                 return p.hasPermission("slimefun.cargo.bypass")
                         || (Slimefun.getProtectionManager().hasPermission(p, b.getLocation(), Interaction.INTERACT_BLOCK)
-                        && IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK));
+                        && IntegrationHelper.checkPermission(p, b, Interaction.INTERACT_BLOCK));
             }
 
             @Override

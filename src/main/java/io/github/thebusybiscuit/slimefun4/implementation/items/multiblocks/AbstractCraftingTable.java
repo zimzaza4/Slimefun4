@@ -43,7 +43,7 @@ import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 abstract class AbstractCraftingTable extends MultiBlockMachine {
 
     @ParametersAreNonnullByDefault
-    AbstractCraftingTable(Category category, SlimefunItemStack item, ItemStack[] recipe, BlockFace trigger) {
+    AbstractCraftingTable(ItemGroup category, SlimefunItemStack item, ItemStack[] recipe, BlockFace trigger) {
         super(category, item, recipe, trigger);
     }
 
@@ -106,7 +106,7 @@ abstract class AbstractCraftingTable extends MultiBlockMachine {
 
                     PlayerProfile.get(p, profile -> {
                         int backpackId = profile.createBackpack(size).getId();
-                        SlimefunPlugin.getBackpackListener().setBackpackId(p, output, target, backpackId);
+                        Slimefun.getBackpackListener().setBackpackId(p, output, target, backpackId);
                     });
 
                     break;

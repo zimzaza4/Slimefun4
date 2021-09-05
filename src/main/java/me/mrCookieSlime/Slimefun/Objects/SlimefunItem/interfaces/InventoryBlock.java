@@ -13,6 +13,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
+import ren.natsuyuk1.utils.IntegrationHelper;
 
 /**
  * 
@@ -64,7 +65,7 @@ public interface InventoryBlock {
                 if (p.hasPermission("slimefun.inventory.bypass")) {
                     return true;
                 } else {
-                    return item.canUse(p, false) && SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), Interaction.INTERACT_BLOCK) && IntegrationHelper.checkPermission(p, b, Interaction.INTERACT_BLOCK);
+                    return item.canUse(p, false) && Slimefun.getProtectionManager().hasPermission(p, b.getLocation(), Interaction.INTERACT_BLOCK) && IntegrationHelper.checkPermission(p, b, Interaction.INTERACT_BLOCK);
                 }
             }
         };

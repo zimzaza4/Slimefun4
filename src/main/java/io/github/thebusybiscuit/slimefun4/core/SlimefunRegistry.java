@@ -167,12 +167,12 @@ public final class SlimefunRegistry {
     }
 
     /**
-     * This returns a {@link List} containing every enabled {@link Category}.
+     * This returns a {@link List} containing every enabled {@link ItemGroup}.
      * 
-     * @return {@link List} containing every enabled {@link Category}
+     * @return {@link List} containing every enabled {@link ItemGroup}
      */
     @Nonnull
-    public List<Category> getCategories() {
+    public List<ItemGroup> getAllItemGroups() {
         return categories;
     }
 

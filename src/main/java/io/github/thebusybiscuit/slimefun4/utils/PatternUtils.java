@@ -2,6 +2,7 @@ package io.github.thebusybiscuit.slimefun4.utils;
 
 import java.util.regex.Pattern;
 
+import io.github.bakedlibs.dough.common.ChatColors;
 import org.bukkit.ChatColor;
 
 /**

@@ -5,6 +5,7 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -21,7 +22,6 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.hover.content.Text;
 
 /**
  * This is our class for the /sf versions subcommand.
@@ -72,7 +72,7 @@ class VersionsCommand extends SubCommand {
                     .color(ChatColor.DARK_GREEN);
             // @formatter:on
 
-            if (SlimefunPlugin.getMetricsService().getVersion() != null) {
+            if (Slimefun.getMetricsService().getVersion() != null) {
                 // @formatter:off
                 builder.append("Metrics-组件 ")
                         .color(ChatColor.GREEN)
@@ -83,7 +83,7 @@ class VersionsCommand extends SubCommand {
 
             addJavaVersion(builder);
 
-            if (SlimefunPlugin.getRegistry().isBackwardsCompatible()) {
+            if (Slimefun.getRegistry().isBackwardsCompatible()) {
                 // @formatter:off
                 HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent(
                         "向后兼容将会极大地影响服务器性能!\n" +

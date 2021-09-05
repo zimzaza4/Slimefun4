@@ -1,10 +1,9 @@
 package io.github.thebusybiscuit.slimefun4.core.commands.subcommands;
 
-import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
+import io.github.bakedlibs.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -17,7 +16,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 class TransformCommand extends SubCommand {
-    TransformCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
+    TransformCommand(Slimefun plugin, SlimefunCommand cmd) {
         super(plugin, cmd, "transform", false);
     }
 
@@ -29,12 +28,12 @@ class TransformCommand extends SubCommand {
             Player p = (Player) sender;
             if (args.length > 1 && args[1].equalsIgnoreCase("update")) {
                 if (!noticedPlayer.contains(p)) {
-                    SlimefunPlugin.getLocalization().sendMessage(sender, "messages.transform.warning", true);
+                    Slimefun.getLocalization().sendMessage(sender, "messages.transform.warning", true);
                     noticedPlayer.add(p);
                     return;
                 }
 
-                SlimefunPlugin.getLocalization().sendMessage(sender, "messages.transform.in-progress", true);
+                Slimefun.getLocalization().sendMessage(sender, "messages.transform.in-progress", true);
 
                 try {
                     p.getInventory().forEach(is -> {
@@ -55,11 +54,11 @@ class TransformCommand extends SubCommand {
                         }
                     });
                 } catch (Exception e) {
-                    SlimefunPlugin.logger().log(Level.WARNING, "在转换物品时发生了错误", e);
+                    Slimefun.logger().log(Level.WARNING, "在转换物品时发生了错误", e);
                 }
 
                 noticedPlayer.remove(p);
-                SlimefunPlugin.getLocalization().sendMessage(sender, "messages.transform.success", true);
+                Slimefun.getLocalization().sendMessage(sender, "messages.transform.success", true);
             } else {
                 ItemStack item = p.getInventory().getItemInMainHand();
                 ItemMeta meta = item.getItemMeta();
@@ -79,7 +78,7 @@ class TransformCommand extends SubCommand {
                         meta.setDisplayName(ChatColors.color("&bReinforced Spawner"));
                         transform.setItemMeta(meta);
                         p.getInventory().setItemInMainHand(transform);
-                        SlimefunPlugin.getLocalization().sendMessage(sender, "messages.transform.success", true);
+                        Slimefun.getLocalization().sendMessage(sender, "messages.transform.success", true);
                     } else if (meta.getDisplayName().contains(ChatColors.color("&bReinforced Spawner"))) {
                         ItemStack transform = item.clone();
                         ItemMeta im = item.getItemMeta().clone();
@@ -97,14 +96,14 @@ class TransformCommand extends SubCommand {
                         im.setDisplayName(ChatColors.color("&b已修复的刷怪笼"));
                         transform.setItemMeta(im);
                         p.getInventory().setItemInMainHand(transform);
-                        SlimefunPlugin.getLocalization().sendMessage(sender, "messages.transform.success", true);
+                        Slimefun.getLocalization().sendMessage(sender, "messages.transform.success", true);
                     } else {
-                        SlimefunPlugin.getLocalization().sendMessage(sender, "messages.transform.wrong-type", true);
+                        Slimefun.getLocalization().sendMessage(sender, "messages.transform.wrong-type", true);
                     }
                 }
             }
         } else {
-            SlimefunPlugin.getLocalization().sendMessage(sender, "messages.only-players", true);
+            Slimefun.getLocalization().sendMessage(sender, "messages.only-players", true);
         }
     }
 }

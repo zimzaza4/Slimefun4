@@ -10,12 +10,10 @@ import java.util.logging.Level;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.github.bakedlibs.dough.protection.Interaction;
+import io.github.thebusybiscuit.slimefun4.implementation.items.androids.menu.AndroidShareMenu;
 import org.apache.commons.lang.Validate;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.Tag;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -64,6 +62,7 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
+import ren.natsuyuk1.utils.IntegrationHelper;
 
 public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock, RecipeDisplayItem {
 
@@ -103,7 +102,6 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
                     return false;
                 }
 
-                return open;
             }
 
             @Override
@@ -131,7 +129,7 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
                     return false;
                 });
 
-                menu.replaceExistingItem(25, new CustomItemStack(Material.PLAYER_HEAD, SlimefunPlugin.getLocalization().getMessage("android.access-manager.title"), "", SlimefunPlugin.getLocalization().getMessage("android.access-manager.subtitle")));
+                menu.replaceExistingItem(25, new CustomItemStack(Material.PLAYER_HEAD, Slimefun.getLocalization().getMessage("android.access-manager.title"), "", Slimefun.getLocalization().getMessage("android.access-manager.subtitle")));
                 menu.addMenuClickHandler(25, (p, slot, item, action) -> {
                     BlockStorage.addBlockInfo(b, "paused", "true");
                     Slimefun.getLocalization().sendMessage(p, "android.stopped", true);
@@ -254,7 +252,7 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
         ChestMenu menu = new ChestMenu(ChatColor.DARK_AQUA + Slimefun.getLocalization().getMessage(p, "android.scripts.editor"));
         menu.setEmptySlotsClickable(false);
 
-        menu.addItem(0, new CustomItemStack(Instruction.START.getItem(), SlimefunPlugin.getLocalization().getMessage(p, "android.scripts.instructions.START"), "", "&7\u21E8 &e左键 &7返回机器人的控制面板"));
+        menu.addItem(0, new CustomItemStack(Instruction.START.getItem(), Slimefun.getLocalization().getMessage(p, "android.scripts.instructions.START"), "", "&7\u21E8 &e左键 &7返回机器人的控制面板"));
         menu.addMenuClickHandler(0, (pl, slot, item, action) -> {
             BlockMenu inv = BlockStorage.getInventory(b);
             // Fixes #2937
@@ -283,7 +281,7 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
                 }
 
                 int slot = i + (hasFreeSlot ? 1 : 0);
-                menu.addItem(slot, new CustomItemStack(Instruction.REPEAT.getItem(), SlimefunPlugin.getLocalization().getMessage(p, "android.scripts.instructions.REPEAT"), "", "&7\u21E8 &e左键 &7返回机器人的控制面板"));
+                menu.addItem(slot, new CustomItemStack(Instruction.REPEAT.getItem(), Slimefun.getLocalization().getMessage(p, "android.scripts.instructions.REPEAT"), "", "&7\u21E8 &e左键 &7返回机器人的控制面板"));
                 menu.addMenuClickHandler(slot, (pl, s, item, action) -> {
                     BlockMenu inv = BlockStorage.getInventory(b);
                     // Fixes #2937
@@ -902,9 +900,9 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
     protected void move(Block b, BlockFace face, Block block) {
         Player p = Bukkit.getPlayer(IntegrationHelper.getOwnerFromJson(BlockStorage.getBlockInfoAsJson(b.getLocation())));
 
-        if (p != null && !IntegrationHelper.checkPermission(p, block, ProtectableAction.PLACE_BLOCK)) {
+        if (p != null && !IntegrationHelper.checkPermission(p, block, Interaction.PLACE_BLOCK)) {
             BlockStorage.addBlockInfo(b, "paused", "false");
-            SlimefunPlugin.getLocalization().sendMessage(p, "messages.android-no-permission", true);
+            Slimefun.getLocalization().sendMessage(p, "messages.android-no-permission", true);
             return;
         }
 

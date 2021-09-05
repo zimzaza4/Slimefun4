@@ -123,6 +123,10 @@ import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.MenuListener;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.UniversalBlockMenu;
+import ren.natsuyuk1.utils.DeprecationChecker;
+import ren.natsuyuk1.utils.IntegrationHelper;
+import ren.natsuyuk1.utils.NUpdater;
+import ren.natsuyuk1.utils.VaultHelper;
 
 /**
  * This is the main class of Slimefun.
@@ -185,6 +189,8 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon {
     private final GrapplingHookListener grapplingHookListener = new GrapplingHookListener();
     private final BackpackListener backpackListener = new BackpackListener();
     private final SlimefunBowListener bowListener = new SlimefunBowListener();
+
+    private NUpdater customUpdater;
 
     /**
      * Our default constructor for {@link Slimefun}.
@@ -1042,6 +1048,11 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon {
         }
 
         return instance.getServer().getScheduler().runTask(instance, runnable);
+    }
+
+    @Nonnull
+    public File getFile() {
+        return instance.getFile();
     }
 
 }
