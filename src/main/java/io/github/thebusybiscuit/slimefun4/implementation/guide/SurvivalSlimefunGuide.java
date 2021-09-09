@@ -208,7 +208,7 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
             List<String> lore = new ArrayList<>();
             lore.add("");
 
-            for (String line : Slimefun.getLocalization().getMessages(p, "guide.locked-category")) {
+            for (String line : Slimefun.getLocalization().getMessages(p, "guide.locked-itemgroup")) {
                 lore.add(ChatColor.WHITE + line);
             }
 
@@ -225,20 +225,20 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
 
     @Override
     @ParametersAreNonnullByDefault
-    public void openItemGroup(PlayerProfile profile, ItemGroup category, int page) {
+    public void openItemGroup(PlayerProfile profile, ItemGroup itemGroup, int page) {
         Player p = profile.getPlayer();
 
         if (p == null) {
             return;
         }
 
-        if (category instanceof FlexItemGroup) {
-            ((FlexItemGroup) category).open(p, profile, getMode());
+        if (itemGroup instanceof FlexItemGroup) {
+            ((FlexItemGroup) itemGroup).open(p, profile, getMode());
             return;
         }
 
         if (isSurvivalMode()) {
-            profile.getGuideHistory().add(category, page);
+            profile.getGuideHistory().add(itemGroup, page);
         }
 
         ChestMenu menu = create(p);
@@ -246,14 +246,14 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
 
         addBackButton(menu, 1, p, profile);
 
-        int pages = (category.getItems().size() - 1) / MAX_ITEM_GROUPS + 1;
+        int pages = (itemGroup.getItems().size() - 1) / MAX_ITEM_GROUPS + 1;
 
         menu.addItem(46, ChestMenuUtils.getPreviousButton(p, page, pages));
         menu.addMenuClickHandler(46, (pl, slot, item, action) -> {
             int next = page - 1;
 
             if (next != page && next > 0) {
-                openItemGroup(profile, category, next);
+                openItemGroup(profile, itemGroup, next);
             }
 
             return false;
@@ -264,26 +264,26 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
             int next = page + 1;
 
             if (next != page && next <= pages) {
-                openItemGroup(profile, category, next);
+                openItemGroup(profile, itemGroup, next);
             }
 
             return false;
         });
 
         int index = 9;
-        int categoryIndex = MAX_ITEM_GROUPS * (page - 1);
+        int itemGroupIndex = MAX_ITEM_GROUPS * (page - 1);
 
         for (int i = 0; i < MAX_ITEM_GROUPS; i++) {
-            int target = categoryIndex + i;
+            int target = itemGroupIndex + i;
 
-            if (target >= category.getItems().size()) {
+            if (target >= itemGroup.getItems().size()) {
                 break;
             }
 
-            SlimefunItem sfitem = category.getItems().get(target);
+            SlimefunItem sfitem = itemGroup.getItems().get(target);
 
             if (!sfitem.isDisabledIn(p.getWorld())) {
-                displaySlimefunItem(menu, category, p, profile, sfitem, page, index);
+                displaySlimefunItem(menu, itemGroup, p, profile, sfitem, page, index);
                 index++;
             }
         }
@@ -291,7 +291,7 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
         menu.open(p);
     }
 
-    private void displaySlimefunItem(ChestMenu menu, ItemGroup category, Player p, PlayerProfile profile, SlimefunItem sfitem, int page, int index) {
+    private void displaySlimefunItem(ChestMenu menu, ItemGroup itemGroup, Player p, PlayerProfile profile, SlimefunItem sfitem, int page, int index) {
         Research research = sfitem.getResearch();
 
         if (isSurvivalMode() && !hasPermission(p, sfitem)) {
@@ -306,7 +306,7 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
                 menu.addItem(index, new CustomItemStack(ChestMenuUtils.getNoPermissionItem(), "&f" + ItemUtils.getItemName(sfitem.getItem()), "&7" + sfitem.getId(), "&4&l" + Slimefun.getLocalization().getMessage(p, "guide.locked"), "", "&a> 单击解锁", "", "&7需要 &b" + research.getCost() + " 级经验"));
             }
             menu.addMenuClickHandler(index, (pl, slot, item, action) -> {
-                research.unlockFromGuide(this, p, profile, sfitem, category, page);
+                research.unlockFromGuide(this, p, profile, sfitem, itemGroup, page);
                 return false;
             });
         } else {
@@ -360,8 +360,8 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
 
             if (!slimefunItem.isHidden() && isSearchFilterApplicable(slimefunItem, searchTerm)) {
                 ItemStack itemstack = new CustomItemStack(slimefunItem.getItem(), meta -> {
-                    ItemGroup category = slimefunItem.getItemGroup();
-                    meta.setLore(Arrays.asList("", ChatColor.DARK_GRAY + "\u21E8 " + ChatColor.WHITE + category.getDisplayName(p)));
+                    ItemGroup itemGroup = slimefunItem.getItemGroup();
+                    meta.setLore(Arrays.asList("", ChatColor.DARK_GRAY + "\u21E8 " + ChatColor.WHITE + itemGroup.getDisplayName(p)));
                     meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_POTION_EFFECTS);
                 });
 
@@ -511,7 +511,7 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
         Optional<String> wiki = item.getWikipage();
 
         if (wiki.isPresent()) {
-            menu.addItem(8, new CustomItemStack(Material.KNOWLEDGE_BOOK, ChatColor.WHITE + Slimefun.getLocalization().getMessage(p, "guide.tooltips.wiki"), "", ChatColor.GRAY + "\u21E8 " + ChatColor.GREEN + Slimefun.getLocalization().getMessage(p, "guide.tooltips.open-category")));
+            menu.addItem(8, new CustomItemStack(Material.KNOWLEDGE_BOOK, ChatColor.WHITE + Slimefun.getLocalization().getMessage(p, "guide.tooltips.wiki"), "", ChatColor.GRAY + "\u21E8 " + ChatColor.GREEN + Slimefun.getLocalization().getMessage(p, "guide.tooltips.open-itemgroup")));
             menu.addMenuClickHandler(8, (pl, slot, itemstack, action) -> {
                 pl.closeInventory();
                 ChatUtils.sendURL(pl, wiki.get());

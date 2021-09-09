@@ -1,4 +1,3 @@
-
 package io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks;
 
 import java.util.List;
@@ -31,7 +30,7 @@ import io.papermc.lib.PaperLib;
 /**
  * The {@link OreWasher} is a special {@link MultiBlockMachine} which allows you to
  * turn Sifted Ore into ore dusts.
- *
+ * 
  * @author TheBusyBiscuit
  * @author Sfiguz7
  *
@@ -40,27 +39,27 @@ public class OreWasher extends MultiBlockMachine {
 
     // @formatter:off
     private final ItemStack[] dusts = new ItemStack[] {
-            SlimefunItems.IRON_DUST,
-            SlimefunItems.GOLD_DUST,
-            SlimefunItems.COPPER_DUST,
-            SlimefunItems.TIN_DUST,
-            SlimefunItems.ZINC_DUST,
-            SlimefunItems.ALUMINUM_DUST,
-            SlimefunItems.MAGNESIUM_DUST,
-            SlimefunItems.LEAD_DUST,
-            SlimefunItems.SILVER_DUST
+        SlimefunItems.IRON_DUST,
+        SlimefunItems.GOLD_DUST,
+        SlimefunItems.COPPER_DUST,
+        SlimefunItems.TIN_DUST,
+        SlimefunItems.ZINC_DUST,
+        SlimefunItems.ALUMINUM_DUST,
+        SlimefunItems.MAGNESIUM_DUST,
+        SlimefunItems.LEAD_DUST,
+        SlimefunItems.SILVER_DUST
     };
     // @formatter:on
 
     private final boolean legacyMode;
 
     @ParametersAreNonnullByDefault
-    public OreWasher(ItemGroup category, SlimefunItemStack item) {
+    public OreWasher(ItemGroup itemGroup, SlimefunItemStack item) {
         // @formatter:off
-        super(category, item, new ItemStack[] {
-                null, new ItemStack(Material.DISPENSER), null,
-                null, new ItemStack(Material.OAK_FENCE), null,
-                null, new ItemStack(Material.CAULDRON), null
+        super(itemGroup, item, new ItemStack[] {
+            null, new ItemStack(Material.DISPENSER), null,
+            null, new ItemStack(Material.OAK_FENCE), null,
+            null, new ItemStack(Material.CAULDRON), null
         }, BlockFace.SELF);
         // @formatter:on
 
@@ -162,7 +161,7 @@ public class OreWasher extends MultiBlockMachine {
 
     /**
      * This returns a random dust item from Slimefun.
-     *
+     * 
      * @return A randomly picked dust item
      */
     public @Nonnull ItemStack getRandomDust() {
