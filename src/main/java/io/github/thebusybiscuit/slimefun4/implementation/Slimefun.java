@@ -1052,7 +1052,7 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon {
 
     @Nonnull
     public File getFile() {
-        return instance.getFile();
+        return super.getFile();
     }
 
 }
