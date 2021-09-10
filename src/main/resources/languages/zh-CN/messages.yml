@@ -43,7 +43,7 @@ guide:
     tooltip: '&b单击搜索物品'
     inventory: '正在搜索: %item%'
   tooltips:
-    open-category: '单击打开'
+    open-itemgroup: '单击打开'
     versions-notice: '在反馈问题时这些很重要!'
     wiki: '在官方 Slimefun 维基上查看此物品'
     recipes:
@@ -120,11 +120,11 @@ guide:
       translator: '&9翻译者'
 messages:
   android-no-permission: "&c你的机器人在某个你没有权限的领地/地皮中无法工作, 机器人已自动暂停运行."
-    transform:
-      success: "&a物品转换成功!"
-      warning: "&c&l警告: &f该转换会影响其他非粘液科技且物品名称或者 Lore 带有颜色的物品\n&f请先&c从背包中拿出&f再进行转换\n&f如果想要继续转换, 请再次输入一次 /sf transform update"
-      in-progress: "&f正在转换中..."
-      wrong-type: "&c目前支持转换的方块: 已修复的刷怪笼"
+  transform:
+    success: "&a物品转换成功!"
+    warning: "&c&l警告: &f该转换会影响其他非粘液科技且物品名称或者 Lore 带有颜色的物品\n&f请先&c从背包中拿出&f再进行转换\n&f如果想要继续转换, 请再次输入一次 /sf transform update"
+    in-progress: "&f正在转换中..."
+    wrong-type: "&c目前支持转换的方块: 已修复的刷怪笼"
   not-researched: '&4你的知识还不足以理解这个物品. &c你需要先解锁 &f"%item%"&f'
   not-enough-xp: '&4你没有足够的经验来解锁这个研究'
   unlocked: '&b成功解锁研究 &7"%research%"'
