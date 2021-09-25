@@ -122,16 +122,17 @@ public class IntegrationHelper implements Listener {
 
         switch (action) {
           case BREAK_BLOCK:
+            return perms.playerHas(online, Flags.destroy, FlagPermissions.FlagCombo.OnlyTrue);
           case INTERACT_BLOCK:
             // 领地已支持 Slimefun
             // 详见
             // https://github.com/Zrips/Residence/blob/master/src/com/bekvon/bukkit/residence/slimeFun/SlimeFunResidenceModule.java
-            return true;
+            return perms.playerHas(online, Flags.container, FlagPermissions.FlagCombo.OnlyTrue);
           case PLACE_BLOCK:
             // move 是为了机器人而检查的, 防止机器人跑进别人领地然后还出不来
             return perms.playerHas(online, Flags.place, FlagPermissions.FlagCombo.OnlyTrue)
                 || perms.playerHas(online, Flags.build, FlagPermissions.FlagCombo.OnlyTrue)
-                || !perms.playerHas(online, Flags.move, FlagPermissions.FlagCombo.OnlyTrue);
+                && perms.playerHas(online, Flags.move, FlagPermissions.FlagCombo.TrueOrNone);
         }
       }
     }
