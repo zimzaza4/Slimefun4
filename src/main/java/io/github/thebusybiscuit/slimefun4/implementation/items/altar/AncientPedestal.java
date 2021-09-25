@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -50,6 +51,11 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
 
     public static final String ITEM_PREFIX = ChatColors.color("&dALTAR &3Probe - &e");
 
+    @Nullable
+    private static Item currentDisplay;
+
+    private int watcherTaskID;
+
     @ParametersAreNonnullByDefault
     public AncientPedestal(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
         super(itemGroup, item, recipeType, recipe, recipeOutput);
@@ -62,6 +68,7 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
             @Override
             public void onBlockBreak(@Nonnull Block b) {
                 Optional<Item> entity = getPlacedItem(b);
+
                 if (entity.isPresent()) {
                     Item stack = entity.get();
                     if (stack.isValid()) {
@@ -70,6 +77,8 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
                         stack.remove();
                     }
                 }
+
+                cancelWatcher();
             }
         };
     }
@@ -81,6 +90,10 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
 
 
     public @Nonnull Optional<Item> getPlacedItem(Block pedestal) {
+        if (currentDisplay != null && currentDisplay.isValid()) {
+            return Optional.of(currentDisplay);
+        }
+
         Location l = pedestal.getLocation().add(0.5, 1.2, 0.5);
 
         for (Entity n : l.getWorld().getNearbyEntities(l, 0.5, 0.5, 0.5, this::testItem)) {
@@ -132,14 +145,36 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
             ItemUtils.consumeItem(hand, false);
         }
 
-        Item entity = SlimefunUtils.spawnItem(b.getLocation().add(0.5, 1.2, 0.5), displayItem, ItemSpawnReason.ANCIENT_PEDESTAL_PLACE_ITEM);
+        Location spawnLocation = b.getLocation().add(0.5, 1.2, 0.5);
+
+        Item entity = SlimefunUtils.spawnItem(spawnLocation, displayItem, ItemSpawnReason.ANCIENT_PEDESTAL_PLACE_ITEM);
 
         if (entity != null) {
             entity.setVelocity(new Vector(0, 0.1, 0));
             entity.setCustomNameVisible(true);
             entity.setCustomName(nametag);
+            entity.setInvulnerable(true);
             SlimefunUtils.markAsNoPickup(entity, "altar_item");
+
+            currentDisplay = entity;
+
+            watcherTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Slimefun.instance(), () -> {
+                Location altarLoc = b.getLocation();
+
+                if (currentDisplay != null && currentDisplay.getLocation().distance(altarLoc) > 1) {
+                    currentDisplay.teleport(spawnLocation);
+                }
+
+            },  5 * 20L, 5 * 20L);
+
             p.playSound(b.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.3F, 0.3F);
+        }
+    }
+
+    public void cancelWatcher() {
+        if (watcherTaskID != 0) {
+            Bukkit.getScheduler().cancelTask(watcherTaskID);
+            watcherTaskID = 0;
         }
     }
 
