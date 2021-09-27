@@ -7,3 +7,5 @@
 /.idea/
 dependency-reduced-pom.xml
 .factorypath
+
+/src/test/
