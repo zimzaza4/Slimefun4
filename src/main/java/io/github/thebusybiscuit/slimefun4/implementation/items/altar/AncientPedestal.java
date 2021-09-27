@@ -1,11 +1,15 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.altar;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.github.bakedlibs.dough.collections.Pair;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -50,6 +54,8 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
 
     public static final String ITEM_PREFIX = ChatColors.color("&dALTAR &3Probe - &e");
 
+    private static final Map<Block, Pair<Item, Integer>> pedestalItemCache = new ConcurrentHashMap<>();
+
     @ParametersAreNonnullByDefault
     public AncientPedestal(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
         super(itemGroup, item, recipeType, recipe, recipeOutput);
@@ -67,7 +73,7 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
                     if (stack.isValid()) {
                         stack.removeMetadata("no_pickup", Slimefun.instance());
                         b.getWorld().dropItem(b.getLocation(), getOriginalItemStack(stack));
-                        stack.remove();
+                        removeDisplayItem(b, stack);
                     }
                 }
             }
@@ -81,15 +87,13 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
 
 
     public @Nonnull Optional<Item> getPlacedItem(Block pedestal) {
-        Location l = pedestal.getLocation().add(0.5, 1.2, 0.5);
+        Item cache = pedestalItemCache.get(pedestal).getFirstValue();
 
-        for (Entity n : l.getWorld().getNearbyEntities(l, 0.5, 0.5, 0.5, this::testItem)) {
-            if (n instanceof Item) {
-                return Optional.of((Item) n);
-            }
+        if (testItem(cache)) {
+            return Optional.of(cache);
+        } else {
+            return Optional.empty();
         }
-
-        return Optional.empty();
     }
 
     private boolean testItem(@Nullable Entity n) {
@@ -132,15 +136,58 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
             ItemUtils.consumeItem(hand, false);
         }
 
-        Item entity = SlimefunUtils.spawnItem(b.getLocation().add(0.5, 1.2, 0.5), displayItem, ItemSpawnReason.ANCIENT_PEDESTAL_PLACE_ITEM);
+        Location spawnLocation = b.getLocation().add(0.5, 1.2, 0.5);
+        Item entity = SlimefunUtils.spawnItem(spawnLocation, displayItem, ItemSpawnReason.ANCIENT_PEDESTAL_PLACE_ITEM);
 
         if (entity != null) {
             entity.setVelocity(new Vector(0, 0.1, 0));
             entity.setCustomNameVisible(true);
             entity.setCustomName(nametag);
+            entity.setInvulnerable(true);
             SlimefunUtils.markAsNoPickup(entity, "altar_item");
             p.playSound(b.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.3F, 0.3F);
+
+            int watcherTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Slimefun.instance(), () -> {
+                Location altarLoc = b.getLocation();
+                Item display = pedestalItemCache.get(b).getFirstValue();
+
+                if (display != null && display.getLocation().distance(altarLoc) > 1) {
+                    display.teleport(spawnLocation);
+                }
+
+            },  5 * 20L, 5 * 20L);
+
+            pedestalItemCache.put(b, new Pair<>(entity, watcherTaskID));
         }
+    }
+
+    /**
+     * Get cache item and watcher id by pedestal location
+     *
+     * @param pedestal Ancient Pedestal location
+     * @return cache item and watcher id
+     */
+    public Pair<Item, Integer> getCacheItem(@Nonnull Block pedestal) {
+        return pedestalItemCache.get(pedestal);
+    }
+
+    /**
+     * Remove display item upon pedestal
+     *
+     * @param pedestal ancient pedestal location
+     * @param item display item
+     */
+    public void removeDisplayItem(@Nonnull Block pedestal, @Nonnull Entity item) {
+        item.remove();
+
+        Pair<Item, Integer> result = getCacheItem(pedestal);
+
+        if (result == null || result.getFirstValue() == null || result.getSecondValue() == null) {
+            return;
+        }
+
+        Bukkit.getScheduler().cancelTask(result.getSecondValue());
+        result.setFirstValue(null);
     }
 
 }

@@ -155,7 +155,7 @@ public class AncientAltarListener implements Listener {
 
             Slimefun.runSync(() -> removedItems.remove(uuid), 30L);
 
-            entity.remove();
+            pedestalItem.removeDisplayItem(pedestal, entity);
             p.getInventory().addItem(pedestalItem.getOriginalItemStack(entity));
             p.playSound(pedestal.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1F, 1F);
         }
