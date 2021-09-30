@@ -88,10 +88,10 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
 
 
     public @Nonnull Optional<Item> getPlacedItem(Block pedestal) {
-        Optional<Item> cache = pedestalItemCache.get(pedestal.getLocation()).getFirstValue();
+        OptionalPair<Item, Integer> cache = pedestalItemCache.get(pedestal.getLocation());
 
-        if (cache.isPresent() && testItem(cache.get())) {
-            return cache;
+        if (cache != null && cache.getFirstValue().isPresent() && testItem(cache.getFirstValue().get())) {
+            return cache.getFirstValue();
         }
 
         // If cache was deleted, use old method to find nearby possible display item entity.
@@ -201,7 +201,7 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
         return Bukkit.getScheduler().scheduleSyncRepeatingTask(Slimefun.instance(), () -> {
             Optional<Item> display = pedestalItemCache.get(altar.getLocation()).getFirstValue();
 
-            if (display.isPresent() && display.get().getLocation().distance(altar.getLocation()) > 1) {
+            if (display.isPresent() && display.get().getLocation().distance(altar.getLocation()) > 2) {
                 display.get().teleport(spawnLocation);
             }
 
