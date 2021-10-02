@@ -8,8 +8,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import io.github.bakedlibs.dough.collections.OptionalPair;
-import io.github.bakedlibs.dough.collections.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -23,6 +21,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import io.github.bakedlibs.dough.common.ChatColors;
+import io.github.bakedlibs.dough.collections.OptionalPair;
 import io.github.bakedlibs.dough.items.CustomItemStack;
 import io.github.bakedlibs.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -45,6 +44,7 @@ import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
  *
  * @author Redemption198
  * @author TheBusyBiscuit
+ * @author StarWishsama
  *
  * @see AncientAltar
  * @see AncientAltarListener
@@ -66,15 +66,18 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
 
     private @Nonnull BlockBreakHandler onBreak() {
         return new SimpleBlockBreakHandler() {
+
             @Override
             public void onBlockBreak(@Nonnull Block b) {
                 Optional<Item> entity = getPlacedItem(b);
+
                 if (entity.isPresent()) {
                     Item stack = entity.get();
+
                     if (stack.isValid()) {
                         stack.removeMetadata("no_pickup", Slimefun.instance());
                         b.getWorld().dropItem(b.getLocation(), getOriginalItemStack(stack));
-                        removeDisplayItem(b, stack);
+                        stopDisplayItem(b.getLocation(), stack);
                     }
                 }
             }
@@ -86,23 +89,24 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
         return (e, d, block, machine) -> e.setCancelled(true);
     }
 
-
-    public @Nonnull Optional<Item> getPlacedItem(Block pedestal) {
+    public @Nonnull Optional<Item> getPlacedItem(@Nonnull Block pedestal) {
         OptionalPair<Item, Integer> cache = pedestalItemCache.get(pedestal.getLocation());
 
-        if (cache != null && cache.getFirstValue().isPresent() && testItem(cache.getFirstValue().get())) {
+        if (cache != null && cache.getFirstValue().isPresent()) {
             return cache.getFirstValue();
         }
 
         // If cache was deleted, use old method to find nearby possible display item entity.
-        Location l = pedestal.getLocation().add(0.5, 1.2, 0.5);
+        Location l = pedestal.getLocation().clone().add(0.5, 1.2, 0.5);
 
         for (Entity n : l.getWorld().getNearbyEntities(l, 0.5, 0.5, 0.5, this::testItem)) {
             if (n instanceof Item) {
                 Optional<Item> item = Optional.of((Item) n);
 
-                int watcherTaskID = startWatcher(pedestal, pedestal.getLocation().add(0.5, 1.2, 0.5));
-                pedestalItemCache.put(pedestal.getLocation(), new OptionalPair<>(item.get(), watcherTaskID));
+                Location pedestalLocation = pedestal.getLocation();
+
+                int watcherTaskID = startWatcher(pedestalLocation, pedestalLocation.clone().add(0.5, 1.2, 0.5));
+                pedestalItemCache.put(pedestalLocation, new OptionalPair<>(item.get(), watcherTaskID));
 
                 return item;
             }
@@ -122,7 +126,7 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
         }
     }
 
-    public @Nonnull ItemStack getOriginalItemStack(Item item) {
+    public @Nonnull ItemStack getOriginalItemStack(@Nonnull Item item) {
         ItemStack stack = item.getItemStack().clone();
         String customName = item.getCustomName();
 
@@ -151,61 +155,62 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
             ItemUtils.consumeItem(hand, false);
         }
 
-        Location spawnLocation = b.getLocation().add(0.5, 1.2, 0.5);
+        Location pedestalLocation = b.getLocation();
+        Location spawnLocation = pedestalLocation.clone().add(0.5, 1.2, 0.5);
         Item entity = SlimefunUtils.spawnItem(spawnLocation, displayItem, ItemSpawnReason.ANCIENT_PEDESTAL_PLACE_ITEM);
 
         if (entity != null) {
             entity.setVelocity(new Vector(0, 0.1, 0));
             entity.setCustomNameVisible(true);
             entity.setCustomName(nametag);
-            entity.setInvulnerable(true);
             SlimefunUtils.markAsNoPickup(entity, "altar_item");
-            p.playSound(b.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.3F, 0.3F);
+            p.playSound(pedestalLocation, Sound.ENTITY_ITEM_PICKUP, 0.3F, 0.3F);
 
-            int watcherTaskID = startWatcher(b, spawnLocation);
+            int watcherTaskID = startWatcher(pedestalLocation, spawnLocation);
 
-            pedestalItemCache.put(b.getLocation(), new OptionalPair<>(entity, watcherTaskID));
+            pedestalItemCache.put(pedestalLocation, new OptionalPair<>(entity, watcherTaskID));
         }
     }
 
     /**
-     * Get cache item and watcher id by pedestal location
-     *
-     * @param pedestal Ancient Pedestal location
-     * @return cache item and watcher id
-     */
-    public OptionalPair<Item, Integer> getCacheItem(@Nonnull Block pedestal) {
-        return pedestalItemCache.get(pedestal.getLocation());
-    }
-
-    /**
-     * Remove display item upon pedestal
+     * Stop display item upon pedestal
      *
      * @param pedestal ancient pedestal location
      * @param item display item
      */
-    public void removeDisplayItem(@Nonnull Block pedestal, @Nonnull Entity item) {
+    public void stopDisplayItem(@Nonnull Location pedestal, @Nonnull Entity item) {
         item.remove();
 
-        OptionalPair<Item, Integer> result = getCacheItem(pedestal);
+        OptionalPair<Item, Integer> result = pedestalItemCache.get(pedestal);
 
-        if (result == null || result.getFirstValue().isPresent() || result.getSecondValue().isPresent()) {
+        if (result == null || !result.getSecondValue().isPresent()) {
             return;
         }
 
-        Bukkit.getScheduler().cancelTask(result.getSecondValue().orElse(-1));
-        result.setFirstValue(null);
+        Bukkit.getScheduler().cancelTask(result.getSecondValue().get());
+        pedestalItemCache.remove(pedestal);
     }
 
-    private int startWatcher(@Nonnull Block altar, Location spawnLocation) {
+    /**
+     * Start a watcher monitor the location of displayed item
+     *
+     * @param pedestalLocation the location of pedestal
+     * @param spawnLocation the location displayed item entity first spawn
+     *
+     * @return The bukkit task of watcher
+     */
+    private int startWatcher(@Nonnull Location pedestalLocation, @Nonnull Location spawnLocation) {
         return Bukkit.getScheduler().scheduleSyncRepeatingTask(Slimefun.instance(), () -> {
-            Optional<Item> display = pedestalItemCache.get(altar.getLocation()).getFirstValue();
+            Optional<Item> display = pedestalItemCache.get(pedestalLocation).getFirstValue();
 
-            if (display.isPresent() && display.get().getLocation().distance(altar.getLocation()) > 2) {
-                display.get().teleport(spawnLocation);
+            if (display.isPresent() && display.get().getLocation().distance(pedestalLocation) > 2) {
+                if (display.get().isValid()) {
+                    display.get().teleport(spawnLocation);
+                } else {
+                    stopDisplayItem(pedestalLocation, display.get());
+                }
             }
 
         },  5 * 20L, 5 * 20L);
     }
-
 }
