@@ -6,6 +6,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ren.natsuyuk1.utils.IntegrationHelper;
+import io.github.thebusybiscuit.slimefun4.core.debug.Debug;
+import io.github.thebusybiscuit.slimefun4.core.debug.TestCase;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -33,7 +35,7 @@ import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
  * This is a helper class for the {@link CargoNet} which provides
  * a free static utility methods to let the {@link CargoNet} interact with
  * an {@link Inventory} or {@link BlockMenu}.
- *
+ * 
  * @author TheBusyBiscuit
  * @author Walshy
  * @author DNx5
@@ -55,10 +57,10 @@ final class CargoUtils {
     /**
      * This is a performance-saving shortcut to quickly test whether a given
      * {@link Block} might be an {@link InventoryHolder} or not.
-     *
+     * 
      * @param block
      *            The {@link Block} to check
-     *
+     * 
      * @return Whether this {@link Block} represents a {@link BlockState} that is an {@link InventoryHolder}
      */
     static boolean hasInventory(@Nullable Block block) {
@@ -192,7 +194,6 @@ final class CargoUtils {
             }
 
             ItemStackWrapper wrapperInSlot = ItemStackWrapper.wrap(itemInSlot);
-
             if (SlimefunUtils.isItemSimilar(wrapperInSlot, wrapper, true, false) && matchesFilter(network, node, wrapperInSlot)) {
                 if (itemInSlot.getAmount() > template.getAmount()) {
                     itemInSlot.setAmount(itemInSlot.getAmount() - template.getAmount());
@@ -261,6 +262,7 @@ final class CargoUtils {
 
     @Nullable
     static ItemStack insert(AbstractItemNetwork network, Map<Location, Inventory> inventories, Block node, Block target, boolean smartFill, ItemStack stack, ItemStackWrapper wrapper) {
+        Debug.log(TestCase.CARGO_INPUT_TESTING, "CargoUtils#insert");
         if (!matchesFilter(network, node, stack)) {
             return stack;
         }
@@ -400,12 +402,12 @@ final class CargoUtils {
      * The lazy-option is a performance-saver since actually calculating this can be quite expensive.
      * For the current applicational purposes a quick check for any wooden logs is sufficient.
      * Otherwise the "lazyness" can be turned off in the future.
-     *
+     * 
      * @param stack
      *            The {@link ItemStack} to test
      * @param lazy
      *            Whether or not to perform a "lazy" but performance-saving check
-     *
+     * 
      * @return Whether the given {@link ItemStack} can be smelted or not
      */
     private static boolean isSmeltable(@Nullable ItemStack stack, boolean lazy) {
