@@ -16,6 +16,7 @@ import io.github.thebusybiscuit.slimefun4.api.researches.Research;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
+import ren.natsuyuk1.utils.VaultHelper;
 
 /**
  * This interface is used for the different implementations that add behaviour
@@ -70,7 +71,11 @@ public interface SlimefunGuideImplementation {
         if (p.getGameMode() == GameMode.CREATIVE && Slimefun.getRegistry().isFreeCreativeResearchingEnabled()) {
             research.unlock(p, true, callback);
         } else {
-            p.setLevel(p.getLevel() - research.getCost());
+            if (VaultHelper.isUsable()) {
+                VaultHelper.getEcon().withdrawPlayer(p, research.getCost() * Slimefun.getCfg().getDouble("researches.money-multiply"));
+            } else {
+                p.setLevel(p.getLevel() - research.getCost());
+            }
 
             boolean skipLearningAnimation = Slimefun.getRegistry().isLearningAnimationDisabled() || !SlimefunGuideSettings.hasLearningAnimationEnabled(p);
             research.unlock(p, skipLearningAnimation, callback);

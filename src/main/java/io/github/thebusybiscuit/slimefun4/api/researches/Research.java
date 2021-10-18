@@ -27,6 +27,7 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation
 import io.github.thebusybiscuit.slimefun4.core.services.localization.Language;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.setup.ResearchSetup;
+import ren.natsuyuk1.utils.VaultHelper;
 
 /**
  * Represents a research, which is bound to one
@@ -227,10 +228,10 @@ public class Research implements Keyed {
 
     /**
      * Checks if the {@link Player} can unlock this {@link Research}.
-     * 
-     * @param p
-     *            The {@link Player} to check
-     * 
+     * <p>
+     * 已魔改支持 Vault
+     *
+     * @param p The {@link Player} to check
      * @return Whether that {@link Player} can unlock this {@link Research}
      */
     public boolean canUnlock(@Nonnull Player p) {
@@ -238,8 +239,16 @@ public class Research implements Keyed {
             return true;
         }
 
+        boolean canUnlock;
+        if (VaultHelper.isUsable()) {
+            canUnlock = VaultHelper.getEcon().getBalance(p) >= this.getCost() * Slimefun.getCfg().getDouble("researches.money-multiply");
+        } else {
+            canUnlock = p.getLevel() >= cost;
+        }
+
         boolean creativeResearch = p.getGameMode() == GameMode.CREATIVE && Slimefun.getRegistry().isFreeCreativeResearchingEnabled();
-        return creativeResearch || p.getLevel() >= cost;
+
+        return creativeResearch || canUnlock;
     }
 
     /**
