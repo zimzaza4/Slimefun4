@@ -324,7 +324,7 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
                             if (action.isShiftClicked()) {
                                 clonedItem.setAmount(clonedItem.getMaxStackSize());
                             }
-                            
+
                             pl.getInventory().addItem(clonedItem);
                         }
                     }
