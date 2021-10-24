@@ -860,7 +860,7 @@ public class SlimefunItem implements Placeable {
      */
     public final void addOfficialWikipage(@Nonnull String page) {
         Validate.notNull(page, "Wiki page cannot be null.");
-        wikiURL = Optional.of("https://github.com/Slimefun/Slimefun4/wiki/" + page);
+        wikiURL = Optional.of("https://slimefun.guizhanss.wiki/#/" + page);
     }
 
     /**
