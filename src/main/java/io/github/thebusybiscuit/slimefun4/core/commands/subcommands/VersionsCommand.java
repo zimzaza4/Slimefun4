@@ -42,7 +42,7 @@ class VersionsCommand extends SubCommand {
      * This is the notice that will be displayed when an
      * older version of Java is detected.
      */
-    private static final String JAVA_VERSION_NOTICE = "在 Minecraft 1.17 发布时需要 Java 16!";
+    private static final String JAVA_VERSION_NOTICE = "在 Minecraft 1.17 发布时需要 Java 16+!";
 
     @ParametersAreNonnullByDefault
     VersionsCommand(Slimefun plugin, SlimefunCommand cmd) {
@@ -94,6 +94,13 @@ class VersionsCommand extends SubCommand {
 
                 builder.append("\n向后兼容已启用!\n").color(ChatColor.RED).event(hoverEvent);
             }
+
+            // Add notice to warn those smart people
+            builder.append("\n由 StarWishsama 汉化").color(ChatColor.WHITE)
+                    .append(
+                            "\n请不要将此版本信息截图到 Discord/Github 反馈 Bug" +
+                                    "\n优先到汉化页面反馈"
+                    ).color(ChatColor.RED);
 
             builder.append("\n").event((HoverEvent) null);
             addPluginVersions(builder);
