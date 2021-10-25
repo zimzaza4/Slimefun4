@@ -166,7 +166,7 @@ public final class SlimefunGuideSettings {
             "&3" + locale.getMessage(p, "guide.title.addons"),
             "",
             "&7Slimefun 是一个大型项目，但附属插件的存在",
-            "&7能让Slimefun真正的发光发亮",
+            "&7能让 Slimefun 真正的发光发亮",
             "&7看一看它们，也许你要寻找的附属插件就在那里!",
             "",
             "&7该服务器已安装附属插件: &b" + Slimefun.getInstalledAddons().size(),
