@@ -171,7 +171,7 @@ public final class SlimefunGuideSettings {
             "",
             "&7该服务器已安装附属插件: &b" + Slimefun.getInstalledAddons().size(),
             "",
-            "&7\u21E8 &e点击查看Slimefun4所有可用的附属插件列表"
+            "&7\u21E8 &e点击查看 Slimefun4 可用的附属插件"
         ));
         // @formatter:on
 
