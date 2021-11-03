@@ -252,7 +252,7 @@ public final class SlimefunItems {
         hazmatLore.add(ChatColor.YELLOW + "- 免疫辐射伤害");
 
         if (Slimefun.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_15)) {
-            hazmatLore.add(ChatColor.YELLOW + "- Bee Sting protection");
+            hazmatLore.add(ChatColor.YELLOW + "- 免疫蜜蜂蛰咬伤害");
         }
     }
 
@@ -391,8 +391,8 @@ public final class SlimefunItems {
     public static final SlimefunItemStack CRUSHED_ORE = new SlimefunItemStack("CRUSHED_ORE", Material.GUNPOWDER, "&6已粉碎的矿石");
     public static final SlimefunItemStack PULVERIZED_ORE = new SlimefunItemStack("PULVERIZED_ORE", Material.GUNPOWDER, "&6粉末状的矿石");
     public static final SlimefunItemStack PURE_ORE_CLUSTER = new SlimefunItemStack("PURE_ORE_CLUSTER", Material.GUNPOWDER, "&6纯矿簇");
-    public static final SlimefunItemStack SMALL_URANIUM = new SlimefunItemStack("SMALL_URANIUM", HeadTexture.URANIUM, "&c一小块铀", "", LoreBuilder.radioactive(Radioactivity.LOW), "&4&o不需要防化套装");
-    public static final SlimefunItemStack TINY_URANIUM = new SlimefunItemStack("TINY_URANIUM", HeadTexture.URANIUM, "&c一小堆铀", "", LoreBuilder.radioactive(Radioactivity.MODERATE), "&4&o需要防化套装");
+    public static final SlimefunItemStack SMALL_URANIUM = new SlimefunItemStack("SMALL_URANIUM", HeadTexture.URANIUM, "&c一小块铀", "", LoreBuilder.radioactive(Radioactivity.MODERATE), "&4&o需要防化套装");
+    public static final SlimefunItemStack TINY_URANIUM = new SlimefunItemStack("TINY_URANIUM", HeadTexture.URANIUM, "&c一小撮铀", "", LoreBuilder.radioactive(Radioactivity.LOW), "&4&o不需要防化套装");
 
     public static final SlimefunItemStack MAGNET = new SlimefunItemStack("MAGNET", HeadTexture.MAGNET, "&c磁铁");
     public static final SlimefunItemStack NECROTIC_SKULL = new SlimefunItemStack("NECROTIC_SKULL", HeadTexture.NECROTIC_SKULL, "&c坏死颅骨");
