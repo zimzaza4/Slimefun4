@@ -162,6 +162,10 @@ final class CargoUtils {
 
         for (int slot : menu.getPreset().getSlotsAccessedByItemTransport(menu, ItemTransportFlow.WITHDRAW, null)) {
             ItemStack is = menu.getItemInSlot(slot);
+            if (is == null || is.getType().isAir()) {
+                continue;
+            }
+
             ItemStackWrapper wrapperItemInSlot = ItemStackWrapper.wrap(is);
 
             if (SlimefunUtils.isItemSimilar(wrapperItemInSlot, wrapperTemplate, true) && matchesFilter(network, node, wrapperItemInSlot)) {
