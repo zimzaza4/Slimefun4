@@ -67,7 +67,7 @@ public class SlimefunItemInteractListener implements Listener {
 
             // Judge whether player have slimefun item in offhand.
             if (isOffHand && (SlimefunUtils.isItemSimilar(e.getItem(), SlimefunGuide.getItem(SlimefunGuideMode.SURVIVAL_MODE), true) || SlimefunUtils.isItemSimilar(e.getItem(), SlimefunGuide.getItem(SlimefunGuideMode.CHEAT_MODE), true))) {
-                e.setCancelled(true);
+                return;
             }
 
             // Only handle the Item if it hasn't been denied
