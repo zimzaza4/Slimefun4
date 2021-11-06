@@ -99,7 +99,8 @@ class VersionsCommand extends SubCommand {
             builder.append("\n由 StarWishsama 汉化").color(ChatColor.WHITE)
                     .append(
                             "\n请不要将此版本信息截图到 Discord/Github 反馈 Bug" +
-                                    "\n优先到汉化页面反馈"
+                                    "\n优先到汉化页面反馈" +
+                                    "\n"
                     ).color(ChatColor.RED);
 
             builder.append("\n").event((HoverEvent) null);

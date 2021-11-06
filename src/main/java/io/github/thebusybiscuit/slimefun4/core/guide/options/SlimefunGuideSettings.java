@@ -115,6 +115,10 @@ public final class SlimefunGuideSettings {
             ChatColor.GREEN + locale.getMessage(p, "guide.title.versions"),
             "&7&o" + locale.getMessage(p, "guide.tooltips.versions-notice"),
             "",
+            "&f汉化 By StarWishsama",
+            "&c请不要将此版本信息截图到 Discord/Github 反馈 Bug",
+            "&c而是优先到汉化页面反馈",
+            "",
             "&fMinecraft: &a" + Bukkit.getBukkitVersion(),
             "&fSlimefun: &a" + Slimefun.getVersion()),
             ChestMenuUtils.getEmptyClickHandler()
