@@ -64,10 +64,13 @@ public class SlimefunItemInteractListener implements Listener {
             Bukkit.getPluginManager().callEvent(event);
 
             boolean isOffHand = e.getHand() == EquipmentSlot.OFF_HAND;
+            Material offHandItem = e.getPlayer().getInventory().getItemInOffHand().getType();
 
-            // Judge whether player have slimefun item in offhand.
-            if (isOffHand && (SlimefunUtils.isItemSimilar(e.getItem(), SlimefunGuide.getItem(SlimefunGuideMode.SURVIVAL_MODE), true) || SlimefunUtils.isItemSimilar(e.getItem(), SlimefunGuide.getItem(SlimefunGuideMode.CHEAT_MODE), true))) {
-                e.setCancelled(true);
+            // Temp workaround for #245
+            if (!isOffHand && !offHandItem.isAir()) {
+                if (offHandItem == Material.FISHING_ROD || offHandItem == Material.BOW || offHandItem == Material.TRIDENT || offHandItem == Material.CROSSBOW) {
+                    return;
+                }
             }
 
             // Only handle the Item if it hasn't been denied

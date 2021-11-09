@@ -91,7 +91,7 @@ public class IntegrationHelper implements Listener {
   }
 
   /**
-   * 检查是否可以在领地/地皮内破坏/交互方块
+   * 检查是否可以在领地内破坏/交互方块
    *
    * @param p 玩家
    * @param block 被破坏的方块
@@ -99,7 +99,7 @@ public class IntegrationHelper implements Listener {
    * @return 是否可以破坏
    */
   public static boolean checkPermission(OfflinePlayer p, Block block, Interaction action) {
-    if (!resInstalled || p == null || !p.isOnline() || block == null || p.isOp()) {
+    if (!resInstalled || block == null || p == null || !p.isOnline() || p.isOp()) {
       return true;
     }
 
@@ -116,7 +116,7 @@ public class IntegrationHelper implements Listener {
       if (perms != null) {
         Player online = p.getPlayer();
 
-        if (!(action.getType() == ActionType.BLOCK) || perms.playerHas(online, Flags.admin, FlagPermissions.FlagCombo.OnlyTrue)) {
+        if (action.getType() == ActionType.BLOCK && perms.playerHas(online, Flags.admin, FlagPermissions.FlagCombo.OnlyTrue)) {
           return true;
         }
 
