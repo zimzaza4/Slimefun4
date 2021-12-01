@@ -37,6 +37,7 @@ public final class WorldUtils {
         if (major.isAtLeast(MinecraftVersion.MINECRAFT_1_17) || major.isMinecraftVersion(16) && patch == 5) {
             return world.getMinHeight();
         } else {
+            // Default to zero for pre-1.16 worlds
             return 0;
         }
     }
