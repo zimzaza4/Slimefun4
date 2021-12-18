@@ -54,7 +54,7 @@ Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 
 | | 开发版 (最新更新) | "稳定版" |
 | ------------------ | -------- | -------- |
-| **支持的 Minecraft 版本** | :video_game: 1.13.X - 1.17.X | :video_game: 1.13.X - 1.16.X |
+| **支持的 Minecraft 版本** | :video_game: 1.14.X - 1.18.X | :video_game: 1.14.X - 1.17.X |
 | **自动更新系统** | :heavy_check_mark: | :heavy_check_mark: |
 | **频繁更新** | :heavy_check_mark: | :x: |
 | **享有最新内容** | :heavy_check_mark: | :x: |
