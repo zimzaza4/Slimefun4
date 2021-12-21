@@ -22,8 +22,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.thebusybiscuit.slimefun4.api.events.AncientAltarCraftEvent;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAltar;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientPedestal;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.AncientAltarListener;
@@ -31,11 +31,11 @@ import io.github.thebusybiscuit.slimefun4.implementation.listeners.AncientAltarL
 /**
  * The {@link AncientAltarTask} is responsible for the animation that happens when a ritual
  * involving the {@link AncientAltar} is started.
- *
+ * 
  * @author dniym
  * @author meiamsome
  * @author TheBusyBiscuit
- *
+ * 
  * @see AncientAltar
  * @see AncientAltarListener
  *
@@ -140,8 +140,7 @@ public class AncientAltarTask implements Runnable {
             dropLocation.getWorld().spawnParticle(Particle.CRIT_MAGIC, pedestal.getLocation().add(0.5, 1.5, 0.5), 8, 0.3F, 0.2F, 0.3F);
 
             positionLock.remove(entity);
-
-            pedestalItem.stopDisplayItem(pedestal.getLocation(),entity);
+            pedestalItem.removeVirtualItem(pedestal.getLocation(), entity);
             entity.removeMetadata("no_pickup", Slimefun.instance());
         }
     }
