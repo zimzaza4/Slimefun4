@@ -174,6 +174,15 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
     public void removeVirtualItem(@Nonnull Location pedestal, @Nonnull Entity item) {
         item.remove();
         pedestalVirtualItemCache.remove(new BlockPosition(pedestal));
+
+        // Temp fix for #401, need further investigation
+        Location l = pedestal.clone().add(0.5, 1.2, 0.5);
+
+        for (Entity n : l.getWorld().getNearbyEntities(l, 0.5, 0.5, 0.5, this::testItem)) {
+            if (n instanceof Item) {
+                n.remove();
+            }
+        }
     }
 
     public @Nonnull Map<BlockPosition, Item> getVirtualItemCache() {
