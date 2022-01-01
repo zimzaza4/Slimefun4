@@ -13,7 +13,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import io.github.bakedlibs.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.implementation.items.androids.menu.AndroidShareMenu;
 import org.apache.commons.lang.Validate;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -49,6 +53,7 @@ import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.github.thebusybiscuit.slimefun4.utils.WorldUtils;
 import io.papermc.lib.PaperLib;
 
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
@@ -906,7 +911,7 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
             return;
         }
 
-        if (block.getY() > 0 && block.getY() < block.getWorld().getMaxHeight() && block.isEmpty()) {
+        if (block.getY() > WorldUtils.getMinHeight(block.getWorld()) && block.getY() < block.getWorld().getMaxHeight() && block.isEmpty()) {
 
             if (!block.getWorld().getWorldBorder().isInside(block.getLocation())) {
                 return;
