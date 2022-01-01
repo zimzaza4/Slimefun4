@@ -77,7 +77,7 @@ body:
     attributes:
       label: '📜 服务器日志'
       description: |
-        Take a look at your Server Log and upload any error messages from Slimefun to a pasting site (e.g. https://pastebin.com/).
+        查看服务器日志并通过储存 Log 的网站 (例如 https://textbin.net/) 上传任何关于 Slimefun 的报错信息.
         如果你不确定是哪一段报错, 可以直接将服务器下的 /logs/latest.log 上传到这里
       placeholder: https://textbin.net/...
 
@@ -86,7 +86,7 @@ body:
     attributes:
       label: '📂 `/error-reports/` 问题'
       description: |
-       检查一下 `/plugins/Slimefun/error-reports/` 是否有文件and upload any files inside that folder to a pasting site (e.g. https://pastebin.com/).
+       检查一下 `/plugins/Slimefun/error-reports/` 是否有文件. 如果有, 可以上传到这里.
       placeholder: https://textbin.net/...
 
   - id: server-software
