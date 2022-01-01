@@ -82,7 +82,7 @@ public final class SlimefunItems {
     public static final SlimefunItemStack DAMASCUS_STEEL_JETPACK = new SlimefunItemStack("DAMASCUS_STEEL_JETPACK", Material.LEATHER_CHESTPLATE, Color.SILVER, "&9电力喷气背包 &7- &eV", "", LoreBuilder.material("大马士革钢"), LoreBuilder.powerCharged(0, 75), "&8\u21E8 &7推力: &c0.55", "", LoreBuilder.CROUCH_TO_USE);
     public static final SlimefunItemStack REINFORCED_ALLOY_JETPACK = new SlimefunItemStack("REINFORCED_ALLOY_JETPACK", Material.LEATHER_CHESTPLATE, Color.SILVER, "&9电力喷气背包 &7- &eVI", "", LoreBuilder.material("强化合金"), LoreBuilder.powerCharged(0, 100), "&8\u21E8 &7推力: &c0.6", "", LoreBuilder.CROUCH_TO_USE);
     public static final SlimefunItemStack CARBONADO_JETPACK = new SlimefunItemStack("CARBONADO_JETPACK", Material.LEATHER_CHESTPLATE, Color.BLACK, "&9电力喷气背包 &7- &eVII", "", LoreBuilder.material("黑金刚石"), LoreBuilder.powerCharged(0, 150), "&8\u21E8 &7推力: &c0.7", "", LoreBuilder.CROUCH_TO_USE);
-    public static final SlimefunItemStack ARMORED_JETPACK = new SlimefunItemStack("ARMORED_JETPACK", Material.IRON_CHESTPLATE, "&9装甲喷气背包", LoreBuilder.material("钢"), "", LoreBuilder.powerCharged(0, 50), "&8\u21E8 &7推力: &c0.45", "", LoreBuilder.CROUCH_TO_USE);
+    public static final SlimefunItemStack ARMORED_JETPACK = new SlimefunItemStack("ARMORED_JETPACK", Material.IRON_CHESTPLATE, "&9装甲喷气背包", LoreBuilder.material("钢"), "", LoreBuilder.powerCharged(0, 50), "&8\u21E8 &7推力: &c0.5", "", LoreBuilder.CROUCH_TO_USE);
 
     /*		 Jetboots		*/
     public static final SlimefunItemStack DURALUMIN_JETBOOTS = new SlimefunItemStack("DURALUMIN_JETBOOTS", Material.LEATHER_BOOTS, Color.SILVER, "&9喷气靴 &7- &eI", "", LoreBuilder.material("硬铝"), LoreBuilder.powerCharged(0, 20), "&8\u21E8 &7速度: &a0.35", "&8\u21E8 &7准确度: &c50%", "", LoreBuilder.CROUCH_TO_USE);
@@ -539,6 +539,7 @@ public final class SlimefunItems {
 
     public static final SlimefunItemStack TALISMAN_ANVIL = new SlimefunItemStack("ANVIL_TALISMAN", Material.EMERALD, "&a铁砧护身符", "", "&r每个护身符可以防止", "&r一个工具因耐久不足而损坏", "&r然后就会被消耗", "", "&4&l警告:", "&4由于过于强大的工具的复杂性", "&4此护身符不能修复过于强大的工具");
     public static final SlimefunItemStack TALISMAN_MINER = new SlimefunItemStack("MINER_TALISMAN", Material.EMERALD, "&a矿工护身符", "", "&r当这个护身符在你的背包里时", "&r将有 20% 的几率双倍掉落", "&r你挖出的矿物");
+    public static final SlimefunItemStack TALISMAN_FARMER = new SlimefunItemStack("FARMER_TALISMAN", Material.EMERALD, "&a农夫护身符", "", "&f当这个护身符在你的背包里时", "&f将有 20% 的几率双倍掉落", "&f你收割的农作物");
     public static final SlimefunItemStack TALISMAN_HUNTER = new SlimefunItemStack("HUNTER_TALISMAN", Material.EMERALD, "&a猎人护身符", "", "&r当这个护身符在你的背包里时", "&r将有 20% 的几率双倍掉落", "&r你杀死的生物的掉落物");
     public static final SlimefunItemStack TALISMAN_LAVA = new SlimefunItemStack("LAVA_TALISMAN", Material.EMERALD, "&a岩浆行者护身符", "", "&r当这个护身符在你的背包里时", "&r获得火焰保护效果", "&r仅在你行走在岩浆上时可用", "&r然后就会被消耗");
     public static final SlimefunItemStack TALISMAN_WATER = new SlimefunItemStack("WATER_TALISMAN", Material.EMERALD, "&a潜水者护身符", "", "&r当这个护身符在你的背包里时", "&r一旦你即将溺水而死", "&r护身符将会给予你水下呼吸", "&r然后就会被消耗");
