@@ -1,0 +1,54 @@
+name: 汉化文本反馈
+description: 反馈 Slimefun 汉化版中汉化错误/缺失的问题
+labels: ['💭 Unconfirmed | 未确认', '📜 Translation | 汉化问题']
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 👋 欢迎来到 Slimefun 汉化版汉化反馈中心
+        <br /><strong><i>标注星号 (*) 的问题必须填写.</i></strong>
+        <br />
+
+  - id: checklist
+    type: checkboxes
+    attributes:
+      label: '❗ 检查表'
+      description: 在创建问题之前请先依照检查表检查一遍.
+      options:
+        - label: 我正在使用最新版本 (实验版/最新稳定版) 并且没有自己魔改.
+          required: true
+        - label: 我知道如果这个问题与附属插件有关时应该去对应附属插件下反馈, 而不是这里.
+          required: true
+        - label: 我搜寻了问题列表并且没有找到相同的问题.
+          required: true
+
+  - id: description
+    type: textarea
+    validations:
+      required: true
+    attributes:
+      label: '📍 汉化问题描述'
+      description: |
+        清晰并详细地描述汉化出现错误或者缺失的地方.
+        你提供的信息越详细, 我们处理这个问题就会更容易.
+      placeholder: |
+        在 [...] 处没有汉化, [...] 的汉化是错误的.
+
+  - id: slimefun-version
+    type: textarea
+    validations:
+      required: true
+    attributes:
+      label: '⭐ Slimefun 版本'
+      description: |
+        **"最新版" 很明显不是一个版本号, 我们需要确切的版本号.**
+        我们推荐你在后台执行 "/sf versions" 并截图上传.
+        确保你在截图时截全所有东西.
+      placeholder: Slimefun 版本 [...]
+
+  - type: markdown
+    attributes:
+      value: |
+        ## ❤️ 感谢你反馈汉化问题!
+        同时, 也欢迎加入我们的 [QQ 群](https://jq.qq.com/?_wv=1027&k=ESbsepYt).
