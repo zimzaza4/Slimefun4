@@ -1,0 +1,148 @@
+name: Bug Report
+description: Report a Bug or an Issue with Slimefun 4.
+labels: ['💭 Unconfirmed | 未确认', '🐞 Bug']
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 👋 欢迎来到 Slimefun 汉化版 Bug 追踪器
+        如果你在定位问题时需要帮助, 欢迎加入我们的 [QQ 群](https://jq.qq.com/?_wv=1027&k=ESbsepYt) 了解别人是否有相同的问题.
+        同样请先看看 [故障排查指南](https://slimefun.guizhanss.wiki/#/How-to-report-bugs) 和 [已知问题列表(官方)](https://github.com/Slimefun/Slimefun4/issues).
+        <br /><strong><i>标注星号 (*) 的问题必须填写.</i></strong>
+        <br />
+
+  - id: checklist
+    type: checkboxes
+    attributes:
+      label: '❗ 检查表'
+      description: 在创建问题之前请先依照检查表检查一遍.
+      options:
+        - label: 我正在使用最新版本 (实验版/最新稳定版) 并且没有自己魔改.
+          required: true
+        - label: 我知道如果这个问题与附属插件有关时应该去对应附属插件下反馈, 而不是这里.
+          required: true
+        - label: 我搜寻了问题列表并且没有找到相同的问题.
+          required: true
+
+  - id: description
+    type: textarea
+    validations:
+      required: true
+    attributes:
+      label: '📍 问题描述'
+      description: |
+        清晰并详细地描述你所遇到的问题.
+        你提供的信息越详细, 我们处理这个问题就会更容易.
+      placeholder: |
+        当我在 [...] 的时候出现了 [...], 我十分确信这不应该发生而且应该被修复.
+
+  - id: reproduction-steps
+    type: textarea
+    validations:
+      required: true
+    attributes:
+      label: '📑 复现步骤'
+      description: |
+        详细描述如何复现这个问题, 越详细越容易复现.
+      placeholder: |
+        1. 首先 [...]
+        2. 然后 [...]
+        3. 现在 [...] 问题发生了
+
+  - id: expected-behaviour
+    type: textarea
+    validations:
+      required: true
+    attributes:
+      label: '💡 期望行为'
+      description: |
+        你认为会发生什么?
+        你觉得它正确工作的时候应该是怎样的?
+      placeholder: |
+        我希望 [...].
+
+  - id: media
+    type: textarea
+    attributes:
+      label: '📷 截图 / 视频'
+      description: |
+        阐述问题的最好方式就是录制一段视频或者截图.
+        录制复现的全程有助于我们复现问题.
+      placeholder: |
+        将图片或视频拖进这里可以上传.
+
+  - id: server-log
+    type: input
+    attributes:
+      label: '📜 服务器日志'
+      description: |
+        Take a look at your Server Log and upload any error messages from Slimefun to a pasting site (e.g. https://pastebin.com/).
+        如果你不确定是哪一段报错, 可以直接将服务器下的 /logs/latest.log 上传到这里
+      placeholder: https://textbin.net/...
+
+  - id: error-reports
+    type: input
+    attributes:
+      label: '📂 `/error-reports/` 问题'
+      description: |
+       检查一下 `/plugins/Slimefun/error-reports/` 是否有文件and upload any files inside that folder to a pasting site (e.g. https://pastebin.com/).
+      placeholder: https://textbin.net/...
+
+  - id: server-software
+    type: dropdown
+    validations:
+      required: true
+    attributes:
+      label: '💻 服务端类型'
+      description: '请选择你的服务端类型'
+      options:
+        - Spigot
+        - Paper
+        - Purpur
+        - Airplane
+        - 其他 (请在问题描述里写明)
+
+  - id: minecraft-version
+    type: dropdown
+    validations:
+      required: true
+    attributes:
+      label: '🎮 Minecraft 版本'
+      description: '请选择你的 Minecraft 版本'
+      options:
+        - 1.18.x
+        - 1.17.x
+        - 1.16.x
+        - 1.15.x
+        - 1.14.x
+        - 旧版本不受支持
+
+  - id: slimefun-version
+    type: textarea
+    validations:
+      required: true
+    attributes:
+      label: '⭐ Slimefun 版本'
+      description: |
+        **"最新版" 很明显不是一个版本号, 我们需要确切的版本号.**
+        我们推荐你在后台执行 "/sf versions" 并截图上传.
+        确保你在截图时截全所有东西.
+      placeholder: Slimefun 版本 [...]
+
+  - id: other-versions
+    type: textarea
+    attributes:
+      label: '🧭 其他插件'
+      description: |
+        如果你的问题与其他插件有关, 请在此写明!
+      placeholder: 这个问题与插件 [...], 版本 [...] 有关
+
+  - type: markdown
+    attributes:
+      value: |
+        ## ❤️ 感谢你反馈问题!
+        如果你还有能帮助我们定位问题的额外信息, 可以在下面评论!
+        任何额外信息都有可能助于我们更快的修复问题.
+        同时, 也欢迎加入我们的 [QQ 群](https://jq.qq.com/?_wv=1027&k=ESbsepYt) 讨论这个问题.
+        也许别人也有一样的问题.
