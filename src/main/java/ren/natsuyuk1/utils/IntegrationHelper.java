@@ -176,7 +176,7 @@ public class IntegrationHelper implements Listener {
 
     private static void registerQuickShop(@Nonnull Slimefun plugin) {
         String version = plugin.getServer().getPluginManager().getPlugin(QUICKSHOP).getDescription().getVersion();
-        String[] splitVersion = version.split("\\.");
+        String[] splitVersion = version.split("-")[0].split("\\.");
         int major = Integer.parseInt(splitVersion[0]);
         int sub = Integer.parseInt(splitVersion[2]);
         int last = Integer.parseInt(splitVersion[3]);
