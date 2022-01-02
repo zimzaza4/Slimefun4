@@ -55,7 +55,7 @@ public class SlimefunGuideListener implements Listener {
             }
         } else if (tryOpenGuide(p, e, SlimefunGuideMode.CHEAT_MODE) == Result.ALLOW) {
             if (p.isSneaking()) {
-                SlimefunGuideSettings.openSettings(p, e.getItem());
+                SlimefunGuideSettings.openSettings(p, p.hasPermission("slimefun.cheat.items") ? e.getItem() : SlimefunGuide.getItem(SlimefunGuideMode.SURVIVAL_MODE));
             } else {
                 /*
                  * We rather just run the command here, all
