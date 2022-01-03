@@ -7,8 +7,11 @@ body:
     attributes:
       value: "
         ## 👋 欢迎来到 Slimefun 汉化版 Bug 追踪器
+        
         如果你在定位问题时需要帮助, 欢迎加入我们的 [QQ 群](https://jq.qq.com/?_wv=1027&k=ESbsepYt) 了解别人是否有相同的问题.
+        
         同样请先看看 [故障排查指南](https://slimefun.guizhanss.wiki/#/How-to-report-bugs) 和 [已知问题列表(官方)](https://github.com/Slimefun/Slimefun4/issues).
+        
         <br /><strong><i>标注星号 (*) 的问题必须填写.</i></strong>
         <br />"
 
@@ -33,6 +36,7 @@ body:
       label: "📍 问题描述"
       description: "
         清晰并详细地描述你所遇到的问题.
+        
         你提供的信息越详细, 我们处理这个问题就会更容易."
       placeholder: "当我在 [...] 的时候出现了 [...], 我十分确信这不应该发生而且应该被修复."
 
@@ -64,6 +68,7 @@ body:
       label: "📷 截图 / 视频"
       description: "
         阐述问题的最好方式就是录制一段视频或者截图.
+        
         录制复现的全程有助于我们复现问题.
         "
       placeholder: "将图片或视频拖进这里可以上传."
@@ -74,6 +79,7 @@ body:
       label: "📜 服务器日志"
       description: "
         查看服务器日志并通过储存 Log 的网站 (例如 https://textbin.net/) 上传任何关于 Slimefun 的报错信息.
+        
         如果你不确定是哪一段报错, 可以直接将服务器下的 /logs/latest.log 上传到这里
         "
       placeholder: "https://textbin.net/..."
@@ -122,7 +128,9 @@ body:
       label: "⭐ Slimefun 版本"
       description: '
         **"最新版" 很明显不是一个版本号, 我们需要确切的版本号.**
+        
         我们推荐你在后台执行 "/sf versions" 并截图上传.
+        
         确保你在截图时截全所有东西.
         '
       placeholder: |
@@ -139,8 +147,12 @@ body:
     attributes:
       value: "
         ## ❤️ 感谢你反馈问题!
+        
         如果你还有能帮助我们定位问题的额外信息, 可以在下面评论!
+        
         任何额外信息都有可能助于我们更快的修复问题.
+        
         同时, 也欢迎加入我们的 [QQ 群](https://jq.qq.com/?_wv=1027&k=ESbsepYt) 讨论这个问题.
+        
         也许别人也有一样的问题.
       "
