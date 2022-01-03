@@ -1,5 +1,5 @@
-name: Bug 反馈
-description: 反馈与 Slimefun 汉化版相关的问题
+name: 'Bug 反馈'
+description: '反馈与 Slimefun 汉化版相关的问题'
 labels: ['💭 Unconfirmed | 未确认', '🐞 Bug']
 
 body:
@@ -16,13 +16,13 @@ body:
     type: checkboxes
     attributes:
       label: '❗ 检查表'
-      description: 在创建问题之前请先依照检查表检查一遍.
+      description: '在创建问题之前请先依照检查表检查一遍.'
       options:
-        - label: 我正在使用最新版本 (实验版/最新稳定版) 并且没有自己魔改.
+        - label: '我正在使用最新版本 (实验版/最新稳定版) 并且没有自己魔改.'
           required: true
-        - label: 我知道如果这个问题与附属插件有关时应该去对应附属插件下反馈, 而不是这里.
+        - label: '我知道如果这个问题与附属插件有关时应该去对应附属插件下反馈, 而不是这里.'
           required: true
-        - label: 我搜寻了问题列表并且没有找到相同的问题.
+        - label: '我搜寻了问题列表并且没有找到相同的问题.'
           required: true
 
   - id: description
@@ -101,7 +101,7 @@ body:
         - Paper
         - Purpur
         - Airplane
-        - 其他 (请在问题描述里写明)
+        - '其他 (请在问题描述里写明)'
 
   - id: minecraft-version
     type: dropdown
@@ -116,7 +116,7 @@ body:
         - 1.16.x
         - 1.15.x
         - 1.14.x
-        - 旧版本不受支持
+        - '旧版本不受支持'
 
   - id: slimefun-version
     type: textarea
@@ -128,7 +128,8 @@ body:
         **"最新版" 很明显不是一个版本号, 我们需要确切的版本号.**
         我们推荐你在后台执行 "/sf versions" 并截图上传.
         确保你在截图时截全所有东西.
-      placeholder: Slimefun 版本 [...]
+      placeholder: |
+        Slimefun 版本 [...]
 
   - id: other-versions
     type: textarea
@@ -136,7 +137,7 @@ body:
       label: '🧭 其他插件'
       description: |
         如果你的问题与其他插件有关, 请在此写明!
-      placeholder: 这个问题与插件 [...], 版本 [...] 有关
+      placeholder: '这个问题与插件 [...], 版本 [...] 有关'
 
   - type: markdown
     attributes:

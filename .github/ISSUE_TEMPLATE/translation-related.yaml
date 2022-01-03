@@ -1,5 +1,5 @@
-name: 汉化文本反馈
-description: 反馈 Slimefun 汉化版中汉化错误/缺失的问题
+name: '汉化文本反馈'
+description: '反馈 Slimefun 汉化版中汉化错误/缺失的问题'
 labels: ['💭 Unconfirmed | 未确认', '📜 Translation | 汉化问题']
 
 body:
@@ -14,13 +14,13 @@ body:
     type: checkboxes
     attributes:
       label: '❗ 检查表'
-      description: 在创建问题之前请先依照检查表检查一遍.
+      description: '在创建问题之前请先依照检查表检查一遍.'
       options:
-        - label: 我正在使用最新版本 (实验版/最新稳定版) 并且没有自己魔改.
+        - label: '我正在使用最新版本 (实验版/最新稳定版) 并且没有自己魔改.'
           required: true
-        - label: 我知道如果这个问题与附属插件有关时应该去对应附属插件下反馈, 而不是这里.
+        - label: '我知道如果这个问题与附属插件有关时应该去对应附属插件下反馈, 而不是这里.'
           required: true
-        - label: 我搜寻了问题列表并且没有找到相同的问题.
+        - label: '我搜寻了问题列表并且没有找到相同的问题.'
           required: true
 
   - id: description
@@ -45,7 +45,8 @@ body:
         **"最新版" 很明显不是一个版本号, 我们需要确切的版本号.**
         我们推荐你在后台执行 "/sf versions" 并截图上传.
         确保你在截图时截全所有东西.
-      placeholder: Slimefun 版本 [...]
+      placeholder: |
+        Slimefun 版本 [...]
 
   - type: markdown
     attributes:
