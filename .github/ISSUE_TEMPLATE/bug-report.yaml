@@ -1,6 +1,6 @@
-name: 'Bug 反馈'
-description: '反馈与 Slimefun 汉化版相关的问题'
-labels: ['💭 Unconfirmed | 未确认', '🐞 Bug']
+name: "Bug 反馈"
+description: "反馈与 Slimefun 汉化版相关的问题"
+labels: ["💭 Unconfirmed | 未确认", "🐞 Bug"]
 
 body:
   - type: markdown
@@ -12,25 +12,25 @@ body:
         <br /><strong><i>标注星号 (*) 的问题必须填写.</i></strong>
         <br />
 
-  - id: checklist
-    type: checkboxes
+  - type: checkboxes
+    id: checklist
     attributes:
-      label: '❗ 检查表'
-      description: '在创建问题之前请先依照检查表检查一遍.'
+      label: "❗ 检查表"
+      description: "在创建问题之前请先依照检查表检查一遍."
       options:
-        - label: '我正在使用最新版本 (实验版/最新稳定版) 并且没有自己魔改.'
+        - label: "我正在使用最新版本 (实验版/最新稳定版) 并且没有自己魔改."
           required: true
-        - label: '我知道如果这个问题与附属插件有关时应该去对应附属插件下反馈, 而不是这里.'
+        - label: "我知道如果这个问题与附属插件有关时应该去对应附属插件下反馈, 而不是这里."
           required: true
-        - label: '我搜寻了问题列表并且没有找到相同的问题.'
+        - label: "我搜寻了问题列表并且没有找到相同的问题."
           required: true
 
-  - id: description
-    type: textarea
+  - type: textarea
+    id: description
     validations:
       required: true
     attributes:
-      label: '📍 问题描述'
+      label: "📍 问题描述"
       description: |
         清晰并详细地描述你所遇到的问题.
         你提供的信息越详细, 我们处理这个问题就会更容易.
@@ -42,7 +42,7 @@ body:
     validations:
       required: true
     attributes:
-      label: '📑 复现步骤'
+      label: "📑 复现步骤"
       description: |
         详细描述如何复现这个问题, 越详细越容易复现.
       placeholder: |
@@ -50,80 +50,80 @@ body:
         2. 然后 [...]
         3. 现在 [...] 问题发生了
 
-  - id: expected-behaviour
-    type: textarea
+  - type: textarea
+    id: expected-behaviour
     validations:
       required: true
     attributes:
-      label: '💡 期望行为'
+      label: "💡 期望行为"
       description: |
         你认为会发生什么?
         你觉得它正确工作的时候应该是怎样的?
       placeholder: |
         我希望 [...].
 
-  - id: media
-    type: textarea
+  - type: textarea
+    id: media
     attributes:
-      label: '📷 截图 / 视频'
+      label: "📷 截图 / 视频"
       description: |
         阐述问题的最好方式就是录制一段视频或者截图.
         录制复现的全程有助于我们复现问题.
       placeholder: |
         将图片或视频拖进这里可以上传.
 
-  - id: server-log
-    type: input
+  - type: input
+    id: server-log
     attributes:
-      label: '📜 服务器日志'
+      label: "📜 服务器日志"
       description: |
         查看服务器日志并通过储存 Log 的网站 (例如 https://textbin.net/) 上传任何关于 Slimefun 的报错信息.
         如果你不确定是哪一段报错, 可以直接将服务器下的 /logs/latest.log 上传到这里
       placeholder: https://textbin.net/...
 
-  - id: error-reports
-    type: input
+  - type: input
+    id: error-reports
     attributes:
-      label: '📂 `/error-reports/` 问题'
+      label: "📂 `/error-reports/` 问题"
       description: |
         检查一下 `/plugins/Slimefun/error-reports/` 是否有文件. 如果有, 可以上传到这里.
       placeholder: https://textbin.net/...
 
-  - id: server-software
-    type: dropdown
+  - type: dropdown
+    id: server-software
     validations:
       required: true
     attributes:
-      label: '💻 服务端类型'
-      description: '请选择你的服务端类型'
+      label: "💻 服务端类型"
+      description: "请选择你的服务端类型"
       options:
         - Spigot
         - Paper
         - Purpur
         - Airplane
-        - '其他 (请在问题描述里写明)'
+        - "其他 (请在问题描述里写明)"
 
-  - id: minecraft-version
-    type: dropdown
+  - type: dropdown
+    id: minecraft-version
     validations:
       required: true
     attributes:
-      label: '🎮 Minecraft 版本'
-      description: '请选择你的 Minecraft 版本'
+      label: "🎮 Minecraft 版本"
+      description: "请选择你的 Minecraft 版本"
       options:
         - 1.18.x
         - 1.17.x
         - 1.16.x
         - 1.15.x
         - 1.14.x
-        - '旧版本不受支持'
+        - "旧版本不受支持"
 
-  - id: slimefun-version
-    type: textarea
+  - type: textarea
+    id: slimefun-version
     validations:
       required: true
     attributes:
-      label: '⭐ Slimefun 版本'
+      label: "⭐ Slimefun 版本"
       description: |
         **"最新版" 很明显不是一个版本号, 我们需要确切的版本号.**
         我们推荐你在后台执行 "/sf versions" 并截图上传.
@@ -131,13 +131,13 @@ body:
       placeholder: |
         Slimefun 版本 [...]
 
-  - id: other-versions
-    type: textarea
+  - type: textarea
+    id: other-versions
     attributes:
-      label: '🧭 其他插件'
+      label: "🧭 其他插件"
       description: |
         如果你的问题与其他插件有关, 请在此写明!
-      placeholder: '这个问题与插件 [...], 版本 [...] 有关'
+      placeholder: "这个问题与插件 [...], 版本 [...] 有关"
 
   - type: markdown
     attributes:
