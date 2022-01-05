@@ -7,7 +7,7 @@
        </ref>
        <ref type ="branch">
            <pattern>release</pattern>
-           <version>4.9-release-${commit.timestamp.year.2digit}${commit.timestamp.month}${commit.timestamp.day}</version>
+           <version>4.9-release-${commit.timestamp.year}.${commit.timestamp.month}</version>
        </ref>
        <ref type ="branch">
            <pattern>feature/(.+)</pattern>
