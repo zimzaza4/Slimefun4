@@ -2643,7 +2643,7 @@ public final class SlimefunItemSetup {
         .setEnergyConsumption(16)
         .register(plugin);
 
-        new CrafterSmartPort(categories.cargo, SlimefunItems.CRAFTER_SMART_PORT, RecipeType.ENHANCED_CRAFTING_TABLE,
+        new CrafterSmartPort(itemGroups.cargo, SlimefunItems.CRAFTER_SMART_PORT, RecipeType.ENHANCED_CRAFTING_TABLE,
                 new ItemStack[]{
                         null, SlimefunItems.CARGO_MOTOR, null,
                         new ItemStack(Material.CHEST), SlimefunItems.CRAFTING_MOTOR, new ItemStack(Material.CHEST),
