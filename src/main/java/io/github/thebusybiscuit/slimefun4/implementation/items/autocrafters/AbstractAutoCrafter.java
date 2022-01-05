@@ -67,6 +67,8 @@ import java.util.function.Predicate;
  */
 public abstract class AbstractAutoCrafter extends SlimefunItem implements EnergyNetComponent {
 
+    private final String WIKI_PAGE = "Auto-Crafter";
+
     private final Map<Block, ItemStack> recipeCache;
 
     /**
@@ -102,6 +104,8 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
     @ParametersAreNonnullByDefault
     protected AbstractAutoCrafter(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
+
+        addOfficialWikipage(WIKI_PAGE);
 
         recipeStorageKey = new NamespacedKey(Slimefun.instance(), "recipe_key");
         recipeEnabledKey = new NamespacedKey(Slimefun.instance(), "recipe_enabled");
