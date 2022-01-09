@@ -59,19 +59,21 @@ public class SlimefunItemInteractListener implements Listener {
                 return;
             }
 
+            boolean isOffHand = e.getHand() == EquipmentSlot.OFF_HAND;
+            ItemStack offHandItem = e.getPlayer().getInventory().getItemInOffHand();
+
+            if (isOffHand && !offHandItem.getType().isAir()) {
+                ItemStack main = e.getPlayer().getInventory().getItemInMainHand();
+                SlimefunItem sfItem = SlimefunItem.getByItem(main);
+
+                if (sfItem != null && !sfItem.getHandlers().isEmpty()) {
+                    e.setCancelled(true);
+                }
+            }
+
             // Fire our custom Event
             PlayerRightClickEvent event = new PlayerRightClickEvent(e);
             Bukkit.getPluginManager().callEvent(event);
-
-            boolean isOffHand = e.getHand() == EquipmentSlot.OFF_HAND;
-            Material offHandItem = e.getPlayer().getInventory().getItemInOffHand().getType();
-
-            // Temp workaround for #245
-            if (!isOffHand && !offHandItem.isAir()) {
-                if (offHandItem == Material.FISHING_ROD || offHandItem == Material.BOW || offHandItem == Material.TRIDENT || offHandItem == Material.CROSSBOW) {
-                    return;
-                }
-            }
 
             // Only handle the Item if it hasn't been denied
             if (event.useItem() != Result.DENY) {
