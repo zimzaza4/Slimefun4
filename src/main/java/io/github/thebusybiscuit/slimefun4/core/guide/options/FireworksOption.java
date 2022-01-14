@@ -28,7 +28,7 @@ class FireworksOption implements SlimefunGuideOption<Boolean> {
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         if (Slimefun.getRegistry().isResearchFireworkEnabled()) {
             boolean enabled = getSelectedOption(p, guide).orElse(true);
-            ItemStack item = new CustomItemStack(Material.FIREWORK_ROCKET, "&bFireworks: &" + (enabled ? "aYes" : "4No"), "", "&7You can now toggle whether you", "&7will be presented with a big firework", "&7upon researching an item.", "", "&7\u21E8 &eClick to " + (enabled ? "disable" : "enable") + " your fireworks");
+            ItemStack item = new CustomItemStack(Material.FIREWORK_ROCKET, "&b烟花特效: &" + (enabled ? "a启用" : "4禁用"), "", "&7你现在可以选择是否", "&7在解锁一个新物品的时候", "&7展示烟花特效.", "", "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 烟花特效");
             return Optional.of(item);
         } else {
             return Optional.empty();
