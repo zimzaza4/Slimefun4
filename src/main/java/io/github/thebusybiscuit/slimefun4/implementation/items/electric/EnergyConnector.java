@@ -1,39 +1,45 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric;
 
-import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import io.github.bakedlibs.dough.common.ChatColors;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockUseHandler;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNet;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nonnull;
 
 /**
  * This {@link EnergyNetComponent} is a connector for the {@link EnergyNet} networks.
  * They work similar to {@link Capacitor capacitors}.
  *
  * @author Linox
+ *
  * @see EnergyNet
  * @see EnergyNetComponent
+ *
  */
 public class EnergyConnector extends SimpleSlimefunItem<BlockUseHandler> implements EnergyNetComponent {
 
-    public EnergyConnector(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
-        super(category, item, recipeType, recipe, recipeOutput);
+    @ParametersAreNonnullByDefault
+    public EnergyConnector(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
+        super(itemGroup, item, recipeType, recipe, recipeOutput);
     }
 
-    @Nonnull
     @Override
-    public BlockUseHandler getItemHandler() {
+    public @Nonnull BlockUseHandler getItemHandler() {
         return e -> {
-            if (!e.getClickedBlock().isPresent()) return;
+            if (!e.getClickedBlock().isPresent()) {
+                return;
+            }
 
             Player p = e.getPlayer();
             Block b = e.getClickedBlock().get();
@@ -46,9 +52,8 @@ public class EnergyConnector extends SimpleSlimefunItem<BlockUseHandler> impleme
         };
     }
 
-    @Nonnull
     @Override
-    public final EnergyNetComponentType getEnergyComponentType() {
+    public final @Nonnull EnergyNetComponentType getEnergyComponentType() {
         return EnergyNetComponentType.CONNECTOR;
     }
 

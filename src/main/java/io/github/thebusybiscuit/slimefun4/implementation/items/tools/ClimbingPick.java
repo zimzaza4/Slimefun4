@@ -1,18 +1,19 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.tools;
 
-import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
-import io.github.thebusybiscuit.slimefun4.api.events.ClimbingPickLaunchEvent;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
-import io.github.thebusybiscuit.slimefun4.core.attributes.DamageableItem;
-import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
-import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
-import io.github.thebusybiscuit.slimefun4.implementation.settings.ClimbableSurface;
-import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -26,10 +27,19 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
+import io.github.thebusybiscuit.slimefun4.api.events.ClimbingPickLaunchEvent;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.attributes.DamageableItem;
+import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
+import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.settings.ClimbableSurface;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 
 /**
  * The {@link ClimbingPick} launches you 1 block upwards when you right click
@@ -50,12 +60,13 @@ public class ClimbingPick extends SimpleSlimefunItem<ItemUseHandler> implements 
 
     private final ItemSetting<Boolean> dualWielding = new ItemSetting<>(this, "dual-wielding", true);
     private final ItemSetting<Boolean> damageOnUse = new ItemSetting<>(this, "damage-on-use", true);
+
     private final Map<Material, ClimbableSurface> surfaces = new EnumMap<>(Material.class);
     private final Set<UUID> users = new HashSet<>();
 
     @ParametersAreNonnullByDefault
-    public ClimbingPick(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
-        super(category, item, recipeType, recipe);
+    public ClimbingPick(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+        super(itemGroup, item, recipeType, recipe);
         addItemSetting(dualWielding, damageOnUse);
         addDefaultSurfaces();
     }
@@ -85,7 +96,7 @@ public class ClimbingPick extends SimpleSlimefunItem<ItemUseHandler> implements 
     /**
      * This returns whether the {@link ClimbingPick} needs to be held in both
      * arms to work.
-     *
+     * 
      * @return Whether dual wielding is enabled
      */
     public boolean isDualWieldingEnabled() {
@@ -95,7 +106,7 @@ public class ClimbingPick extends SimpleSlimefunItem<ItemUseHandler> implements 
     /**
      * This method returns a {@link Collection} of every {@link ClimbableSurface} the
      * {@link ClimbingPick} can climb.
-     *
+     * 
      * @return A {@link Collection} of every {@link ClimbableSurface}
      */
     @Nonnull
@@ -105,8 +116,10 @@ public class ClimbingPick extends SimpleSlimefunItem<ItemUseHandler> implements 
 
     /**
      * This returns the climbing speed for a given {@link Material}.
-     *
-     * @param type The {@link Material}
+     * 
+     * @param type
+     *            The {@link Material}
+     * 
      * @return The climbing speed for this {@link Material} or 0.
      */
     public double getClimbingSpeed(@Nonnull Material type) {
@@ -122,9 +135,12 @@ public class ClimbingPick extends SimpleSlimefunItem<ItemUseHandler> implements 
 
     /**
      * This returns the climbing speed for a given {@link Material} and the used {@link ItemStack}.
-     *
-     * @param item the {@link ClimbingPick}'s {@link ItemStack}
-     * @param type The {@link Material}
+     * 
+     * @param item
+     *            the {@link ClimbingPick}'s {@link ItemStack}
+     * @param type
+     *            The {@link Material}
+     * 
      * @return The climbing speed or 0.
      */
     public double getClimbingSpeed(@Nonnull ItemStack item, @Nonnull Material type) {
@@ -158,7 +174,7 @@ public class ClimbingPick extends SimpleSlimefunItem<ItemUseHandler> implements 
 
             // Check for dual wielding
             if (isDualWieldingEnabled() && !isItem(getOtherHandItem(p, e.getHand()))) {
-                SlimefunPlugin.getLocalization().sendMessage(p, "messages.climbing-pick.dual-wielding");
+                Slimefun.getLocalization().sendMessage(p, "messages.climbing-pick.dual-wielding");
                 return;
             }
 
@@ -186,7 +202,7 @@ public class ClimbingPick extends SimpleSlimefunItem<ItemUseHandler> implements 
         if (power > 0.05) {
             // Prevent players from spamming this item by enforcing a cooldown
             if (users.add(p.getUniqueId())) {
-                SlimefunPlugin.runSync(() -> users.remove(p.getUniqueId()), COOLDOWN);
+                Slimefun.runSync(() -> users.remove(p.getUniqueId()), COOLDOWN);
                 Vector velocity = new Vector(0, power, 0);
                 ClimbingPickLaunchEvent event = new ClimbingPickLaunchEvent(p, velocity, this, item, block);
                 Bukkit.getPluginManager().callEvent(event);
@@ -199,7 +215,7 @@ public class ClimbingPick extends SimpleSlimefunItem<ItemUseHandler> implements 
             }
         } else if (!isDualWieldingEnabled() || hand == EquipmentSlot.HAND) {
             // We don't wanna send the message twice, so we check for dual wielding
-            SlimefunPlugin.getLocalization().sendMessage(p, "messages.climbing-pick.wrong-material");
+            Slimefun.getLocalization().sendMessage(p, "messages.climbing-pick.wrong-material");
         }
     }
 
@@ -220,7 +236,7 @@ public class ClimbingPick extends SimpleSlimefunItem<ItemUseHandler> implements 
     }
 
     @Override
-    public void damageItem(Player p, ItemStack item) {
+    public void damageItem(@Nonnull Player p, @Nullable ItemStack item) {
         if (p.getGameMode() != GameMode.CREATIVE) {
             DamageableItem.super.damageItem(p, item);
         }
@@ -233,7 +249,7 @@ public class ClimbingPick extends SimpleSlimefunItem<ItemUseHandler> implements 
 
     @ParametersAreNonnullByDefault
     private void playAnimation(Player p, Block b, EquipmentSlot hand) {
-        MinecraftVersion version = SlimefunPlugin.getMinecraftVersion();
+        MinecraftVersion version = Slimefun.getMinecraftVersion();
 
         if (version != MinecraftVersion.UNIT_TEST) {
             p.getWorld().playEffect(b.getLocation(), Effect.STEP_SOUND, b.getType());

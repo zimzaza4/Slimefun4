@@ -1,7 +1,16 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
+
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.armor.Parachute;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets.JetBoots;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets.Jetpack;
@@ -11,29 +20,23 @@ import io.github.thebusybiscuit.slimefun4.implementation.tasks.JetBootsTask;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.JetpackTask;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.ParachuteTask;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
-
-import javax.annotation.Nonnull;
 
 /**
  * This {@link Listener} is responsible for listening to the {@link PlayerToggleSneakEvent}
  * to start tasks for various gadgets that are activated by pressing shift,
  * like the {@link Jetpack} or {@link JetBoots}
- *
+ * 
  * @author TheBusyBiscuit
+ * 
  * @see JetpackTask
  * @see JetBootsTask
  * @see ParachuteTask
  * @see InfusedMagnetTask
+ *
  */
 public class GadgetsListener implements Listener {
 
-    public GadgetsListener(@Nonnull SlimefunPlugin plugin) {
+    public GadgetsListener(@Nonnull Slimefun plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -62,7 +65,7 @@ public class GadgetsListener implements Listener {
         }
     }
 
-    private void handleChestplate(Player p, SlimefunItem chestplate) {
+    private void handleChestplate(@Nonnull Player p, @Nullable SlimefunItem chestplate) {
         if (chestplate == null || !chestplate.canUse(p, true)) {
             return;
         }
@@ -78,7 +81,7 @@ public class GadgetsListener implements Listener {
         }
     }
 
-    private void handleBoots(Player p, SlimefunItem boots) {
+    private void handleBoots(@Nonnull Player p, @Nullable SlimefunItem boots) {
         if (boots instanceof JetBoots && boots.canUse(p, true)) {
             double speed = ((JetBoots) boots).getSpeed();
 

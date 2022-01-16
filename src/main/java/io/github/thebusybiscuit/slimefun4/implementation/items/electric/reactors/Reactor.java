@@ -1,32 +1,15 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.reactors;
 
-import ren.natsuyuk1.utils.IntegrationHelper;
-import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
-import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
-import io.github.thebusybiscuit.slimefun4.api.events.ReactorExplodeEvent;
-import io.github.thebusybiscuit.slimefun4.core.attributes.HologramOwner;
-import io.github.thebusybiscuit.slimefun4.core.attributes.MachineProcessHolder;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
-import io.github.thebusybiscuit.slimefun4.core.machines.MachineProcessor;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.ReactorAccessPort;
-import io.github.thebusybiscuit.slimefun4.implementation.items.electric.AbstractEnergyProvider;
-import io.github.thebusybiscuit.slimefun4.implementation.operations.FuelOperation;
-import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AGenerator;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
-import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
-import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -36,47 +19,68 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
+import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.protection.Interaction;
+import io.github.thebusybiscuit.slimefun4.api.events.ReactorExplodeEvent;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.attributes.HologramOwner;
+import io.github.thebusybiscuit.slimefun4.core.attributes.MachineProcessHolder;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
+import io.github.thebusybiscuit.slimefun4.core.machines.MachineProcessor;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.ReactorAccessPort;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.AbstractEnergyProvider;
+import io.github.thebusybiscuit.slimefun4.implementation.operations.FuelOperation;
+import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
+
+import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AGenerator;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
+import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 
 /**
  * The abstract {@link Reactor} class is very similar to {@link AGenerator} but is
  * exclusively used for Reactors.
- *
+ * 
  * @author John000708
  * @author AlexLander123
  * @author TheBusyBiscuit
+ * 
  * @see AGenerator
  * @see NuclearReactor
  * @see NetherStarReactor
+ *
  */
 public abstract class Reactor extends AbstractEnergyProvider implements HologramOwner, MachineProcessHolder<FuelOperation> {
 
     private static final String MODE = "reactor-mode";
     private static final int INFO_SLOT = 49;
     private static final int COOLANT_DURATION = 50;
-    private static final BlockFace[] WATER_BLOCKS = {BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST};
+    private static final BlockFace[] WATER_BLOCKS = { BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST };
 
-    private static final int[] border = {0, 1, 2, 3, 5, 6, 7, 8, 12, 13, 14, 21, 23};
-    private static final int[] border_1 = {9, 10, 11, 18, 20, 27, 29, 36, 38, 45, 46, 47};
-    private static final int[] border_2 = {15, 16, 17, 24, 26, 33, 35, 42, 44, 51, 52, 53};
-    private static final int[] border_3 = {30, 31, 32, 39, 41, 48, 50};
+    private static final int[] border = { 0, 1, 2, 3, 5, 6, 7, 8, 12, 13, 14, 21, 23 };
+    private static final int[] border_1 = { 9, 10, 11, 18, 20, 27, 29, 36, 38, 45, 46, 47 };
+    private static final int[] border_2 = { 15, 16, 17, 24, 26, 33, 35, 42, 44, 51, 52, 53 };
+    private static final int[] border_3 = { 30, 31, 32, 39, 41, 48, 50 };
 
     // No coolant border
-    private static final int[] border_4 = {25, 34, 43};
+    private static final int[] border_4 = { 25, 34, 43 };
 
     private final Set<Location> explosionsQueue = new HashSet<>();
     private final MachineProcessor<FuelOperation> processor = new MachineProcessor<>(this);
 
     @ParametersAreNonnullByDefault
-    protected Reactor(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
-        super(category, item, recipeType, recipe);
+    protected Reactor(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+        super(itemGroup, item, recipeType, recipe);
 
         processor.setProgressBar(getProgressBar());
 
@@ -98,7 +102,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
 
             @Override
             public boolean canOpen(Block b, Player p) {
-                return p.hasPermission("slimefun.inventory.bypass") || SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK) || IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK);
+                return p.hasPermission("slimefun.inventory.bypass") || Slimefun.getProtectionManager().hasPermission(p, b.getLocation(), Interaction.INTERACT_BLOCK);
             }
 
             @Override
@@ -108,7 +112,6 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
         };
 
         addItemHandler(onBreak());
-
         registerDefaultFuelTypes();
     }
 
@@ -120,6 +123,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
     @Nonnull
     private BlockBreakHandler onBreak() {
         return new SimpleBlockBreakHandler() {
+
             @Override
             public void onBlockBreak(@Nonnull Block b) {
                 BlockMenu inv = BlockStorage.getInventory(b);
@@ -141,7 +145,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
 
         switch (mode) {
             case GENERATOR:
-                menu.replaceExistingItem(4, new CustomItem(SlimefunItems.NUCLEAR_REACTOR, "&7模式: &e发电", "", "&6反应堆将会专注于发电", "&6如果能源网络中没有机器需要电力", "&6它会停止工作", "", "&7\u21E8 单击修改模式为 &e生产"));
+                menu.replaceExistingItem(4, new CustomItemStack(SlimefunItems.NUCLEAR_REACTOR, "&7模式: &e发电", "", "&6反应堆将会专注于发电", "&6如果能源网络中没有机器需要电力", "&6它会停止工作", "", "&7\u21E8 单击修改模式为 &e生产"));
                 menu.addMenuClickHandler(4, (p, slot, item, action) -> {
                     BlockStorage.addBlockInfo(b, MODE, ReactorMode.PRODUCTION.toString());
                     updateInventory(menu, b);
@@ -149,7 +153,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
                 });
                 break;
             case PRODUCTION:
-                menu.replaceExistingItem(4, new CustomItem(SlimefunItems.PLUTONIUM, "&7模式: &e生产", "", "&6反应堆将会专注于生产副产物", "&6如果能源网络中没有机器需要电力", "&6它会继续工作并且不发电", "", "&7\u21E8 单击修改模式为 &e发电"));
+                menu.replaceExistingItem(4, new CustomItemStack(SlimefunItems.PLUTONIUM, "&7模式: &e生产", "", "&6反应堆将会专注于生产副产物", "&6如果能源网络中没有机器需要电力", "&6它会继续工作并且不发电", "", "&7\u21E8 单击修改模式为 &e发电"));
                 menu.addMenuClickHandler(4, (p, slot, item, action) -> {
                     BlockStorage.addBlockInfo(b, MODE, ReactorMode.GENERATOR.toString());
                     updateInventory(menu, b);
@@ -163,7 +167,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
         BlockMenu port = getAccessPort(b.getLocation());
 
         if (port != null) {
-            menu.replaceExistingItem(INFO_SLOT, new CustomItem(Material.GREEN_WOOL, "&7访问接口", "", "&6已连接", "", "&7> 单击查看访问接口"));
+            menu.replaceExistingItem(INFO_SLOT, new CustomItemStack(Material.GREEN_WOOL, "&7访问接口", "", "&6已连接", "", "&7> 单击查看访问接口"));
             menu.addMenuClickHandler(INFO_SLOT, (p, slot, item, action) -> {
                 port.open(p);
                 updateInventory(menu, b);
@@ -171,7 +175,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
                 return false;
             });
         } else {
-            menu.replaceExistingItem(INFO_SLOT, new CustomItem(Material.RED_WOOL, "&7访问接口", "", "&c未连接", "", "&7接口必须要放置在", "&7反应堆上面的第三格!"));
+            menu.replaceExistingItem(INFO_SLOT, new CustomItemStack(Material.RED_WOOL, "&7访问接口", "", "&c未连接", "", "&7接口必须要放置在", "&7反应堆上面的第三格!"));
             menu.addMenuClickHandler(INFO_SLOT, (p, slot, item, action) -> {
                 updateInventory(menu, b);
                 menu.open(p);
@@ -186,34 +190,34 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
         }
 
         for (int i : border_1) {
-            preset.addItem(i, new CustomItem(Material.LIME_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
+            preset.addItem(i, new CustomItemStack(Material.LIME_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
         }
 
         for (int i : border_3) {
-            preset.addItem(i, new CustomItem(Material.GREEN_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
+            preset.addItem(i, new CustomItemStack(Material.GREEN_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
         }
 
-        preset.addItem(22, new CustomItem(Material.BLACK_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
+        preset.addItem(22, new CustomItemStack(Material.BLACK_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
 
-        preset.addItem(1, new CustomItem(getFuelIcon(), "&7燃料", "", "&f这里可以放入放射性燃料:", "&2铀 &f或 &a镎"), ChestMenuUtils.getEmptyClickHandler());
+        preset.addItem(1, new CustomItemStack(getFuelIcon(), "&7燃料", "", "&f这里可以放入放射性燃料:", "&2铀 &f或 &a镎"), ChestMenuUtils.getEmptyClickHandler());
 
         for (int i : border_2) {
-            preset.addItem(i, new CustomItem(Material.CYAN_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
+            preset.addItem(i, new CustomItemStack(Material.CYAN_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
         }
 
         if (needsCooling()) {
-            preset.addItem(7, new CustomItem(getCoolant(), "&b冷却剂", "", "&f在此处放入冷却剂", "&4没有了冷却剂, 你的反应堆", "&4将会瞬间爆炸"));
+            preset.addItem(7, new CustomItemStack(getCoolant(), "&b冷却剂", "", "&f在此处放入冷却剂", "&4没有了冷却剂, 你的反应堆", "&4将会瞬间爆炸"));
         } else {
-            preset.addItem(7, new CustomItem(Material.BARRIER, "&b冷却剂", "", "&f在此处放入冷却剂"));
+            preset.addItem(7, new CustomItemStack(Material.BARRIER, "&b冷却剂", "", "&f在此处放入冷却剂"));
 
             for (int i : border_4) {
-                preset.addItem(i, new CustomItem(Material.BARRIER, "&c无需冷却剂"), ChestMenuUtils.getEmptyClickHandler());
+                preset.addItem(i, new CustomItemStack(Material.BARRIER, "&c无需冷却剂"), ChestMenuUtils.getEmptyClickHandler());
             }
         }
     }
 
     @Nonnull
-    protected ReactorMode getReactorMode(Location l) {
+    protected ReactorMode getReactorMode(@Nonnull Location l) {
         ReactorMode mode = ReactorMode.GENERATOR;
 
         if (BlockStorage.hasBlockInfo(l) && BlockStorage.getLocationInfo(l, MODE).equals(ReactorMode.PRODUCTION.toString())) {
@@ -228,7 +232,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
     /**
      * This method returns the {@link ItemStack} that is required to cool this {@link Reactor}.
      * If it returns null, then no cooling is required.
-     *
+     * 
      * @return The {@link ItemStack} required to cool this {@link Reactor}
      */
     @Nullable
@@ -238,7 +242,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
      * This method returns the displayed icon above the fuel input slot.
      * It should reflect the {@link ItemStack} used to power the reactor.
      * This method does <b>not</b> determine the fuel input, only the icon.
-     *
+     * 
      * @return The {@link ItemStack} used as the fuel icon for this {@link Reactor}.
      */
     @Nonnull
@@ -248,7 +252,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
      * This method returns whether this {@link Reactor} requires as some form of
      * coolant.
      * It is a not-null check performed on {@link #getCoolant()}
-     *
+     * 
      * @return Whether this {@link Reactor} requires cooling
      */
     protected final boolean needsCooling() {
@@ -257,21 +261,21 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
 
     @Override
     public int[] getInputSlots() {
-        return new int[]{19, 28, 37, 25, 34, 43};
+        return new int[] { 19, 28, 37, 25, 34, 43 };
     }
 
     public int[] getFuelSlots() {
-        return new int[]{19, 28, 37};
+        return new int[] { 19, 28, 37 };
     }
 
     @Nonnull
     public int[] getCoolantSlots() {
-        return needsCooling() ? new int[]{25, 34, 43} : new int[0];
+        return needsCooling() ? new int[] { 25, 34, 43 } : new int[0];
     }
 
     @Override
     public int[] getOutputSlots() {
-        return new int[]{40};
+        return new int[] { 40 };
     }
 
     @Override
@@ -329,7 +333,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
         boolean explosion = explosionsQueue.contains(l);
 
         if (explosion) {
-            SlimefunPlugin.runSync(() -> {
+            Slimefun.runSync(() -> {
                 ReactorExplodeEvent event = new ReactorExplodeEvent(l, Reactor.this);
                 Bukkit.getPluginManager().callEvent(event);
 
@@ -345,9 +349,11 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
     }
 
     private void checkForWaterBlocks(Location l) {
-        SlimefunPlugin.runSync(() -> {
-            // We will pick a surrounding block at random and see if this is water.
-            // If it isn't, then we will make it explode.
+        Slimefun.runSync(() -> {
+            /*
+             * We will pick a surrounding block at random and see if this is water.
+             * If it isn't, then we will make it explode.
+             */
             int index = ThreadLocalRandom.current().nextInt(WATER_BLOCKS.length);
             BlockFace randomNeighbour = WATER_BLOCKS[index];
 
@@ -358,7 +364,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
     }
 
     private void createByproduct(@Nonnull Location l, @Nonnull BlockMenu inv, @Nullable BlockMenu accessPort, @Nonnull FuelOperation operation) {
-        inv.replaceExistingItem(22, new CustomItem(Material.BLACK_STAINED_GLASS_PANE, " "));
+        inv.replaceExistingItem(22, new CustomItemStack(Material.BLACK_STAINED_GLASS_PANE, " "));
         ItemStack result = operation.getResult();
 
         if (result != null) {
@@ -395,7 +401,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
 
     /**
      * This method cools the given {@link Reactor}.
-     *
+     * 
      * @param reactor
      *            The {@link Location} of this {@link Reactor}
      * @param menu
@@ -404,7 +410,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
      *            The {@link ReactorAccessPort}, if available
      * @param operation
      *            The {@link FuelOperation} of this {@link Reactor}
-     *
+     * 
      * @return Whether the {@link Reactor} was successfully cooled, if not it should explode
      */
     private boolean hasEnoughCoolant(@Nonnull Location reactor, @Nonnull BlockMenu menu, @Nullable BlockMenu accessPort, @Nonnull FuelOperation operation) {
@@ -447,7 +453,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
     private void restockFuel(BlockMenu menu, BlockMenu port) {
         for (int slot : getFuelSlots()) {
             for (MachineFuel fuelType : fuelTypes) {
-                if (fuelType.test(port.getItemInSlot(slot)) && menu.fits(new CustomItem(port.getItemInSlot(slot), 1), getFuelSlots())) {
+                if (fuelType.test(port.getItemInSlot(slot)) && menu.fits(new CustomItemStack(port.getItemInSlot(slot), 1), getFuelSlots())) {
                     port.replaceExistingItem(slot, menu.pushItem(port.getItemInSlot(slot), getFuelSlots()));
                     return;
                 }
@@ -471,7 +477,7 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
     }
 
     @Nullable
-    protected BlockMenu getAccessPort(Location l) {
+    protected BlockMenu getAccessPort(@Nonnull Location l) {
         Location port = new Location(l.getWorld(), l.getX(), l.getY() + 3, l.getZ());
 
         if (BlockStorage.check(port, SlimefunItems.REACTOR_ACCESS_PORT.getItemId())) {

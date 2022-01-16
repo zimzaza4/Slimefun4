@@ -1,25 +1,31 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.tools;
 
-import ren.natsuyuk1.utils.IntegrationHelper;
-import io.github.thebusybiscuit.cscorelib2.blocks.Vein;
-import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
-import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
-import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
-import io.github.thebusybiscuit.slimefun4.core.handlers.ToolUseHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import org.bukkit.*;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import org.bukkit.Axis;
+import org.bukkit.Effect;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Orientable;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
+import io.github.bakedlibs.dough.blocks.Vein;
+import io.github.bakedlibs.dough.protection.Interaction;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
+import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
+import io.github.thebusybiscuit.slimefun4.core.handlers.ToolUseHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 
 /**
  * The {@link LumberAxe} is a powerful tool which can chop entire trees.
@@ -27,6 +33,7 @@ import java.util.List;
  * Similarly stripping a log will strip all attached logs too.
  *
  * @author TheBusyBiscuit
+ *
  */
 public class LumberAxe extends SlimefunItem implements NotPlaceable {
 
@@ -34,8 +41,8 @@ public class LumberAxe extends SlimefunItem implements NotPlaceable {
     private static final int MAX_STRIPPED = 20;
 
     @ParametersAreNonnullByDefault
-    public LumberAxe(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
-        super(category, item, recipeType, recipe);
+    public LumberAxe(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+        super(itemGroup, item, recipeType, recipe);
 
         addItemHandler(onBlockBreak(), onItemUse());
     }
@@ -43,15 +50,12 @@ public class LumberAxe extends SlimefunItem implements NotPlaceable {
     @Nonnull
     private ToolUseHandler onBlockBreak() {
         return (e, tool, fortune, drops) -> {
-            if (Tag.LOGS.isTagged(e.getBlock().getType())) {
+            if (!e.getPlayer().isSneaking() && Tag.LOGS.isTagged(e.getBlock().getType())) {
                 List<Block> logs = Vein.find(e.getBlock(), MAX_BROKEN, b -> Tag.LOGS.isTagged(b.getType()));
                 logs.remove(e.getBlock());
 
                 for (Block b : logs) {
-                    if (!BlockStorage.hasBlockInfo(b)
-                            && SlimefunPlugin.getProtectionManager().hasPermission(e.getPlayer(), b, ProtectableAction.BREAK_BLOCK)
-                            && IntegrationHelper.checkPermission(e.getPlayer(), b, ProtectableAction.BREAK_BLOCK)
-                    ) {
+                    if (!BlockStorage.hasBlockInfo(b) && Slimefun.getProtectionManager().hasPermission(e.getPlayer(), b, Interaction.BREAK_BLOCK)) {
                         breakLog(b);
                     }
                 }
@@ -73,7 +77,7 @@ public class LumberAxe extends SlimefunItem implements NotPlaceable {
                     }
 
                     for (Block b : logs) {
-                        if (!BlockStorage.hasBlockInfo(b) && SlimefunPlugin.getProtectionManager().hasPermission(e.getPlayer(), b, ProtectableAction.BREAK_BLOCK)) {
+                        if (!BlockStorage.hasBlockInfo(b) && Slimefun.getProtectionManager().hasPermission(e.getPlayer(), b, Interaction.BREAK_BLOCK)) {
                             stripLog(b);
                         }
                     }

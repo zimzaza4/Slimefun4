@@ -1,26 +1,33 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.androids;
 
-import ren.natsuyuk1.utils.IntegrationHelper;
-import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
-import io.github.thebusybiscuit.slimefun4.api.events.AndroidMineEvent;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.utils.InfiniteBlockGenerator;
-import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
-import org.bukkit.*;
+import java.util.Collection;
+import java.util.UUID;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Effect;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collection;
-import java.util.UUID;
+import io.github.bakedlibs.dough.protection.Interaction;
+import io.github.thebusybiscuit.slimefun4.api.events.AndroidMineEvent;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.InfiniteBlockGenerator;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
+
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 
 /**
  * The {@link MinerAndroid} is a variant of the {@link ProgrammableAndroid} which
@@ -30,7 +37,7 @@ import java.util.UUID;
  * Otherwise the functionality is similar to a regular android.
  * <p>
  * The {@link MinerAndroid} will also fire an {@link AndroidMineEvent} when breaking a {@link Block}.
- *
+ * 
  * @author TheBusyBiscuit
  * @author creator3
  * @author poma123
@@ -38,7 +45,7 @@ import java.util.UUID;
  * @author CyberPatriot
  * @author Redemption198
  * @author Poslovitch
- *
+ * 
  * @see AndroidMineEvent
  *
  */
@@ -51,8 +58,9 @@ public class MinerAndroid extends ProgrammableAndroid {
     private final ItemSetting<Boolean> applyOptimizations = new ItemSetting<>(this, "reduced-block-updates", true);
 
     @ParametersAreNonnullByDefault
-    public MinerAndroid(Category category, int tier, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
-        super(category, tier, item, recipeType, recipe);
+    public MinerAndroid(ItemGroup itemGroup, int tier, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+        super(itemGroup, tier, item, recipeType, recipe);
+
         addItemSetting(firesEvent, applyOptimizations);
     }
 
@@ -70,8 +78,7 @@ public class MinerAndroid extends ProgrammableAndroid {
         if (!SlimefunTag.UNBREAKABLE_MATERIALS.isTagged(block.getType()) && !drops.isEmpty()) {
             OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(BlockStorage.getLocationInfo(b.getLocation(), "owner")));
 
-            if (SlimefunPlugin.getProtectionManager().hasPermission(owner, block.getLocation(), ProtectableAction.BREAK_BLOCK)
-                    && IntegrationHelper.checkPermission(owner, block, ProtectableAction.BREAK_BLOCK)) {
+            if (Slimefun.getProtectionManager().hasPermission(owner, block.getLocation(), Interaction.BREAK_BLOCK)) {
                 AndroidMineEvent event = new AndroidMineEvent(block, new AndroidInstance(this, b));
                 Bukkit.getPluginManager().callEvent(event);
 
@@ -95,7 +102,7 @@ public class MinerAndroid extends ProgrammableAndroid {
         if (!SlimefunTag.UNBREAKABLE_MATERIALS.isTagged(block.getType()) && !drops.isEmpty()) {
             OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(BlockStorage.getLocationInfo(b.getLocation(), "owner")));
 
-            if (SlimefunPlugin.getProtectionManager().hasPermission(owner, block.getLocation(), ProtectableAction.BREAK_BLOCK)) {
+            if (Slimefun.getProtectionManager().hasPermission(owner, block.getLocation(), Interaction.BREAK_BLOCK)) {
                 AndroidMineEvent event = new AndroidMineEvent(block, new AndroidInstance(this, b));
                 Bukkit.getPluginManager().callEvent(event);
 
@@ -118,13 +125,13 @@ public class MinerAndroid extends ProgrammableAndroid {
 
     @ParametersAreNonnullByDefault
     private void breakBlock(BlockMenu menu, Collection<ItemStack> drops, Block block) {
-        
+
         if (!block.getWorld().getWorldBorder().isInside(block.getLocation())) {
             return;
         }
-        
+
         block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, block.getType());
-        
+
         // Push our drops to the inventory
         for (ItemStack drop : drops) {
             menu.pushItem(drop, getOutputSlots());
@@ -134,6 +141,7 @@ public class MinerAndroid extends ProgrammableAndroid {
         if (applyOptimizations.getValue()) {
             InfiniteBlockGenerator generator = InfiniteBlockGenerator.findAt(block);
 
+            // If we found a generator, continue.
             if (generator != null) {
                 if (firesEvent.getValue()) {
                     generator.callEvent(block);

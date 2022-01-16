@@ -1,23 +1,26 @@
 package io.github.thebusybiscuit.slimefun4.core.services;
 
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-
-import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
 
+import javax.annotation.Nonnull;
+
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
+
 /**
  * This Service is responsible for automatically saving {@link Player} and {@link Block}
  * data.
- *
+ * 
  * @author TheBusyBiscuit
  *
  */
@@ -27,11 +30,13 @@ public class AutoSavingService {
 
     /**
      * This method starts the {@link AutoSavingService} with the given interval.
-     *
-     * @param plugin   The current instance of Slimefun
-     * @param interval The interval in which to run this task
+     * 
+     * @param plugin
+     *            The current instance of Slimefun
+     * @param interval
+     *            The interval in which to run this task
      */
-    public void start(@Nonnull SlimefunPlugin plugin, int interval) {
+    public void start(@Nonnull Slimefun plugin, int interval) {
         this.interval = interval;
 
         plugin.getServer().getScheduler().runTaskTimer(plugin, this::saveAllPlayers, 2000L, interval * 60L * 20L);
@@ -41,7 +46,7 @@ public class AutoSavingService {
 
     /**
      * This method saves every {@link PlayerProfile} in memory and removes profiles
-     * that were markes for deletion.
+     * that were marked for deletion.
      */
     private void saveAllPlayers() {
         Iterator<PlayerProfile> iterator = PlayerProfile.iterator();
@@ -61,7 +66,7 @@ public class AutoSavingService {
         }
 
         if (players > 0) {
-            SlimefunPlugin.logger().log(Level.INFO, "成功保存了 {0} 个玩家的数据!", players);
+            Slimefun.logger().log(Level.INFO, "成功保存了 {0} 个玩家的数据!", players);
         }
     }
 
@@ -73,6 +78,7 @@ public class AutoSavingService {
 
         for (World world : Bukkit.getWorlds()) {
             BlockStorage storage = BlockStorage.getStorage(world);
+
             if (storage != null) {
                 storage.computeChanges();
 
@@ -83,7 +89,7 @@ public class AutoSavingService {
         }
 
         if (!worlds.isEmpty()) {
-            SlimefunPlugin.logger().log(Level.INFO, "正在自动保存方块数据... (下一次保存在 {0} 分钟后)", interval);
+            Slimefun.logger().log(Level.INFO, "正在自动保存方块数据... (下一次保存在 {0} 分钟后)", interval);
 
             for (BlockStorage storage : worlds) {
                 storage.save();

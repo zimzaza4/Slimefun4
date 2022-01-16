@@ -1,14 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.core.services;
 
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
-import kong.unirest.*;
-import org.bukkit.plugin.Plugin;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -16,6 +10,20 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.bukkit.plugin.Plugin;
+
+import io.github.bakedlibs.dough.common.CommonPatterns;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+
+import kong.unirest.GetRequest;
+import kong.unirest.HttpResponse;
+import kong.unirest.JsonNode;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
 
 /**
  * This Class represents a Metrics Service that sends data to https://bstats.org/
@@ -28,12 +36,34 @@ import java.util.logging.Level;
  */
 public class MetricsService {
 
+    /**
+     * The URL pointing towards the GitHub API.
+     */
     private static final String API_URL = "https://api.github.com/";
-    private static final String REPO_NAME = "MetricsModule";
+
+    /**
+     * The Name of our repository - Version 2 of this repo (due to big breaking changes)
+     */
+    private static final String REPO_NAME = "MetricsModule2";
+
+    /**
+     * The name of the metrics jar file.
+     */
+    private static final String JAR_NAME = "MetricsModule";
+
+    /**
+     * The URL pointing towards the /releases/ endpoint of our
+     * Metrics repository
+     */
     private static final String RELEASES_URL = API_URL + "repos/Slimefun/" + REPO_NAME + "/releases/latest";
+
+    /**
+     * The URL pointing towards the download location for a
+     * GitHub release of our Metrics repository
+     */
     private static final String DOWNLOAD_URL = "https://github.com/Slimefun/" + REPO_NAME + "/releases/download";
 
-    private final SlimefunPlugin plugin;
+    private final Slimefun plugin;
     private final File parentFolder;
     private final File metricsModuleFile;
 
@@ -42,10 +72,23 @@ public class MetricsService {
     private boolean hasDownloadedUpdate = false;
 
     static {
-        Unirest.config().concurrency(2, 1).setDefaultHeader("User-Agent", "MetricsModule Auto-Updater").setDefaultHeader("Accept", "application/vnd.github.v3+json").enableCookieManagement(false).cookieSpec("ignoreCookies");
+        // @formatter:off (We want this to stay this nicely aligned :D )
+        Unirest.config()
+            .concurrency(2, 1)
+            .setDefaultHeader("User-Agent", "MetricsModule Auto-Updater")
+            .setDefaultHeader("Accept", "application/vnd.github.v3+json")
+            .enableCookieManagement(false)
+            .cookieSpec("ignoreCookies");
+        // @formatter:on
     }
 
-    public MetricsService(@Nonnull SlimefunPlugin plugin) {
+    /**
+     * This constructs a new instance of our {@link MetricsService}.
+     * 
+     * @param plugin
+     *            Our {@link Slimefun} instance
+     */
+    public MetricsService(@Nonnull Slimefun plugin) {
         this.plugin = plugin;
         this.parentFolder = new File(plugin.getDataFolder(), "cache" + File.separatorChar + "modules");
 
@@ -53,7 +96,7 @@ public class MetricsService {
             parentFolder.mkdirs();
         }
 
-        this.metricsModuleFile = new File(parentFolder, REPO_NAME + ".jar");
+        this.metricsModuleFile = new File(parentFolder, JAR_NAME + ".jar");
     }
 
     /**
@@ -61,26 +104,30 @@ public class MetricsService {
      */
     public void start() {
         if (!metricsModuleFile.exists()) {
-            plugin.getLogger().info(REPO_NAME + " 不存在, 下载中...");
+            plugin.getLogger().info(JAR_NAME + " does not exist, downloading...");
 
             if (!download(getLatestVersion())) {
-                plugin.getLogger().warning("启动统计服务失败, 文件下载失败.");
+                plugin.getLogger().warning("Failed to start metrics as the file could not be downloaded.");
                 return;
             }
         }
 
         try {
-            // Load the jar file into a child class loader using the SF PluginClassLoader
-            // as a parent.
-            moduleClassLoader = URLClassLoader.newInstance(new URL[]{metricsModuleFile.toURI().toURL()}, plugin.getClass().getClassLoader());
+            /*
+             * Load the jar file into a child class loader using the Slimefun
+             * PluginClassLoader as a parent.
+             */
+            moduleClassLoader = URLClassLoader.newInstance(new URL[] { metricsModuleFile.toURI().toURL() }, plugin.getClass().getClassLoader());
             Class<?> metricsClass = moduleClassLoader.loadClass("dev.walshy.sfmetrics.MetricsModule");
 
             metricVersion = metricsClass.getPackage().getImplementationVersion();
 
-            // If it has not been newly downloaded, auto-updates are on AND there's a new version
-            // then cleanup, download and start
+            /*
+             * If it has not been newly downloaded, auto-updates are enabled
+             * AND there's a new version then cleanup, download and start
+             */
             if (!hasDownloadedUpdate && hasAutoUpdates() && checkForUpdate(metricVersion)) {
-                plugin.getLogger().info("清理完成, 正在重载统计组件!");
+                plugin.getLogger().info("Cleaned up, now re-loading Metrics-Module!");
                 start();
                 return;
             }
@@ -90,21 +137,23 @@ public class MetricsService {
             String version = metricsClass.getPackage().getImplementationVersion();
 
             // This is required to be sync due to bStats.
-            SlimefunPlugin.runSync(() -> {
+            Slimefun.runSync(() -> {
                 try {
                     start.invoke(null);
-                    plugin.getLogger().info("Metrics #" + version + " 已启动.");
+                    plugin.getLogger().info("Metrics build #" + version + " started.");
+                } catch (InvocationTargetException e) {
+                    plugin.getLogger().log(Level.WARNING, "An exception was thrown while starting the metrics module", e.getCause());
                 } catch (Exception | LinkageError e) {
-                    plugin.getLogger().log(Level.WARNING, "启动 Metrics 失败.", e);
+                    plugin.getLogger().log(Level.WARNING, "Failed to start metrics.", e);
                 }
             });
         } catch (Exception | LinkageError e) {
-            plugin.getLogger().log(Level.WARNING, "加载 Metrics 组件失败", e);
+            plugin.getLogger().log(Level.WARNING, "Failed to load the metrics module. Maybe the jar is corrupt?", e);
         }
     }
 
     /**
-     * This will close the child {@link ClassLoader}  and mark all the resources held under this no longer
+     * This will close the child {@link ClassLoader} and mark all the resources held under this no longer
      * in use, they will be cleaned up the next GC run.
      */
     public void cleanUp() {
@@ -121,11 +170,13 @@ public class MetricsService {
      * Checks for a new update and compares it against the current version.
      * If there is a new version available then this returns true.
      *
-     * @param currentVersion The current version which is being used.
+     * @param currentVersion
+     *            The current version which is being used.
+     * 
      * @return if there is an update available.
      */
     public boolean checkForUpdate(@Nullable String currentVersion) {
-        if (currentVersion == null || !PatternUtils.NUMERIC.matcher(currentVersion).matches()) {
+        if (currentVersion == null || !CommonPatterns.NUMERIC.matcher(currentVersion).matches()) {
             return false;
         }
 
@@ -162,7 +213,7 @@ public class MetricsService {
 
             return node.getObject().getInt("tag_name");
         } catch (UnirestException e) {
-            plugin.getLogger().log(Level.WARNING, "无法获取最新版本的 Metrics: {0}, 这不是一个错误", e.getMessage());
+            plugin.getLogger().log(Level.WARNING, "Failed to fetch latest builds for Metrics: {0}", e.getMessage());
             return -1;
         }
     }
@@ -177,7 +228,7 @@ public class MetricsService {
         File file = new File(parentFolder, "Metrics-" + version + ".jar");
 
         try {
-            plugin.getLogger().log(Level.INFO, "# 开始下载 MetricsModule : #{0}", version);
+            plugin.getLogger().log(Level.INFO, "# Starting download of MetricsModule build: #{0}", version);
 
             if (file.exists()) {
                 // Delete the file in case we accidentally downloaded it before
@@ -185,19 +236,19 @@ public class MetricsService {
             }
 
             AtomicInteger lastPercentPosted = new AtomicInteger();
-            GetRequest request = Unirest.get(DOWNLOAD_URL + "/" + version + "/" + REPO_NAME + ".jar");
+            GetRequest request = Unirest.get(DOWNLOAD_URL + "/" + version + "/" + JAR_NAME + ".jar");
 
             HttpResponse<File> response = request.downloadMonitor((b, fileName, bytesWritten, totalBytes) -> {
                 int percent = (int) (20 * (Math.round((((double) bytesWritten / totalBytes) * 100) / 20)));
 
                 if (percent != 0 && percent != lastPercentPosted.get()) {
-                    plugin.getLogger().info("# 正在下载... " + percent + "% " + "(" + bytesWritten + "/" + totalBytes + " 字节)");
+                    plugin.getLogger().info("# Downloading... " + percent + "% " + "(" + bytesWritten + "/" + totalBytes + " bytes)");
                     lastPercentPosted.set(percent);
                 }
             }).asFile(file.getPath());
 
             if (response.isSuccess()) {
-                plugin.getLogger().log(Level.INFO, "成功下载 {0} 构建: #{1}", new Object[]{REPO_NAME, version});
+                plugin.getLogger().log(Level.INFO, "Successfully downloaded {0} build: #{1}", new Object[] { JAR_NAME, version });
 
                 // Replace the metric file with the new one
                 cleanUp();
@@ -234,6 +285,6 @@ public class MetricsService {
      * @return True if the current server has metrics auto-updates enabled.
      */
     public boolean hasAutoUpdates() {
-        return SlimefunPlugin.instance().getConfig().getBoolean("metrics.auto-update");
+        return Slimefun.instance().getConfig().getBoolean("metrics.auto-update");
     }
 }

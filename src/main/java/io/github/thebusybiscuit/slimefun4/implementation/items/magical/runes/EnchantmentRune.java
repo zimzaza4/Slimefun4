@@ -1,12 +1,17 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.magical.runes;
 
-import io.github.thebusybiscuit.slimefun4.core.handlers.ItemDropHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -17,10 +22,13 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.handlers.ItemDropHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 
 /**
  * This {@link SlimefunItem} allows you to enchant any enchantable {@link ItemStack} with a random
@@ -37,8 +45,8 @@ public class EnchantmentRune extends SimpleSlimefunItem<ItemDropHandler> {
     private final Map<Material, List<Enchantment>> applicableEnchantments = new EnumMap<>(Material.class);
 
     @ParametersAreNonnullByDefault
-    public EnchantmentRune(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
-        super(category, item, recipeType, recipe);
+    public EnchantmentRune(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+        super(itemGroup, item, recipeType, recipe);
 
         for (Material mat : Material.values()) {
             List<Enchantment> enchantments = new ArrayList<>();
@@ -62,7 +70,7 @@ public class EnchantmentRune extends SimpleSlimefunItem<ItemDropHandler> {
         return (e, p, item) -> {
             if (isItem(item.getItemStack())) {
                 if (canUse(p, true)) {
-                    SlimefunPlugin.runSync(() -> {
+                    Slimefun.runSync(() -> {
                         try {
                             addRandomEnchantment(p, item);
                         } catch (Exception x) {
@@ -95,7 +103,7 @@ public class EnchantmentRune extends SimpleSlimefunItem<ItemDropHandler> {
             List<Enchantment> potentialEnchantments = applicableEnchantments.get(itemStack.getType());
 
             if (potentialEnchantments == null) {
-                SlimefunPlugin.getLocalization().sendMessage(p, "messages.enchantment-rune.fail", true);
+                Slimefun.getLocalization().sendMessage(p, "messages.enchantment-rune.fail", true);
                 return;
             } else {
                 potentialEnchantments = new ArrayList<>(potentialEnchantments);
@@ -105,7 +113,7 @@ public class EnchantmentRune extends SimpleSlimefunItem<ItemDropHandler> {
 
             // Fixes #2878 - Respect enchatability config setting.
             if (slimefunItem != null && !slimefunItem.isEnchantable()) {
-                SlimefunPlugin.getLocalization().sendMessage(p, "messages.enchantment-rune.fail", true);
+                Slimefun.getLocalization().sendMessage(p, "messages.enchantment-rune.fail", true);
                 return;
             }
 
@@ -116,7 +124,7 @@ public class EnchantmentRune extends SimpleSlimefunItem<ItemDropHandler> {
             removeIllegalEnchantments(itemStack, potentialEnchantments);
 
             if (potentialEnchantments.isEmpty()) {
-                SlimefunPlugin.getLocalization().sendMessage(p, "messages.enchantment-rune.no-enchantment", true);
+                Slimefun.getLocalization().sendMessage(p, "messages.enchantment-rune.no-enchantment", true);
                 return;
             }
 
@@ -127,7 +135,7 @@ public class EnchantmentRune extends SimpleSlimefunItem<ItemDropHandler> {
                 // This lightning is just an effect, it deals no damage.
                 l.getWorld().strikeLightningEffect(l);
 
-                SlimefunPlugin.runSync(() -> {
+                Slimefun.runSync(() -> {
                     // Being sure entities are still valid and not picked up or whatsoever.
                     if (rune.isValid() && item.isValid() && itemStack.getAmount() == 1) {
 
@@ -140,11 +148,11 @@ public class EnchantmentRune extends SimpleSlimefunItem<ItemDropHandler> {
                         itemStack.addEnchantment(enchantment, level);
                         l.getWorld().dropItemNaturally(l, itemStack);
 
-                        SlimefunPlugin.getLocalization().sendMessage(p, "messages.enchantment-rune.success", true);
+                        Slimefun.getLocalization().sendMessage(p, "messages.enchantment-rune.success", true);
                     }
                 }, 10L);
             } else {
-                SlimefunPlugin.getLocalization().sendMessage(p, "messages.enchantment-rune.fail", true);
+                Slimefun.getLocalization().sendMessage(p, "messages.enchantment-rune.fail", true);
             }
         }
     }
@@ -161,9 +169,16 @@ public class EnchantmentRune extends SimpleSlimefunItem<ItemDropHandler> {
 
     private void removeIllegalEnchantments(@Nonnull ItemStack target, @Nonnull List<Enchantment> potentialEnchantments) {
         for (Enchantment enchantment : target.getEnchantments().keySet()) {
+            Iterator<Enchantment> iterator = potentialEnchantments.iterator();
 
-            // Duplicate or conflict
-            potentialEnchantments.removeIf(possibleEnchantment -> possibleEnchantment.equals(enchantment) || possibleEnchantment.conflictsWith(enchantment));
+            while (iterator.hasNext()) {
+                Enchantment possibleEnchantment = iterator.next();
+
+                // Duplicate or conflict
+                if (possibleEnchantment.equals(enchantment) || possibleEnchantment.conflictsWith(enchantment)) {
+                    iterator.remove();
+                }
+            }
         }
     }
 

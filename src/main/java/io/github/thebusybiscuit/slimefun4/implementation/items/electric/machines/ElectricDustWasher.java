@@ -1,24 +1,27 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.OreWasher;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
+
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 
 /**
  * The {@link ElectricDustWasher} serves as an electrical {@link OreWasher}.
- *
+ * 
  * @author TheBusyBiscuit
- *
+ * 
  * @see OreWasher
  *
  */
@@ -27,10 +30,11 @@ public class ElectricDustWasher extends AContainer {
     private final OreWasher oreWasher = SlimefunItems.ORE_WASHER.getItem(OreWasher.class);
     private final boolean legacyMode;
 
-    public ElectricDustWasher(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
-        super(category, item, recipeType, recipe);
+    @ParametersAreNonnullByDefault
+    public ElectricDustWasher(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+        super(itemGroup, item, recipeType, recipe);
 
-        legacyMode = SlimefunPlugin.getCfg().getBoolean("options.legacy-dust-washer");
+        legacyMode = Slimefun.getCfg().getBoolean("options.legacy-dust-washer");
     }
 
     @Override

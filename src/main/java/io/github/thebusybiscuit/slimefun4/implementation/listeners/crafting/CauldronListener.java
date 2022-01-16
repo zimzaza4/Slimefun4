@@ -1,8 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners.crafting;
 
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import javax.annotation.Nonnull;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -12,18 +11,21 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 
 /**
  * This {@link Listener} prevents any {@link SlimefunItem} from being used in a
  * Cauldron.
  * This is mainly used to prevent the discoloring of leather armor.
- *
+ * 
  * @author TheBusyBiscuit
+ *
  */
 public class CauldronListener implements SlimefunCraftingListener {
 
-    public CauldronListener(@Nonnull SlimefunPlugin plugin) {
+    public CauldronListener(@Nonnull Slimefun plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -40,7 +42,7 @@ public class CauldronListener implements SlimefunCraftingListener {
 
                     if (isUnallowed(sfItem)) {
                         e.setCancelled(true);
-                        SlimefunPlugin.getLocalization().sendMessage(e.getPlayer(), "cauldron.no-discoloring");
+                        Slimefun.getLocalization().sendMessage(e.getPlayer(), "cauldron.no-discoloring");
                     }
                 }
             }

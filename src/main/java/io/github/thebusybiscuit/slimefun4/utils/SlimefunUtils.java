@@ -26,21 +26,24 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import io.github.thebusybiscuit.cscorelib2.item.ImmutableItemMeta;
-import io.github.thebusybiscuit.cscorelib2.skull.SkullItem;
+import io.github.bakedlibs.dough.common.CommonPatterns;
+import io.github.bakedlibs.dough.items.ItemMetaSnapshot;
+import io.github.bakedlibs.dough.skins.PlayerHead;
+import io.github.bakedlibs.dough.skins.PlayerSkin;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.events.SlimefunItemSpawnEvent;
 import io.github.thebusybiscuit.slimefun4.api.exceptions.PrematureCodeException;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSpawnReason;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.core.attributes.Radioactive;
 import io.github.thebusybiscuit.slimefun4.core.attributes.Soulbound;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.core.debug.Debug;
+import io.github.thebusybiscuit.slimefun4.core.debug.TestCase;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientPedestal;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.CapacitorTextureUpdateTask;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
-
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 
 /**
  * This utility class holds method that are directly linked to Slimefun.
@@ -49,7 +52,6 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
  *
  * @author TheBusyBiscuit
  * @author Walshy
- *
  */
 public final class SlimefunUtils {
 
@@ -80,7 +82,7 @@ public final class SlimefunUtils {
      *            The context in which this {@link Item} was flagged
      */
     public static void markAsNoPickup(@Nonnull Item item, @Nonnull String context) {
-        item.setMetadata(NO_PICKUP_METADATA, new FixedMetadataValue(SlimefunPlugin.instance(), context));
+        item.setMetadata(NO_PICKUP_METADATA, new FixedMetadataValue(Slimefun.instance(), context));
         /*
          * Max the pickup delay - This makes it so no Player can pick up items ever without need for an event.
          * It is also an indication used by third-party plugins to know if it's a custom item.
@@ -139,7 +141,7 @@ public final class SlimefunUtils {
     private static boolean hasSoulboundFlag(@Nullable ItemMeta meta) {
         if (meta != null) {
             PersistentDataContainer container = meta.getPersistentDataContainer();
-            NamespacedKey key = SlimefunPlugin.getRegistry().getSoulboundDataKey();
+            NamespacedKey key = Slimefun.getRegistry().getSoulboundDataKey();
 
             return container.has(key, PersistentDataType.BYTE);
         }
@@ -170,7 +172,7 @@ public final class SlimefunUtils {
         ItemMeta meta = item.getItemMeta();
 
         PersistentDataContainer container = meta.getPersistentDataContainer();
-        NamespacedKey key = SlimefunPlugin.getRegistry().getSoulboundDataKey();
+        NamespacedKey key = Slimefun.getRegistry().getSoulboundDataKey();
 
         if (makeSoulbound && !isSoulbound) {
             container.set(key, PersistentDataType.BYTE, (byte) 1);
@@ -218,22 +220,23 @@ public final class SlimefunUtils {
     public static @Nonnull ItemStack getCustomHead(@Nonnull String texture) {
         Validate.notNull(texture, "The provided texture is null");
 
-        if (SlimefunPlugin.instance() == null) {
+        if (Slimefun.instance() == null) {
             throw new PrematureCodeException("You cannot instantiate a custom head before Slimefun was loaded.");
         }
 
-        if (SlimefunPlugin.getMinecraftVersion() == MinecraftVersion.UNIT_TEST) {
+        if (Slimefun.getMinecraftVersion() == MinecraftVersion.UNIT_TEST) {
             // com.mojang.authlib.GameProfile does not exist in a Test Environment
             return new ItemStack(Material.PLAYER_HEAD);
         }
 
         String base64 = texture;
 
-        if (PatternUtils.HEXADECIMAL.matcher(texture).matches()) {
+        if (CommonPatterns.HEXADECIMAL.matcher(texture).matches()) {
             base64 = Base64.getEncoder().encodeToString(("{\"textures\":{\"SKIN\":{\"url\":\"http://textures.minecraft.net/texture/" + texture + "\"}}}").getBytes(StandardCharsets.UTF_8));
         }
 
-        return SkullItem.fromBase64(base64);
+        PlayerSkin skin = PlayerSkin.fromBase64(base64);
+        return PlayerHead.getItemStack(skin);
     }
 
     public static boolean containsSimilarItem(Inventory inventory, ItemStack item, boolean checkLore) {
@@ -275,19 +278,41 @@ public final class SlimefunUtils {
         } else if (sfitem instanceof SlimefunItemStack && item instanceof SlimefunItemStack) {
             return ((SlimefunItemStack) item).getItemId().equals(((SlimefunItemStack) sfitem).getItemId());
         } else if (item.hasItemMeta()) {
+            Debug.log(TestCase.CARGO_INPUT_TESTING, "SlimefunUtils#isItemSimilar - item.hasItemMeta()");
             ItemMeta itemMeta = item.getItemMeta();
 
             if (sfitem instanceof SlimefunItemStack) {
-                Optional<String> id = SlimefunPlugin.getItemDataService().getItemData(itemMeta);
+                Optional<String> id = Slimefun.getItemDataService().getItemData(itemMeta);
 
                 if (id.isPresent()) {
                     return id.get().equals(((SlimefunItemStack) sfitem).getItemId());
                 }
 
-                ImmutableItemMeta meta = ((SlimefunItemStack) sfitem).getImmutableMeta();
+                ItemMetaSnapshot meta = ((SlimefunItemStack) sfitem).getItemMetaSnapshot();
                 return equalsItemMeta(itemMeta, meta, checkLore);
+            } else if (sfitem instanceof ItemStackWrapper && sfitem.hasItemMeta()) {
+                Debug.log(TestCase.CARGO_INPUT_TESTING, "  is wrapper");
+                /*
+                 * Cargo optimization (PR #3258)
+                 *
+                 * Slimefun items may be ItemStackWrapper's in the context of cargo
+                 * so let's try to do an ID comparison before meta comparison
+                 */
+                ItemMeta possibleSfItemMeta = sfitem.getItemMeta();
+                Debug.log(TestCase.CARGO_INPUT_TESTING, "  sfitem is ItemStackWrapper - possible SF Item: {}", sfitem);
+
+                // Prioritize SlimefunItem id comparison over ItemMeta comparison
+                if (Slimefun.getItemDataService().hasEqualItemData(possibleSfItemMeta, itemMeta)) {
+                    Debug.log(TestCase.CARGO_INPUT_TESTING, "  Item IDs matched!");
+                    return true;
+                } else {
+                    Debug.log(TestCase.CARGO_INPUT_TESTING, "  Item IDs don't match, checking meta {} == {} (lore: {})", itemMeta, possibleSfItemMeta, checkLore);
+                    return equalsItemMeta(itemMeta, possibleSfItemMeta, checkLore);
+                }
             } else if (sfitem.hasItemMeta()) {
-                return equalsItemMeta(itemMeta, sfitem.getItemMeta(), checkLore);
+                ItemMeta sfItemMeta = sfitem.getItemMeta();
+                Debug.log(TestCase.CARGO_INPUT_TESTING, "  Comparing meta (vanilla items?) - {} == {} (lore: {})", itemMeta, sfItemMeta, checkLore);
+                return equalsItemMeta(itemMeta, sfItemMeta, checkLore);
             } else {
                 return false;
             }
@@ -296,7 +321,7 @@ public final class SlimefunUtils {
         }
     }
 
-    private static boolean equalsItemMeta(@Nonnull ItemMeta itemMeta, @Nonnull ImmutableItemMeta meta, boolean checkLore) {
+    private static boolean equalsItemMeta(@Nonnull ItemMeta itemMeta, @Nonnull ItemMetaSnapshot meta, boolean checkLore) {
         Optional<String> displayName = meta.getDisplayName();
 
         if (itemMeta.hasDisplayName() != displayName.isPresent()) {
@@ -324,8 +349,11 @@ public final class SlimefunUtils {
         } else if (checkLore) {
             boolean hasItemMetaLore = itemMeta.hasLore();
             boolean hasSfItemMetaLore = sfitemMeta.hasLore();
-            if (hasItemMetaLore && hasSfItemMetaLore && !equalsLore(itemMeta.getLore(), sfitemMeta.getLore())) {
-                return false;
+
+            if (hasItemMetaLore && hasSfItemMetaLore) {
+                if (!equalsLore(itemMeta.getLore(), sfitemMeta.getLore())) {
+                    return false;
+                }
             } else if (hasItemMetaLore != hasSfItemMetaLore) {
                 return false;
             }
@@ -392,7 +420,7 @@ public final class SlimefunUtils {
         Validate.notNull(l, "Cannot update a texture for null");
         Validate.isTrue(capacity > 0, "Capacity must be greater than zero!");
 
-        SlimefunPlugin.runSync(new CapacitorTextureUpdateTask(l, charge, capacity));
+        Slimefun.runSync(new CapacitorTextureUpdateTask(l, charge, capacity));
     }
 
     /**
@@ -441,7 +469,7 @@ public final class SlimefunUtils {
     @ParametersAreNonnullByDefault
     public static @Nullable Item spawnItem(Location loc, ItemStack item, ItemSpawnReason reason, boolean addRandomOffset) {
         SlimefunItemSpawnEvent event = new SlimefunItemSpawnEvent(loc, item, reason);
-        SlimefunPlugin.instance().getServer().getPluginManager().callEvent(event);
+        Slimefun.instance().getServer().getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
             World world = event.getLocation().getWorld();
@@ -476,14 +504,17 @@ public final class SlimefunUtils {
     }
 
     /**
-     * Helper method to check if an Inventory is empty (has no items in "storage"). If the MC version is 1.16 or above
+     * Helper method to check if an Inventory is empty (has no items in "storage").
+     * If the MC version is 1.16 or above
      * this will call {@link Inventory#isEmpty()} (Which calls MC code resulting in a faster method).
      *
-     * @param inventory The {@link Inventory} to check.
+     * @param inventory
+     *            The {@link Inventory} to check.
+     * 
      * @return True if the inventory is empty and false otherwise
      */
     public static boolean isInventoryEmpty(@Nonnull Inventory inventory) {
-        if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_16)) {
+        if (Slimefun.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_16)) {
             return inventory.isEmpty();
         } else {
             for (ItemStack is : inventory.getStorageContents()) {

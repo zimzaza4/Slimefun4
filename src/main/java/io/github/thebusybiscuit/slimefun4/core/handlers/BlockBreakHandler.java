@@ -1,17 +1,19 @@
 package io.github.thebusybiscuit.slimefun4.core.handlers;
 
-import io.github.thebusybiscuit.slimefun4.api.events.AndroidMineEvent;
-import io.github.thebusybiscuit.slimefun4.implementation.items.androids.MinerAndroid;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.Objects.handlers.ItemHandler;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
+import io.github.thebusybiscuit.slimefun4.api.events.AndroidMineEvent;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemHandler;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.items.androids.MinerAndroid;
 
 /**
  * The {@link BlockBreakHandler} is called when a {@link Block} is broken
@@ -19,9 +21,9 @@ import java.util.List;
  * The {@link BlockBreakHandler} provides three methods for this, one for block breaking
  * caused by a {@link Player}, one for a {@link MinerAndroid} and one method for a {@link Block}
  * being destroyed by an explosion.
- *
+ * 
  * @author TheBusyBiscuit
- *
+ * 
  * @see BlockPlaceHandler
  *
  */
@@ -39,7 +41,7 @@ public abstract class BlockBreakHandler implements ItemHandler {
 
     /**
      * This constructs a new {@link BlockBreakHandler}.
-     *
+     * 
      * @param allowAndroids
      *            Whether a {@link MinerAndroid} is allowed to break blocks of this type
      * @param allowExplosions
@@ -65,7 +67,7 @@ public abstract class BlockBreakHandler implements ItemHandler {
 
     /**
      * This returns whether an explosion is able to break the given {@link Block}.
-     *
+     * 
      * @param b
      *            The {@link Block}
      * @return Whether explosions can destroy this {@link Block}
@@ -81,10 +83,10 @@ public abstract class BlockBreakHandler implements ItemHandler {
     /**
      * This returns whether a {@link MinerAndroid} is allowed to break
      * the given {@link Block}.
-     *
+     * 
      * @param b
      *            The {@link Block}
-     *
+     * 
      * @return Whether androids can break the given {@link Block}
      */
     public boolean isAndroidAllowed(@Nonnull Block b) {

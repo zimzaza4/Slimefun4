@@ -8,7 +8,7 @@ description: Slimefun basically turns your entire Server into a FTB modpack with
 website: https://github.com/TheBusyBiscuit/Slimefun4
 
 # Technical settings
-main: io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin
+main: io.github.thebusybiscuit.slimefun4.implementation.Slimefun
 api-version: '1.14'
 
 # (Soft) dependencies of Slimefun, we hook into these plugins.
@@ -75,6 +75,9 @@ permissions:
     default: op
   slimefun.command.charge:
     description: Allows you to do /sf charge
+    default: op
+  slimefun.command.debug:
+    description: Allows you to do /sf debug
     default: op
   slimefun.android.bypass:
     description: Allows you to edit other Players Androids

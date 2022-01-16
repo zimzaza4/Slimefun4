@@ -1,10 +1,12 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.blocks;
 
-import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.block.BlockState;
@@ -14,32 +16,36 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 
 /**
  * This is a parent class for the {@link BrokenSpawner} and {@link RepairedSpawner}
  * to provide some utility methods.
- *
+ * 
  * @author TheBusyBiscuit
+ * 
  * @see BrokenSpawner
  * @see RepairedSpawner
+ *
  */
 public abstract class AbstractMonsterSpawner extends SlimefunItem {
 
     @ParametersAreNonnullByDefault
-    AbstractMonsterSpawner(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
-        super(category, item, recipeType, recipe);
+    AbstractMonsterSpawner(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+        super(itemGroup, item, recipeType, recipe);
     }
 
     /**
      * This method tries to obtain an {@link EntityType} from a given {@link ItemStack}.
      * The provided {@link ItemStack} must be a {@link RepairedSpawner} item.
-     *
-     * @param item The {@link ItemStack} to extract the {@link EntityType} from
+     * 
+     * @param item
+     *            The {@link ItemStack} to extract the {@link EntityType} from
+     * 
      * @return An {@link Optional} describing the result
      */
     @Nonnull
@@ -66,7 +72,9 @@ public abstract class AbstractMonsterSpawner extends SlimefunItem {
      * to hold and represent the given {@link EntityType}.
      * It updates the lore and {@link BlockStateMeta} to reflect the specified {@link EntityType}.
      *
-     * @param type The {@link EntityType} to apply
+     * @param type
+     *            The {@link EntityType} to apply
+     *
      * @return An {@link ItemStack} for this {@link SlimefunItem} holding that {@link EntityType}
      */
     @Nonnull

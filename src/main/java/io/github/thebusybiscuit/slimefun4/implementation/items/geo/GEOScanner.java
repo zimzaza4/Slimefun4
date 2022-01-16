@@ -1,24 +1,26 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.geo;
 
-import ren.natsuyuk1.utils.IntegrationHelper;
-import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockUseHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import java.util.Optional;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Optional;
+import io.github.bakedlibs.dough.protection.Interaction;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockUseHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 
 public class GEOScanner extends SimpleSlimefunItem<BlockUseHandler> {
 
-    public GEOScanner(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
-        super(category, item, recipeType, recipe);
+    public GEOScanner(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+        super(itemGroup, item, recipeType, recipe);
     }
 
     @Override
@@ -32,17 +34,17 @@ public class GEOScanner extends SimpleSlimefunItem<BlockUseHandler> {
             if (block.isPresent()) {
                 Block b = block.get();
 
-                if (hasAccess(p, b)) {
-                    SlimefunPlugin.getGPSNetwork().getResourceManager().scan(p, b, 0);
+                if (hasAccess(p, b.getLocation())) {
+                    Slimefun.getGPSNetwork().getResourceManager().scan(p, b, 0);
                 } else {
-                    SlimefunPlugin.getLocalization().sendMessage(p, "inventory.no-access", true);
+                    Slimefun.getLocalization().sendMessage(p, "inventory.no-access", true);
                 }
             }
         };
     }
 
     @ParametersAreNonnullByDefault
-    private boolean hasAccess(Player p, Block b) {
-        return p.hasPermission("slimefun.teleporter.bypass") || (SlimefunPlugin.getProtectionManager().hasPermission(p, b, ProtectableAction.INTERACT_BLOCK)) || IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK);
+    private boolean hasAccess(Player p, Location l) {
+        return p.hasPermission("slimefun.gps.bypass") || (Slimefun.getProtectionManager().hasPermission(p, l, Interaction.INTERACT_BLOCK));
     }
 }

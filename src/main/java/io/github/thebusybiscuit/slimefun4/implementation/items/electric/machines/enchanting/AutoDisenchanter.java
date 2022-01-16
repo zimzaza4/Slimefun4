@@ -14,13 +14,14 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 
-import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
+import io.github.bakedlibs.dough.inventory.InvUtils;
 import io.github.thebusybiscuit.slimefun4.api.events.AutoDisenchantEvent;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 
 /**
@@ -43,8 +44,8 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 public class AutoDisenchanter extends AbstractEnchantmentMachine {
 
     @ParametersAreNonnullByDefault
-    public AutoDisenchanter(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
-        super(category, item, recipeType, recipe);
+    public AutoDisenchanter(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+        super(itemGroup, item, recipeType, recipe);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class AutoDisenchanter extends AbstractEnchantmentMachine {
             ItemStack item = menu.getItemInSlot(slot);
 
             if (!isDisenchantable(item)) {
-                return null;
+                continue;
             }
 
             // Call an event so other Plugins can modify it.
@@ -79,17 +80,14 @@ public class AutoDisenchanter extends AbstractEnchantmentMachine {
         return null;
     }
 
-    @Nullable
     @ParametersAreNonnullByDefault
-    private MachineRecipe disenchant(BlockMenu menu, ItemStack item, ItemStack book) {
+    private @Nullable MachineRecipe disenchant(BlockMenu menu, ItemStack item, ItemStack book) {
         Map<Enchantment, Integer> enchantments = new HashMap<>();
-        int amount = 0;
 
         // Find enchantments
         for (Map.Entry<Enchantment, Integer> entry : item.getEnchantments().entrySet()) {
             if (isEnchantmentLevelAllowed(entry.getValue())) {
                 enchantments.put(entry.getKey(), entry.getValue());
-                amount++;
             } else if (!menu.toInventory().getViewers().isEmpty()) {
                 showEnchantmentLevelWarning(menu);
                 return null;
@@ -97,14 +95,14 @@ public class AutoDisenchanter extends AbstractEnchantmentMachine {
         }
 
         // Check if we found any valid enchantments
-        if (amount > 0) {
+        if (!enchantments.isEmpty()) {
             ItemStack disenchantedItem = item.clone();
             disenchantedItem.setAmount(1);
 
             ItemStack enchantedBook = new ItemStack(Material.ENCHANTED_BOOK);
             transferEnchantments(disenchantedItem, enchantedBook, enchantments);
 
-            MachineRecipe recipe = new MachineRecipe(90 * amount / this.getSpeed(), new ItemStack[] { book, item }, new ItemStack[] { disenchantedItem, enchantedBook });
+            MachineRecipe recipe = new MachineRecipe(90 * enchantments.size() / this.getSpeed(), new ItemStack[] { book, item }, new ItemStack[] { disenchantedItem, enchantedBook });
 
             if (!InvUtils.fitAll(menu.toInventory(), recipe.getOutput(), getOutputSlots())) {
                 return null;
@@ -140,10 +138,7 @@ public class AutoDisenchanter extends AbstractEnchantmentMachine {
     }
 
     private boolean isDisenchantable(@Nullable ItemStack item) {
-        if (item == null || item.getType().isAir()) {
-            return false;
-        } else if (item.getType() != Material.BOOK && !hasIgnoredLore(item)) {
-            // ^ This stops endless checks of getByItem for books
+        if (item != null && !item.getType().isAir() && item.getType() != Material.BOOK && !hasIgnoredLore(item)) {
             SlimefunItem sfItem = SlimefunItem.getByItem(item);
             return sfItem == null || sfItem.isDisenchantable();
         } else {

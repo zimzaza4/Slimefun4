@@ -1,15 +1,16 @@
 package me.mrCookieSlime.Slimefun.api.inventory;
 
-import io.github.thebusybiscuit.cscorelib2.config.Config;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.logging.Level;
+
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
+
+import io.github.bakedlibs.dough.config.Config;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
 // This class will be deprecated, relocated and rewritten in a future version.
 public class BlockMenu extends DirtyChestMenu {
@@ -33,7 +34,9 @@ public class BlockMenu extends DirtyChestMenu {
         this.location = l;
 
         for (int i = 0; i < 54; i++) {
-            if (cfg.contains(String.valueOf(i))) addItem(i, cfg.getItem(String.valueOf(i)));
+            if (cfg.contains(String.valueOf(i))) {
+                addItem(i, cfg.getItem(String.valueOf(i)));
+            }
         }
 
         preset.clone(this);
@@ -91,13 +94,16 @@ public class BlockMenu extends DirtyChestMenu {
     /**
      * This method drops the contents of this {@link BlockMenu} on the ground at the given
      * {@link Location}.
-     *
-     * @param l     Where to drop these items
-     * @param slots The slots of items that should be dropped
+     * 
+     * @param l
+     *            Where to drop these items
+     * @param slots
+     *            The slots of items that should be dropped
      */
     public void dropItems(Location l, int... slots) {
         for (int slot : slots) {
             ItemStack item = getItemInSlot(slot);
+
             if (item != null) {
                 l.getWorld().dropItemNaturally(l, item);
                 replaceExistingItem(slot, null);
@@ -112,7 +118,7 @@ public class BlockMenu extends DirtyChestMenu {
             try {
                 Files.delete(file.toPath());
             } catch (IOException e) {
-                SlimefunPlugin.logger().log(Level.WARNING, e, () -> "Could not delete file \"" + file.getName() + '"');
+                Slimefun.logger().log(Level.WARNING, e, () -> "Could not delete file \"" + file.getName() + '"');
             }
         }
     }

@@ -19,14 +19,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
-import io.github.thebusybiscuit.cscorelib2.config.Localization;
-import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.bakedlibs.dough.common.ChatColors;
+import io.github.bakedlibs.dough.config.Config;
+import io.github.bakedlibs.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunBranch;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.services.LocalizationService;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -40,10 +41,34 @@ import net.md_5.bungee.api.chat.TextComponent;
  * @see LocalizationService
  *
  */
-public abstract class SlimefunLocalization extends Localization implements Keyed {
+public abstract class SlimefunLocalization implements Keyed {
 
-    protected SlimefunLocalization(@Nonnull SlimefunPlugin plugin) {
-        super(plugin);
+    private final Config defaultConfig;
+
+    protected SlimefunLocalization(@Nonnull Slimefun plugin) {
+        this.defaultConfig = new Config(plugin, "messages.yml");
+    }
+
+    protected @Nonnull Config getConfig() {
+        return defaultConfig;
+    }
+
+    /**
+     * Saves this Localization to its File
+     */
+    protected void save() {
+        defaultConfig.save();
+    }
+
+    /**
+     * This returns the chat prefix for our messages.
+     * Every message (unless explicitly omitted) will have this
+     * prefix prepended.
+     * 
+     * @return The chat prefix
+     */
+    public @Nonnull String getChatPrefix() {
+        return getMessage("prefix");
     }
 
     /**
@@ -114,7 +139,7 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
      */
     protected void loadEmbeddedLanguages() {
         for (LanguagePreset lang : LanguagePreset.values()) {
-            if (lang.isReadyForRelease() || SlimefunPlugin.getUpdater().getBranch() != SlimefunBranch.STABLE) {
+            if (lang.isReadyForRelease() || Slimefun.getUpdater().getBranch() != SlimefunBranch.STABLE) {
                 addLanguage(lang.getLanguageCode(), lang.getTexture());
             }
         }
@@ -206,7 +231,6 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
         return list != null ? list : Arrays.asList("! Missing string \"" + path + '"');
     }
 
-    @Override
     public @Nonnull String getMessage(@Nonnull String key) {
         Validate.notNull(key, "Message key must not be null!");
 
@@ -226,6 +250,17 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
         Validate.notNull(key, "Message key must not be null!");
 
         return getString(getLanguage(p), LanguageFile.MESSAGES, key);
+    }
+
+    /**
+     * Returns the Strings referring to the specified Key
+     *
+     * @param key
+     *            The Key of those Messages
+     * @return The List this key is referring to
+     */
+    public @Nonnull List<String> getDefaultMessages(@Nonnull String key) {
+        return defaultConfig.getStringList(key);
     }
 
     public @Nonnull List<String> getMessages(@Nonnull Player p, @Nonnull String key) {
@@ -254,7 +289,7 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
         return getStringOrNull(getLanguage(p), LanguageFile.RESEARCHES, key.getNamespace() + '.' + key.getKey());
     }
 
-    public @Nullable String getCategoryName(@Nonnull Player p, @Nonnull NamespacedKey key) {
+    public @Nullable String getItemGroupName(@Nonnull Player p, @Nonnull NamespacedKey key) {
         Validate.notNull(p, "Player must not be null.");
         Validate.notNull(key, "NamespacedKey cannot be null!");
 
@@ -283,7 +318,7 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
 
         NamespacedKey key = recipeType.getKey();
 
-        return new CustomItem(item, meta -> {
+        return new CustomItemStack(item, meta -> {
             String displayName = getStringOrNull(language, LanguageFile.RECIPES, key.getNamespace() + "." + key.getKey() + ".name");
 
             // Set the display name if possible, else keep the default item name.
@@ -304,12 +339,11 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
         });
     }
 
-    @Override
     public void sendMessage(@Nonnull CommandSender recipient, @Nonnull String key, boolean addPrefix) {
         Validate.notNull(recipient, "Recipient cannot be null!");
         Validate.notNull(key, "Message key cannot be null!");
 
-        String prefix = addPrefix ? getPrefix() : "";
+        String prefix = addPrefix ? getChatPrefix() : "";
 
         if (recipient instanceof Player) {
             recipient.sendMessage(ChatColors.color(prefix + getMessage((Player) recipient, key)));
@@ -322,14 +356,13 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
         Validate.notNull(player, "Player cannot be null!");
         Validate.notNull(key, "Message key cannot be null!");
 
-        String prefix = addPrefix ? getPrefix() : "";
+        String prefix = addPrefix ? getChatPrefix() : "";
         String message = ChatColors.color(prefix + getMessage(player, key));
 
         BaseComponent[] components = TextComponent.fromLegacyText(message);
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, components);
     }
 
-    @Override
     public void sendMessage(@Nonnull CommandSender recipient, @Nonnull String key) {
         sendMessage(recipient, key, true);
     }
@@ -339,14 +372,13 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
         sendMessage(recipient, key, true, function);
     }
 
-    @Override
     @ParametersAreNonnullByDefault
     public void sendMessage(CommandSender recipient, String key, boolean addPrefix, UnaryOperator<String> function) {
-        if (SlimefunPlugin.getMinecraftVersion() == MinecraftVersion.UNIT_TEST) {
+        if (Slimefun.getMinecraftVersion() == MinecraftVersion.UNIT_TEST) {
             return;
         }
 
-        String prefix = addPrefix ? getPrefix() : "";
+        String prefix = addPrefix ? getChatPrefix() : "";
 
         if (recipient instanceof Player) {
             recipient.sendMessage(ChatColors.color(prefix + function.apply(getMessage((Player) recipient, key))));
@@ -355,9 +387,8 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
         }
     }
 
-    @Override
     public void sendMessages(@Nonnull CommandSender recipient, @Nonnull String key) {
-        String prefix = getPrefix();
+        String prefix = getChatPrefix();
 
         if (recipient instanceof Player) {
             for (String translation : getMessages((Player) recipient, key)) {
@@ -365,17 +396,16 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
                 recipient.sendMessage(message);
             }
         } else {
-            for (String translation : getMessages(key)) {
+            for (String translation : getDefaultMessages(key)) {
                 String message = ChatColors.color(prefix + translation);
                 recipient.sendMessage(ChatColor.stripColor(message));
             }
         }
     }
 
-    @Override
     @ParametersAreNonnullByDefault
     public void sendMessages(CommandSender recipient, String key, boolean addPrefix, UnaryOperator<String> function) {
-        String prefix = addPrefix ? getPrefix() : "";
+        String prefix = addPrefix ? getChatPrefix() : "";
 
         if (recipient instanceof Player) {
             for (String translation : getMessages((Player) recipient, key)) {
@@ -383,7 +413,7 @@ public abstract class SlimefunLocalization extends Localization implements Keyed
                 recipient.sendMessage(message);
             }
         } else {
-            for (String translation : getMessages(key)) {
+            for (String translation : getDefaultMessages(key)) {
                 String message = ChatColors.color(prefix + function.apply(translation));
                 recipient.sendMessage(ChatColor.stripColor(message));
             }

@@ -1,22 +1,25 @@
 package io.github.thebusybiscuit.slimefun4.utils;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
+import javax.annotation.Nonnull;
+
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.core.attributes.MachineTier;
 import io.github.thebusybiscuit.slimefun4.core.attributes.MachineType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.Radioactivity;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-
-import javax.annotation.Nonnull;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
 
 /**
  * This utility class provides a few handy methods and constants to build the lore of any
  * {@link SlimefunItemStack}. It is mostly used directly inside the class {@link SlimefunItems}.
  *
  * @author TheBusyBiscuit
+ * 
  * @see SlimefunItems
+ *
  */
 public final class LoreBuilder {
 
@@ -26,8 +29,7 @@ public final class LoreBuilder {
     public static final String CROUCH_TO_USE = "&e按住 &eShift&7 使用";
     private static final DecimalFormat hungerFormat = new DecimalFormat("#.0", DecimalFormatSymbols.getInstance(Locale.ROOT));
 
-    private LoreBuilder() {
-    }
+    private LoreBuilder() {}
 
     public static @Nonnull String radioactive(@Nonnull Radioactivity radioactivity) {
         return radioactivity.getLore();
@@ -72,4 +74,5 @@ public final class LoreBuilder {
     public static @Nonnull String usesLeft(int usesLeft) {
         return "&7还可以使用 &e" + usesLeft + " 次";
     }
+
 }

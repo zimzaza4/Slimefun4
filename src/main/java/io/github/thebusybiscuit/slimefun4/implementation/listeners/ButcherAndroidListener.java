@@ -1,9 +1,13 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.items.androids.AndroidInstance;
-import io.github.thebusybiscuit.slimefun4.implementation.items.androids.ButcherAndroid;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -15,24 +19,23 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.androids.AndroidInstance;
+import io.github.thebusybiscuit.slimefun4.implementation.items.androids.ButcherAndroid;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 
 /**
- * This {@link Listener} handles the collecton of drops from an {@link Entity} that was
+ * This {@link Listener} handles the collection of drops from an {@link Entity} that was
  * killed by a {@link ButcherAndroid}.
- *
+ * 
  * @author TheBusyBiscuit
+ *
  */
 public class ButcherAndroidListener implements Listener {
 
     private static final String METADATA_KEY = "android_killer";
 
-    public ButcherAndroidListener(@Nonnull SlimefunPlugin plugin) {
+    public ButcherAndroidListener(@Nonnull Slimefun plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -41,7 +44,7 @@ public class ButcherAndroidListener implements Listener {
         if (e.getEntity().hasMetadata(METADATA_KEY)) {
             AndroidInstance obj = (AndroidInstance) e.getEntity().getMetadata(METADATA_KEY).get(0).value();
 
-            SlimefunPlugin.runSync(() -> {
+            Slimefun.runSync(() -> {
                 List<ItemStack> items = new ArrayList<>();
 
                 // Collect any nearby dropped items
@@ -60,14 +63,15 @@ public class ButcherAndroidListener implements Listener {
             }, 1L);
 
             // Removing metadata to prevent memory leaks
-            e.getEntity().removeMetadata(METADATA_KEY, SlimefunPlugin.instance());
+            e.getEntity().removeMetadata(METADATA_KEY, Slimefun.instance());
         }
     }
 
     /**
-     * Some items are not dropped by default. Wither Skeleton Skulls but for some weird reason
+     * Some items are not dropped by default.
+     * Wither Skeleton Skulls but for some weird reason
      * even Blaze rods...
-     *
+     * 
      * @param drops
      *            The {@link List} of item drops
      * @param entityType

@@ -1,25 +1,32 @@
 package me.mrCookieSlime.Slimefun.Objects.SlimefunItem.interfaces;
 
-import ren.natsuyuk1.utils.IntegrationHelper;
-import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
-import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
+import java.lang.reflect.Array;
+import java.util.function.Consumer;
+
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.lang.reflect.Array;
-import java.util.function.Consumer;
+import io.github.bakedlibs.dough.protection.Interaction;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
-@Deprecated
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
+import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
+import ren.natsuyuk1.utils.IntegrationHelper;
+
+/**
+ * 
+ * @deprecated This interface is not designed to be used by addons. The entire inventory system will be replaced
+ *             eventually.
+ *
+ */
 public interface InventoryBlock {
 
     /**
      * This method returns an {@link Array} of slots that serve as the input
      * for the {@link Inventory} of this block.
-     *
+     * 
      * @return The input slots for the {@link Inventory} of this block
      */
     int[] getInputSlots();
@@ -27,7 +34,7 @@ public interface InventoryBlock {
     /**
      * This method returns an {@link Array} of slots that serve as the output
      * for the {@link Inventory} of this block.
-     *
+     * 
      * @return The output slots for the {@link Inventory} of this block
      */
     int[] getOutputSlots();
@@ -46,8 +53,11 @@ public interface InventoryBlock {
 
             @Override
             public int[] getSlotsAccessedByItemTransport(ItemTransportFlow flow) {
-                if (flow == ItemTransportFlow.INSERT) return getInputSlots();
-                else return getOutputSlots();
+                if (flow == ItemTransportFlow.INSERT) {
+                    return getInputSlots();
+                } else {
+                    return getOutputSlots();
+                }
             }
 
             @Override
@@ -55,9 +65,10 @@ public interface InventoryBlock {
                 if (p.hasPermission("slimefun.inventory.bypass")) {
                     return true;
                 } else {
-                    return item.canUse(p, false) && SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK) && IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK);
+                    return item.canUse(p, false) && Slimefun.getProtectionManager().hasPermission(p, b.getLocation(), Interaction.INTERACT_BLOCK) && IntegrationHelper.checkPermission(p, b, Interaction.INTERACT_BLOCK);
                 }
             }
         };
     }
+
 }

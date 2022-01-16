@@ -1,8 +1,8 @@
 package me.mrCookieSlime.Slimefun.api.inventory;
 
-import io.github.thebusybiscuit.cscorelib2.config.Config;
-
 import java.io.File;
+
+import io.github.bakedlibs.dough.config.Config;
 
 // This class will be deprecated, relocated and rewritten in a future version.
 public class UniversalBlockMenu extends DirtyChestMenu {
@@ -34,7 +34,10 @@ public class UniversalBlockMenu extends DirtyChestMenu {
     }
 
     public void save() {
-        if (!isDirty()) return;
+        if (!isDirty()) {
+            return;
+        }
+
         // To force CS-CoreLib to build the Inventory
         this.getContents();
 

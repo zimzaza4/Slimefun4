@@ -5,7 +5,6 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -15,17 +14,18 @@ import org.bukkit.plugin.Plugin;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import io.papermc.lib.PaperLib;
+
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.hover.content.Text;
 
 /**
  * This is our class for the /sf versions subcommand.
- *
+ * 
  * @author TheBusyBiscuit
  * @author Walshy
  *
@@ -42,10 +42,10 @@ class VersionsCommand extends SubCommand {
      * This is the notice that will be displayed when an
      * older version of Java is detected.
      */
-    private static final String JAVA_VERSION_NOTICE = "在 Minecraft 1.17 发布时需要 Java 16!";
+    private static final String JAVA_VERSION_NOTICE = "在 Minecraft 1.17 发布时需要 Java 16+!";
 
     @ParametersAreNonnullByDefault
-    VersionsCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
+    VersionsCommand(Slimefun plugin, SlimefunCommand cmd) {
         super(plugin, cmd, "versions", false);
     }
 
@@ -68,22 +68,22 @@ class VersionsCommand extends SubCommand {
                     .color(ChatColor.DARK_GREEN)
                     .append("Slimefun ")
                     .color(ChatColor.GREEN)
-                    .append(SlimefunPlugin.getVersion() + '\n')
+                    .append(Slimefun.getVersion() + '\n')
                     .color(ChatColor.DARK_GREEN);
             // @formatter:on
 
-            if (SlimefunPlugin.getMetricsService().getVersion() != null) {
+            if (Slimefun.getMetricsService().getVersion() != null) {
                 // @formatter:off
                 builder.append("Metrics-组件 ")
                         .color(ChatColor.GREEN)
-                        .append("#" + SlimefunPlugin.getMetricsService().getVersion() + '\n')
+                        .append("#" + Slimefun.getMetricsService().getVersion() + '\n')
                         .color(ChatColor.DARK_GREEN);
                 // @formatter:on
             }
 
             addJavaVersion(builder);
 
-            if (SlimefunPlugin.getRegistry().isBackwardsCompatible()) {
+            if (Slimefun.getRegistry().isBackwardsCompatible()) {
                 // @formatter:off
                 HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent(
                         "向后兼容将会极大地影响服务器性能!\n" +
@@ -95,12 +95,20 @@ class VersionsCommand extends SubCommand {
                 builder.append("\n向后兼容已启用!\n").color(ChatColor.RED).event(hoverEvent);
             }
 
+            // Add notice to warn those smart people
+            builder.append("\n由 StarWishsama 汉化").color(ChatColor.WHITE)
+                    .append(
+                            "\n请不要将此版本信息截图到 Discord/Github 反馈 Bug" +
+                                    "\n优先到汉化页面反馈" +
+                                    "\n"
+                    ).color(ChatColor.RED);
+
             builder.append("\n").event((HoverEvent) null);
             addPluginVersions(builder);
 
             sender.spigot().sendMessage(builder.create());
         } else {
-            SlimefunPlugin.getLocalization().sendMessage(sender, "messages.no-permission", true);
+            Slimefun.getLocalization().sendMessage(sender, "messages.no-permission", true);
         }
     }
 
@@ -124,7 +132,7 @@ class VersionsCommand extends SubCommand {
     }
 
     private void addPluginVersions(@Nonnull ComponentBuilder builder) {
-        Collection<Plugin> addons = SlimefunPlugin.getInstalledAddons();
+        Collection<Plugin> addons = Slimefun.getInstalledAddons();
 
         if (addons.isEmpty()) {
             builder.append("没有安装任何附属插件").color(ChatColor.GRAY).italic(true);

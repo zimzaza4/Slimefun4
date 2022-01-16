@@ -1,12 +1,10 @@
 package me.mrCookieSlime.Slimefun.api.inventory;
 
-import ren.natsuyuk1.utils.IntegrationHelper;
-import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
-import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
-import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
-import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
-import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
+import java.util.ArrayList;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
@@ -14,9 +12,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
+import io.github.bakedlibs.dough.inventory.InvUtils;
+import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemUtils;
+import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
+
+import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 
 // This class will be deprecated, relocated and rewritten in a future version.
 public class DirtyChestMenu extends ChestMenu {
@@ -32,7 +33,7 @@ public class DirtyChestMenu extends ChestMenu {
 
     /**
      * This method checks whether this {@link DirtyChestMenu} is currently viewed by a {@link Player}.
-     *
+     * 
      * @return Whether anyone is currently viewing this {@link Inventory}
      */
     public boolean hasViewer() {
@@ -58,7 +59,7 @@ public class DirtyChestMenu extends ChestMenu {
     }
 
     public boolean canOpen(Block b, Player p) {
-        return preset.canOpen(b, p) && IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK);
+        return preset.canOpen(b, p);
     }
 
     @Override
@@ -92,8 +93,10 @@ public class DirtyChestMenu extends ChestMenu {
      * Items will be added either to any empty inventory slots or any partially filled slots, in which case
      * as many items as can fit will be added to that specific spot.
      *
-     * @param item  {@link ItemStack} to be added to the inventory
-     * @param slots Numbers of slots to add the {@link ItemStack} to
+     * @param item
+     *            {@link ItemStack} to be added to the inventory
+     * @param slots
+     *            Numbers of slots to add the {@link ItemStack} to
      * @return {@link ItemStack} with any items that did not fit into the inventory
      *         or null when everything had fit
      */
@@ -118,15 +121,14 @@ public class DirtyChestMenu extends ChestMenu {
                 return null;
             } else {
                 int maxStackSize = Math.min(stack.getMaxStackSize(), toInventory().getMaxStackSize());
-
                 if (stack.getAmount() < maxStackSize) {
                     if (wrapper == null) {
                         wrapper = ItemStackWrapper.wrap(item);
                     }
 
                     if (ItemUtils.canStack(wrapper, stack)) {
-                        amount -= (stack.getMaxStackSize() - stack.getAmount());
-                        stack.setAmount(Math.min(stack.getAmount() + item.getAmount(), stack.getMaxStackSize()));
+                        amount -= (maxStackSize - stack.getAmount());
+                        stack.setAmount(Math.min(stack.getAmount() + item.getAmount(), maxStackSize));
                         item.setAmount(amount);
                     }
                 }
@@ -134,7 +136,7 @@ public class DirtyChestMenu extends ChestMenu {
         }
 
         if (amount > 0) {
-            return new CustomItem(item, amount);
+            return new CustomItemStack(item, amount);
         } else {
             return null;
         }

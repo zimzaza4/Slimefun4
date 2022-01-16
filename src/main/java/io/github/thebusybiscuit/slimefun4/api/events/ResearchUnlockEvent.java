@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.api.events;
 
-import io.github.thebusybiscuit.slimefun4.core.researching.Research;
+import javax.annotation.Nonnull;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -8,13 +9,15 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import javax.annotation.Nonnull;
+import io.github.thebusybiscuit.slimefun4.api.researches.Research;
 
 /**
  * This {@link Event} is called whenever a {@link Player} unlocks a {@link Research}.
- *
+ * 
  * @author TheBusyBiscuit
+ * 
  * @see Research
+ *
  */
 public class ResearchUnlockEvent extends Event implements Cancellable {
 
@@ -29,6 +32,7 @@ public class ResearchUnlockEvent extends Event implements Cancellable {
 
         Validate.notNull(p, "The Player cannot be null");
         Validate.notNull(research, "Research cannot be null");
+
         this.player = p;
         this.research = research;
     }

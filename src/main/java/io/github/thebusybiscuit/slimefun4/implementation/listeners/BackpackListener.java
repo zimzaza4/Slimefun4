@@ -1,12 +1,14 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.Cooler;
-import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -23,25 +25,24 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.Cooler;
+import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
 
 /**
  * This {@link Listener} is responsible for all events centered around a {@link SlimefunBackpack}.
  * This also includes the {@link Cooler}
- *
+ * 
  * @author TheBusyBiscuit
  * @author Walshy
  * @author NihilistBrew
  * @author AtomicScience
  * @author VoidAngel
  * @author John000708
- *
+ * 
  * @see SlimefunBackpack
  * @see PlayerBackpack
  *
@@ -50,13 +51,13 @@ public class BackpackListener implements Listener {
 
     private final Map<UUID, ItemStack> backpacks = new HashMap<>();
 
-    public void register(@Nonnull SlimefunPlugin plugin) {
+    public void register(@Nonnull Slimefun plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
-        Player p = ((Player) e.getPlayer());
+        Player p = (Player) e.getPlayer();
 
         if (markBackpackDirty(p)) {
             p.playSound(p.getLocation(), Sound.ENTITY_HORSE_ARMOR, 1F, 1F);
@@ -102,6 +103,13 @@ public class BackpackListener implements Listener {
                             e.setCancelled(true);
                         }
                     }
+                } else if (e.getClick() == ClickType.SWAP_OFFHAND && e.getClickedInventory().getType() != InventoryType.PLAYER) {
+                    // Fixes #3265
+                    ItemStack offHandItem = e.getWhoClicked().getInventory().getItemInOffHand();
+
+                    if (!isAllowed((SlimefunBackpack) backpack, offHandItem)) {
+                        e.setCancelled(true);
+                    }
                 } else if (!isAllowed((SlimefunBackpack) backpack, e.getCurrentItem())) {
                     e.setCancelled(true);
                 }
@@ -121,16 +129,17 @@ public class BackpackListener implements Listener {
     public void openBackpack(Player p, ItemStack item, SlimefunBackpack backpack) {
         if (item.getAmount() == 1) {
             if (backpack.canUse(p, true) && !PlayerProfile.get(p, profile -> openBackpack(p, item, profile, backpack.getSize()))) {
-                SlimefunPlugin.getLocalization().sendMessage(p, "messages.opening-backpack");
+                Slimefun.getLocalization().sendMessage(p, "messages.opening-backpack");
             }
         } else {
-            SlimefunPlugin.getLocalization().sendMessage(p, "backpack.no-stack", true);
+            Slimefun.getLocalization().sendMessage(p, "backpack.no-stack", true);
         }
     }
 
     @ParametersAreNonnullByDefault
     private void openBackpack(Player p, ItemStack item, PlayerProfile profile, int size) {
         List<String> lore = item.getItemMeta().getLore();
+
         for (int line = 0; line < lore.size(); line++) {
             if (lore.get(line).equals(ChatColor.GRAY + "ID: <ID>")) {
                 setBackpackId(p, item, line, profile.createBackpack(size).getId());
@@ -157,17 +166,21 @@ public class BackpackListener implements Listener {
                 }
             });
         } else {
-            SlimefunPlugin.getLocalization().sendMessage(p, "backpack.already-open", true);
+            Slimefun.getLocalization().sendMessage(p, "backpack.already-open", true);
         }
     }
 
     /**
      * This method sets the id for a backpack onto the given {@link ItemStack}.
-     *
-     * @param backpackOwner The owner of this backpack
-     * @param item          The {@link ItemStack} to modify
-     * @param line          The line at which the ID should be replaced
-     * @param id            The id of this backpack
+     * 
+     * @param backpackOwner
+     *            The owner of this backpack
+     * @param item
+     *            The {@link ItemStack} to modify
+     * @param line
+     *            The line at which the ID should be replaced
+     * @param id
+     *            The id of this backpack
      */
     public void setBackpackId(@Nonnull OfflinePlayer backpackOwner, @Nonnull ItemStack item, int line, int id) {
         Validate.notNull(backpackOwner, "Backpacks must have an owner!");

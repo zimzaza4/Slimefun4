@@ -2,7 +2,7 @@
 name: 汉化缺失
 about: 反馈 Slimefun 4 汉化版中未汉化的地方
 title: ''
-labels: 📜 Translation lost | 汉化缺失
+labels: 📜 Translation | 汉化问题
 assignees: 'StarWishsama'
 
 ---

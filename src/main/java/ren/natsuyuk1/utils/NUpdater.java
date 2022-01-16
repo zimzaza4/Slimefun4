@@ -4,9 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import io.github.bakedlibs.dough.common.ChatColors;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import ren.natsuyuk1.utils.data.GithubObject;
-import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import org.apache.commons.lang.Validate;
 
 import java.io.*;
@@ -33,9 +33,9 @@ public class NUpdater {
     private static final String browserUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36";
     private static CustomBranch branch = CustomBranch.NIGHTLY;
     private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyMMdd");
-    private final SlimefunPlugin plugin;
+    private final Slimefun plugin;
     
-    public NUpdater(SlimefunPlugin plugin) {
+    public NUpdater(Slimefun plugin) {
         this.plugin = plugin;
         downloadDir = plugin.getServer().getUpdateFolder();
     }
@@ -72,18 +72,18 @@ public class NUpdater {
             fos.close();
 
             plugin.getFile().deleteOnExit();
-            SlimefunPlugin.logger().info(ChatColors.color("&a自动更新已完成, 重启服务端后即可更新到最新版本"));
+            Slimefun.logger().info(ChatColors.color("&a自动更新已完成, 重启服务端后即可更新到最新版本"));
         } catch (Exception e) {
             if (!file.delete()) {
-                SlimefunPlugin.logger().log(Level.SEVERE, e, () -> "无法删除损坏文件: " + fileName);
+                Slimefun.logger().log(Level.SEVERE, e, () -> "无法删除损坏文件: " + fileName);
             }
 
             if (e.getCause() instanceof SocketTimeoutException) {
-                SlimefunPlugin.logger().log(Level.SEVERE, e, () -> "在下载时发生了错误: 连接超时");
+                Slimefun.logger().log(Level.SEVERE, e, () -> "在下载时发生了错误: 连接超时");
                 return;
             }
 
-            SlimefunPlugin.logger().log(Level.SEVERE, e, () -> "在下载时发生了错误");
+            Slimefun.logger().log(Level.SEVERE, e, () -> "在下载时发生了错误");
         }
     }
 
@@ -118,12 +118,12 @@ public class NUpdater {
                 }.getType());
             } else {
                 conn.disconnect();
-                SlimefunPlugin.logger().log(Level.WARNING, "连接至 Github 服务器出错, 状态码: " + code);
+                Slimefun.logger().log(Level.WARNING, "连接至 Github 服务器出错, 状态码: " + code);
             }
         } catch (IOException e) {
-            SlimefunPlugin.logger().log(Level.WARNING, "连接至 Github 服务器出错, 错误信息: " + e.getMessage());
+            Slimefun.logger().log(Level.WARNING, "连接至 Github 服务器出错, 错误信息: " + e.getMessage());
         } catch (JsonSyntaxException e) {
-            SlimefunPlugin.logger().log(Level.WARNING, "无法解析获取的数据, 错误信息: " + e.getMessage());
+            Slimefun.logger().log(Level.WARNING, "无法解析获取的数据, 错误信息: " + e.getMessage());
         }
 
         return new ArrayList<>();
@@ -162,18 +162,18 @@ public class NUpdater {
 
         if (bean != null) {
             try {
-                if (isOldVersion(SlimefunPlugin.getVersion(), bean.getTagName())) {
+                if (isOldVersion(Slimefun.getVersion(), bean.getTagName())) {
                     String updateInfo = "有更新了 | " + bean.getTagName() + " 现已发布\n正在自动下载更新中, 下载完成后重启服务器生效";
-                    SlimefunPlugin.logger().info(updateInfo);
+                    Slimefun.logger().info(updateInfo);
                     downloadUpdate(getCache().getAssets().get(0).getDownloadUrl(), getCache().getAssets().get(0).getName());
                 } else {
-                    SlimefunPlugin.logger().info(ChatColors.color("&a你正在使用最新版本 " + SlimefunPlugin.getVersion()));
+                    Slimefun.logger().info(ChatColors.color("&a你正在使用最新版本 " + Slimefun.getVersion()));
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
-                SlimefunPlugin.logger().log(Level.SEVERE, ChatColors.color("&c无法解析版本号, 报错信息: " + e.getLocalizedMessage()));
+                Slimefun.logger().log(Level.SEVERE, ChatColors.color("&c无法解析版本号, 报错信息: " + e.getLocalizedMessage()));
             }
         } else {
-            SlimefunPlugin.logger().info("无法获取到更新信息");
+            Slimefun.logger().info("无法获取到更新信息");
         }
     }
 

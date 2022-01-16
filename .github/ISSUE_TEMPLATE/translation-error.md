@@ -2,7 +2,7 @@
 name: 汉化错误
 about: 反馈 Slimefun 4 汉化版中错误的汉化文本
 title: ''
-labels: 📜 Translation wrong | 汉化错误
+labels: 📜 Translation | 汉化问题
 assignees: 'StarWishsama'
 
 ---

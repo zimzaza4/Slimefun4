@@ -1,20 +1,23 @@
 package io.github.thebusybiscuit.slimefun4.core.services.profiler;
 
-import io.github.thebusybiscuit.cscorelib2.blocks.BlockPosition;
-import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import javax.annotation.Nonnull;
-import java.util.Objects;
+import io.github.bakedlibs.dough.blocks.BlockPosition;
+import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 
 /**
  * This represents an entry in our {@link SlimefunProfiler}.
  * It is a modification of {@link BlockPosition} to be as memory-efficient as possible.
- *
+ * 
  * @author TheBusyBiscuit
+ *
  */
 final class ProfiledBlock {
 
@@ -37,7 +40,7 @@ final class ProfiledBlock {
     /**
      * This creates a new {@link ProfiledBlock} for the given {@link Location} and
      * the {@link SlimefunItem} found at this {@link Location}.
-     *
+     * 
      * @param l
      *            The {@link Location}
      * @param item
@@ -52,7 +55,7 @@ final class ProfiledBlock {
     /**
      * This is just a <strong>dummy</strong> constructor.
      * Please only use this for comparisons or lookups.
-     *
+     * 
      * @param b
      *            A {@link Block}
      */
@@ -64,14 +67,14 @@ final class ProfiledBlock {
 
     /**
      * This compresses our {@link Location} into a long for more efficient memory usage
-     *
+     * 
      * @param x
      *            The x value
      * @param y
      *            The y value
      * @param z
      *            The z value
-     *
+     * 
      * @return A {@link Long} representation of this {@link Location}
      */
     private static long getLocationAsLong(int x, int y, int z) {

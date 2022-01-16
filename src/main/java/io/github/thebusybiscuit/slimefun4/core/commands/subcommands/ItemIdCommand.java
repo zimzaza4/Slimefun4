@@ -1,17 +1,17 @@
 package io.github.thebusybiscuit.slimefun4.core.commands.subcommands;
 
-import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
+import io.github.bakedlibs.dough.common.ChatColors;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 class ItemIdCommand extends SubCommand {
-    protected ItemIdCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
+    protected ItemIdCommand(Slimefun plugin, SlimefunCommand cmd) {
         super(plugin, cmd, "id", false);
     }
 
@@ -26,16 +26,16 @@ class ItemIdCommand extends SubCommand {
                     if (sfItem != null) {
                         sender.sendMessage(ChatColors.color("The item's id: " + sfItem.getId()));
                     } else {
-                        SlimefunPlugin.getLocalization().sendMessage(sender, "messages.not-valid-item", true);
+                        Slimefun.getLocalization().sendMessage(sender, "messages.not-valid-item", true);
                     }
                 } else {
                     sender.sendMessage(ChatColors.color("&bYou have nothing in your main hand!"));
                 }
             } else {
-                SlimefunPlugin.getLocalization().sendMessage(sender, "messages.no-permission", true);
+                Slimefun.getLocalization().sendMessage(sender, "messages.no-permission", true);
             }
         } else {
-            SlimefunPlugin.getLocalization().sendMessage(sender, "messages.only-players", true);
+            Slimefun.getLocalization().sendMessage(sender, "messages.only-players", true);
         }
     }
 }

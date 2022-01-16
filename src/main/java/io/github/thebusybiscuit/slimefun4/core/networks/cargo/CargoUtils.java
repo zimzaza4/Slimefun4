@@ -6,6 +6,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ren.natsuyuk1.utils.IntegrationHelper;
+import io.github.thebusybiscuit.slimefun4.core.debug.Debug;
+import io.github.thebusybiscuit.slimefun4.core.debug.TestCase;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -17,12 +19,15 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.cscorelib2.inventory.InvUtils;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.bakedlibs.dough.inventory.InvUtils;
+import io.github.thebusybiscuit.slimefun4.core.debug.Debug;
+import io.github.thebusybiscuit.slimefun4.core.debug.TestCase;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import io.papermc.lib.PaperLib;
+
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
@@ -32,7 +37,7 @@ import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
  * This is a helper class for the {@link CargoNet} which provides
  * a free static utility methods to let the {@link CargoNet} interact with
  * an {@link Inventory} or {@link BlockMenu}.
- *
+ * 
  * @author TheBusyBiscuit
  * @author Walshy
  * @author DNx5
@@ -54,10 +59,10 @@ final class CargoUtils {
     /**
      * This is a performance-saving shortcut to quickly test whether a given
      * {@link Block} might be an {@link InventoryHolder} or not.
-     *
+     * 
      * @param block
      *            The {@link Block} to check
-     *
+     * 
      * @return Whether this {@link Block} represents a {@link BlockState} that is an {@link InventoryHolder}
      */
     static boolean hasInventory(@Nullable Block block) {
@@ -157,6 +162,10 @@ final class CargoUtils {
 
         for (int slot : menu.getPreset().getSlotsAccessedByItemTransport(menu, ItemTransportFlow.WITHDRAW, null)) {
             ItemStack is = menu.getItemInSlot(slot);
+            if (is == null || is.getType().isAir()) {
+                continue;
+            }
+
             ItemStackWrapper wrapperItemInSlot = ItemStackWrapper.wrap(is);
 
             if (SlimefunUtils.isItemSimilar(wrapperItemInSlot, wrapperTemplate, true) && matchesFilter(network, node, wrapperItemInSlot)) {
@@ -191,7 +200,6 @@ final class CargoUtils {
             }
 
             ItemStackWrapper wrapperInSlot = ItemStackWrapper.wrap(itemInSlot);
-
             if (SlimefunUtils.isItemSimilar(wrapperInSlot, wrapper, true, false) && matchesFilter(network, node, wrapperInSlot)) {
                 if (itemInSlot.getAmount() > template.getAmount()) {
                     itemInSlot.setAmount(itemInSlot.getAmount() - template.getAmount());
@@ -260,6 +268,7 @@ final class CargoUtils {
 
     @Nullable
     static ItemStack insert(AbstractItemNetwork network, Map<Location, Inventory> inventories, Block node, Block target, boolean smartFill, ItemStack stack, ItemStackWrapper wrapper) {
+        Debug.log(TestCase.CARGO_INPUT_TESTING, "CargoUtils#insert");
         if (!matchesFilter(network, node, stack)) {
             return stack;
         }
@@ -399,19 +408,19 @@ final class CargoUtils {
      * The lazy-option is a performance-saver since actually calculating this can be quite expensive.
      * For the current applicational purposes a quick check for any wooden logs is sufficient.
      * Otherwise the "lazyness" can be turned off in the future.
-     *
+     * 
      * @param stack
      *            The {@link ItemStack} to test
      * @param lazy
      *            Whether or not to perform a "lazy" but performance-saving check
-     *
+     * 
      * @return Whether the given {@link ItemStack} can be smelted or not
      */
     private static boolean isSmeltable(@Nullable ItemStack stack, boolean lazy) {
         if (lazy) {
             return stack != null && Tag.LOGS.isTagged(stack.getType());
         } else {
-            return SlimefunPlugin.getMinecraftRecipeService().isSmeltable(stack);
+            return Slimefun.getMinecraftRecipeService().isSmeltable(stack);
         }
     }
 

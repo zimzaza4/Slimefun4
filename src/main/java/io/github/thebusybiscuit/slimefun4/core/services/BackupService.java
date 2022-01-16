@@ -19,11 +19,11 @@ import javax.annotation.Nonnull;
 
 import org.apache.commons.lang.Validate;
 
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
 /**
  * This Service creates a Backup of your Slimefun world data on every server shutdown.
- *
+ * 
  * @author TheBusyBiscuit
  *
  */
@@ -54,7 +54,7 @@ public class BackupService implements Runnable {
                 try {
                     purgeBackups(backups);
                 } catch (IOException e) {
-                    SlimefunPlugin.logger().log(Level.WARNING, "无法删除旧备份文件", e);
+                    Slimefun.logger().log(Level.WARNING, "无法删除旧备份文件", e);
                 }
             }
 
@@ -67,12 +67,12 @@ public class BackupService implements Runnable {
                             createBackup(output);
                         }
 
-                        SlimefunPlugin.logger().log(Level.INFO, "已备份 Slimefun 数据至: {0}", file.getName());
+                        Slimefun.logger().log(Level.INFO, "已备份 Slimefun 数据至: {0}", file.getName());
                     } else {
-                        SlimefunPlugin.logger().log(Level.WARNING, "无法创建备份文件: {0}", file.getName());
+                        Slimefun.logger().log(Level.WARNING, "无法创建备份文件: {0}", file.getName());
                     }
                 } catch (IOException x) {
-                    SlimefunPlugin.logger().log(Level.SEVERE, x, () -> "An Exception occurred while creating a backup for Slimefun " + SlimefunPlugin.getVersion());
+                    Slimefun.logger().log(Level.SEVERE, x, () -> "An Exception occurred while creating a backup for Slimefun " + Slimefun.getVersion());
                 }
             }
         }
@@ -128,10 +128,10 @@ public class BackupService implements Runnable {
 
     /**
      * This method will delete old backups.
-     *
+     * 
      * @param backups
      *            The {@link List} of all backups
-     *
+     * 
      * @throws IOException
      *             An {@link IOException} is thrown if a {@link File} could not be deleted
      */

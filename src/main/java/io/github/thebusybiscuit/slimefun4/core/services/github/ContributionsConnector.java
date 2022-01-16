@@ -1,29 +1,29 @@
 package io.github.thebusybiscuit.slimefun4.core.services.github;
 
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import kong.unirest.JsonNode;
-import kong.unirest.json.JSONArray;
-import kong.unirest.json.JSONObject;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+
+import kong.unirest.JsonNode;
+import kong.unirest.json.JSONArray;
+import kong.unirest.json.JSONObject;
+
 class ContributionsConnector extends GitHubConnector {
 
-    /*
-     * @formatter:off
+    /**
      * GitHub Bots that do not count as Contributors
      * (includes "invalid-email-address" because it is an invalid contributor)
      */
     private final List<String> ignoredAccounts = new ArrayList<>();
 
-    /*
-     * @formatter:on
+    /**
      * Matches a GitHub name with a Minecraft name.
      */
     private final Map<String, String> aliases = new HashMap<>();
@@ -51,6 +51,7 @@ class ContributionsConnector extends GitHubConnector {
      * These people are... "special cases".
      */
     private void loadConfiguration() {
+        // Bots and invalid accounts we want to ignore.
         ignoredAccounts.add("invalid-email-address");
         ignoredAccounts.add("renovate");
         ignoredAccounts.add("renovate-bot");
@@ -64,6 +65,7 @@ class ContributionsConnector extends GitHubConnector {
         ignoredAccounts.add("gitlocalize-app[bot]");
         ignoredAccounts.add("mt-gitlocalize");
 
+        // Known Minecraft aliases.
         aliases.put("WalshyDev", "HumanRightsAct");
         aliases.put("J3fftw1", "_lagpc_");
         aliases.put("ajan-12", "ajan_12");
@@ -74,11 +76,12 @@ class ContributionsConnector extends GitHubConnector {
         aliases.put("ramdon-person", "ramdon_person");
         aliases.put("NCBPFluffyBear", "FluffyBear_");
         aliases.put("martinbrom", "OneTime97");
+        aliases.put("LilBC", "Lil_BC");
     }
 
     /**
      * This returns whether this {@link ContributionsConnector} has finished its task.
-     *
+     * 
      * @return Whether it is finished
      */
     public boolean hasFinished() {
@@ -92,7 +95,7 @@ class ContributionsConnector extends GitHubConnector {
         if (response.isArray()) {
             computeContributors(response.getArray());
         } else {
-            SlimefunPlugin.logger().log(Level.WARNING, "Received an unusual answer from GitHub, possibly a timeout? ({0})", response);
+            Slimefun.logger().log(Level.WARNING, "Received an unusual answer from GitHub, possibly a timeout? ({0})", response);
         }
     }
 

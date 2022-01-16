@@ -1,21 +1,23 @@
 package io.github.thebusybiscuit.slimefun4.core.commands.subcommands;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
+
 import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
 import io.github.thebusybiscuit.slimefun4.core.services.profiler.PerformanceInspector;
 import io.github.thebusybiscuit.slimefun4.core.services.profiler.inspectors.ConsolePerformanceInspector;
 import io.github.thebusybiscuit.slimefun4.core.services.profiler.inspectors.PlayerPerformanceInspector;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
 class TimingsCommand extends SubCommand {
 
@@ -23,7 +25,7 @@ class TimingsCommand extends SubCommand {
     private final Set<String> flags = new HashSet<>(Arrays.asList("verbose"));
 
     @ParametersAreNonnullByDefault
-    TimingsCommand(SlimefunPlugin plugin, SlimefunCommand cmd) {
+    TimingsCommand(Slimefun plugin, SlimefunCommand cmd) {
         super(plugin, cmd, "timings", false);
     }
 
@@ -42,16 +44,16 @@ class TimingsCommand extends SubCommand {
             boolean verbose = hasFlag(args, "verbose");
 
             if (verbose && sender instanceof Player) {
-                SlimefunPlugin.getLocalization().sendMessage(sender, "commands.timings.verbose-player", true);
+                Slimefun.getLocalization().sendMessage(sender, "commands.timings.verbose-player", true);
                 return;
             }
 
-            SlimefunPlugin.getLocalization().sendMessage(sender, "commands.timings.please-wait", true);
+            Slimefun.getLocalization().sendMessage(sender, "commands.timings.please-wait", true);
 
             PerformanceInspector inspector = inspectorOf(sender, verbose);
-            SlimefunPlugin.getProfiler().requestSummary(inspector);
+            Slimefun.getProfiler().requestSummary(inspector);
         } else {
-            SlimefunPlugin.getLocalization().sendMessage(sender, "messages.no-permission", true);
+            Slimefun.getLocalization().sendMessage(sender, "messages.no-permission", true);
         }
     }
 
@@ -65,7 +67,7 @@ class TimingsCommand extends SubCommand {
 
             if (argument.startsWith(FLAG_PREFIX) && !flags.contains(argument.substring(2))) {
                 hasInvalidFlags = true;
-                SlimefunPlugin.getLocalization().sendMessage(sender, "commands.timings.unknown-flag", true, msg -> msg.replace("%flag%", argument));
+                Slimefun.getLocalization().sendMessage(sender, "commands.timings.unknown-flag", true, msg -> msg.replace("%flag%", argument));
             }
         }
 

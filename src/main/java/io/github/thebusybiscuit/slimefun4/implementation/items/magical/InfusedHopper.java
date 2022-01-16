@@ -1,17 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.magical;
 
-import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
-import io.github.thebusybiscuit.slimefun4.api.items.settings.DoubleRangeSetting;
-import io.github.thebusybiscuit.slimefun4.implementation.handlers.VanillaInventoryDropHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -23,8 +14,19 @@ import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.items.settings.DoubleRangeSetting;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.handlers.VanillaInventoryDropHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+
+import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
+import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 
 /**
  * The {@link InfusedHopper} is a special kind of {@link Hopper} which teleports any
@@ -33,6 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  *
  * @author TheBusyBiscuit
  * @author Walshy
+ * 
  * @see InfusedMagnet
  */
 public class InfusedHopper extends SimpleSlimefunItem<BlockTicker> {
@@ -42,8 +45,8 @@ public class InfusedHopper extends SimpleSlimefunItem<BlockTicker> {
     private final ItemSetting<Double> radius = new DoubleRangeSetting(this, "radius", 0.1, 3.5, Double.MAX_VALUE);
 
     @ParametersAreNonnullByDefault
-    public InfusedHopper(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
-        super(category, item, recipeType, recipe);
+    public InfusedHopper(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+        super(itemGroup, item, recipeType, recipe);
 
         addItemSetting(silent, radius, toggleable);
 
@@ -67,7 +70,7 @@ public class InfusedHopper extends SimpleSlimefunItem<BlockTicker> {
                 if (toggleable.getValue()) {
                     Hopper hopper = (Hopper) b.getBlockData();
 
-                    /**
+                    /*
                      * If the Hopper was disabled by a redstone signal,
                      * we just don't do anything.
                      */
@@ -87,7 +90,7 @@ public class InfusedHopper extends SimpleSlimefunItem<BlockTicker> {
                     playSound = true;
                 }
 
-                /**
+                /*
                  * Play a sound if at least one item was teleported and
                  * the "silent" setting is set to false.
                  */
@@ -107,9 +110,7 @@ public class InfusedHopper extends SimpleSlimefunItem<BlockTicker> {
         if (entity instanceof Item && entity.isValid()) {
             Item item = (Item) entity;
             // Check if the item cannot be picked up or has the "no pickup" metadata
-            return item.getPickupDelay() <= 0
-                    && !SlimefunUtils.hasNoPickupFlag(item)
-                    && item.getLocation().distanceSquared(l) > 0.25;
+            return item.getPickupDelay() <= 0 && !SlimefunUtils.hasNoPickupFlag(item) && item.getLocation().distanceSquared(l) > 0.25;
         }
 
         return false;

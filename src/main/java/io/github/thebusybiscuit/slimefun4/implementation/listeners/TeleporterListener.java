@@ -13,28 +13,35 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.elevator.ElevatorPlate;
 import io.github.thebusybiscuit.slimefun4.implementation.items.teleporter.AbstractTeleporterPlate;
 import io.github.thebusybiscuit.slimefun4.implementation.items.teleporter.Teleporter;
 import io.github.thebusybiscuit.slimefun4.implementation.items.teleporter.TeleporterPylon;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 
 /**
  * This {@link Listener} is responsible for the {@link Teleporter} (and {@link ElevatorPlate}).
- *
+ * 
  * @author TheBusyBiscuit
+ * @author Walshy
  * @author Sfiguz7
  * @author SoSeDiK
  *
  */
 public class TeleporterListener implements Listener {
 
-    private final BlockFace[] faces = { BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST };
+    // @formatter:off
+    private final BlockFace[] faces = {
+        BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SOUTH_EAST,
+        BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST
+    };
+    // @formatter:on
 
-    public TeleporterListener(@Nonnull SlimefunPlugin plugin) {
+    public TeleporterListener(@Nonnull Slimefun plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -64,7 +71,7 @@ public class TeleporterListener implements Listener {
             if (teleporter instanceof Teleporter && checkForPylons(b.getRelative(BlockFace.DOWN))) {
                 Block block = b.getRelative(BlockFace.DOWN);
                 UUID owner = UUID.fromString(BlockStorage.getLocationInfo(block.getLocation(), "owner"));
-                SlimefunPlugin.getGPSNetwork().getTeleportationManager().openTeleporterGUI(p, owner, block, SlimefunPlugin.getGPSNetwork().getNetworkComplexity(owner));
+                Slimefun.getGPSNetwork().getTeleportationManager().openTeleporterGUI(p, owner, block);
             }
         }
     }
@@ -72,10 +79,10 @@ public class TeleporterListener implements Listener {
     /**
      * This methoc checks if the given teleporter {@link Block} is surrounded
      * by all the necessary {@link TeleporterPylon}s.
-     *
+     * 
      * @param teleporter
      *            The teleporter {@link Block}
-     *
+     * 
      * @return Whether the teleporter is surrounded by pylons.
      */
     private boolean checkForPylons(@Nonnull Block teleporter) {

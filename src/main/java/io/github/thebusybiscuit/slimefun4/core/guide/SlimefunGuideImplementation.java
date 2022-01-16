@@ -1,28 +1,32 @@
 package io.github.thebusybiscuit.slimefun4.core.guide;
 
-import ren.natsuyuk1.utils.VaultHelper;
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
-import io.github.thebusybiscuit.slimefun4.core.researching.Research;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import java.util.function.Consumer;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.function.Consumer;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.api.researches.Research;
+import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
+import ren.natsuyuk1.utils.VaultHelper;
 
 /**
  * This interface is used for the different implementations that add behaviour
  * to the {@link SlimefunGuide}.
  *
  * @author TheBusyBiscuit
+ * 
  * @see SlimefunGuideMode
  * @see SurvivalSlimefunGuide
+ *
  */
 public interface SlimefunGuideImplementation {
 
@@ -49,7 +53,7 @@ public interface SlimefunGuideImplementation {
     void openMainMenu(PlayerProfile profile, int page);
 
     @ParametersAreNonnullByDefault
-    void openCategory(PlayerProfile profile, Category category, int page);
+    void openItemGroup(PlayerProfile profile, ItemGroup group, int page);
 
     @ParametersAreNonnullByDefault
     void openSearch(PlayerProfile profile, String input, boolean addToHistory);
@@ -64,15 +68,16 @@ public interface SlimefunGuideImplementation {
     default void unlockItem(Player p, SlimefunItem sfitem, Consumer<Player> callback) {
         Research research = sfitem.getResearch();
 
-        if (p.getGameMode() == GameMode.CREATIVE && SlimefunPlugin.getRegistry().isFreeCreativeResearchingEnabled()) {
+        if (p.getGameMode() == GameMode.CREATIVE && Slimefun.getRegistry().isFreeCreativeResearchingEnabled()) {
             research.unlock(p, true, callback);
         } else {
             if (VaultHelper.isUsable()) {
-                VaultHelper.getEcon().withdrawPlayer(p, research.getCost() * SlimefunPlugin.getCfg().getDouble("researches.money-multiply"));
+                VaultHelper.getEcon().withdrawPlayer(p, research.getCost() * Slimefun.getCfg().getDouble("researches.money-multiply"));
             } else {
                 p.setLevel(p.getLevel() - research.getCost());
             }
-            boolean skipLearningAnimation = SlimefunPlugin.getRegistry().isLearningAnimationDisabled() || !SlimefunGuideSettings.hasLearningAnimationEnabled(p);
+
+            boolean skipLearningAnimation = Slimefun.getRegistry().isLearningAnimationDisabled() || !SlimefunGuideSettings.hasLearningAnimationEnabled(p);
             research.unlock(p, skipLearningAnimation, callback);
         }
     }

@@ -1,16 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.magical.runes;
 
-import io.github.thebusybiscuit.slimefun4.core.attributes.Soulbound;
-import io.github.thebusybiscuit.slimefun4.core.handlers.ItemDropHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
-import io.github.thebusybiscuit.slimefun4.implementation.items.magical.SoulboundItem;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import java.util.Collection;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -18,18 +13,25 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import java.util.Collection;
-import java.util.Optional;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.attributes.Soulbound;
+import io.github.thebusybiscuit.slimefun4.core.handlers.ItemDropHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.items.magical.SoulboundItem;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 
 /**
  * This {@link SlimefunItem} allows you to convert any {@link ItemStack} into a
  * {@link SoulboundItem}. It is also one of the very few utilisations of {@link ItemDropHandler}.
- *
+ * 
  * @author Linox
  * @author Walshy
  * @author TheBusyBiscuit
- *
+ * 
  * @see ItemDropHandler
  * @see Soulbound
  *
@@ -38,8 +40,9 @@ public class SoulboundRune extends SimpleSlimefunItem<ItemDropHandler> {
 
     private static final double RANGE = 1.5;
 
-    public SoulboundRune(Category category, SlimefunItemStack item, RecipeType type, ItemStack[] recipe) {
-        super(category, item, type, recipe);
+    @ParametersAreNonnullByDefault
+    public SoulboundRune(ItemGroup itemGroup, SlimefunItemStack item, RecipeType type, ItemStack[] recipe) {
+        super(itemGroup, item, type, recipe);
     }
 
     @Override
@@ -51,7 +54,7 @@ public class SoulboundRune extends SimpleSlimefunItem<ItemDropHandler> {
                     return true;
                 }
 
-                SlimefunPlugin.runSync(() -> activate(p, item), 20L);
+                Slimefun.runSync(() -> activate(p, item), 20L);
 
                 return true;
             }
@@ -77,7 +80,7 @@ public class SoulboundRune extends SimpleSlimefunItem<ItemDropHandler> {
                 // This lightning is just an effect, it deals no damage.
                 l.getWorld().strikeLightningEffect(l);
 
-                SlimefunPlugin.runSync(() -> {
+                Slimefun.runSync(() -> {
                     // Being sure entities are still valid and not picked up or whatsoever.
                     if (rune.isValid() && item.isValid() && itemStack.getAmount() == 1) {
 
@@ -90,13 +93,13 @@ public class SoulboundRune extends SimpleSlimefunItem<ItemDropHandler> {
                         SlimefunUtils.setSoulbound(itemStack, true);
                         l.getWorld().dropItemNaturally(l, itemStack);
 
-                        SlimefunPlugin.getLocalization().sendMessage(p, "messages.soulbound-rune.success", true);
+                        Slimefun.getLocalization().sendMessage(p, "messages.soulbound-rune.success", true);
                     } else {
-                        SlimefunPlugin.getLocalization().sendMessage(p, "messages.soulbound-rune.fail", true);
+                        Slimefun.getLocalization().sendMessage(p, "messages.soulbound-rune.fail", true);
                     }
                 }, 10L);
             } else {
-                SlimefunPlugin.getLocalization().sendMessage(p, "messages.soulbound-rune.fail", true);
+                Slimefun.getLocalization().sendMessage(p, "messages.soulbound-rune.fail", true);
             }
         }
     }
@@ -105,11 +108,13 @@ public class SoulboundRune extends SimpleSlimefunItem<ItemDropHandler> {
      * This method checks whether a given {@link Entity} is an {@link Item} which can
      * be bound to a soul. We exclude the {@link SoulboundRune} itself and any already
      * {@link Soulbound} {@link Item}.
-     *
-     * @param entity The {@link Entity} to check
+     * 
+     * @param entity
+     *            The {@link Entity} to check
+     * 
      * @return Whether this {@link Entity} is compatible
      */
-    private boolean findCompatibleItem(Entity entity) {
+    private boolean findCompatibleItem(@Nonnull Entity entity) {
         if (entity instanceof Item) {
             Item item = (Item) entity;
 

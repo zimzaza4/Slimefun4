@@ -1,11 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.armor;
 
-import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -21,18 +18,25 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import javax.annotation.Nonnull;
+import io.github.bakedlibs.dough.protection.Interaction;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
 /**
  * The Boots of the Stomper are boots which damage nearby enemies whenever the {@link Player}
  * takes fall damage.
  *
  * @author TheBusyBiscuit
+ *
  */
 public class StomperBoots extends SlimefunItem {
 
-    public StomperBoots(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
-        super(category, item, recipeType, recipe);
+    @ParametersAreNonnullByDefault
+    public StomperBoots(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+        super(itemGroup, item, recipeType, recipe);
     }
 
     /**
@@ -41,7 +45,7 @@ public class StomperBoots extends SlimefunItem {
      * @param fallDamageEvent
      *            The {@link EntityDamageEvent} in which the {@link Player} has taken fall damage
      */
-    public void stomp(EntityDamageEvent fallDamageEvent) {
+    public void stomp(@Nonnull EntityDamageEvent fallDamageEvent) {
         Player player = (Player) fallDamageEvent.getEntity();
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, 1F, 2F);
         player.setVelocity(new Vector(0, 0.7, 0));
@@ -52,7 +56,7 @@ public class StomperBoots extends SlimefunItem {
                 entity.setVelocity(velocity);
 
                 // Check if it's not a Player or if PvP is enabled
-                if (!(entity instanceof Player) || (player.getWorld().getPVP() && SlimefunPlugin.getProtectionManager().hasPermission(player, entity.getLocation(), ProtectableAction.ATTACK_PLAYER))) {
+                if (!(entity instanceof Player) || (player.getWorld().getPVP() && Slimefun.getProtectionManager().hasPermission(player, entity.getLocation(), Interaction.ATTACK_PLAYER))) {
                     EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, entity, DamageCause.ENTITY_ATTACK, fallDamageEvent.getDamage() / 2);
                     Bukkit.getPluginManager().callEvent(event);
 
@@ -79,7 +83,8 @@ public class StomperBoots extends SlimefunItem {
      *
      * @return A {@link Vector} to determine the velocity for our {@link Entity}
      */
-    private Vector getShockwave(@Nonnull Location origin, @Nonnull Location target) {
+    @Nonnull
+    protected Vector getShockwave(@Nonnull Location origin, @Nonnull Location target) {
         // As the distance approaches zero we might slip into a "division by zero" when normalizing
         if (origin.distanceSquared(target) < 0.05) {
             return new Vector(0, 1, 0);
@@ -96,12 +101,13 @@ public class StomperBoots extends SlimefunItem {
      * collision with {@link LivingEntity#setCollidable(boolean)} or
      * gravity with {@link LivingEntity#setGravity(boolean)}.
      *
-     * @param entity The {@link LivingEntity} to check.
-     * @param player The {@link Player} using the {@link StomperBoots}.
+     * @param entity
+     *            The {@link LivingEntity} to check.
+     * @param player
+     *            The {@link Player} using the {@link StomperBoots}.
      * @return If the entity can move.
      */
     protected boolean canPush(@Nonnull Player player, @Nonnull LivingEntity entity) {
-        return entity.isValid() && !entity.getUniqueId().equals(player.getUniqueId())
-                && entity.isCollidable() && entity.hasGravity();
+        return entity.isValid() && !entity.getUniqueId().equals(player.getUniqueId()) && entity.isCollidable() && entity.hasGravity();
     }
 }

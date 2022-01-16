@@ -1,17 +1,13 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks;
 
-import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
-import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
-import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -20,19 +16,25 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import io.github.bakedlibs.dough.common.ChatColors;
+import io.github.bakedlibs.dough.common.CommonPatterns;
+import io.github.bakedlibs.dough.items.ItemUtils;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 
 /**
  * This abstract super class is responsible for some utility methods for machines which
  * are capable of upgrading backpacks.
- *
+ * 
  * @author TheBusyBiscuit
- *
+ * 
  * @see EnhancedCraftingTable
  * @see MagicWorkbench
  * @see ArmorForge
@@ -41,8 +43,8 @@ import java.util.UUID;
 abstract class AbstractCraftingTable extends MultiBlockMachine {
 
     @ParametersAreNonnullByDefault
-    AbstractCraftingTable(Category category, SlimefunItemStack item, ItemStack[] recipe, BlockFace trigger) {
-        super(category, item, recipe, trigger);
+    AbstractCraftingTable(ItemGroup itemGroup, SlimefunItemStack item, ItemStack[] recipe, BlockFace trigger) {
+        super(itemGroup, item, recipe, trigger);
     }
 
 
@@ -52,7 +54,7 @@ abstract class AbstractCraftingTable extends MultiBlockMachine {
         for (int j = 0; j < inv.getContents().length; j++) {
             ItemStack stack = inv.getContents()[j];
 
-            /**
+            /*
              * Fixes #2103 - Properly simulating the consumption
              * (which may leave behind empty buckets or glass bottles)
              */
@@ -104,7 +106,7 @@ abstract class AbstractCraftingTable extends MultiBlockMachine {
 
                     PlayerProfile.get(p, profile -> {
                         int backpackId = profile.createBackpack(size).getId();
-                        SlimefunPlugin.getBackpackListener().setBackpackId(p, output, target, backpackId);
+                        Slimefun.getBackpackListener().setBackpackId(p, output, target, backpackId);
                     });
 
                     break;
@@ -119,7 +121,7 @@ abstract class AbstractCraftingTable extends MultiBlockMachine {
             for (String line : backpack.getItemMeta().getLore()) {
                 if (line.startsWith(ChatColors.color("&7ID: ")) && line.contains("#")) {
                     String id = line.replace(ChatColors.color("&7ID: "), "");
-                    String[] idSplit = PatternUtils.HASH.split(id);
+                    String[] idSplit = CommonPatterns.HASH.split(id);
 
                     PlayerProfile.fromUUID(UUID.fromString(idSplit[0]), profile -> {
                         Optional<PlayerBackpack> optional = profile.getBackpack(Integer.parseInt(idSplit[1]));

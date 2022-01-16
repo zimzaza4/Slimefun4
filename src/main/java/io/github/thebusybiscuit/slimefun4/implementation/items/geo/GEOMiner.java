@@ -16,10 +16,14 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.bakedlibs.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.geo.GEOResource;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemState;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
 import io.github.thebusybiscuit.slimefun4.core.attributes.HologramOwner;
 import io.github.thebusybiscuit.slimefun4.core.attributes.MachineProcessHolder;
@@ -28,26 +32,23 @@ import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.core.machines.MachineProcessor;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.operations.MiningOperation;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu.AdvancedMenuClickHandler;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.interfaces.InventoryBlock;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 
 /**
  * The {@link GEOMiner} is an electrical machine that allows you to obtain a {@link GEOResource}.
- *
+ * 
  * @author TheBusyBiscuit
  *
  * @see GEOResource
@@ -67,8 +68,8 @@ public class GEOMiner extends SlimefunItem implements RecipeDisplayItem, EnergyN
     private int processingSpeed = -1;
 
     @ParametersAreNonnullByDefault
-    public GEOMiner(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
-        super(category, item, recipeType, recipe);
+    public GEOMiner(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+        super(itemGroup, item, recipeType, recipe);
 
         processor.setProgressBar(new ItemStack(Material.DIAMOND_PICKAXE));
         createPreset(this, getItemName(), this::constructMenu);
@@ -82,7 +83,7 @@ public class GEOMiner extends SlimefunItem implements RecipeDisplayItem, EnergyN
 
     /**
      * This method returns the max amount of electricity this machine can hold.
-     *
+     * 
      * @return The max amount of electricity this Block can store.
      */
     @Override
@@ -92,7 +93,7 @@ public class GEOMiner extends SlimefunItem implements RecipeDisplayItem, EnergyN
 
     /**
      * This method returns the amount of energy that is consumed per operation.
-     *
+     * 
      * @return The rate of energy consumption
      */
     public int getEnergyConsumption() {
@@ -103,7 +104,7 @@ public class GEOMiner extends SlimefunItem implements RecipeDisplayItem, EnergyN
      * This method returns the speed at which this machine will operate.
      * This can be implemented on an instantiation-level to create different tiers
      * of machines.
-     *
+     * 
      * @return The speed of this machine
      */
     public int getSpeed() {
@@ -114,10 +115,10 @@ public class GEOMiner extends SlimefunItem implements RecipeDisplayItem, EnergyN
      * This sets the energy capacity for this machine.
      * This method <strong>must</strong> be called before registering the item
      * and only before registering.
-     *
+     * 
      * @param capacity
      *            The amount of energy this machine can store
-     *
+     * 
      * @return This method will return the current instance of {@link GEOMiner}, so that can be chained.
      */
     public final GEOMiner setCapacity(int capacity) {
@@ -133,10 +134,10 @@ public class GEOMiner extends SlimefunItem implements RecipeDisplayItem, EnergyN
 
     /**
      * This sets the speed of this machine.
-     *
+     * 
      * @param speed
      *            The speed multiplier for this machine, must be above zero
-     *
+     * 
      * @return This method will return the current instance of {@link GEOMiner}, so that can be chained.
      */
     public final GEOMiner setProcessingSpeed(int speed) {
@@ -148,10 +149,10 @@ public class GEOMiner extends SlimefunItem implements RecipeDisplayItem, EnergyN
 
     /**
      * This method sets the energy consumed by this machine per tick.
-     *
+     * 
      * @param energyConsumption
      *            The energy consumed per tick
-     *
+     * 
      * @return This method will return the current instance of {@link GEOMiner}, so that can be chained.
      */
     public final GEOMiner setEnergyConsumption(int energyConsumption) {
@@ -233,9 +234,9 @@ public class GEOMiner extends SlimefunItem implements RecipeDisplayItem, EnergyN
     public List<ItemStack> getDisplayRecipes() {
         List<ItemStack> displayRecipes = new LinkedList<>();
 
-        for (GEOResource resource : SlimefunPlugin.getRegistry().getGEOResources().values()) {
+        for (GEOResource resource : Slimefun.getRegistry().getGEOResources().values()) {
             if (resource.isObtainableFromGEOMiner()) {
-                displayRecipes.add(new CustomItem(resource.getItem(), ChatColor.RESET + resource.getName()));
+                displayRecipes.add(new CustomItemStack(resource.getItem(), ChatColor.RESET + resource.getName()));
             }
         }
 
@@ -261,7 +262,7 @@ public class GEOMiner extends SlimefunItem implements RecipeDisplayItem, EnergyN
             preset.addItem(i, ChestMenuUtils.getOutputSlotTexture(), ChestMenuUtils.getEmptyClickHandler());
         }
 
-        preset.addItem(4, new CustomItem(Material.BLACK_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
+        preset.addItem(4, new CustomItemStack(Material.BLACK_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
 
         for (int i : OUTPUT_SLOTS) {
             preset.addMenuClickHandler(i, new AdvancedMenuClickHandler() {
@@ -310,7 +311,7 @@ public class GEOMiner extends SlimefunItem implements RecipeDisplayItem, EnergyN
                 removeCharge(b.getLocation(), getEnergyConsumption());
                 operation.addProgress(getSpeed());
             } else {
-                inv.replaceExistingItem(4, new CustomItem(Material.BLACK_STAINED_GLASS_PANE, " "));
+                inv.replaceExistingItem(4, new CustomItemStack(Material.BLACK_STAINED_GLASS_PANE, " "));
                 inv.pushItem(operation.getResult(), OUTPUT_SLOTS);
 
                 processor.endOperation(b);
@@ -323,9 +324,9 @@ public class GEOMiner extends SlimefunItem implements RecipeDisplayItem, EnergyN
     }
 
     private void start(@Nonnull Block b, @Nonnull BlockMenu inv) {
-        for (GEOResource resource : SlimefunPlugin.getRegistry().getGEOResources().values()) {
+        for (GEOResource resource : Slimefun.getRegistry().getGEOResources().values()) {
             if (resource.isObtainableFromGEOMiner()) {
-                OptionalInt optional = SlimefunPlugin.getGPSNetwork().getResourceManager().getSupplies(resource, b.getWorld(), b.getX() >> 4, b.getZ() >> 4);
+                OptionalInt optional = Slimefun.getGPSNetwork().getResourceManager().getSupplies(resource, b.getWorld(), b.getX() >> 4, b.getZ() >> 4);
 
                 if (!optional.isPresent()) {
                     updateHologram(b, "&4需要先进行地形扫描!");
@@ -339,14 +340,14 @@ public class GEOMiner extends SlimefunItem implements RecipeDisplayItem, EnergyN
                     }
 
                     processor.startOperation(b, new MiningOperation(resource.getItem().clone(), PROCESSING_TIME));
-                    SlimefunPlugin.getGPSNetwork().getResourceManager().setSupplies(resource, b.getWorld(), b.getX() >> 4, b.getZ() >> 4, supplies - 1);
+                    Slimefun.getGPSNetwork().getResourceManager().setSupplies(resource, b.getWorld(), b.getX() >> 4, b.getZ() >> 4, supplies - 1);
                     updateHologram(b, "&7开采中: &r" + resource.getName());
                     return;
                 }
             }
         }
 
-        updateHologram(b, "&7已完成");
+        updateHologram(b, "&7Finished");
     }
 
 }

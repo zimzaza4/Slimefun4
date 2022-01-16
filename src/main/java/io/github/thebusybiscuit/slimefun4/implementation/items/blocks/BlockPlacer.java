@@ -1,24 +1,17 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.blocks;
 
-import ren.natsuyuk1.utils.IntegrationHelper;
-import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
-import io.github.thebusybiscuit.slimefun4.api.events.BlockPlacerPlaceEvent;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
-import io.github.thebusybiscuit.slimefun4.api.items.settings.MaterialTagSetting;
-import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockDispenseHandler;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.handlers.VanillaInventoryDropHandler;
-import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
-import io.papermc.lib.PaperLib;
-import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import org.bukkit.*;
+import java.util.List;
+import java.util.UUID;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Nameable;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Dispenser;
@@ -28,19 +21,34 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
-import java.util.UUID;
+import io.github.bakedlibs.dough.protection.Interaction;
+import io.github.thebusybiscuit.slimefun4.api.events.BlockPlacerPlaceEvent;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.items.settings.MaterialTagSetting;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockDispenseHandler;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.handlers.VanillaInventoryDropHandler;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
+import io.papermc.lib.PaperLib;
+import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
+
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import ren.natsuyuk1.utils.IntegrationHelper;
 
 /**
  * The {@link BlockPlacer} is a machine which can place {@link Block Blocks}, as the name
  * would suggest.
  * It really just is a special type of {@link Dispenser} which places items instead of
  * shooting them.
- *
+ * 
  * @author TheBusyBiscuit
- *
+ * 
  * @see BlockPlacerPlaceEvent
  *
  */
@@ -49,8 +57,8 @@ public class BlockPlacer extends SlimefunItem {
     private final ItemSetting<List<String>> unplaceableBlocks = new MaterialTagSetting(this, "unplaceable-blocks", SlimefunTag.UNBREAKABLE_MATERIALS);
 
     @ParametersAreNonnullByDefault
-    public BlockPlacer(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
-        super(category, item, recipeType, recipe);
+    public BlockPlacer(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+        super(itemGroup, item, recipeType, recipe);
 
         addItemSetting(unplaceableBlocks);
 
@@ -100,7 +108,8 @@ public class BlockPlacer extends SlimefunItem {
                     if (!(item instanceof NotPlaceable)) {
                         placeSlimefunBlock(item, e.getItem(), facedBlock, dispenser);
                     }
-                } else {
+                } else if (!Slimefun.getIntegrations().isCustomItem(e.getItem())) {
+                    // Fixes #3218 - Prevent placement of custom items (ItemsAdder)
                     placeBlock(e.getItem(), facedBlock, dispenser);
                 }
             }
@@ -110,12 +119,12 @@ public class BlockPlacer extends SlimefunItem {
     /**
      * This checks whether the {@link Player} who placed down this {@link BlockPlacer} has
      * building permissions at that {@link Location}.
-     *
+     * 
      * @param dispenser
      *            The {@link Dispenser} who represents our {@link BlockPlacer}
      * @param target
      *            The {@link Block} where it should be placed
-     *
+     * 
      * @return Whether this action is permitted or not
      */
     @ParametersAreNonnullByDefault
@@ -133,15 +142,15 @@ public class BlockPlacer extends SlimefunItem {
 
         // Get the corresponding OfflinePlayer
         OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(owner));
-        return SlimefunPlugin.getProtectionManager().hasPermission(player, target, ProtectableAction.PLACE_BLOCK) && IntegrationHelper.checkPermission(player, target, ProtectableAction.PLACE_BLOCK);
+        return Slimefun.getProtectionManager().hasPermission(player, target, Interaction.PLACE_BLOCK) && IntegrationHelper.checkPermission(player, target, Interaction.PLACE_BLOCK);
     }
 
     /**
      * This checks if the given {@link Material} is allowed to be placed.
-     *
+     * 
      * @param type
      *            The {@link Material} to check
-     *
+     * 
      * @return Whether placing this {@link Material} is allowed
      */
     private boolean isAllowed(@Nonnull Block facedBlock, @Nonnull Material type) {
@@ -233,7 +242,7 @@ public class BlockPlacer extends SlimefunItem {
     @ParametersAreNonnullByDefault
     private void schedulePlacement(Block b, Inventory inv, ItemStack item, Runnable runnable) {
         // We need to delay this due to Dispenser-Inventory synchronization issues in Spigot.
-        SlimefunPlugin.runSync(() -> {
+        Slimefun.runSync(() -> {
             // Make sure the Block has not been occupied yet
             if (b.isEmpty()) {
                 // Only remove 1 item.

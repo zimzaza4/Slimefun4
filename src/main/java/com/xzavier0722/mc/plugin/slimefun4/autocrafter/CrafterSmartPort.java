@@ -1,17 +1,17 @@
 package com.xzavier0722.mc.plugin.slimefun4.autocrafter;
 
-import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
+import io.github.bakedlibs.dough.protection.Interaction;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
@@ -29,12 +29,12 @@ import ren.natsuyuk1.utils.IntegrationHelper;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class CrafterSmartPort extends SlimefunItem{
+public class CrafterSmartPort extends SlimefunItem {
 
     public static final int[] INPUT_SLOTS = {0,1,2,3,4,5,9,10,11,12,13,14,18,19,20,21,22,23,27,28,29,30,31,32,36,37,38,39,40,41,45,46,47,48,49,50};
     public static final int[] OUTPUT_SLOTS = {7,8,16,17,25,26,34,35,43,44,52,53};
 
-    public CrafterSmartPort(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    public CrafterSmartPort(ItemGroup category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
         new BlockMenuPreset("CRAFTER_SMART_PORT", "&a合成机智能交互接口") {
@@ -63,7 +63,7 @@ public class CrafterSmartPort extends SlimefunItem{
             @Override
             public boolean canOpen(@Nonnull Block b, @Nonnull Player p) {
                 return p.hasPermission("slimefun.inventory.bypass")
-                        || SlimefunPlugin.getProtectionManager().hasPermission(p,b.getLocation(), ProtectableAction.INTERACT_BLOCK) || IntegrationHelper.checkPermission(p, b, ProtectableAction.INTERACT_BLOCK);
+                        || (Slimefun.getProtectionManager().hasPermission(p,b.getLocation(), Interaction.INTERACT_BLOCK) && IntegrationHelper.checkPermission(p, b, Interaction.INTERACT_BLOCK));
             }
 
             @Override

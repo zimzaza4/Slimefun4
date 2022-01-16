@@ -1,28 +1,29 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.backpacks;
 
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
-import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.BackpackListener;
-import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.listeners.BackpackListener;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
+
 /**
  * This class represents a {@link SlimefunItem} that is considered a Backpack.
  * Right-Clicking will open the {@link Inventory} of the currently held Backpack.
- *
+ * 
  * @author TheBusyBiscuit
- *
+ * 
  * @see BackpackListener
  * @see PlayerBackpack
  *
@@ -32,15 +33,15 @@ public class SlimefunBackpack extends SimpleSlimefunItem<ItemUseHandler> {
     private final int size;
 
     @ParametersAreNonnullByDefault
-    public SlimefunBackpack(int size, Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
-        super(category, item, recipeType, recipe);
+    public SlimefunBackpack(int size, ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+        super(itemGroup, item, recipeType, recipe);
 
         this.size = size;
     }
 
     /**
      * This returns the size of this {@link SlimefunBackpack}.
-     *
+     * 
      * @return The size of this backpack
      */
     public int getSize() {
@@ -50,9 +51,13 @@ public class SlimefunBackpack extends SimpleSlimefunItem<ItemUseHandler> {
     /**
      * This method returns whether a given {@link ItemStack} is allowed to be stored
      * in this {@link SlimefunBackpack}.
-     *
-     * @param item               The {@link ItemStack} to check for
-     * @param itemAsSlimefunItem The same {@link ItemStack} as a {@link SlimefunItem}, might be null
+     * 
+     * @param item
+     *            The {@link ItemStack} to check for
+     * 
+     * @param itemAsSlimefunItem
+     *            The same {@link ItemStack} as a {@link SlimefunItem}, might be null
+     * 
      * @return Whether the given {@link ItemStack} is allowed to be put into this {@link SlimefunBackpack}
      */
     public boolean isItemAllowed(@Nonnull ItemStack item, @Nullable SlimefunItem itemAsSlimefunItem) {
@@ -69,7 +74,7 @@ public class SlimefunBackpack extends SimpleSlimefunItem<ItemUseHandler> {
         return e -> {
             e.cancel();
 
-            BackpackListener listener = SlimefunPlugin.getBackpackListener();
+            BackpackListener listener = Slimefun.getBackpackListener();
 
             if (listener != null) {
                 listener.openBackpack(e.getPlayer(), e.getItem(), this);

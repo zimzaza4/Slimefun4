@@ -1,7 +1,7 @@
 package me.mrCookieSlime.Slimefun.Objects;
 
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.UnregisterReason;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;

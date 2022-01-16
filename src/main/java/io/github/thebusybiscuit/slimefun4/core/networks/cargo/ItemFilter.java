@@ -1,28 +1,33 @@
 package io.github.thebusybiscuit.slimefun4.core.networks.cargo;
 
-import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.CargoNode;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import javax.annotation.Nonnull;
+
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
+
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.core.debug.Debug;
+import io.github.thebusybiscuit.slimefun4.core.debug.TestCase;
+import io.github.thebusybiscuit.slimefun4.implementation.items.cargo.CargoNode;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
+
+import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+
 /**
  * The {@link ItemFilter} is a performance-optimization for our {@link CargoNet}.
  * It is a snapshot of a cargo node's configuration.
- *
+ * 
  * @author TheBusyBiscuit
- *
+ * 
  * @see CargoNet
  * @see CargoNetworkTask
  *
@@ -58,7 +63,7 @@ class ItemFilter implements Predicate<ItemStack> {
     /**
      * This creates a new {@link ItemFilter} for the given {@link Block}.
      * This will copy all settings from that {@link Block} to this filter.
-     *
+     * 
      * @param b
      *            The {@link Block}
      */
@@ -69,7 +74,7 @@ class ItemFilter implements Predicate<ItemStack> {
     /**
      * This updates or refreshes the {@link ItemFilter} to copy the settings
      * from the given {@link Block}. It takes a new snapshot.
-     *
+     * 
      * @param b
      *            The {@link Block}
      */
@@ -77,7 +82,7 @@ class ItemFilter implements Predicate<ItemStack> {
         // Store the returned Config instance to avoid heavy calls
         Config blockData = BlockStorage.getLocationInfo(b.getLocation());
         String id = blockData.getString("id");
-        SlimefunItem item = SlimefunItem.getByID(id);
+        SlimefunItem item = SlimefunItem.getById(id);
         BlockMenu menu = BlockStorage.getInventory(b.getLocation());
 
         if (!(item instanceof CargoNode) || menu == null) {
@@ -128,7 +133,7 @@ class ItemFilter implements Predicate<ItemStack> {
     /**
      * This will clear the {@link ItemFilter} and reject <strong>any</strong>
      * {@link ItemStack}.
-     *
+     * 
      * @param rejectOnMatch
      *            Whether the item should be rejected on matches
      */
@@ -140,7 +145,7 @@ class ItemFilter implements Predicate<ItemStack> {
 
     /**
      * Whether this {@link ItemFilter} is outdated and needs to be refreshed.
-     *
+     * 
      * @return Whether the filter is outdated.
      */
     public boolean isDirty() {
@@ -156,7 +161,8 @@ class ItemFilter implements Predicate<ItemStack> {
 
     @Override
     public boolean test(@Nonnull ItemStack item) {
-        /**
+        Debug.log(TestCase.CARGO_INPUT_TESTING, "ItemFilter#test({})", item);
+        /*
          * An empty Filter does not need to be iterated over.
          * We can just return our default value in this scenario.
          */
@@ -179,7 +185,10 @@ class ItemFilter implements Predicate<ItemStack> {
             }
         }
 
-        if (potentialMatches != 0) {
+        if (potentialMatches == 0) {
+            // If there is no match, we can safely assume the default value
+            return rejectOnMatch;
+        } else {
             /*
              * If there is more than one potential match, create a wrapper to save
              * performance on the ItemMeta otherwise just use the item directly.
@@ -195,15 +204,15 @@ class ItemFilter implements Predicate<ItemStack> {
                     /*
                      * The filter has found a match, we can return the opposite
                      * of our default value. If we exclude items, this is where we
-                     * would return false. Otherwise we return true.
+                     * would return false. Otherwise, we return true.
                      */
                     return !rejectOnMatch;
                 }
             }
-        }
 
-        // If there is no match, we can safely assume the default value
-        return rejectOnMatch;
+            // If no particular item was matched, we fallback to our default value.
+            return rejectOnMatch;
+        }
     }
 
 }

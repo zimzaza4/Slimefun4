@@ -20,12 +20,13 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockUseHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
@@ -46,7 +47,7 @@ import me.mrCookieSlime.Slimefun.api.inventory.UniversalBlockMenu;
  */
 public class SlimefunItemInteractListener implements Listener {
 
-    public SlimefunItemInteractListener(@Nonnull SlimefunPlugin plugin) {
+    public SlimefunItemInteractListener(@Nonnull Slimefun plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -58,16 +59,21 @@ public class SlimefunItemInteractListener implements Listener {
                 return;
             }
 
+            boolean isOffHand = e.getHand() == EquipmentSlot.OFF_HAND;
+            ItemStack offHandItem = e.getPlayer().getInventory().getItemInOffHand();
+
+            if (isOffHand && !offHandItem.getType().isAir()) {
+                ItemStack main = e.getPlayer().getInventory().getItemInMainHand();
+                SlimefunItem sfItem = SlimefunItem.getByItem(main);
+
+                if (sfItem != null && !sfItem.getHandlers().isEmpty()) {
+                    e.setCancelled(true);
+                }
+            }
+
             // Fire our custom Event
             PlayerRightClickEvent event = new PlayerRightClickEvent(e);
             Bukkit.getPluginManager().callEvent(event);
-
-            boolean isOffHand = e.getHand() == EquipmentSlot.OFF_HAND;
-
-            // Judge whether player have slimefun item in offhand.
-            if (isOffHand && (SlimefunUtils.isItemSimilar(e.getItem(), SlimefunGuide.getItem(SlimefunGuideMode.SURVIVAL_MODE), true) || SlimefunUtils.isItemSimilar(e.getItem(), SlimefunGuide.getItem(SlimefunGuideMode.CHEAT_MODE), true))) {
-                e.setCancelled(true);
-            }
 
             // Only handle the Item if it hasn't been denied
             if (event.useItem() != Result.DENY) {
@@ -151,7 +157,7 @@ public class SlimefunItemInteractListener implements Listener {
                     if (menu.canOpen(clickedBlock, p)) {
                         menu.open(p);
                     } else {
-                        SlimefunPlugin.getLocalization().sendMessage(p, "inventory.no-access", true);
+                        Slimefun.getLocalization().sendMessage(p, "inventory.no-access", true);
                     }
                 } else if (BlockStorage.getStorage(clickedBlock.getWorld()).hasInventory(clickedBlock.getLocation())) {
                     BlockMenu menu = BlockStorage.getInventory(clickedBlock.getLocation());
@@ -159,7 +165,7 @@ public class SlimefunItemInteractListener implements Listener {
                     if (menu.canOpen(clickedBlock, p)) {
                         menu.open(p);
                     } else {
-                        SlimefunPlugin.getLocalization().sendMessage(p, "inventory.no-access", true);
+                        Slimefun.getLocalization().sendMessage(p, "inventory.no-access", true);
                     }
                 }
             }

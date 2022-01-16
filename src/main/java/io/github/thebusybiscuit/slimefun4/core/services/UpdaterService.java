@@ -1,38 +1,63 @@
 package io.github.thebusybiscuit.slimefun4.core.services;
 
-import io.github.thebusybiscuit.cscorelib2.config.Config;
-import io.github.thebusybiscuit.cscorelib2.updater.Updater;
-import io.github.thebusybiscuit.slimefun4.api.SlimefunBranch;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
-import org.bukkit.plugin.Plugin;
-
 import java.io.File;
 import java.util.logging.Level;
 
+import javax.annotation.Nonnull;
+
+import org.bukkit.plugin.Plugin;
+
+import io.github.bakedlibs.dough.config.Config;
+import io.github.bakedlibs.dough.updater.GitHubBuildsUpdater;
+import io.github.bakedlibs.dough.updater.PluginUpdater;
+import io.github.bakedlibs.dough.versions.PrefixedVersion;
+import io.github.thebusybiscuit.slimefun4.api.SlimefunBranch;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+
 /**
- * This Class represents our {@link Updater} Service.
+ * This Class represents our {@link PluginUpdater} Service.
  * If enabled, it will automatically connect to https://thebusybiscuit.github.io/builds/
  * to check for updates and to download them automatically.
  *
  * @author TheBusyBiscuit
+ *
  */
 public class UpdaterService {
 
-    private final SlimefunPlugin plugin;
-    private final Updater updater;
+    /**
+     * Our {@link Slimefun} instance.
+     */
+    private final Slimefun plugin;
 
     /**
-     * This will create a new {@link UpdaterService} for the given {@link SlimefunPlugin}.
+     * Our {@link PluginUpdater} implementation.
+     */
+    private final PluginUpdater<PrefixedVersion> updater;
+
+    /**
+     * The {@link SlimefunBranch} we are currently on.
+     * If this is an official {@link SlimefunBranch}, auto updates will be enabled.
+     */
+    private final SlimefunBranch branch;
+
+    /**
+     * This will create a new {@link UpdaterService} for the given {@link Slimefun}.
      * The {@link File} should be the result of the getFile() operation of that {@link Plugin}.
      *
-     * @param plugin  The instance of Slimefun
-     * @param version The current version of Slimefun
-     * @param file    The {@link File} of this {@link Plugin}
+     * @param plugin
+     *            The instance of Slimefun
+     * @param version
+     *            The current version of Slimefun
+     * @param file
+     *            The {@link File} of this {@link Plugin}
      */
-    public UpdaterService(SlimefunPlugin plugin, String version, File file) {
+    public UpdaterService(@Nonnull Slimefun plugin, @Nonnull String version, @Nonnull File file) {
         this.plugin = plugin;
-        this.updater = null;
+        GitHubBuildsUpdater autoUpdater = null;
+
+        branch = SlimefunBranch.UNOFFICIAL;
+
+        this.updater = autoUpdater;
     }
 
     /**
@@ -42,8 +67,8 @@ public class UpdaterService {
      *
      * @return The branch this build of Slimefun is on.
      */
-    public SlimefunBranch getBranch() {
-        return SlimefunBranch.UNOFFICIAL;
+    public @Nonnull SlimefunBranch getBranch() {
+        return branch;
     }
 
     /**
@@ -54,8 +79,10 @@ public class UpdaterService {
      * @return The build number of this Slimefun.
      */
     public int getBuildNumber() {
-        if (updater != null && PatternUtils.NUMERIC.matcher(this.updater.getLocalVersion()).matches())
-            return Integer.parseInt(this.updater.getLocalVersion());
+        if (updater != null) {
+            PrefixedVersion version = updater.getCurrentVersion();
+            return version.getVersionNumber();
+        }
 
         return -1;
     }
@@ -68,14 +95,14 @@ public class UpdaterService {
     }
 
     /**
-     * This returns whether the {@link Updater} is enabled or not.
+     * This returns whether the {@link PluginUpdater} is enabled or not.
      * This includes the {@link Config} setting but also whether or not we are running an
      * official or unofficial build.
      *
-     * @return Whether the {@link Updater} is enabled
+     * @return Whether the {@link PluginUpdater} is enabled
      */
     public boolean isEnabled() {
-        return false;
+        return Slimefun.getCfg().getBoolean("options.auto-update") && updater != null;
     }
 
     /**
