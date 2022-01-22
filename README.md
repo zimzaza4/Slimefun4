@@ -47,7 +47,7 @@ Slimefun 让每个玩家可以自己决定在魔法或科技方面发展<br>
 * **[FAQ](https://slimefun.guizhanss.wiki/FAQ)**
 
 ## :floppy_disk: 下载 Slimefun4
-(可以查看: [如何安装 Slimefun](https://slimefun.guizhanss.wiki/#/Installing-Slimefun))
+(可以查看: [如何安装 Slimefun](https://slimefun.guizhanss.wiki/Installing-Slimefun))
 
 Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 目前汉化版仅提供了官方开发版的选项, 但某些发布的版本会被标记为官方的 "稳定" 版.<br>
@@ -94,8 +94,8 @@ Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 
 ## :open_book: Wiki
 Slimefun 有一个 (详细且经常维护的 - *咳咳*) Wiki 为新玩家准备, 
-你也可以考虑为 Wiki 的编写献出一份力量.
-官方 Wiki: https://github.com/Slimefun/Slimefun4/wiki
+你也可以考虑为 Wiki 的编写献出一份力量.  
+官方 Wiki: https://github.com/Slimefun/Slimefun4/wiki  
 非官方中文 Wiki: https://slimefun.guizhanss.wiki/
 
 #### :star: 有用的文章 (中文)

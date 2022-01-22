@@ -53,7 +53,7 @@ class TestSlimefunItem {
 
         Optional<String> wiki = item.getWikipage();
         Assertions.assertTrue(wiki.isPresent());
-        Assertions.assertEquals("https://slimefun.guizhanss.wiki/#/Test", wiki.get());
+        Assertions.assertEquals("https://slimefun.guizhanss.wiki/Test", wiki.get());
     }
 
     @Test
