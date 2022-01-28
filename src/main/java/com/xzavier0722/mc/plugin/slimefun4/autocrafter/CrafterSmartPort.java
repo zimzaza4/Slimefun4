@@ -24,7 +24,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import ren.natsuyuk1.utils.IntegrationHelper;
+import ren.natsuyuk1.slimefunextra.IntegrationHelper;
 
 import javax.annotation.Nonnull;
 import java.util.List;

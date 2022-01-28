@@ -52,7 +52,7 @@ import io.github.thebusybiscuit.slimefun4.utils.itemstack.SlimefunGuideItem;
 
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu.MenuClickHandler;
-import ren.natsuyuk1.utils.VaultHelper;
+import ren.natsuyuk1.slimefunextra.VaultHelper;
 
 /**
  * The {@link SurvivalSlimefunGuide} is the standard version of our {@link SlimefunGuide}.

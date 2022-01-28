@@ -15,7 +15,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import io.github.thebusybiscuit.slimefun4.implementation.tasks.AncientPedestalTask;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -117,6 +116,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.setup.SlimefunItemSetup
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.ArmorTask;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.SlimefunStartupTask;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.TickerTask;
+import io.github.thebusybiscuit.slimefun4.implementation.tasks.AncientPedestalTask;
 import io.github.thebusybiscuit.slimefun4.integrations.IntegrationsManager;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
@@ -125,10 +125,7 @@ import io.papermc.lib.PaperLib;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.MenuListener;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.UniversalBlockMenu;
-import ren.natsuyuk1.utils.DeprecationChecker;
-import ren.natsuyuk1.utils.IntegrationHelper;
-import ren.natsuyuk1.utils.NUpdater;
-import ren.natsuyuk1.utils.VaultHelper;
+import ren.natsuyuk1.slimefunextra.*;
 
 /**
  * This is the main class of Slimefun.
@@ -194,7 +191,7 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon {
     private final BackpackListener backpackListener = new BackpackListener();
     private final SlimefunBowListener bowListener = new SlimefunBowListener();
 
-    private NUpdater customUpdater;
+    private SlimefunUpdater customUpdater;
 
     /**
      * Our default constructor for {@link Slimefun}.
@@ -309,11 +306,6 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon {
 
         DeprecationChecker.checkDeprecation(this);
 
-        // 魔改的自动更新服务
-        // 自动选择分支
-        customUpdater = new NUpdater(this);
-        customUpdater.autoSelectBranch();
-
         // Registering all GEO Resources
         logger.log(Level.INFO, "加载矿物资源...");
         GEOResourcesSetup.setup();
@@ -373,18 +365,10 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon {
         logger.log(Level.INFO, "正在加载第三方插件支持...");
         integrations.start();
 
-        VaultHelper.register();
-
         gitHubService.start(this);
 
         // Hooray!
         logger.log(Level.INFO, "Slimefun 完成加载, 耗时 {0}", getStartupTime(timestamp));
-
-        if (config.getBoolean("options.auto-update") || config.getBoolean("options.update-check")) {
-            if (customUpdater.isStable()) {
-                Bukkit.getServer().getScheduler().runTaskAsynchronously(instance, customUpdater::checkUpdate);
-            }
-        }
     }
 
     @Override
@@ -656,7 +640,8 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon {
             new SmithingTableListener(this);
         }
 
-        new IntegrationHelper(this);
+        // Inject downstream extra staff
+        SlimefunExtra.register(this);
 
         // Item-specific Listeners
         new CoolerListener(this, (Cooler) SlimefunItems.COOLER.getItem());

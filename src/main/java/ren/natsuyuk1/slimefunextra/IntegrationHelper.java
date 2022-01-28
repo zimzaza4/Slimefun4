@@ -1,4 +1,4 @@
-package ren.natsuyuk1.utils;
+package ren.natsuyuk1.slimefunextra;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.containers.Flags;
@@ -7,11 +7,12 @@ import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import com.bekvon.bukkit.residence.protection.ResidencePermissions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
 import io.github.bakedlibs.dough.protection.ActionType;
 import io.github.bakedlibs.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.api.events.AndroidMineEvent;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.JsonUtils;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -46,7 +47,11 @@ public class IntegrationHelper implements Listener {
     private static Object shopAPI = null;
     private static Logger logger;
 
-    public IntegrationHelper(@Nonnull Slimefun plugin) {
+    private static final IntegrationHelper instance = new IntegrationHelper();
+
+    private IntegrationHelper() {}
+
+    public static void register(@Nonnull Slimefun plugin) {
         resInstalled = plugin.getServer().getPluginManager().getPlugin(RESIDENCE) != null;
         qsInstalled = plugin.getServer().getPluginManager().getPlugin(QUICKSHOP) != null;
         logger = plugin.getLogger();
@@ -64,7 +69,7 @@ public class IntegrationHelper implements Listener {
 
         logger.log(Level.INFO, "检测到领地插件, 相关功能已开启");
 
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        plugin.getServer().getPluginManager().registerEvents(instance, plugin);
     }
 
     @EventHandler
@@ -136,7 +141,7 @@ public class IntegrationHelper implements Listener {
 
     public static UUID getOwnerFromJson(String json) {
         if (json != null) {
-            JsonElement element = JsonParser.parseString(json);
+            JsonElement element = JsonUtils.parseString(json);
             if (!element.isJsonNull()) {
                 JsonObject object = element.getAsJsonObject();
                 return UUID.fromString(object.get("owner").getAsString());

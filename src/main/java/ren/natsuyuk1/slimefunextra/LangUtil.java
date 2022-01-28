@@ -1,4 +1,4 @@
-package ren.natsuyuk1.utils;
+package ren.natsuyuk1.slimefunextra;
 
 import io.papermc.lib.PaperLib;
 import org.bukkit.plugin.Plugin;

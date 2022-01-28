@@ -1,4 +1,4 @@
-package ren.natsuyuk1.utils;
+package ren.natsuyuk1.slimefunextra;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
