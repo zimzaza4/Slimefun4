@@ -5,8 +5,6 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -59,28 +57,18 @@ public class SlimefunItemInteractListener implements Listener {
                 return;
             }
 
-            boolean isOffHand = e.getHand() == EquipmentSlot.OFF_HAND;
-            ItemStack offHandItem = e.getPlayer().getInventory().getItemInOffHand();
-
-            if (isOffHand && !offHandItem.getType().isAir()) {
-                ItemStack main = e.getPlayer().getInventory().getItemInMainHand();
-                SlimefunItem sfItem = SlimefunItem.getByItem(main);
-
-                if (sfItem != null && !sfItem.getHandlers().isEmpty()) {
-                    e.setCancelled(true);
-                }
-            }
-
             // Fire our custom Event
             PlayerRightClickEvent event = new PlayerRightClickEvent(e);
             Bukkit.getPluginManager().callEvent(event);
 
+            boolean itemUsed = e.getHand() == EquipmentSlot.OFF_HAND;
+
             // Only handle the Item if it hasn't been denied
             if (event.useItem() != Result.DENY) {
-                rightClickItem(e, event, isOffHand);
+                rightClickItem(e, event, itemUsed);
             }
 
-            if (!isOffHand && event.useBlock() != Result.DENY && !rightClickBlock(event)) {
+            if (!itemUsed && event.useBlock() != Result.DENY && !rightClickBlock(event)) {
                 return;
             }
 
