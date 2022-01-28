@@ -191,8 +191,6 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon {
     private final BackpackListener backpackListener = new BackpackListener();
     private final SlimefunBowListener bowListener = new SlimefunBowListener();
 
-    private SlimefunUpdater customUpdater;
-
     /**
      * Our default constructor for {@link Slimefun}.
      */
