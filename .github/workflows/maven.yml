@@ -41,7 +41,6 @@ jobs:
       with:
         name: Slimefun.jar
         path: staging
-      if: github.event_name != 'pull_request'
     - name: Automatic Releases
       uses: marvinpinto/action-automatic-releases@v1.2.1
       if: github.event_name != 'pull_request'
