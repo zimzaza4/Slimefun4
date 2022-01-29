@@ -1,10 +1,12 @@
 package ren.natsuyuk1.slimefunextra;
 
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
-import kong.unirest.UnirestException;
+
+import java.util.logging.Level;
 
 public class UpdateChecker {
     private static final String UPDATE_CHECK_URL = "https://gitee.com/api/v5/repos/StarWishsama/Slimefun4/releases/latest";
@@ -18,29 +20,36 @@ public class UpdateChecker {
             if (response.isSuccess()) {
                 JsonNode node = response.getBody();
 
-                String versionCode = node.getObject().getString("tag_name");
-
                 if (Slimefun.instance() != null) {
-                    String currentVersion = Slimefun.instance().getDescription().getVersion();
-                    String currentYear = currentVersion.split("\\.")[0];
-                    String currentMonth = currentVersion.split("\\.")[1];
+                    String latestVersionCode = node.getObject().getString("tag_name");
+                    String currentVersion = Slimefun.getVersion();
 
-                    if (currentVersion.contains("exp")) {
+                    // Only available for release user
+                    if (!currentVersion.contains("release")) {
                         return;
                     }
 
+                    String currentYear = latestVersionCode.split("\\.")[0];
+                    String currentMonth = latestVersionCode.split("\\.")[1];
+
                     // Get last string
-                    String actualVersionCode = currentVersion.split("-")[2];
+                    String[] versionCodeSplit = currentVersion.split("-");
+                    String actualVersionCode = versionCodeSplit[versionCodeSplit.length - 1];
+
                     String year = actualVersionCode.split("\\.")[0];
                     String month = actualVersionCode.split("\\.")[1];
 
-                    if (Integer.parseInt(year) > Integer.parseInt(currentYear)
+                    if (Integer.parseInt(currentYear) > Integer.parseInt(year)
                             || (Integer.parseInt(year) == Integer.parseInt(currentYear)
-                            && Integer.parseInt(month) > Integer.parseInt(currentMonth))) {
-                        Slimefun.logger().info("新版本 " + versionCode + " 已发布，请前往 https://gitee.com/StarWishsama/Slimefun4/releases 更新.");
+                            && Integer.parseInt(currentMonth) > Integer.parseInt(month))) {
+                        Slimefun.logger().info("新版本 " + latestVersionCode + " 已发布，请前往 https://gitee.com/StarWishsama/Slimefun4/releases 更新.");
+                    } else {
+                        Slimefun.logger().info("你正在使用最新版本 " + currentVersion + ".");
                     }
                 }
             }
-        } catch (UnirestException ignored) {}
+        } catch (Exception e) {
+            Slimefun.logger().log(Level.WARNING, "在检查更新时发生错误", e);
+        }
     }
 }
