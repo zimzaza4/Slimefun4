@@ -51,7 +51,7 @@ guide:
   tooltips:
     open-itemgroup: '单击打开'
     versions-notice: '在反馈问题时这些很重要!'
-    wiki: '在官方 Slimefun 维基上查看此物品'
+    wiki: '在非官方中文 Slimefun 维基上查看此物品'
     recipes:
       machine: '此机器可用的合成配方'
       miner: '此采矿机可以获得的资源'
