@@ -1,0 +1,77 @@
+name: Bug 反馈
+description: 反馈 Slimefun 4 使用中遇到的问题和 Bug
+title: "[Bug] "
+body:
+  - type: checkboxes
+    id: ensure
+    attributes:
+      label: Verify steps
+      description: "
+在提交问题之前，请确认
+"
+      options:
+        - label: "
+如果你可以自己 debug 并解决的话，提交 PR 吧
+"
+          required: true
+        - label: "
+我已经在 [Issue Tracker](……/) 中找过我要提出的问题
+"
+          required: true
+        - label: "
+我已经使用开发版测试过，问题依旧存在
+"
+          required: true
+        - label: "
+这是 Slimefun 汉化版的问题，并非我所使用的 Slimefun 衍生版本（如第三方魔改版）的特定问题
+"
+          required: true
+  - type: input
+    attributes:
+      label: Slimefun 版本
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: 你的服务端类型
+      options:
+        - Spigot
+        - Paper
+        - Purpur
+        - Airplane
+        - 其他 (请在下方提供)
+  - id: minecraft-version
+    type: dropdown
+    validations:
+      required: true
+    attributes:
+      label: '🎮 Minecraft 版本'
+      description: '请选择 Minecraft 版本'
+      options:
+        - 1.18.x
+        - 1.17.x
+        - 1.16.x
+        - 1.15.x
+        - 1.14.x
+  - type: textarea
+    attributes:
+      render: yaml
+      label: "描述你的问题"
+      description: "
+在下方描述问题的具体内容及其复现步骤
+"
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      render: shell
+      label: Clash log
+      description: "
+在下方附上 Slimefun 的日志.
+"
+  - type: textarea
+    attributes:
+      label: Description
+    validations:
+      required: true
