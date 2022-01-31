@@ -2,14 +2,6 @@ name: Bug 反馈
 description: 反馈与 Slimefun 汉化版相关的问题
 labels: ["🐞 Bug"]
 body:
-  - type: markdown
-    attributes:
-      value: |
-        ## 👋 欢迎来到 Slimefun 汉化版 Bug 追踪器
-        如果你在定位问题时需要帮助, 欢迎加入我们的 [QQ 群](https://jq.qq.com/?_wv=1027&k=ESbsepYt) 了解别人是否有相同的问题.
-        同样请先看看 [故障排查指南](https://slimefun.guizhanss.wiki/#/How-to-report-bugs) 和 [已知问题列表(官方)](https://github.com/Slimefun/Slimefun4/issues).
-        <br /><strong><i>标注星号 (*) 的问题必须填写.</i></strong>
-        <br />
   - id: checklist
     type: checkboxes
     attributes:
