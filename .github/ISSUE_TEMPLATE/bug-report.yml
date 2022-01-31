@@ -1,6 +1,6 @@
 name: Bug 反馈
 description: 反馈与 Slimefun 汉化版相关的问题
-labels: ["💭 Unconfirmed | 未确认", "🐞 Bug"]
+labels: ["🐞 Bug"]
 
 body:
   - type: markdown
