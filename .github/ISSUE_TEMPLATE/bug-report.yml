@@ -32,7 +32,7 @@ body:
     validations:
       required: true
   - type: dropdown
-    id: os
+    id: server-software
     attributes:
       label: 你的服务端类型
       options:
@@ -55,6 +55,7 @@ body:
         - 1.15.x
         - 1.14.x
   - type: textarea
+    id: description
     attributes:
       render: yaml
       label: "描述你的问题"
