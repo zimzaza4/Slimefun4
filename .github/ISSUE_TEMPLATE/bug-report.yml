@@ -34,8 +34,6 @@ body:
       description: |
         清晰并详细地描述你所遇到的问题.
         你提供的信息越详细, 我们处理这个问题就会更容易.
-      placeholder: |
-        当我在 [...] 的时候出现了 [...], 我十分确信这不应该发生而且应该被修复.
 
   - id: reproduction-steps
     type: textarea
@@ -45,10 +43,6 @@ body:
       label: '📑 复现步骤'
       description: |
         详细描述如何复现这个问题, 越详细越容易复现.
-      placeholder: |
-        1. 首先 [...]
-        2. 然后 [...]
-        3. 现在 [...] 问题发生了
 
   - id: expected-behaviour
     type: textarea
@@ -59,8 +53,6 @@ body:
       description: |
         你认为会发生什么?
         你觉得它正确工作的时候应该是怎样的?
-      placeholder: |
-        我希望 [...].
 
   - id: media
     type: textarea
@@ -69,8 +61,6 @@ body:
       description: |
         阐述问题的最好方式就是录制一段视频或者截图.
         录制复现的全程有助于我们复现问题.
-      placeholder: |
-        将图片或视频拖进这里可以上传.
 
   - id: server-log
     type: input
@@ -79,7 +69,6 @@ body:
       description: |
         查看服务器日志并通过储存 Log 的网站 (例如 https://textbin.net/) 上传任何关于 Slimefun 的报错信息.
         如果你不确定是哪一段报错, 可以直接将服务器下的 /logs/latest.log 上传到这里
-      placeholder: https://textbin.net/...
 
   - id: error-reports
     type: input
@@ -87,7 +76,6 @@ body:
       label: '📂 `/error-reports/` 问题'
       description: |
         检查一下 `/plugins/Slimefun/error-reports/` 是否有文件. 如果有, 可以上传到这里.
-      placeholder: https://textbin.net/...
 
   - id: server-software
     type: dropdown
@@ -101,7 +89,6 @@ body:
         - Paper
         - Purpur
         - Airplane
-        - 其他 (请在问题描述里写明)
 
   - id: minecraft-version
     type: dropdown
