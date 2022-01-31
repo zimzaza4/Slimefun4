@@ -37,15 +37,39 @@ body:
         - Spigot
         - Purpur
         - 其他 (下面注明)
-  - type: textarea
-    attributes:
-      render: shell
-      label: log
-      description: "
-请在下方描述你的问题及其复现方式
-"
-  - type: textarea
-    attributes:
-      label: Description
+  - id: description
+    type: textarea
     validations:
       required: true
+    attributes:
+      label: '📍 问题描述'
+      description: |
+        清晰并详细地描述你所遇到的问题.
+        你提供的信息越详细, 我们处理这个问题就会更容易.
+
+  - id: reproduction-steps
+    type: textarea
+    validations:
+      required: true
+    attributes:
+      label: '📑 复现步骤'
+      description: |
+        详细描述如何复现这个问题, 越详细越容易复现.
+
+  - id: expected-behaviour
+    type: textarea
+    validations:
+      required: true
+    attributes:
+      label: '💡 期望行为'
+      description: |
+        你认为会发生什么?
+        你觉得它正确工作的时候应该是怎样的?
+
+  - id: media
+    type: textarea
+    attributes:
+      label: '📷 截图 / 视频'
+      description: |
+        阐述问题的最好方式就是录制一段视频或者截图.
+        录制复现的全程有助于我们复现问题.
