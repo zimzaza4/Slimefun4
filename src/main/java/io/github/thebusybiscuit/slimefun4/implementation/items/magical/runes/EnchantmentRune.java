@@ -99,6 +99,7 @@ public class EnchantmentRune extends SimpleSlimefunItem<ItemDropHandler> {
         if (optional.isPresent()) {
             Item item = (Item) optional.get();
             ItemStack itemStack = item.getItemStack();
+            ItemStack runeStack = rune.getItemStack();
 
             List<Enchantment> potentialEnchantments = applicableEnchantments.get(itemStack.getType());
 
@@ -145,10 +146,15 @@ public class EnchantmentRune extends SimpleSlimefunItem<ItemDropHandler> {
                         item.remove();
                         rune.remove();
 
-                        itemStack.addEnchantment(enchantment, level);
-                        l.getWorld().dropItemNaturally(l, itemStack);
+                        if (enchantment.canEnchantItem(itemStack)) {
+                            itemStack.addEnchantment(enchantment, level);
+                            Slimefun.getLocalization().sendMessage(p, "messages.enchantment-rune.success", true);
+                        } else {
+                            l.getWorld().dropItemNaturally(l, runeStack);
+                            Slimefun.getLocalization().sendMessage(p, "messages.enchantment-rune.fail", true);
+                        }
 
-                        Slimefun.getLocalization().sendMessage(p, "messages.enchantment-rune.success", true);
+                        l.getWorld().dropItemNaturally(l, itemStack);
                     }
                 }, 10L);
             } else {
