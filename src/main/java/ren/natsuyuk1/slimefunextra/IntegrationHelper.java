@@ -80,7 +80,8 @@ public class IntegrationHelper implements Listener {
             String location = androidLoc.getWorld().getName() + " [" + androidLoc.getBlockX() + "," + androidLoc.getBlockY() + "," + androidLoc.getBlockZ() + "]";
 
             if (p == null) {
-                logger.log(Level.FINE, "检测到在 " + location + " 有机器人尝试挖矿, 但无法获取其主人");
+                logger.log(Level.WARNING, "检测到在 " + location + " 有机器人尝试挖矿, 但无法获取其主人");
+                e.setCancelled(true);
                 return;
             }
 
