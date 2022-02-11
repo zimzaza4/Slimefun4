@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 
 import io.github.bakedlibs.dough.protection.ActionType;
 import io.github.bakedlibs.dough.protection.Interaction;
+import io.github.thebusybiscuit.slimefun4.api.events.AndroidFarmEvent;
 import io.github.thebusybiscuit.slimefun4.api.events.AndroidMineEvent;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.utils.JsonUtils;
@@ -19,6 +20,7 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.maxgamer.quickshop.api.QuickShopAPI;
@@ -73,27 +75,42 @@ public class IntegrationHelper implements Listener {
     }
 
     @EventHandler
+    public void onAndroidFarm(AndroidFarmEvent e) {
+        handleAndroidBreak(e.getAndroid().getBlock(), e);
+    }
+
+    @EventHandler
     public void onAndroidMine(AndroidMineEvent e) {
-        if (e != null) {
-            Player p = Bukkit.getPlayer(getOwnerFromJson(BlockStorage.getBlockInfoAsJson(e.getAndroid().getBlock())));
-            Location androidLoc = e.getAndroid().getBlock().getLocation();
-            String location = androidLoc.getWorld().getName() + " [" + androidLoc.getBlockX() + "," + androidLoc.getBlockY() + "," + androidLoc.getBlockZ() + "]";
+        handleAndroidBreak(e.getAndroid().getBlock(), e);
+    }
 
-            if (p == null) {
-                logger.log(Level.WARNING, "检测到在 " + location + " 有机器人尝试挖矿, 但无法获取其主人");
-                e.setCancelled(true);
-                return;
-            }
+    /**
+     * 处理机器人破坏方块
+     *
+     * @param android 机器人方块实例
+     * @param event 机器人破坏事件
+     */
+    private void handleAndroidBreak(@Nonnull Block android, @Nonnull Cancellable event) {
+        try {
+            OfflinePlayer p = Bukkit.getOfflinePlayer(getOwnerFromJson(BlockStorage.getBlockInfoAsJson(android)));
 
-            if (!checkPermission(p, e.getBlock(), Interaction.BREAK_BLOCK)) {
-                e.setCancelled(true);
-                Slimefun.getLocalization().sendMessage(p, "android.no-permission");
+            if (!checkPermission(p, android, Interaction.BREAK_BLOCK)) {
+                event.setCancelled(true);
+                if (p.isOnline() && p.getPlayer() != null) {
+                    Slimefun.getLocalization().sendMessage(p.getPlayer(), "android.no-permission");
+                }
             }
+        } catch (Exception x) {
+            Slimefun.logger().log(Level.WARNING, "在处理机器人破坏方块时遇到了意外", x);
         }
     }
 
     /**
      * 检查是否可以在领地内破坏/交互方块
+     *
+     * 领地已支持 Slimefun
+     *
+     * 详见: https://github.com/Zrips/Residence/blob/master/src/com/bekvon/bukkit/residence/slimeFun/SlimeFunResidenceModule.java
      *
      * @param p      玩家
      * @param block  被破坏的方块
@@ -112,28 +129,33 @@ public class IntegrationHelper implements Listener {
                 return true;
             }
 
+            Player onlinePlayer = p.getPlayer();
+
+            if (onlinePlayer == null) {
+                return false;
+            }
+
+            if (onlinePlayer.hasPermission("residence.admin")) {
+                return true;
+            }
+
             ResidencePermissions perms = res.getPermissions();
 
             if (perms != null) {
-                Player online = p.getPlayer();
-
-                if (action.getType() == ActionType.BLOCK && perms.playerHas(online, Flags.admin, FlagPermissions.FlagCombo.OnlyTrue)) {
+                if (action.getType() == ActionType.BLOCK && perms.playerHas(onlinePlayer, Flags.admin, FlagPermissions.FlagCombo.OnlyTrue)) {
                     return true;
                 }
 
                 switch (action) {
                     case BREAK_BLOCK:
-                        return perms.playerHas(online, Flags.destroy, FlagPermissions.FlagCombo.OnlyTrue);
+                        return perms.playerHas(onlinePlayer, Flags.destroy, FlagPermissions.FlagCombo.OnlyTrue);
                     case INTERACT_BLOCK:
-                        // 领地已支持 Slimefun
-                        // 详见
-                        // https://github.com/Zrips/Residence/blob/master/src/com/bekvon/bukkit/residence/slimeFun/SlimeFunResidenceModule.java
-                        return perms.playerHas(online, Flags.container, FlagPermissions.FlagCombo.OnlyTrue);
+                        return perms.playerHas(onlinePlayer, Flags.container, FlagPermissions.FlagCombo.OnlyTrue);
                     case PLACE_BLOCK:
                         // move 是为了机器人而检查的, 防止机器人跑进别人领地然后还出不来
-                        return perms.playerHas(online, Flags.place, FlagPermissions.FlagCombo.OnlyTrue)
-                                || perms.playerHas(online, Flags.build, FlagPermissions.FlagCombo.OnlyTrue)
-                                && perms.playerHas(online, Flags.move, FlagPermissions.FlagCombo.TrueOrNone);
+                        return perms.playerHas(onlinePlayer, Flags.place, FlagPermissions.FlagCombo.OnlyTrue)
+                                || perms.playerHas(onlinePlayer, Flags.build, FlagPermissions.FlagCombo.OnlyTrue)
+                                && perms.playerHas(onlinePlayer, Flags.move, FlagPermissions.FlagCombo.TrueOrNone);
                 }
             }
         }
