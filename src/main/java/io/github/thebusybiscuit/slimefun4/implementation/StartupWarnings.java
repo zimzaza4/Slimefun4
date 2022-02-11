@@ -62,13 +62,13 @@ final class StartupWarnings {
         int javaVersion = NumberUtils.getJavaVersion();
 
         logger.log(Level.WARNING, BORDER);
-        logger.log(Level.WARNING, PREFIX + "正在使用的Java版本 (Java {0}) 已过时。", javaVersion);
+        logger.log(Level.WARNING, PREFIX + "正在使用的 Java 版本 (Java {0}) 已过时.", javaVersion);
         logger.log(Level.WARNING, PREFIX);
-        logger.log(Level.WARNING, PREFIX + "由于高版本MC对 Java {0} 的强制依赖，", recommendedJavaVersion);
-        logger.log(Level.WARNING, PREFIX + "我们推荐您尽快升级到 Java {0}。", recommendedJavaVersion);
-        logger.log(Level.WARNING, PREFIX + "同时，为尽快使用到新版本Java带来的特性，");
-        logger.log(Level.WARNING, PREFIX + "Slimefun 也会在不久的将来依赖于 Java {0}。", recommendedJavaVersion);
-        logger.log(Level.WARNING, PREFIX + "为了不影响您以后的正常使用，请尽快更新！");
+        logger.log(Level.WARNING, PREFIX + "由于高版本 Minecraft 对 Java {0} 的强制依赖,", recommendedJavaVersion);
+        logger.log(Level.WARNING, PREFIX + "我们推荐您尽快升级到 Java {0}.", recommendedJavaVersion);
+        logger.log(Level.WARNING, PREFIX + "同时，为尽快使用到新版本Java带来的特性,");
+        logger.log(Level.WARNING, PREFIX + "Slimefun 也会在不久的将来依赖于 Java {0}.", recommendedJavaVersion);
+        logger.log(Level.WARNING, PREFIX + "为了不影响您以后的正常使用，请尽快更新!");
         logger.log(Level.WARNING, BORDER);
     }
 

@@ -259,7 +259,7 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon {
         if (PaperLib.isPaper()) {
             logger.log(Level.INFO, "检测到 Paper 服务端! 性能优化已应用.");
         } else {
-            PaperLib.suggestPaper(this);
+            LangUtil.suggestPaper(this);
         }
 
         // Check if CS-CoreLib is installed (it is no longer needed)
