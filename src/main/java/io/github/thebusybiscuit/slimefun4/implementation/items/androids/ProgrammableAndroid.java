@@ -130,7 +130,7 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
                     return false;
                 });
 
-                menu.replaceExistingItem(25, new CustomItemStack(Material.PLAYER_HEAD, Slimefun.getLocalization().getMessage("android.access-manager.title"), "", Slimefun.getLocalization().getMessage("android.access-manager.subtitle")));
+                menu.replaceExistingItem(25, new CustomItemStack(HeadTexture.MOTOR.getAsItemStack(), Slimefun.getLocalization().getMessage("android.access-manager.title"), "", Slimefun.getLocalization().getMessage("android.access-manager.subtitle")));
                 menu.addMenuClickHandler(25, (p, slot, item, action) -> {
                     BlockStorage.addBlockInfo(b, "paused", "true");
                     Slimefun.getLocalization().sendMessage(p, "android.stopped", true);
