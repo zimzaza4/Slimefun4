@@ -33,21 +33,21 @@ Slimefun 让每个玩家可以自己决定在魔法或科技方面发展<br>
 该项目从2013年开始开发，此后一直发展.<br>
 从那时一个人开发插件到发展成一个拥有数千名参与者和一百多位贡献者的社区.<br>
 它目前添加了超过 **500 种新物品/合成配方**
-([查看关于 Slimefun 的历史](https://slimefun.guizhanss.wiki/Slimefun-in-a-nutshell)).
+([查看关于 Slimefun 的历史](https://slimefun-wiki.guizhanss.cn/Slimefun-in-a-nutshell)).
 
 与此同时, Slimefun 还有种类繁多的扩展插件可供选择!<br>
-打开 [扩展列表](https://slimefun.guizhanss.wiki/Addons), 你可能会找到你想要的扩展.
+打开 [扩展列表](https://slimefun-wiki.guizhanss.cn/Addons), 你可能会找到你想要的扩展.
 
 ### 导航
 * **[下载 Slimefun 4](#%e4%b8%8b%e8%bd%bd-Slimefun4)**
 * **[Discord 服务器](#discord)**
 * **[Bug 反馈](https://github.com/StarWishsama/Slimefun4/issues)**
 * **[官方Wiki](https://github.com/Slimefun/Slimefun4/wiki)**
-* **[非官方中文 Wiki](https://slimefun.guizhanss.wiki/)**
-* **[FAQ](https://slimefun.guizhanss.wiki/FAQ)**
+* **[非官方中文 Wiki](https://slimefun-wiki.guizhanss.cn/)**
+* **[FAQ](https://slimefun-wiki.guizhanss.cn/FAQ)**
 
 ## :floppy_disk: 下载 Slimefun4
-(可以查看: [如何安装 Slimefun](https://slimefun.guizhanss.wiki/Installing-Slimefun))
+(可以查看: [如何安装 Slimefun](https://slimefun-wiki.guizhanss.cn/Installing-Slimefun))
 
 Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 目前汉化版仅提供了官方开发版的选项, 但某些发布的版本会被标记为官方的 "稳定" 版.<br>
@@ -96,18 +96,18 @@ Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 Slimefun 有一个 (详细且经常维护的 - *咳咳*) Wiki 为新玩家准备, 
 你也可以考虑为 Wiki 的编写献出一份力量.  
 官方 Wiki: https://github.com/Slimefun/Slimefun4/wiki  
-非官方中文 Wiki: https://slimefun.guizhanss.wiki/
+非官方中文 Wiki: https://slimefun-wiki.guizhanss.cn/
 
 #### :star: 有用的文章 (中文)
-* [什么是 Slimefun?](https://slimefun.guizhanss.wiki/Slimefun-in-a-nutshell)
-* [如何安装 Slimefun](https://slimefun.guizhanss.wiki/Installing-Slimefun)
-* [Slimefun 4 扩展列表](https://slimefun.guizhanss.wiki/Addons)
-* [Slimefun 4 扩展编写教程](https://slimefun.guizhanss.wiki/Developer-Guide)
-* [开始使用](https://slimefun.guizhanss.wiki/Getting-Started)
-* [常见问题](https://slimefun.guizhanss.wiki/FAQ)
-* [使用中的常见问题](https://slimefun.guizhanss.wiki/Common-Issues)
-* [帮助我们扩展 Wiki!](https://slimefun.guizhanss.wiki/Expanding-the-Wiki)
-* [帮助我们翻译 Slimefun!](https://slimefun.guizhanss.wiki/Translating-Slimefun)
+* [什么是 Slimefun?](https://slimefun-wiki.guizhanss.cn/Slimefun-in-a-nutshell)
+* [如何安装 Slimefun](https://slimefun-wiki.guizhanss.cn/Installing-Slimefun)
+* [Slimefun 4 扩展列表](https://slimefun-wiki.guizhanss.cn/Addons)
+* [Slimefun 4 扩展编写教程](https://slimefun-wiki.guizhanss.cn/Developer-Guide)
+* [开始使用](https://slimefun-wiki.guizhanss.cn/Getting-Started)
+* [常见问题](https://slimefun-wiki.guizhanss.cn/FAQ)
+* [使用中的常见问题](https://slimefun-wiki.guizhanss.cn/Common-Issues)
+* [帮助我们扩展 Wiki!](https://slimefun-wiki.guizhanss.cn/Expanding-the-Wiki)
+* [帮助我们翻译 Slimefun!](https://slimefun-wiki.guizhanss.cn/Translating-Slimefun)
 
 这个 Wiki 由 @ybw0014 进行维护, 如果你发现有文章缺失, 可以咨询他补充.
 

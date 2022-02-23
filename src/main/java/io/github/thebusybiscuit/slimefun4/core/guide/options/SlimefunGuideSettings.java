@@ -161,7 +161,7 @@ public final class SlimefunGuideSettings {
 
         menu.addMenuClickHandler(8, (pl, slot, item, action) -> {
             pl.closeInventory();
-            ChatUtils.sendURL(pl, "https://slimefun.guizhanss.wiki/");
+            ChatUtils.sendURL(pl, "https://slimefun-wiki.guizhanss.cn/");
             return false;
         });
 
@@ -181,7 +181,7 @@ public final class SlimefunGuideSettings {
 
         menu.addMenuClickHandler(47, (pl, slot, item, action) -> {
             pl.closeInventory();
-            ChatUtils.sendURL(pl, "https://slimefun.guizhanss.wiki/Addons");
+            ChatUtils.sendURL(pl, "https://slimefun-wiki.guizhanss.cn/Addons");
             return false;
         });
 
