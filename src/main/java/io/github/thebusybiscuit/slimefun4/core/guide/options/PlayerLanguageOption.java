@@ -89,7 +89,7 @@ class PlayerLanguageOption implements SlimefunGuideOption<String> {
                 });
             } else if (i == 7) {
                 menu.addItem(7, new CustomItemStack(SlimefunUtils.getCustomHead(HeadTexture.ADD_NEW_LANGUAGE.getTexture()), Slimefun.getLocalization().getMessage(p, "guide.languages.translations.name"), "", "&7\u21E8 &e" + Slimefun.getLocalization().getMessage(p, "guide.languages.translations.lore")), (pl, slot, item, action) -> {
-                    ChatUtils.sendURL(pl, "https://slimefun.guizhanss.wiki/Translating-Slimefun");
+                    ChatUtils.sendURL(pl, "https://slimefun-wiki.guizhanss.cn/Translating-Slimefun");
                     pl.closeInventory();
                     return false;
                 });
