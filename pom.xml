@@ -110,7 +110,7 @@
                 <!-- Compiler plugin -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.9.0</version>
+                <version>3.10.0</version>
 
                 <configuration>
                     <excludes>
@@ -285,7 +285,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
 
         <!-- Third party plugin integrations / soft dependencies -->
         <dependency>
