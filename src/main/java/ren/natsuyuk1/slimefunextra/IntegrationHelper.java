@@ -75,6 +75,12 @@ public class IntegrationHelper implements Listener {
         plugin.getServer().getPluginManager().registerEvents(instance, plugin);
     }
 
+    public static void shutdown() {
+        qsMethod = null;
+        shopAPI = null;
+        logger = null;
+    }
+
     @EventHandler
     public void onAndroidFarm(AndroidFarmEvent e) {
         handleAndroidBreak(e.getAndroid().getBlock(), e);

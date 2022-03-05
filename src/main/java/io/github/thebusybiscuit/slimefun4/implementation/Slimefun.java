@@ -390,6 +390,8 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon {
             return;
         }
 
+        SlimefunExtra.shutdown();
+
         // Cancel all tasks from this plugin immediately
         Bukkit.getScheduler().cancelTasks(this);
 

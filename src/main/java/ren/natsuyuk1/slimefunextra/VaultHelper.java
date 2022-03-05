@@ -27,6 +27,10 @@ public class VaultHelper {
         }
     }
 
+    public static void shutdown() {
+        econ = null;
+    }
+
     public static Economy getEcon() {
         return econ;
     }
