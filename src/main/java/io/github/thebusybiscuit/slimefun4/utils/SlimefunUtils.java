@@ -278,6 +278,25 @@ public final class SlimefunUtils {
         } else if (checkAmount && item.getAmount() < sfitem.getAmount()) {
             return false;
         } else if (sfitem instanceof SlimefunItemStack && item instanceof SlimefunItemStack) {
+            // Temporarily add mandatory check for item lore
+            if (checkLore) {
+                List<String> lore1 = item.getItemMeta().getLore();
+                List<String> lore2 = sfitem.getItemMeta().getLore();
+                if (lore1 != lore2) {
+                    if (lore1 != null && lore2 != null) {
+                        if (lore1.size() != lore2.size()) {
+                            return false;
+                        }
+                        for (int i = 0; i < lore1.size(); i++) {
+                            if (!lore1.get(i).equals(lore2.get(i))) {
+                                return false;
+                            }
+                        }
+                    } else {
+                        return false;
+                    }
+                }
+            }
             return ((SlimefunItemStack) item).getItemId().equals(((SlimefunItemStack) sfitem).getItemId());
         } else if (item.hasItemMeta()) {
             Debug.log(TestCase.CARGO_INPUT_TESTING, "SlimefunUtils#isItemSimilar - item.hasItemMeta()");
