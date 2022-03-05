@@ -1,11 +1,10 @@
 package io.github.thebusybiscuit.slimefun4.core.networks.cargo;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -15,7 +14,9 @@ import java.util.logging.Level;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -58,6 +59,9 @@ class CargoNetworkTask implements Runnable {
     private final Set<Location> chestTerminalInputs;
     private final Set<Location> chestTerminalOutputs;
 
+    private final Map<Integer, Set<String>> ignoredSfItems;
+    private final Map<Integer, Set<Material>> ignoredMaterials;
+
     @ParametersAreNonnullByDefault
     CargoNetworkTask(CargoNet network, Map<Location, Integer> inputs, Map<Integer, Collection<Location>> outputs, Set<Location> chestTerminalInputs, Set<Location> chestTerminalOutputs) {
         this.network = network;
@@ -67,6 +71,9 @@ class CargoNetworkTask implements Runnable {
         this.outputs = outputs;
         this.chestTerminalInputs = chestTerminalInputs;
         this.chestTerminalOutputs = chestTerminalOutputs;
+
+        ignoredSfItems = new HashMap<>();
+        ignoredMaterials = new HashMap<>();
     }
 
     @Override
@@ -118,6 +125,21 @@ class CargoNetworkTask implements Runnable {
 
         ItemStack stack = slot.getItem();
         int previousSlot = slot.getInt();
+
+        if (stack instanceof SlimefunItemStack) {
+            Set<String> ignored = ignoredSfItems.get(frequency);
+            if (ignored != null && ignored.contains(((SlimefunItemStack) stack).getItemId())) {
+                insertItem(inputTarget, previousSlot, stack);
+                return;
+            }
+        } else {
+            Set<Material> ignored = ignoredMaterials.get(frequency);
+            if (ignored != null && ignored.contains(stack.getType())) {
+                insertItem(inputTarget, previousSlot, stack);
+                return;
+            }
+        }
+
         Collection<Location> destinations = outputNodes.get(frequency);
 
         if (destinations != null) {
@@ -125,6 +147,13 @@ class CargoNetworkTask implements Runnable {
         }
 
         if (stack != null) {
+            if (stack instanceof SlimefunItemStack) {
+                ignoredSfItems.computeIfAbsent(frequency, feq -> new HashSet<>());
+                ignoredSfItems.get(frequency).add(((SlimefunItemStack) stack).getItemId());
+            } else {
+                ignoredMaterials.computeIfAbsent(frequency, feq -> new HashSet<>());
+                ignoredMaterials.get(frequency).add(stack.getType());
+            }
             insertItem(inputTarget, previousSlot, stack);
         }
     }

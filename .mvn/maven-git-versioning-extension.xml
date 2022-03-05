@@ -17,5 +17,9 @@
            <pattern>v([0-9].*)></pattern>
            <version>${1}</version>
        </ref>
+       <ref type ="branch">
+           <pattern>feature/cargo-simple-opt</pattern>
+           <version>4.9-violet-${commit.short}</version>
+       </ref>
    </refs>
 </configuration>
