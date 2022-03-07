@@ -27,7 +27,7 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation
 import io.github.thebusybiscuit.slimefun4.core.services.localization.Language;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.setup.ResearchSetup;
-import ren.natsuyuk1.utils.VaultHelper;
+import ren.natsuyuk1.slimefunextra.VaultHelper;
 
 /**
  * Represents a research, which is bound to one

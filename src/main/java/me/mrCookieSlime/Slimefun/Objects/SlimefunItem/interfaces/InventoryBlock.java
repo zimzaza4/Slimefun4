@@ -13,7 +13,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
-import ren.natsuyuk1.utils.IntegrationHelper;
+import ren.natsuyuk1.slimefunextra.IntegrationHelper;
 
 /**
  * 

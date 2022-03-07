@@ -10,7 +10,7 @@
            <version>4.9-release-${commit.timestamp.year}.${commit.timestamp.month}</version>
        </ref>
        <ref type ="branch">
-           <pattern>feature/(.+)</pattern>
+           <pattern>test/(.+)</pattern>
            <version>4.9-${1}-${commit.short}</version>
        </ref>
        <ref type = "tag">

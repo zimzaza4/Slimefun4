@@ -90,8 +90,8 @@
         </repository>
         <repository>
             <!-- Orebfuscator -->
-            <id>imprex-repo</id>
-            <url>https://imprex.ingrim4.me/repository/maven-public/</url>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
     </repositories>
 
@@ -110,7 +110,7 @@
                 <!-- Compiler plugin -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.9.0</version>
+                <version>3.10.0</version>
 
                 <configuration>
                     <excludes>
@@ -267,7 +267,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>4.2.0</version>
+            <version>4.3.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -285,7 +285,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
 
         <!-- Third party plugin integrations / soft dependencies -->
         <dependency>

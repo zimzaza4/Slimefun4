@@ -16,7 +16,7 @@ import io.github.thebusybiscuit.slimefun4.api.researches.Research;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
-import ren.natsuyuk1.utils.VaultHelper;
+import ren.natsuyuk1.slimefunextra.VaultHelper;
 
 /**
  * This interface is used for the different implementations that add behaviour

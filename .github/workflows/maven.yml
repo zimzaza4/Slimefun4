@@ -31,16 +31,19 @@ jobs:
     - run: mvn -B package --file pom.xml --errors
     - run: mkdir staging && cp target/*.jar staging
     - uses: actions/cache@v2
+      if: github.event_name != 'pull_request'
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
     - uses: actions/upload-artifact@v2
+      if: github.event_name != 'pull_request'
       with:
         name: Slimefun.jar
         path: staging
     - name: Automatic Releases
       uses: marvinpinto/action-automatic-releases@v1.2.1
+      if: github.event_name != 'pull_request'
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         automatic_release_tag: "exp"

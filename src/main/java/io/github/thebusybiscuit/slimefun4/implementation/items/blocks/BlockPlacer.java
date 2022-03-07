@@ -39,7 +39,7 @@ import io.papermc.lib.PaperLib;
 import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
 
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import ren.natsuyuk1.utils.IntegrationHelper;
+import ren.natsuyuk1.slimefunextra.IntegrationHelper;
 
 /**
  * The {@link BlockPlacer} is a machine which can place {@link Block Blocks}, as the name

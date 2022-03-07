@@ -199,7 +199,13 @@ public abstract class Reactor extends AbstractEnergyProvider implements Hologram
 
         preset.addItem(22, new CustomItemStack(Material.BLACK_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
 
-        preset.addItem(1, new CustomItemStack(getFuelIcon(), "&7燃料", "", "&f这里可以放入放射性燃料:", "&2铀 &f或 &a镎"), ChestMenuUtils.getEmptyClickHandler());
+        if (this instanceof NuclearReactor) {
+            preset.addItem(1, new CustomItemStack(getFuelIcon(), "&7燃料", "", "&f这里可以放入放射性燃料:", "&2铀 &f或 &a镎"), ChestMenuUtils.getEmptyClickHandler());
+        } else if (this instanceof NetherStarReactor) {
+            preset.addItem(1, new CustomItemStack(getFuelIcon(), "&7燃料", "", "&f这里可以放入燃料:", "&b下界之星"), ChestMenuUtils.getEmptyClickHandler());
+        } else {
+            preset.addItem(1, new CustomItemStack(getFuelIcon(), "&7燃料", "", "&f这里可以放入放射性燃料:", "&2铀 &f或 &a镎"), ChestMenuUtils.getEmptyClickHandler());
+        }
 
         for (int i : border_2) {
             preset.addItem(i, new CustomItemStack(Material.CYAN_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());

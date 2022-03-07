@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.cargo;
 
-import ren.natsuyuk1.utils.IntegrationHelper;
+import ren.natsuyuk1.slimefunextra.IntegrationHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

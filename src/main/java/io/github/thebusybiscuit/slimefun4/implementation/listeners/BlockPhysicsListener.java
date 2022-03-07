@@ -2,9 +2,14 @@ package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
 import javax.annotation.Nonnull;
 
+import io.papermc.lib.PaperLib;
+import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshot;
+import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Skull;
 import org.bukkit.block.data.type.Piston;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
@@ -23,6 +28,8 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
+
+import java.util.Objects;
 
 /**
  * This {@link Listener} is responsible for listening to any physics-based events, such
@@ -99,6 +106,19 @@ public class BlockPhysicsListener implements Listener {
                 if (Slimefun.getTickerTask().isOccupiedSoon(loc)) {
                     e.setCancelled(true);
                 }
+            }
+
+            return;
+        }
+
+        BlockStateSnapshotResult state = PaperLib.getBlockState(block, false);
+
+        // Check the skull if it had lost its data, but name still remained.
+        if (state.getState() instanceof Skull) {
+            Skull skull = (Skull) state.getState();
+
+            if (skull.hasOwner() && Objects.equals(skull.getOwningPlayer().getName(), "CS-CoreLib")) {
+                e.setCancelled(true);
             }
         }
     }
