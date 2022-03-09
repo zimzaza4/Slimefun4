@@ -43,7 +43,12 @@
 * Added Spore Blossom as a fuel type for the Bio-Generator
 * Added a new item setting for Freezers to allow them to use a 9:1 "vanilla" ratio instead of 1:1 (1:1 by default, like before)
 * (API) Added `PlayerProfile#hasUnlockedEverything()` to check if a player has unlocked all researches
+* (API) Added `Research#getUnlocalizedName()`
 * Added support for the plugin "HuskTowns"
+* Added support for Minecraft 1.18.2
+* You can now pick up Slimefun blocks in creative mode using the middle mouse button
+* `/sf search` no longer shows items in hidden item groups (can be overidden by a config setting)
+* Fluid Pumps can now fill bottles with water
 
 #### Changes
 * (API) `BiomeMapParser` is now `public`

@@ -34,6 +34,7 @@ guide:
   show-vanilla-recipes: true
   # 是否在玩家第一次进入服务器时自动赠送粘液科技指南
   receive-on-first-join: true
+  show-hidden-item-groups-in-search: false
 
 researches:
   # 是否允许创造模式玩家免费解锁研究
