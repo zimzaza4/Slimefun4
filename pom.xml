@@ -374,7 +374,7 @@
         <dependency>
             <groupId>net.imprex</groupId>
             <artifactId>orebfuscator-api</artifactId>
-            <version>5.2.4</version>
+            <version>5.2.6</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
