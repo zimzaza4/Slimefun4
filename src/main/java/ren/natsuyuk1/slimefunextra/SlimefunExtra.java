@@ -10,4 +10,9 @@ public class SlimefunExtra {
         VaultHelper.register(sf);
         UpdateChecker.checkUpdate();
     }
+
+    public static void shutdown() {
+        IntegrationHelper.shutdown();
+        VaultHelper.shutdown();
+    }
 }

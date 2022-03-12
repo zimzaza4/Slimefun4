@@ -23,6 +23,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.maxgamer.quickshop.api.QuickShopAPI;
 
 import javax.annotation.Nonnull;
@@ -72,6 +73,12 @@ public class IntegrationHelper implements Listener {
         logger.log(Level.INFO, "检测到领地插件, 相关功能已开启");
 
         plugin.getServer().getPluginManager().registerEvents(instance, plugin);
+    }
+
+    public static void shutdown() {
+        qsMethod = null;
+        shopAPI = null;
+        logger = null;
     }
 
     @EventHandler
@@ -197,9 +204,14 @@ public class IntegrationHelper implements Listener {
             }
         }
 
-        QuickShopAPI qs = (QuickShopAPI) Bukkit.getPluginManager().getPlugin("QuickShop");
+        Plugin qsPlugin = Bukkit.getPluginManager().getPlugin("QuickShop");
 
-        return qs.getShopManager().getShop(l) != null;
+        if (qsPlugin instanceof QuickShopAPI) {
+            return ((QuickShopAPI) qsPlugin).getShopManager().getShop(l) != null;
+        }
+
+        logger.log(Level.WARNING, "与QuickShop的兼容出现问题，请避免使用热重载更换插件版本。如频繁出现该问题请反馈至粘液科技汉化版。");
+        return false;
     }
 
     private static void registerQuickShop(@Nonnull Slimefun plugin) {
