@@ -3,15 +3,15 @@
    <refs>
        <ref type ="branch">
            <pattern>master</pattern>
-           <version>4.9-canary-${commit.short}</version>
+           <version>${commit.short}-canary</version>
        </ref>
        <ref type ="branch">
            <pattern>release</pattern>
-           <version>4.9-release-${commit.timestamp.year}.${commit.timestamp.month}</version>
+           <version>${commit.timestamp.year}.${commit.timestamp.month}-release</version>
        </ref>
        <ref type ="branch">
            <pattern>test/(.+)</pattern>
-           <version>4.9-${1}-${commit.short}</version>
+           <version>${1}-${commit.short}</version>
        </ref>
        <ref type = "tag">
            <pattern>v([0-9].*)></pattern>
