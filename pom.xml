@@ -118,6 +118,8 @@
                         <!-- We can safely exclude them from the final jar -->
                         <exclude>**/package-info.java</exclude>
                     </excludes>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
 
@@ -424,6 +426,11 @@
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.22</version>
         </dependency>
     </dependencies>
 </project>
