@@ -93,6 +93,11 @@
             <id>codemc-repo</id>
             <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
+
+        <repository>
+            <id>jeff-media-public</id>
+            <url>https://hub.jeff-media.com/nexus/repository/jeff-media-public/</url>
+        </repository>
     </repositories>
 
     <build>
@@ -106,6 +111,27 @@
         <finalName>${project.name}-v${project.version}</finalName>
 
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>com.jeff_media.morepersistentdatatypes</pattern>
+                            <shadedPattern>io.github.thebusybiscuit.slimefun4.utilsorepersistentdatatypes</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+            </plugin>
             <plugin>
                 <!-- Compiler plugin -->
                 <groupId>org.apache.maven.plugins</groupId>
@@ -431,6 +457,13 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.22</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jeff_media</groupId>
+            <artifactId>MorePersistentDataTypes</artifactId>
+            <version>2.0.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
