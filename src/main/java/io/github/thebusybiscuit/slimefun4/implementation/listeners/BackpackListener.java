@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import com.jeff_media.morepersistentdatatypes.DataType;
+import io.github.bakedlibs.dough.items.CustomItemStack;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -86,6 +87,9 @@ public class BackpackListener implements Listener {
             PersistentDataContainer container = meta.getPersistentDataContainer();
             List<ItemStack> items = new ArrayList<>();
             for (ItemStack i : inventory) {
+                if (i== null) {
+                    i = new CustomItemStack(Material.STONE, "&cnull");
+                }
                 items.add(i);
             }
 
@@ -185,8 +189,13 @@ public class BackpackListener implements Listener {
                 Inventory inventory = Bukkit.createInventory(null, size, "Backpack [" + size + " Slots]");
                 if (pdc.has(key, DataType.asList(DataType.ITEM_STACK))) {
                     List<ItemStack> items = pdc.get(key, DataType.asList(DataType.ITEM_STACK));
-                    assert items != null;
-                    inventory.setContents(items.toArray(ItemStack[]::new));
+                    int i = 0;
+                    for (ItemStack itemStack : items) {
+                        if (!(itemStack.getType() == Material.STONE && itemStack.getItemMeta() != null && itemStack.getItemMeta().getDisplayName() == "§cnull" )) {
+                            inventory.setItem(i, itemStack);
+                        }
+                        i++;
+                    }
                 } else {
                     pdc.set(key, DataType.asList(DataType.ITEM_STACK), new ArrayList<>());
                 }
