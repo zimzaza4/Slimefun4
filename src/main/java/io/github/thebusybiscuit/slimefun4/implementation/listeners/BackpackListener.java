@@ -47,11 +47,13 @@ import org.bukkit.persistence.PersistentDataContainer;
 public class BackpackListener implements Listener {
 
     public static final Map<Player, Inventory> openedInventories = new HashMap<>();
-    private final NamespacedKey key = new NamespacedKey(Slimefun.instance(), "ITEMS");
+    private static NamespacedKey key;
     private final Map<UUID, ItemStack> backpacks = new HashMap<>();
 
     public void register(@Nonnull Slimefun plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        key = new NamespacedKey(plugin, "ITEMS");
+
     }
 
     @EventHandler
