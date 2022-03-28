@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import io.github.thebusybiscuit.slimefun4.utils.PersistentType;
+import com.jeff_media.morepersistentdatatypes.DataType;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -89,7 +89,7 @@ public class BackpackListener implements Listener {
                 items.add(i);
             }
 
-            container.set(key, PersistentType.ITEM_STACK_LIST, items);
+            container.set(key, DataType.asList(DataType.ITEM_STACK), items);
 
         }
     }
@@ -183,12 +183,12 @@ public class BackpackListener implements Listener {
             if (item.hasItemMeta()) {
                 PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
                 Inventory inventory = Bukkit.createInventory(null, size, "Backpack [" + size + " Slots]");
-                if (pdc.has(key, PersistentType.ITEM_STACK_LIST)) {
-                    List<ItemStack> items = pdc.get(key, PersistentType.ITEM_STACK_LIST);
+                if (pdc.has(key, DataType.asList(DataType.ITEM_STACK))) {
+                    List<ItemStack> items = pdc.get(key, DataType.asList(DataType.ITEM_STACK));
                     assert items != null;
                     inventory.setContents(items.toArray(ItemStack[]::new));
                 } else {
-                    pdc.set(key, PersistentType.ITEM_STACK_LIST, new ArrayList<>());
+                    pdc.set(key, DataType.asList(DataType.ITEM_STACK), new ArrayList<>());
                 }
                 openedInventories.put(p, inventory);
                 p.openInventory(inventory);
@@ -231,6 +231,6 @@ public class BackpackListener implements Listener {
         im.setLore(lore);
         item.setItemMeta(im);
         PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
-        pdc.set(key, PersistentType.ITEM_STACK_LIST, new ArrayList<>());
+        pdc.set(key, DataType.asList(DataType.ITEM_STACK), new ArrayList<>());
     }
 }
