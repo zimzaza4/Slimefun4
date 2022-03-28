@@ -231,5 +231,7 @@ public class BackpackListener implements Listener {
         lore.set(line, lore.get(line).replace("<ID>", backpackOwner.getUniqueId() + "#" + id));
         im.setLore(lore);
         item.setItemMeta(im);
+        PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
+        pdc.set(key, PersistentType.ITEM_STACK_LIST, new ArrayList<>());
     }
 }
