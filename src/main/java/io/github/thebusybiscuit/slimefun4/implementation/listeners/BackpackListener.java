@@ -48,6 +48,7 @@ public class BackpackListener implements Listener {
 
     public static final Map<Player, Inventory> openedInventories = new HashMap<>();
     private static NamespacedKey key;
+    private final Map<Player, ItemStack> usingBackPacks = new HashMap<>();
     private final Map<UUID, ItemStack> backpacks = new HashMap<>();
 
     public void register(@Nonnull Slimefun plugin) {
@@ -61,9 +62,9 @@ public class BackpackListener implements Listener {
         Player p = (Player) e.getPlayer();
         if (openedInventories.containsKey(p)) {
             openedInventories.remove(p);
-            if (saveBackpack(p, e.getInventory())) {
-                p.playSound(p.getLocation(), Sound.ENTITY_HORSE_ARMOR, 1F, 1F);
-            }
+            saveBackpack(usingBackPacks.get(p), e.getInventory());
+            p.playSound(p.getLocation(), Sound.ENTITY_HORSE_ARMOR, 1F, 1F);
+            usingBackPacks.remove(p);
         }
     }
 
@@ -78,8 +79,8 @@ public class BackpackListener implements Listener {
         }
     }
 
-    private boolean saveBackpack(@Nonnull Player p, Inventory inventory) {
-        ItemStack backpack = backpacks.remove(p.getUniqueId());
+    private void saveBackpack(@Nonnull ItemStack backpack, Inventory inventory) {
+
         if (backpack.hasItemMeta()) {
             ItemMeta meta = backpack.getItemMeta();
             PersistentDataContainer container = meta.getPersistentDataContainer();
@@ -89,12 +90,7 @@ public class BackpackListener implements Listener {
             }
 
             container.set(key, PersistentType.ITEM_STACK_LIST, items);
-        }
-        if (backpack != null) {
-            PlayerProfile.getBackpack(backpack, PlayerBackpack::markDirty);
-            return true;
-        } else {
-            return false;
+
         }
     }
 
@@ -196,6 +192,7 @@ public class BackpackListener implements Listener {
                 }
                 openedInventories.put(p, inventory);
                 p.openInventory(inventory);
+                usingBackPacks.put(p, item);
             }
         } else {
             Slimefun.getLocalization().sendMessage(p, "backpack.already-open", true);
