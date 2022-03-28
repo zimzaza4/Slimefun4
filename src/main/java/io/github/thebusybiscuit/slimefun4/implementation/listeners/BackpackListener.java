@@ -85,16 +85,8 @@ public class BackpackListener implements Listener {
         if (backpack.hasItemMeta()) {
             ItemMeta meta = backpack.getItemMeta();
             PersistentDataContainer container = meta.getPersistentDataContainer();
-            List<ItemStack> items = new ArrayList<>();
-            for (ItemStack i : inventory) {
-                if (i== null) {
-                    i = new CustomItemStack(Material.STONE, "&cnull");
-                }
-                items.add(i);
-            }
-
-            container.set(key, DataType.asList(DataType.ITEM_STACK), items);
-
+            container.set(key, DataType.ITEM_STACK_ARRAY, inventory.getContents());
+            backpack.setItemMeta(meta);
         }
     }
 
@@ -185,20 +177,15 @@ public class BackpackListener implements Listener {
             backpacks.put(p.getUniqueId(), item);
 
             if (item.hasItemMeta()) {
-                PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
+                ItemMeta meta = item.getItemMeta();
+                PersistentDataContainer pdc = meta.getPersistentDataContainer();
                 Inventory inventory = Bukkit.createInventory(null, size, "Backpack [" + size + " Slots]");
-                if (pdc.has(key, DataType.asList(DataType.ITEM_STACK))) {
-                    List<ItemStack> items = pdc.get(key, DataType.asList(DataType.ITEM_STACK));
-                    int i = 0;
-                    for (ItemStack itemStack : items) {
-                        if (!(itemStack.getType() == Material.STONE && itemStack.getItemMeta() != null && itemStack.getItemMeta().getDisplayName() == "§cnull" )) {
-                            inventory.setItem(i, itemStack);
-                        }
-                        i++;
-                    }
+                if (pdc.has(key, DataType.ITEM_STACK_ARRAY)) {
+                    inventory.setContents(Objects.requireNonNull(pdc.get(key, DataType.ITEM_STACK_ARRAY)));
                 } else {
-                    pdc.set(key, DataType.asList(DataType.ITEM_STACK), new ArrayList<>());
+                    pdc.set(key, DataType.ITEM_STACK_ARRAY, new ItemStack[9]);
                 }
+                item.setItemMeta(meta);
                 openedInventories.put(p, inventory);
                 p.openInventory(inventory);
                 usingBackPacks.put(p, item);
@@ -238,8 +225,9 @@ public class BackpackListener implements Listener {
 
         lore.set(line, lore.get(line).replace("<ID>", backpackOwner.getUniqueId() + "#" + id));
         im.setLore(lore);
-        item.setItemMeta(im);
+
         PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
-        pdc.set(key, DataType.asList(DataType.ITEM_STACK), new ArrayList<>());
+        pdc.set(key, DataType.ITEM_STACK_ARRAY, new ItemStack[9]);
+        item.setItemMeta(im);
     }
 }
