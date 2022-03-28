@@ -46,7 +46,7 @@ import org.bukkit.persistence.PersistentDataContainer;
  */
 public class BackpackListener implements Listener {
 
-    private final Map<Player, Inventory> inventories = new HashMap<>();
+    public static final Map<Player, Inventory> openedInventories = new HashMap<>();
     private final NamespacedKey key = new NamespacedKey(Slimefun.instance(), "ITEMS");
     private final Map<UUID, ItemStack> backpacks = new HashMap<>();
 
@@ -57,8 +57,8 @@ public class BackpackListener implements Listener {
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
         Player p = (Player) e.getPlayer();
-        if (inventories.containsValue(e.getInventory())) {
-            inventories.remove(p);
+        if (openedInventories.containsValue(e.getInventory())) {
+            openedInventories.remove(p);
             if (saveBackpack(p, e.getInventory())) {
                 p.playSound(p.getLocation(), Sound.ENTITY_HORSE_ARMOR, 1F, 1F);
             }
@@ -187,11 +187,12 @@ public class BackpackListener implements Listener {
                 Inventory inventory = Bukkit.createInventory(null, size, "Backpack [" + size + " Slots]");
                 if (pdc.has(key, PersistentType.ITEM_STACK_LIST)) {
                     List<ItemStack> items = pdc.get(key, PersistentType.ITEM_STACK_LIST);
+                    assert items != null;
                     inventory.setContents(items.toArray(ItemStack[]::new));
                 } else {
                     pdc.set(key, PersistentType.ITEM_STACK_LIST, new ArrayList<>());
                 }
-                inventories.put(p, inventory);
+                openedInventories.put(p, inventory);
                 p.openInventory(inventory);
             }
         } else {
