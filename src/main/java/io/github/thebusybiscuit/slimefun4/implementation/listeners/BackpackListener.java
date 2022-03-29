@@ -202,10 +202,6 @@ public class BackpackListener implements Listener {
                         inventory.setItem(i, items.get(slotKey, PersistentType.ITEM_STACK_OLD));
                     }
                 }
-            } else {
-
-                pdc.set(key, PersistentDataType.TAG_CONTAINER, pdc.getAdapterContext().newPersistentDataContainer());
-                item.setItemMeta(meta);
             }
             return inventory;
         }
