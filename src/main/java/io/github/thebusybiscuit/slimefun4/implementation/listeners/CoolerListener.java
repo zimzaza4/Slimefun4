@@ -97,7 +97,10 @@ public class CoolerListener implements Listener {
      *            The {@link Cooler} {@link ItemStack} to take the {@link Juice} from
      */
     private void takeJuiceFromCooler(@Nonnull Player p, @Nonnull ItemStack cooler) {
-        consumeJuice(p, cooler, (SlimefunBackpack) SlimefunItem.getByItem(cooler));
+        if (SlimefunItem.getByItem(cooler) instanceof Cooler) {
+            Cooler backpack = (Cooler) SlimefunItem.getByItem(cooler);
+            consumeJuice(p, cooler, backpack);
+        }
     }
 
     private boolean consumeJuice(@Nonnull Player p, @Nonnull ItemStack coolerItem, @Nonnull SlimefunBackpack backpack) {
