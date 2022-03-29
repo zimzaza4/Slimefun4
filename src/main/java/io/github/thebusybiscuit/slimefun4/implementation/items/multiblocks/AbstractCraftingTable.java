@@ -85,55 +85,22 @@ abstract class AbstractCraftingTable extends MultiBlockMachine {
             SlimefunUtils.setSoulbound(output, true);
         }
 
-        int size = backpack.getSize();
-        Optional<String> id = retrieveID(input, size);
-
-        if (id.isPresent()) {
-            for (int line = 0; line < output.getItemMeta().getLore().size(); line++) {
-                if (output.getItemMeta().getLore().get(line).equals(ChatColors.color("&7ID: <ID>"))) {
-                    ItemMeta im = output.getItemMeta();
-                    List<String> lore = im.getLore();
-                    lore.set(line, lore.get(line).replace("<ID>", id.get()));
-                    im.setLore(lore);
-                    output.setItemMeta(im);
-                    break;
-                }
-            }
-        } else {
-            for (int line = 0; line < output.getItemMeta().getLore().size(); line++) {
-                if (output.getItemMeta().getLore().get(line).equals(ChatColors.color("&7ID: <ID>"))) {
-                    int target = line;
-
-                    PlayerProfile.get(p, profile -> {
-                        int backpackId = profile.createBackpack(size).getId();
-                        Slimefun.getBackpackListener().setBackpackId(p, output, target, backpackId);
-                    });
-
-                    break;
-                }
-            }
-        }
-    }
-
-
-    private @Nonnull Optional<String> retrieveID(@Nullable ItemStack backpack, int size) {
-        if (backpack != null) {
-            for (String line : backpack.getItemMeta().getLore()) {
-                if (line.startsWith(ChatColors.color("&7ID: ")) && line.contains("#")) {
-                    String id = line.replace(ChatColors.color("&7ID: "), "");
-                    String[] idSplit = CommonPatterns.HASH.split(id);
-
-                    PlayerProfile.fromUUID(UUID.fromString(idSplit[0]), profile -> {
-                        Optional<PlayerBackpack> optional = profile.getBackpack(Integer.parseInt(idSplit[1]));
-                        optional.ifPresent(playerBackpack -> playerBackpack.setSize(size));
-                    });
-
-                    return Optional.of(id);
-                }
+        for (int line = 0; line < output.getItemMeta().getLore().size(); line++) {
+            if (output.getItemMeta().getLore().get(line).equals(ChatColors.color("&7ID: <ID>"))) {
+                ItemMeta im = output.getItemMeta();
+                List<String> lore = im.getLore();
+                im.setLore(lore);
+                output.setItemMeta(im);
+                break;
             }
         }
 
-        return Optional.empty();
+        for (int line = 0; line < output.getItemMeta().getLore().size(); line++) {
+            if (output.getItemMeta().getLore().get(line).equals(ChatColors.color("&7ID: <ID>"))) {
+                output.setItemMeta(backpack.getItem().getItemMeta());
+            }
+        }
+
     }
 
 }

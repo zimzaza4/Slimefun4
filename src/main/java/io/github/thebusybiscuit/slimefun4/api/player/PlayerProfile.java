@@ -156,9 +156,6 @@ public class PlayerProfile {
      * This method will save the Player's Researches and Backpacks to the hard drive
      */
     public void save() {
-        for (PlayerBackpack backpack : backpacks.values()) {
-            backpack.save();
-        }
 
         waypointsFile.save();
         configFile.save();
@@ -296,33 +293,8 @@ public class PlayerProfile {
         dirty = true;
     }
 
-    public @Nonnull PlayerBackpack createBackpack(int size) {
-        IntStream stream = IntStream.iterate(0, i -> i + 1).filter(i -> !configFile.contains("backpacks." + i + ".size"));
-        int id = stream.findFirst().getAsInt();
 
-        PlayerBackpack backpack = new PlayerBackpack(this, id, size);
-        backpacks.put(id, backpack);
 
-        return backpack;
-    }
-
-    public @Nonnull Optional<PlayerBackpack> getBackpack(int id) {
-        if (id < 0) {
-            throw new IllegalArgumentException("Backpacks cannot have negative ids!");
-        }
-
-        PlayerBackpack backpack = backpacks.get(id);
-
-        if (backpack != null) {
-            return Optional.of(backpack);
-        } else if (configFile.contains("backpacks." + id + ".size")) {
-            backpack = new PlayerBackpack(this, id);
-            backpacks.put(id, backpack);
-            return Optional.of(backpack);
-        }
-
-        return Optional.empty();
-    }
 
     public @Nonnull String getTitle() {
         List<String> titles = Slimefun.getRegistry().getResearchRanks();
@@ -447,34 +419,6 @@ public class PlayerProfile {
         return Slimefun.getRegistry().getPlayerProfiles().values().iterator();
     }
 
-    public static void getBackpack(@Nullable ItemStack item, @Nonnull Consumer<PlayerBackpack> callback) {
-        if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasLore()) {
-            return;
-        }
-
-        OptionalInt id = OptionalInt.empty();
-        String uuid = "";
-
-        for (String line : item.getItemMeta().getLore()) {
-            if (line.startsWith(ChatColors.color("&7ID: ")) && line.indexOf('#') != -1) {
-                String[] splitLine = CommonPatterns.HASH.split(line);
-
-                if (CommonPatterns.NUMERIC.matcher(splitLine[1]).matches()) {
-                    id = OptionalInt.of(Integer.parseInt(splitLine[1]));
-                    uuid = splitLine[0].replace(ChatColors.color("&7ID: "), "");
-                }
-            }
-        }
-
-        if (id.isPresent()) {
-            int number = id.getAsInt();
-
-            fromUUID(UUID.fromString(uuid), profile -> {
-                Optional<PlayerBackpack> backpack = profile.getBackpack(number);
-                backpack.ifPresent(callback);
-            });
-        }
-    }
 
     public boolean hasFullProtectionAgainst(@Nonnull ProtectionType type) {
         Validate.notNull(type, "ProtectionType must not be null.");

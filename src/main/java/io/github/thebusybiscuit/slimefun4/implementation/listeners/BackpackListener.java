@@ -1,14 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import io.github.bakedlibs.dough.data.persistent.PersistentDataAPI;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.Cooler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
 import io.github.thebusybiscuit.slimefun4.utils.PersistentType;
-import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -65,22 +62,11 @@ public class BackpackListener implements Listener {
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
         Player p = (Player) e.getPlayer();
-        if (openedInventories.containsKey(p)) {
+        if (openedInventories.containsValue(e.getInventory())) {
             openedInventories.remove(p);
             saveBackpack(usingBackPacks.get(p), e.getInventory());
             p.playSound(p.getLocation(), Sound.ENTITY_HORSE_ARMOR, 1F, 1F);
             usingBackPacks.remove(p);
-        }
-    }
-
-    private boolean markBackpackDirty(@Nonnull Player p) {
-        ItemStack backpack = backpacks.remove(p.getUniqueId());
-
-        if (backpack != null) {
-            PlayerProfile.getBackpack(backpack, PlayerBackpack::markDirty);
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -156,7 +142,7 @@ public class BackpackListener implements Listener {
     @ParametersAreNonnullByDefault
     public void openBackpack(Player p, ItemStack item, SlimefunBackpack backpack) {
         if (item.getAmount() == 1) {
-            if (backpack.canUse(p, true) && !PlayerProfile.get(p, profile -> openBackpack(p, item, profile, backpack.getSize()))) {
+            if (backpack.canUse(p, true) && !openBackpack(p, item, backpack.getSize())) {
                 Slimefun.getLocalization().sendMessage(p, "messages.opening-backpack");
             }
         } else {
@@ -165,12 +151,12 @@ public class BackpackListener implements Listener {
     }
 
     @ParametersAreNonnullByDefault
-    private void openBackpack(Player p, ItemStack item, PlayerProfile profile, int size) {
+    private boolean openBackpack(Player p, ItemStack item, int size) {
         List<String> lore = item.getItemMeta().getLore();
 
         for (int line = 0; line < lore.size(); line++) {
             if (lore.get(line).equals(ChatColor.GRAY + "ID: <ID>")) {
-                setBackpackId(p, item, line, profile.createBackpack(size).getId());
+                setBackpackId(p, item, line);
                 break;
             }
         }
@@ -179,7 +165,7 @@ public class BackpackListener implements Listener {
          * If the current Player is already viewing a backpack (for whatever reason),
          * terminate that view.
          */
-        if (markBackpackDirty(p)) {
+        if (openedInventories.containsKey(p)) {
             p.closeInventory();
         }
 
@@ -187,33 +173,41 @@ public class BackpackListener implements Listener {
         if (!backpacks.containsValue(item)) {
             p.playSound(p.getLocation(), Sound.ENTITY_HORSE_ARMOR, 1F, 1F);
             backpacks.put(p.getUniqueId(), item);
-
-            if (item.hasItemMeta()) {
-                ItemMeta meta = item.getItemMeta();
-                PersistentDataContainer pdc = meta.getPersistentDataContainer();
-                PersistentDataContainer items = pdc.get(key, PersistentDataType.TAG_CONTAINER);
-                Inventory inventory = Bukkit.createInventory(null, size, "Backpack [" + size + " Slots]");
-                if (items != null) {
-                    for (int i = 0; i < size; i++) {
-                        NamespacedKey slotKey = new NamespacedKey(instance, itemKey + i);
-                        if (items.has(slotKey, PersistentType.ITEM_STACK_OLD)) {
-                            inventory.setItem(i, items.get(slotKey, PersistentType.ITEM_STACK_OLD));
-                        }
-                    }
-                } else {
-
-                    pdc.set(key, PersistentDataType.TAG_CONTAINER, pdc.getAdapterContext().newPersistentDataContainer());
-                    item.setItemMeta(meta);
-                }
-                openedInventories.put(p, inventory);
-                p.openInventory(inventory);
-                usingBackPacks.put(p, item);
-            }
+            openBackpackInventory(p, item, size);
+            return true;
         } else {
             Slimefun.getLocalization().sendMessage(p, "backpack.already-open", true);
         }
+
+        return false;
     }
 
+
+    public boolean openBackpackInventory(Player p, ItemStack item, int size) {
+        if (item.hasItemMeta()) {
+            ItemMeta meta = item.getItemMeta();
+            PersistentDataContainer pdc = meta.getPersistentDataContainer();
+            PersistentDataContainer items = pdc.get(key, PersistentDataType.TAG_CONTAINER);
+            Inventory inventory = Bukkit.createInventory(null, size, "Backpack [" + size + " Slots]");
+            if (items != null) {
+                for (int i = 0; i < size; i++) {
+                    NamespacedKey slotKey = new NamespacedKey(instance, itemKey + i);
+                    if (items.has(slotKey, PersistentType.ITEM_STACK_OLD)) {
+                        inventory.setItem(i, items.get(slotKey, PersistentType.ITEM_STACK_OLD));
+                    }
+                }
+            } else {
+
+                pdc.set(key, PersistentDataType.TAG_CONTAINER, pdc.getAdapterContext().newPersistentDataContainer());
+                item.setItemMeta(meta);
+            }
+            openedInventories.put(p, inventory);
+            p.openInventory(inventory);
+            usingBackPacks.put(p, item);
+            return true;
+        }
+        return false;
+    }
     /**
      * This method sets the id for a backpack onto the given {@link ItemStack}.
      * 
@@ -223,12 +217,8 @@ public class BackpackListener implements Listener {
      *            The {@link ItemStack} to modify
      * @param line
      *            The line at which the ID should be replaced
-     * @param id
-     *            The id of this backpack
      */
-    public void setBackpackId(@Nonnull OfflinePlayer backpackOwner, @Nonnull ItemStack item, int line, int id) {
-        Validate.notNull(backpackOwner, "Backpacks must have an owner!");
-        Validate.notNull(item, "Cannot set the id onto null!");
+    public void setBackpackId(@Nonnull OfflinePlayer backpackOwner, @Nonnull ItemStack item, int line) {
 
         ItemMeta im = item.getItemMeta();
 
@@ -242,7 +232,7 @@ public class BackpackListener implements Listener {
             throw new IllegalArgumentException("Specified a line that is out of bounds or invalid!");
         }
 
-        lore.set(line, lore.get(line).replace("<ID>", backpackOwner.getUniqueId() + "#" + id));
+        lore.set(line, lore.get(line).replace("<ID>", backpackOwner.getUniqueId().toString()));
         im.setLore(lore);
 
         PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
