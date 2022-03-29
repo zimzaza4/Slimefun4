@@ -98,6 +98,7 @@ public class BackpackListener implements Listener {
                 };
                 i++;
             }
+            backpack.setItemMeta(meta);
         }
     }
 
