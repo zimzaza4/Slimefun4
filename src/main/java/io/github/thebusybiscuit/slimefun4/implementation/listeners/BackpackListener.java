@@ -1,13 +1,13 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import java.util.*;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import com.jeff_media.morepersistentdatatypes.DataType;
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.data.persistent.PersistentDataAPI;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.Cooler;
+import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
+import io.github.thebusybiscuit.slimefun4.utils.PersistentType;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -21,14 +21,16 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.Cooler;
-import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * This {@link Listener} is responsible for all events centered around a {@link SlimefunBackpack}.
@@ -47,6 +49,8 @@ import org.bukkit.persistence.PersistentDataContainer;
  */
 public class BackpackListener implements Listener {
 
+    private Slimefun instance = null;
+    private final String itemKey = "SLOT_";
     public static final Map<Player, Inventory> openedInventories = new HashMap<>();
     private static NamespacedKey key;
     private final Map<Player, ItemStack> usingBackPacks = new HashMap<>();
@@ -55,7 +59,7 @@ public class BackpackListener implements Listener {
     public void register(@Nonnull Slimefun plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         key = new NamespacedKey(plugin, "ITEMS");
-
+        instance = plugin;
     }
 
     @EventHandler
@@ -85,8 +89,15 @@ public class BackpackListener implements Listener {
         if (backpack.hasItemMeta()) {
             ItemMeta meta = backpack.getItemMeta();
             PersistentDataContainer container = meta.getPersistentDataContainer();
-            container.set(key, DataType.ITEM_STACK_ARRAY, inventory.getContents());
-            backpack.setItemMeta(meta);
+            PersistentDataContainer items = container.get(key, PersistentDataType.TAG_CONTAINER);
+            int i = 0;
+            for (ItemStack item : inventory) {
+                if (item != null) {
+                    NamespacedKey slotKey = new NamespacedKey(instance, itemKey + i);
+                    items.set(slotKey, PersistentType.ITEM_STACK_OLD, item);
+                };
+                i++;
+            }
         }
     }
 
@@ -112,7 +123,7 @@ public class BackpackListener implements Listener {
 
             if (backpack instanceof SlimefunBackpack) {
                 if (e.getClick() == ClickType.NUMBER_KEY) {
-                    if (e.getClickedInventory().getType() != InventoryType.PLAYER) {
+                    if (e.getClickedInventory().getType() != InventoryType.PLAYER || e.getClickedInventory().getType() != InventoryType.CREATIVE) {
                         ItemStack hotbarItem = e.getWhoClicked().getInventory().getItem(e.getHotbarButton());
 
                         if (!isAllowed((SlimefunBackpack) backpack, hotbarItem)) {
@@ -122,7 +133,6 @@ public class BackpackListener implements Listener {
                 } else if (e.getClick() == ClickType.SWAP_OFFHAND && e.getClickedInventory().getType() != InventoryType.PLAYER) {
                     // Fixes #3265
                     ItemStack offHandItem = e.getWhoClicked().getInventory().getItemInOffHand();
-
                     if (!isAllowed((SlimefunBackpack) backpack, offHandItem)) {
                         e.setCancelled(true);
                     }
@@ -179,13 +189,20 @@ public class BackpackListener implements Listener {
             if (item.hasItemMeta()) {
                 ItemMeta meta = item.getItemMeta();
                 PersistentDataContainer pdc = meta.getPersistentDataContainer();
+                PersistentDataContainer items = pdc.get(key, PersistentDataType.TAG_CONTAINER);
                 Inventory inventory = Bukkit.createInventory(null, size, "Backpack [" + size + " Slots]");
-                if (pdc.has(key, DataType.ITEM_STACK_ARRAY)) {
-                    inventory.setContents(Objects.requireNonNull(pdc.get(key, DataType.ITEM_STACK_ARRAY)));
+                if (items != null) {
+                    for (int i = 0; i < size; i++) {
+                        NamespacedKey slotKey = new NamespacedKey(instance, itemKey + i);
+                        if (items.has(slotKey, PersistentType.ITEM_STACK_OLD)) {
+                            inventory.setItem(i, items.get(slotKey, PersistentType.ITEM_STACK_OLD));
+                        }
+                    }
                 } else {
-                    pdc.set(key, DataType.ITEM_STACK_ARRAY, new ItemStack[9]);
+
+                    pdc.set(key, PersistentDataType.TAG_CONTAINER, pdc.getAdapterContext().newPersistentDataContainer());
+                    item.setItemMeta(meta);
                 }
-                item.setItemMeta(meta);
                 openedInventories.put(p, inventory);
                 p.openInventory(inventory);
                 usingBackPacks.put(p, item);
@@ -227,7 +244,10 @@ public class BackpackListener implements Listener {
         im.setLore(lore);
 
         PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
-        pdc.set(key, DataType.ITEM_STACK_ARRAY, new ItemStack[9]);
+        pdc.set(key, PersistentDataType.TAG_CONTAINER, pdc.getAdapterContext().newPersistentDataContainer());
         item.setItemMeta(im);
     }
+
+
+
 }
