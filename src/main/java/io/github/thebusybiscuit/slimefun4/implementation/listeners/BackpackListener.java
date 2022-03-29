@@ -98,6 +98,7 @@ public class BackpackListener implements Listener {
                 };
                 i++;
             }
+            container.set(key, PersistentDataType.TAG_CONTAINER, items);
             backpack.setItemMeta(meta);
         }
     }
