@@ -77,11 +77,15 @@ public class BackpackListener implements Listener {
             PersistentDataContainer container = meta.getPersistentDataContainer();
             PersistentDataContainer items = container.get(key, PersistentDataType.TAG_CONTAINER);
             int i = 0;
+
             for (ItemStack item : inventory) {
+                NamespacedKey slotKey = new NamespacedKey(instance, itemKey + i);
+
                 if (item != null) {
-                    NamespacedKey slotKey = new NamespacedKey(instance, itemKey + i);
                     items.set(slotKey, PersistentType.ITEM_STACK_OLD, item);
-                };
+                } else {
+                    items.remove(slotKey);
+                }
                 i++;
             }
             container.set(key, PersistentDataType.TAG_CONTAINER, items);
