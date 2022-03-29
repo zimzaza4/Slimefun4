@@ -46,10 +46,10 @@ import java.util.UUID;
  */
 public class BackpackListener implements Listener {
 
-    private Slimefun instance = null;
-    private final String itemKey = "SLOT_";
+    private static Slimefun instance = null;
+    public static final String itemKey = "SLOT_";
     public static final Map<Player, Inventory> openedInventories = new HashMap<>();
-    private static NamespacedKey key;
+    public static NamespacedKey key;
     private final Map<Player, ItemStack> usingBackPacks = new HashMap<>();
     private final Map<UUID, ItemStack> backpacks = new HashMap<>();
 
@@ -70,8 +70,7 @@ public class BackpackListener implements Listener {
         }
     }
 
-    private void saveBackpack(@Nonnull ItemStack backpack, Inventory inventory) {
-
+    public static void saveBackpack(@Nonnull ItemStack backpack, Inventory inventory) {
         if (backpack.hasItemMeta()) {
             ItemMeta meta = backpack.getItemMeta();
             PersistentDataContainer container = meta.getPersistentDataContainer();
@@ -183,6 +182,30 @@ public class BackpackListener implements Listener {
     }
 
 
+    public static Inventory getBackpackInventory(SlimefunBackpack backpack) {
+        ItemStack item = backpack.getItem();
+        int size = backpack.getSize();
+        if (item.hasItemMeta()) {
+            ItemMeta meta = item.getItemMeta();
+            PersistentDataContainer pdc = meta.getPersistentDataContainer();
+            PersistentDataContainer items = pdc.get(key, PersistentDataType.TAG_CONTAINER);
+            Inventory inventory = Bukkit.createInventory(null, size, "Backpack [" + size + " Slots]");
+            if (items != null) {
+                for (int i = 0; i < size; i++) {
+                    NamespacedKey slotKey = new NamespacedKey(instance, itemKey + i);
+                    if (items.has(slotKey, PersistentType.ITEM_STACK_OLD)) {
+                        inventory.setItem(i, items.get(slotKey, PersistentType.ITEM_STACK_OLD));
+                    }
+                }
+            } else {
+
+                pdc.set(key, PersistentDataType.TAG_CONTAINER, pdc.getAdapterContext().newPersistentDataContainer());
+                item.setItemMeta(meta);
+            }
+            return inventory;
+        }
+        return null;
+    }
     public boolean openBackpackInventory(Player p, ItemStack item, int size) {
         if (item.hasItemMeta()) {
             ItemMeta meta = item.getItemMeta();

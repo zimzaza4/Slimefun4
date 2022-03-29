@@ -2,6 +2,9 @@ package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
 import javax.annotation.Nonnull;
 
+import io.github.bakedlibs.dough.data.persistent.PersistentDataAPI;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -13,6 +16,8 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 
 import io.github.thebusybiscuit.slimefun4.api.events.CoolerFeedPlayerEvent;
@@ -92,16 +97,14 @@ public class CoolerListener implements Listener {
      *            The {@link Cooler} {@link ItemStack} to take the {@link Juice} from
      */
     private void takeJuiceFromCooler(@Nonnull Player p, @Nonnull ItemStack cooler) {
-        PlayerProfile.getBackpack(cooler, backpack -> {
-            if (backpack != null) {
-                Slimefun.runSync(() -> consumeJuice(p, cooler, backpack));
-            }
-        });
+        consumeJuice(p, cooler, (SlimefunBackpack) SlimefunItem.getByItem(cooler));
     }
 
-    private boolean consumeJuice(@Nonnull Player p, @Nonnull ItemStack coolerItem, @Nonnull PlayerBackpack backpack) {
-        Inventory inv = backpack.getInventory();
+    private boolean consumeJuice(@Nonnull Player p, @Nonnull ItemStack coolerItem, @Nonnull SlimefunBackpack backpack) {
+
+        Inventory inv = BackpackListener.getBackpackInventory(backpack);
         int slot = -1;
+
 
         for (int i = 0; i < inv.getSize(); i++) {
             ItemStack stack = inv.getItem(i);
@@ -127,7 +130,7 @@ public class CoolerListener implements Listener {
                 p.setSaturation(6F);
                 p.playSound(p.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1F, 1F);
                 inv.setItem(slot, null);
-                backpack.markDirty();
+                BackpackListener.saveBackpack(item, inv);
 
                 return true;
             } else {
