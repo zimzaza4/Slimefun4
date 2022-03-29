@@ -63,6 +63,7 @@ public class BackpackListener implements Listener {
     public void onClose(InventoryCloseEvent e) {
         Player p = (Player) e.getPlayer();
         if (openedInventories.containsValue(e.getInventory())) {
+            backpacks.remove(e.getPlayer().getUniqueId());
             openedInventories.remove(p);
             saveBackpack(usingBackPacks.get(p), e.getInventory());
             p.playSound(p.getLocation(), Sound.ENTITY_HORSE_ARMOR, 1F, 1F);
