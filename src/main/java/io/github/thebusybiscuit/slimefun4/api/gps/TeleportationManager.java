@@ -51,7 +51,7 @@ public final class TeleportationManager {
      * teleporting right now.
      */
     private final Set<UUID> teleporterUsers = new HashSet<>();
-
+    public final Set<UUID> teleportQuicklyUsers = new HashSet<>();
     /**
      * Opens the GUI of the teleporter and calculates the network complexity of the {@link Player}
      *
@@ -66,6 +66,7 @@ public final class TeleportationManager {
     public void openTeleporterGUI(Player p, UUID ownerUUID, Block b) {
         openTeleporterGUI(p, ownerUUID, b, Slimefun.getGPSNetwork().getNetworkComplexity(ownerUUID));
     }
+
 
     @ParametersAreNonnullByDefault
     public void openTeleporterGUI(Player p, UUID ownerUUID, Block b, int complexity) {
@@ -111,7 +112,11 @@ public final class TeleportationManager {
                     menu.addItem(slot, new CustomItemStack(waypoint.getIcon(), waypoint.getName().replace("player:death ", ""), lore));
                     menu.addMenuClickHandler(slot, (pl, s, item, action) -> {
                         pl.closeInventory();
-                        teleport(pl.getUniqueId(), complexity, source, l, false);
+                        if (teleportQuicklyUsers.contains(pl.getUniqueId())) {
+                            teleportQuickly(pl.getUniqueId(), complexity, source, l, false);
+                        } else {
+                            teleport(pl.getUniqueId(), complexity, source, l, false);
+                        }
                         return false;
                     });
 
@@ -129,6 +134,14 @@ public final class TeleportationManager {
 
         int time = getTeleportationTime(complexity, source, destination);
         updateProgress(uuid, Math.max(1, 100 / time), 0, source, destination, resistance);
+    }
+
+    @ParametersAreNonnullByDefault
+    public void teleportQuickly(UUID uuid, int complexity, Location source, Location destination, boolean resistance) {
+        teleporterUsers.add(uuid);
+
+        int time = getTeleportationTime(complexity, source, destination);
+        updateProgress(uuid, Math.max(1, 250 / time), 0, source, destination, resistance);
     }
 
     /**
@@ -181,7 +194,7 @@ public final class TeleportationManager {
 
     private void cancel(@Nonnull UUID uuid, @Nullable Player p) {
         teleporterUsers.remove(uuid);
-
+        teleportQuicklyUsers.remove(uuid);
         if (p != null) {
             p.sendTitle(ChatColors.color(Slimefun.getLocalization().getMessage(p, "machines.TELEPORTER.cancelled")), ChatColors.color("&c&k40&f&c%"), 20, 60, 20);
         }
@@ -227,6 +240,7 @@ public final class TeleportationManager {
                 destination.getWorld().spawnParticle(Particle.PORTAL, loc, 200, 0.2F, 0.8F, 0.2F);
                 destination.getWorld().playSound(destination, Sound.BLOCK_BEACON_ACTIVATE, 1F, 1F);
                 teleporterUsers.remove(p.getUniqueId());
+                teleportQuicklyUsers.remove(p.getUniqueId());
             } else {
                 /*
                  * Make sure the Player is removed from the actively teleporting

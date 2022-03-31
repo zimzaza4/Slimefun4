@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import com.xzavier0722.mc.plugin.slimefun4.autocrafter.CrafterSmartPort;
+import io.github.thebusybiscuit.slimefun4.implementation.items.teleporter.*;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -186,11 +187,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.miner
 import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.miner.IndustrialMiner;
 import io.github.thebusybiscuit.slimefun4.implementation.items.seasonal.ChristmasPresent;
 import io.github.thebusybiscuit.slimefun4.implementation.items.seasonal.EasterEgg;
-import io.github.thebusybiscuit.slimefun4.implementation.items.teleporter.PersonalActivationPlate;
-import io.github.thebusybiscuit.slimefun4.implementation.items.teleporter.PortableTeleporter;
-import io.github.thebusybiscuit.slimefun4.implementation.items.teleporter.SharedActivationPlate;
-import io.github.thebusybiscuit.slimefun4.implementation.items.teleporter.Teleporter;
-import io.github.thebusybiscuit.slimefun4.implementation.items.teleporter.TeleporterPylon;
 import io.github.thebusybiscuit.slimefun4.implementation.items.tools.ClimbingPick;
 import io.github.thebusybiscuit.slimefun4.implementation.items.tools.ExplosivePickaxe;
 import io.github.thebusybiscuit.slimefun4.implementation.items.tools.ExplosiveShovel;
@@ -2246,6 +2242,11 @@ public final class SlimefunItemSetup {
         new PortableTeleporter(itemGroups.gps, SlimefunItems.PORTABLE_TELEPORTER, RecipeType.ENHANCED_CRAFTING_TABLE,
         new ItemStack[] {SlimefunItems.ELECTRO_MAGNET, SlimefunItems.GPS_TRANSMITTER_3, SlimefunItems.ELECTRO_MAGNET, SlimefunItems.REINFORCED_PLATE, SlimefunItems.GPS_TELEPORTATION_MATRIX, SlimefunItems.REINFORCED_PLATE, SlimefunItems.BLISTERING_INGOT_3, SlimefunItems.MEDIUM_CAPACITOR, SlimefunItems.BLISTERING_INGOT_3})
         .register(plugin);
+
+        new QuicklyPortableTeleporter(itemGroups.gps, SlimefunItems.QUICKLY_PORTABLE_TELEPORTER, RecipeType.ENHANCED_CRAFTING_TABLE,
+        new ItemStack[]{SlimefunItems.ELECTRO_MAGNET, SlimefunItems.SMALL_CAPACITOR, SlimefunItems.GPS_TRANSMITTER_4, SlimefunItems.ELECTRO_MAGNET, SlimefunItems.PORTABLE_TELEPORTER, SlimefunItems.GPS_TELEPORTATION_MATRIX, SlimefunItems.REINFORCED_ALLOY_INGOT, SlimefunItems.BLISTERING_INGOT_3, SlimefunItems.REINFORCED_ALLOY_INGOT})
+        .register(plugin);
+
 
         new SharedActivationPlate(itemGroups.gps, SlimefunItems.GPS_ACTIVATION_DEVICE_SHARED, RecipeType.ENHANCED_CRAFTING_TABLE,
         new ItemStack[] {null, new ItemStack(Material.STONE_PRESSURE_PLATE), null, new ItemStack(Material.REDSTONE), SlimefunItems.GPS_TRANSMITTER, new ItemStack(Material.REDSTONE), SlimefunItems.BILLON_INGOT, SlimefunItems.BILLON_INGOT, SlimefunItems.BILLON_INGOT})
