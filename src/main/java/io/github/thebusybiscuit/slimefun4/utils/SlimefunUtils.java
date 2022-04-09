@@ -266,10 +266,14 @@ public final class SlimefunUtils {
     }
 
     public static boolean isItemSimilar(@Nullable ItemStack item, @Nullable ItemStack sfitem, boolean checkLore) {
-        return isItemSimilar(item, sfitem, checkLore, true);
+        return isItemSimilar(item, sfitem, checkLore, true, true);
     }
 
     public static boolean isItemSimilar(@Nullable ItemStack item, @Nullable ItemStack sfitem, boolean checkLore, boolean checkAmount) {
+        return isItemSimilar(item, sfitem, checkLore, checkAmount, true);
+    }
+
+    public static boolean isItemSimilar(@Nullable ItemStack item, @Nullable ItemStack sfitem, boolean checkLore, boolean checkAmount, boolean checkDistinctiveItem) {
         if (item == null) {
             return sfitem == null;
         } else if (sfitem == null) {
@@ -278,7 +282,7 @@ public final class SlimefunUtils {
             return false;
         } else if (checkAmount && item.getAmount() < sfitem.getAmount()) {
             return false;
-        } else if (sfitem instanceof SlimefunItemStack && item instanceof SlimefunItemStack) {
+        } else if (checkDistinctiveItem && sfitem instanceof SlimefunItemStack && item instanceof SlimefunItemStack) {
             SlimefunItemStack stackOne = (SlimefunItemStack) sfitem;
             SlimefunItemStack stackTwo = (SlimefunItemStack) item;
             if (stackOne.getItemId().equals(stackTwo.getItemId())) {
@@ -302,16 +306,18 @@ public final class SlimefunUtils {
                 String id = Slimefun.getItemDataService().getItemData(itemMeta).orElse(null);
 
                 if (id != null) {
-                    /*
-                     * PR #3417
-                     *
-                     * Some items can't rely on just IDs matching and will implement Distinctive Item
-                     * in which case we want to use the method provided to compare
-                     */
-                    Optional<DistinctiveItem> optionalDistinctive = getDistinctiveItem(id);
-                    if (optionalDistinctive.isPresent()) {
-                        ItemMeta sfItemMeta = sfitem.getItemMeta();
-                        return optionalDistinctive.get().canStack(sfItemMeta, itemMeta);
+                    if (checkDistinctiveItem) {
+                        /*
+                         * PR #3417
+                         *
+                         * Some items can't rely on just IDs matching and will implement Distinctive Item
+                         * in which case we want to use the method provided to compare
+                         */
+                        Optional<DistinctiveItem> optionalDistinctive = getDistinctiveItem(id);
+                        if (optionalDistinctive.isPresent()) {
+                            ItemMeta sfItemMeta = sfitem.getItemMeta();
+                            return optionalDistinctive.get().canStack(sfItemMeta, itemMeta);
+                        }
                     }
                     return id.equals(((SlimefunItemStack) sfitem).getItemId());
                 }
