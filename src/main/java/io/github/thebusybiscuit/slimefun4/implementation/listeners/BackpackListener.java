@@ -174,6 +174,7 @@ public class BackpackListener implements Listener {
         }
 
         // Check if someone else is currently viewing this backpack
+
         if (!backpacks.containsValue(item)) {
             p.playSound(p.getLocation(), Sound.ENTITY_HORSE_ARMOR, 1F, 1F);
             backpacks.put(p.getUniqueId(), item);
@@ -207,7 +208,7 @@ public class BackpackListener implements Listener {
         }
         return null;
     }
-    public boolean openBackpackInventory(Player p, ItemStack item, int size) {
+    public void openBackpackInventory(Player p, ItemStack item, int size) {
         if (item.hasItemMeta()) {
             ItemMeta meta = item.getItemMeta();
             PersistentDataContainer pdc = meta.getPersistentDataContainer();
@@ -228,9 +229,7 @@ public class BackpackListener implements Listener {
             openedInventories.put(p, inventory);
             p.openInventory(inventory);
             usingBackPacks.put(p, item);
-            return true;
         }
-        return false;
     }
     /**
      * This method sets the id for a backpack onto the given {@link ItemStack}.
