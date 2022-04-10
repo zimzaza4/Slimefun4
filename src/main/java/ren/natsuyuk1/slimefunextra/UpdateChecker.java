@@ -12,6 +12,13 @@ public class UpdateChecker {
     private static final String UPDATE_CHECK_URL = "https://gitee.com/api/v5/repos/StarWishsama/Slimefun4/releases/latest";
 
     public static void checkUpdate() {
+        String currentVersion = Slimefun.getVersion();
+
+        // Only available for release user
+        if (!currentVersion.contains("release")) {
+            return;
+        }
+
         try {
             HttpResponse<JsonNode> response = Unirest.get(UPDATE_CHECK_URL)
                     .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36")
@@ -22,12 +29,6 @@ public class UpdateChecker {
 
                 if (Slimefun.instance() != null) {
                     String latestVersionCode = node.getObject().getString("tag_name");
-                    String currentVersion = Slimefun.getVersion();
-
-                    // Only available for release user
-                    if (!currentVersion.contains("release")) {
-                        return;
-                    }
 
                     String currentYear = latestVersionCode.split("\\.")[0];
                     String currentMonth = latestVersionCode.split("\\.")[1];
