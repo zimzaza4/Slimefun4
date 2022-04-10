@@ -50,4 +50,4 @@ jobs:
         prerelease: true
         title: "Slimefun 自动构建版本"
         files: |
-          target/Slimefun*.jar
+          target/Slimefun-*.jar
