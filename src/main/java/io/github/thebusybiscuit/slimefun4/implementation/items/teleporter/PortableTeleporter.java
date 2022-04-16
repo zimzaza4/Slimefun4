@@ -34,7 +34,10 @@ public class PortableTeleporter extends SimpleSlimefunItem<ItemUseHandler> imple
     @ParametersAreNonnullByDefault
     public PortableTeleporter(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
+    }
 
+    @Override
+    public void preRegister() {
         addItemSetting(getCost());
     }
 
