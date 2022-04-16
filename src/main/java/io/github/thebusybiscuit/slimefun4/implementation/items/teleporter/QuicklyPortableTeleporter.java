@@ -23,8 +23,6 @@ public class QuicklyPortableTeleporter extends PortableTeleporter{
     @ParametersAreNonnullByDefault
     public QuicklyPortableTeleporter(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
-        addItemSetting(getCost());
-
     }
 
     @Override
