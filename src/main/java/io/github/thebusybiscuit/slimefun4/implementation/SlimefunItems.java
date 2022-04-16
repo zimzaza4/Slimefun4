@@ -738,7 +738,6 @@ public final class SlimefunItems {
     public static final SlimefunItemStack GPS_ACTIVATION_DEVICE_SHARED = new SlimefunItemStack("GPS_ACTIVATION_DEVICE_SHARED", Material.STONE_PRESSURE_PLATE, "&rGPS 激活设备 &3(公共)", "", "&r把它放在传送矩阵上", "&r并且踩下这个踏板以选择", "&r要传送的路径点");
     public static final SlimefunItemStack GPS_ACTIVATION_DEVICE_PERSONAL = new SlimefunItemStack("GPS_ACTIVATION_DEVICE_PERSONAL", Material.STONE_PRESSURE_PLATE, "&rGPS 激活设备 &a(私人)", "", "&r把它放在传送矩阵上", "&r并且踩下这个踏板以选择", "&r要传送的路径点", "", "&r这种激活装置仅允许", "&r放置它的人使用");
     public static final SlimefunItemStack PORTABLE_TELEPORTER = new SlimefunItemStack("PORTABLE_TELEPORTER", Material.COMPASS, "&b便携式传送器", "", "&f可以让你随时随地传送到", "&f要传送的传送点", "", LoreBuilder.powerCharged(0, 50), "", "&e右键&7 使用");
-    public static final SlimefunItemStack QUICKLY_PORTABLE_TELEPORTER = new SlimefunItemStack("QUICKLY_PORTABLE_TELEPORTER", Material.COMPASS, "&e加强&b便携式传送器", "", "&f可以&e更快地&f让你随时随地传送到", "&f要传送的传送点", "", LoreBuilder.powerCharged(0, 200), "", "&e右键&7 使用");
 
 
     public static final SlimefunItemStack ELEVATOR_PLATE = new SlimefunItemStack("ELEVATOR_PLATE", Material.STONE_PRESSURE_PLATE, "&b电梯板", "", "&r在每一层放置电梯板", "&r你就能够在每一层之间传送.", "", "&e右键电梯板&7 以为此层命名");

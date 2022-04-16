@@ -2120,11 +2120,6 @@ public final class SlimefunItemSetup {
         new ItemStack[] {SlimefunItems.ELECTRO_MAGNET, SlimefunItems.GPS_TRANSMITTER_3, SlimefunItems.ELECTRO_MAGNET, SlimefunItems.REINFORCED_PLATE, SlimefunItems.GPS_TELEPORTATION_MATRIX, SlimefunItems.REINFORCED_PLATE, SlimefunItems.BLISTERING_INGOT_3, SlimefunItems.MEDIUM_CAPACITOR, SlimefunItems.BLISTERING_INGOT_3})
         .register(plugin);
 
-        new QuicklyPortableTeleporter(itemGroups.gps, SlimefunItems.QUICKLY_PORTABLE_TELEPORTER, RecipeType.ENHANCED_CRAFTING_TABLE,
-        new ItemStack[]{SlimefunItems.ELECTRO_MAGNET, SlimefunItems.SMALL_CAPACITOR, SlimefunItems.GPS_TRANSMITTER_4, SlimefunItems.ELECTRO_MAGNET, SlimefunItems.GPS_TELEPORTATION_MATRIX, SlimefunItems.GPS_TELEPORTATION_MATRIX, SlimefunItems.REINFORCED_ALLOY_INGOT, SlimefunItems.BLISTERING_INGOT_3, SlimefunItems.REINFORCED_ALLOY_INGOT})
-        .register(plugin);
-
-
         new SharedActivationPlate(itemGroups.gps, SlimefunItems.GPS_ACTIVATION_DEVICE_SHARED, RecipeType.ENHANCED_CRAFTING_TABLE,
         new ItemStack[] {null, new ItemStack(Material.STONE_PRESSURE_PLATE), null, new ItemStack(Material.REDSTONE), SlimefunItems.GPS_TRANSMITTER, new ItemStack(Material.REDSTONE), SlimefunItems.BILLON_INGOT, SlimefunItems.BILLON_INGOT, SlimefunItems.BILLON_INGOT})
         .register(plugin);

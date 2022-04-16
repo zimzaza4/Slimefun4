@@ -29,21 +29,15 @@ public class PortableTeleporter extends SimpleSlimefunItem<ItemUseHandler> imple
     private static final int CAPACITY = 50;
     private static final int DEFAULT_COST = 10;
 
-
+    private final ItemSetting<Integer> cost = new IntRangeSetting(this, "teleportation-cost", 0, DEFAULT_COST, CAPACITY);
 
     @ParametersAreNonnullByDefault
     public PortableTeleporter(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
+
+        addItemSetting(cost);
     }
 
-    @Override
-    public void preRegister() {
-        addItemSetting(getCost());
-    }
-
-    public ItemSetting<Integer> getCost() {
-        return new IntRangeSetting(this, "teleportation-cost", 0, DEFAULT_COST, CAPACITY);
-    }
     @Nonnull
     @Override
     public ItemUseHandler getItemHandler() {
@@ -51,7 +45,7 @@ public class PortableTeleporter extends SimpleSlimefunItem<ItemUseHandler> imple
             ItemStack item = e.getItem();
             e.cancel();
 
-            if (removeItemCharge(item, getCost().getValue())) {
+            if (removeItemCharge(item, cost.getValue())) {
                 Player p = e.getPlayer();
                 Slimefun.getGPSNetwork().getTeleportationManager().openTeleporterGUI(p, p.getUniqueId(), p.getLocation().getBlock().getRelative(BlockFace.DOWN));
             }

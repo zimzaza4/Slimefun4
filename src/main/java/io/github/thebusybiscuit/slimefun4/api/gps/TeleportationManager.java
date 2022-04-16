@@ -1,24 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.api.gps;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
 import io.github.bakedlibs.dough.common.ChatColors;
 import io.github.bakedlibs.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
@@ -28,15 +9,27 @@ import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import io.papermc.lib.PaperLib;
-
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
+import org.apache.commons.lang.Validate;
+import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * The {@link TeleportationManager} handles the process of teleportation for a {@link Player}
  * who is using a {@link Teleporter}.
- * 
+ *
  * @author TheBusyBiscuit
- * 
+ *
  * @see GPSNetwork
  * @see Teleporter
  *
@@ -51,7 +44,7 @@ public final class TeleportationManager {
      * teleporting right now.
      */
     private final Set<UUID> teleporterUsers = new HashSet<>();
-    public final Set<UUID> teleportQuicklyUsers = new HashSet<>();
+
     /**
      * Opens the GUI of the teleporter and calculates the network complexity of the {@link Player}
      *
@@ -66,7 +59,6 @@ public final class TeleportationManager {
     public void openTeleporterGUI(Player p, UUID ownerUUID, Block b) {
         openTeleporterGUI(p, ownerUUID, b, Slimefun.getGPSNetwork().getNetworkComplexity(ownerUUID));
     }
-
 
     @ParametersAreNonnullByDefault
     public void openTeleporterGUI(Player p, UUID ownerUUID, Block b, int complexity) {
@@ -98,25 +90,21 @@ public final class TeleportationManager {
 
                     // @formatter:off
                     String[] lore = {
-                        "",
-                        "&8\u21E8 &7" + Slimefun.getLocalization().getResourceString(p, "tooltips.world") + ": &f" + l.getWorld().getName(),
-                        "&8\u21E8 &7X: &f" + l.getX(),
-                        "&8\u21E8 &7Y: &f" + l.getY(),
-                        "&8\u21E8 &7Z: &f" + l.getZ(),
-                        "&8\u21E8 &7" + Slimefun.getLocalization().getMessage(p, "machines.TELEPORTER.gui.time") + ": &f" + time + "s",
-                        "",
-                        "&8\u21E8 &c" + Slimefun.getLocalization().getMessage(p, "machines.TELEPORTER.gui.tooltip")
+                            "",
+                            "&8\u21E8 &7" + Slimefun.getLocalization().getResourceString(p, "tooltips.world") + ": &f" + l.getWorld().getName(),
+                            "&8\u21E8 &7X: &f" + l.getX(),
+                            "&8\u21E8 &7Y: &f" + l.getY(),
+                            "&8\u21E8 &7Z: &f" + l.getZ(),
+                            "&8\u21E8 &7" + Slimefun.getLocalization().getMessage(p, "machines.TELEPORTER.gui.time") + ": &f" + time + "s",
+                            "",
+                            "&8\u21E8 &c" + Slimefun.getLocalization().getMessage(p, "machines.TELEPORTER.gui.tooltip")
                     };
                     // @formatter:on
 
                     menu.addItem(slot, new CustomItemStack(waypoint.getIcon(), waypoint.getName().replace("player:death ", ""), lore));
                     menu.addMenuClickHandler(slot, (pl, s, item, action) -> {
                         pl.closeInventory();
-                        if (teleportQuicklyUsers.contains(pl.getUniqueId())) {
-                            teleportQuickly(pl.getUniqueId(), complexity, source, l, false);
-                        } else {
-                            teleport(pl.getUniqueId(), complexity, source, l, false);
-                        }
+                        teleport(pl.getUniqueId(), complexity, source, l, false);
                         return false;
                     });
 
@@ -136,34 +124,26 @@ public final class TeleportationManager {
         updateProgress(uuid, Math.max(1, 100 / time), 0, source, destination, resistance);
     }
 
-    @ParametersAreNonnullByDefault
-    public void teleportQuickly(UUID uuid, int complexity, Location source, Location destination, boolean resistance) {
-        teleporterUsers.add(uuid);
-
-        int time = getTeleportationTime(complexity, source, destination);
-        updateProgress(uuid, Math.max(1, 250 / time), 0, source, destination, resistance);
-    }
-
     /**
      * This returns the amount of time it will take to teleport from the source {@link Location}
      * to the destination {@link Location}, given the specified complexity.
      * <p>
      * The returned time will be measured in 500ms intervals.
-     * 
+     *
      * <ul>
      * <li>A returned time of {@literal 100} will mean 50,000ms (50s) of real-life time.</li>
      * <li>A returned time of {@literal 10} will mean 5,000ms (5s) of real-life time.</li>
      * <li>A returned time of {@literal 2} will mean 1,000ms (1s) of real-life time.</li>
      * <li>and so on...</li>
      * </ul>
-     * 
+     *
      * @param complexity
      *            The complexity of the {@link GPSNetwork}
      * @param source
      *            The source {@link Location}
      * @param destination
      *            The destination {@link Location}
-     * 
+     *
      * @return The amount of time the teleportation will take
      */
     public int getTeleportationTime(int complexity, @Nonnull Location source, @Nonnull Location destination) {
@@ -194,7 +174,7 @@ public final class TeleportationManager {
 
     private void cancel(@Nonnull UUID uuid, @Nullable Player p) {
         teleporterUsers.remove(uuid);
-        teleportQuicklyUsers.remove(uuid);
+
         if (p != null) {
             p.sendTitle(ChatColors.color(Slimefun.getLocalization().getMessage(p, "machines.TELEPORTER.cancelled")), ChatColors.color("&c&k40&f&c%"), 20, 60, 20);
         }
@@ -240,7 +220,6 @@ public final class TeleportationManager {
                 destination.getWorld().spawnParticle(Particle.PORTAL, loc, 200, 0.2F, 0.8F, 0.2F);
                 destination.getWorld().playSound(destination, Sound.BLOCK_BEACON_ACTIVATE, 1F, 1F);
                 teleporterUsers.remove(p.getUniqueId());
-                teleportQuicklyUsers.remove(p.getUniqueId());
             } else {
                 /*
                  * Make sure the Player is removed from the actively teleporting
