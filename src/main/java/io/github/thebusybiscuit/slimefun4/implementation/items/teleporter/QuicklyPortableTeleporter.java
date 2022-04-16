@@ -18,13 +18,17 @@ public class QuicklyPortableTeleporter extends PortableTeleporter{
     private static final int CAPACITY = 200;
     private static final int DEFAULT_COST = 20;
 
-    private final ItemSetting<Integer> cost = new IntRangeSetting(this, "teleportation-cost", 0, DEFAULT_COST, CAPACITY);
+
 
     @ParametersAreNonnullByDefault
     public QuicklyPortableTeleporter(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
 
-        addItemSetting(cost);
+    }
+
+    @Override
+    public ItemSetting<Integer> getCost() {
+        return new IntRangeSetting(this, "teleportation-cost", 0, DEFAULT_COST, CAPACITY);
     }
 
     @Nonnull
@@ -34,7 +38,7 @@ public class QuicklyPortableTeleporter extends PortableTeleporter{
             ItemStack item = e.getItem();
             e.cancel();
 
-            if (removeItemCharge(item, cost.getValue())) {
+            if (removeItemCharge(item, getCost().getValue())) {
                 Player p = e.getPlayer();
                 Slimefun.getGPSNetwork().getTeleportationManager().teleportQuicklyUsers.add(p.getUniqueId());
                 Slimefun.getGPSNetwork().getTeleportationManager().openTeleporterGUI(p, p.getUniqueId(), p.getLocation().getBlock().getRelative(BlockFace.DOWN));
