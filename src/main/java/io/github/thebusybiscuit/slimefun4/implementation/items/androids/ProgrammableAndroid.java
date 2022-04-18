@@ -901,10 +901,16 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
     protected void move(Block b, BlockFace face, Block block) {
         Player p = Bukkit.getPlayer(IntegrationHelper.getOwnerFromJson(BlockStorage.getBlockInfoAsJson(b.getLocation())));
 
-        if (p != null && !IntegrationHelper.checkPermission(p, block, Interaction.PLACE_BLOCK)) {
-            BlockStorage.addBlockInfo(b, "paused", "false");
-            Slimefun.getLocalization().sendMessage(p, "messages.android-no-permission", true);
-            return;
+        if (p != null) {
+            if (!Slimefun.getProtectionManager().hasPermission(p, block, Interaction.PLACE_BLOCK)) {
+                return;
+            }
+
+            if (!IntegrationHelper.checkPermission(p, block, Interaction.PLACE_BLOCK)) {
+                BlockStorage.addBlockInfo(b, "paused", "false");
+                Slimefun.getLocalization().sendMessage(p, "messages.android-no-permission", true);
+                return;
+            }
         }
 
         if (block.getY() > WorldUtils.getMinHeight(block.getWorld()) && block.getY() < block.getWorld().getMaxHeight() && block.isEmpty()) {

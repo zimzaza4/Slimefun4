@@ -1,7 +1,12 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.androids;
 
+import java.util.UUID;
 import java.util.function.Predicate;
 
+import io.github.bakedlibs.dough.protection.Interaction;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.ArmorStand;
@@ -57,6 +62,11 @@ public class ButcherAndroid extends ProgrammableAndroid {
             if (attack) {
                 if (n.hasMetadata(METADATA_KEY)) {
                     n.removeMetadata(METADATA_KEY, Slimefun.instance());
+                }
+
+                OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(BlockStorage.getLocationInfo(b.getLocation(), "owner")));
+                if (!Slimefun.getProtectionManager().hasPermission(owner, n.getLocation(), Interaction.ATTACK_ENTITY)) {
+                    return;
                 }
 
                 n.setMetadata(METADATA_KEY, new FixedMetadataValue(Slimefun.instance(), new AndroidInstance(this, b)));
