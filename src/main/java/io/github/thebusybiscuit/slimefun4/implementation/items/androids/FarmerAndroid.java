@@ -1,13 +1,18 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.androids;
 
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.github.bakedlibs.dough.protection.Interaction;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
@@ -34,6 +39,12 @@ public class FarmerAndroid extends ProgrammableAndroid {
 
     @Override
     protected void farm(Block b, BlockMenu menu, Block block, boolean isAdvanced) {
+
+        OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(BlockStorage.getLocationInfo(b.getLocation(), "owner")));
+        if (!Slimefun.getProtectionManager().hasPermission(owner, block, Interaction.BREAK_BLOCK)) {
+            return;
+        }
+
         Material blockType = block.getType();
         BlockData data = block.getBlockData();
         ItemStack drop = null;
