@@ -30,23 +30,30 @@ public class UpdateChecker {
                 if (Slimefun.instance() != null) {
                     String latestVersionCode = node.getObject().getString("tag_name");
 
-                    String currentYear = latestVersionCode.split("\\.")[0];
-                    String currentMonth = latestVersionCode.split("\\.")[1];
-
-                    // Get last string
                     String[] versionCodeSplit = currentVersion.split("-");
-                    String actualVersionCode = versionCodeSplit[versionCodeSplit.length - 1];
+                    String version = null;
+                    for (String str : versionCodeSplit) {
+                        if (str.startsWith("20")) {
+                            String[] code = str.split("\\.");
+                            if (code.length < 2) {
+                                Slimefun.logger().warning("无法识别当前版本: " + currentVersion);
+                                return;
+                            }
+                            version = code[0] + "." + code[1];
+                        }
+                    }
 
-                    String year = actualVersionCode.split("\\.")[0];
-                    String month = actualVersionCode.split("\\.")[1];
+                    if (version == null) {
+                        Slimefun.logger().warning("无法识别当前版本: " + currentVersion);
+                        return;
+                    }
 
-                    if (Integer.parseInt(currentYear) > Integer.parseInt(year)
-                            || (Integer.parseInt(year) == Integer.parseInt(currentYear)
-                            && Integer.parseInt(currentMonth) > Integer.parseInt(month))) {
+                    if (latestVersionCode.compareTo(version) > 0) {
                         Slimefun.logger().info("新版本 " + latestVersionCode + " 已发布，请前往 https://gitee.com/StarWishsama/Slimefun4/releases 更新.");
                     } else {
                         Slimefun.logger().info("你正在使用最新版本 " + currentVersion + ".");
                     }
+
                 }
             }
         } catch (Exception e) {
