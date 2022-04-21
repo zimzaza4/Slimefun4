@@ -9,6 +9,8 @@ commands:
   search: 搜索 Slimefun 物品
   open_guide: 使用命令打开 Slimefun 指南
   stats: 查看玩家的统计数据
+  transform: 将物品转换为英文物品
+  id: 获取手持物品的 Slimefun ID
   research:
     description: 解锁/重置玩家的研究进度
     reset: '&c你已重置了 %player% 的研究进度'
@@ -141,6 +143,7 @@ messages:
   not-online: '&4%player% &c不在线'
   invalid-item: '&4%item% &c不是一个有效的物品名!'
   invalid-amount: '&4%amount% &ci不是一个有效的数字 : 它必须大于 0!'
+  invalid-item-in-hand: '&e你手中拿的不是粘液科技的物品!'
   given-item: '&b你获得了 &a%amount% &7"%item%&7"'
   give-item: '&b成功给予玩家 %player% &a%amount% &7"%item%&7"'
   invalid-research: '&4%research% &c不是一个有效的研究名!'
