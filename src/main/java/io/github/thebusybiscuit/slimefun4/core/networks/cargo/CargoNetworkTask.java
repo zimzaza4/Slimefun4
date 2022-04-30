@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.logging.Level;
 
 import javax.annotation.Nullable;
@@ -53,20 +52,15 @@ class CargoNetworkTask implements Runnable {
     private final Map<Location, Inventory> inventories = new HashMap<>();
 
     private final Map<Location, Integer> inputs;
-    private final Map<Integer, Collection<Location>> outputs;
-
-    private final Set<Location> chestTerminalInputs;
-    private final Set<Location> chestTerminalOutputs;
+    private final Map<Integer, List<Location>> outputs;
 
     @ParametersAreNonnullByDefault
-    CargoNetworkTask(CargoNet network, Map<Location, Integer> inputs, Map<Integer, Collection<Location>> outputs, Set<Location> chestTerminalInputs, Set<Location> chestTerminalOutputs) {
+    CargoNetworkTask(CargoNet network, Map<Location, Integer> inputs, Map<Integer, List<Location>> outputs) {
         this.network = network;
         this.manager = Slimefun.getNetworkManager();
 
         this.inputs = inputs;
         this.outputs = outputs;
-        this.chestTerminalInputs = chestTerminalInputs;
-        this.chestTerminalOutputs = chestTerminalOutputs;
     }
 
     @Override
@@ -74,11 +68,6 @@ class CargoNetworkTask implements Runnable {
         long timestamp = System.nanoTime();
 
         try {
-            // Chest Terminal Code
-            if (Slimefun.getIntegrations().isChestTerminalInstalled()) {
-                network.handleItemRequests(inventories, chestTerminalInputs, chestTerminalOutputs);
-            }
-
             /**
              * All operations happen here: Everything gets iterated from the Input Nodes.
              * (Apart from ChestTerminal Buses)
@@ -94,12 +83,6 @@ class CargoNetworkTask implements Runnable {
                 // This will prevent this timings from showing up for the Cargo Manager
                 timestamp += Slimefun.getProfiler().closeEntry(entry.getKey(), inputNode, nodeTimestamp);
             }
-
-            // Chest Terminal Code
-            if (Slimefun.getIntegrations().isChestTerminalInstalled()) {
-                // This will deduct any CT timings and attribute them towards the actual terminal
-                timestamp += network.updateTerminals(chestTerminalInputs);
-            }
         } catch (Exception | LinkageError x) {
             Slimefun.logger().log(Level.SEVERE, x, () -> "An Exception was caught while ticking a Cargo network @ " + new BlockPosition(network.getRegulator()));
         }
@@ -109,7 +92,7 @@ class CargoNetworkTask implements Runnable {
     }
 
     @ParametersAreNonnullByDefault
-    private void routeItems(Location inputNode, Block inputTarget, int frequency, Map<Integer, Collection<Location>> outputNodes) {
+    private void routeItems(Location inputNode, Block inputTarget, int frequency, Map<Integer, List<Location>> outputNodes) {
         ItemStackAndInteger slot = CargoUtils.withdraw(network, inventories, inputNode.getBlock(), inputTarget);
 
         if (slot == null) {
@@ -118,7 +101,7 @@ class CargoNetworkTask implements Runnable {
 
         ItemStack stack = slot.getItem();
         int previousSlot = slot.getInt();
-        Collection<Location> destinations = outputNodes.get(frequency);
+        List<Location> destinations = outputNodes.get(frequency);
 
         if (destinations != null) {
             stack = distributeItem(stack, inputNode, destinations);
@@ -161,25 +144,27 @@ class CargoNetworkTask implements Runnable {
 
     @Nullable
     @ParametersAreNonnullByDefault
-    private ItemStack distributeItem(ItemStack stack, Location inputNode, Collection<Location> outputNodes) {
+    private ItemStack distributeItem(ItemStack stack, Location inputNode, List<Location> outputNodes) {
         ItemStack item = stack;
 
         Config cfg = BlockStorage.getLocationInfo(inputNode);
         boolean roundrobin = Objects.equals(cfg.getString("round-robin"), "true");
         boolean smartFill = Objects.equals(cfg.getString("smart-fill"), "true");
 
-        // Using an ArrayList by default.
-        Collection<Location> destinations = outputNodes;
-
+        Collection<Location> destinations;
         if (roundrobin) {
             // Use an ArrayDeque to perform round-robin sorting
             // Since the impl for roundRobinSort just does Deque.addLast(Deque#removeFirst)
             // An ArrayDequeue is preferable as opposed to a LinkedList:
             // - The number of elements does not change.
             // - ArrayDequeue has better iterative performance
-            Deque<Location> copyOutputNodes = new ArrayDeque<>(outputNodes);
-            roundRobinSort(inputNode, copyOutputNodes);
-            destinations = copyOutputNodes;
+            Deque<Location> tempDestinations = new ArrayDeque<>(outputNodes);
+            roundRobinSort(inputNode, tempDestinations);
+            destinations = tempDestinations;
+        } else {
+            // Using an ArrayList here since we won't need to sort the destinations
+            // The ArrayList has the best performance for iteration bar a primitive array
+            destinations = new ArrayList<>(outputNodes);
         }
 
         for (Location output : destinations) {
