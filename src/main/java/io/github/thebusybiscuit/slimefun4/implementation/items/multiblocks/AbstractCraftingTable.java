@@ -83,7 +83,9 @@ abstract class AbstractCraftingTable extends MultiBlockMachine {
 
                 ItemMeta im = output.getItemMeta();
                 List<String> lore = im.getLore();
-                im.getPersistentDataContainer().set(BackpackListener.key, PersistentDataType.TAG_CONTAINER, backpack.getItem().getItemMeta().getPersistentDataContainer().get(BackpackListener.key, PersistentDataType.TAG_CONTAINER));
+                if (input.getItemMeta().getPersistentDataContainer().has(BackpackListener.key, PersistentDataType.TAG_CONTAINER)) {
+                    im.getPersistentDataContainer().set(BackpackListener.key, PersistentDataType.TAG_CONTAINER, input.getItemMeta().getPersistentDataContainer().get(BackpackListener.key, PersistentDataType.TAG_CONTAINER));
+                }
                 im.setLore(lore);
                 output.setItemMeta(im);
                 break;
