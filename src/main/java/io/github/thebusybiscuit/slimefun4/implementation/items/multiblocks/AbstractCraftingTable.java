@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import javax.annotation.Nonnull;
@@ -78,18 +79,19 @@ abstract class AbstractCraftingTable extends MultiBlockMachine {
             SlimefunUtils.setSoulbound(output, true);
         }
 
-        for (int line = 0; line < output.getItemMeta().getLore().size(); line++) {
-            if (output.getItemMeta().getLore().get(line).equals(ChatColors.color("&7ID: <ID>"))) {
 
-                ItemMeta im = output.getItemMeta();
-                List<String> lore = im.getLore();
-                if (input.getItemMeta().getPersistentDataContainer().has(BackpackListener.key, PersistentDataType.TAG_CONTAINER)) {
-                    im.getPersistentDataContainer().set(BackpackListener.key, PersistentDataType.TAG_CONTAINER, input.getItemMeta().getPersistentDataContainer().get(BackpackListener.key, PersistentDataType.TAG_CONTAINER));
-                }
-                im.setLore(lore);
-                output.setItemMeta(im);
-                break;
+        ItemMeta outputItemMeta = output.getItemMeta();
+        ItemMeta inputItemMeta = input.getItemMeta();
+
+        if (inputItemMeta != null && outputItemMeta != null && outputItemMeta.getLore().contains(ChatColors.color("&7ID: <ID>"))) {
+            PersistentDataContainer container = inputItemMeta.getPersistentDataContainer();
+            PersistentDataContainer items = container.get(BackpackListener.key, PersistentDataType.TAG_CONTAINER);
+            if (items != null) {
+                outputItemMeta.getPersistentDataContainer().set(BackpackListener.key, PersistentDataType.TAG_CONTAINER, items);
             }
+            List<String> lore = inputItemMeta.getLore();
+            outputItemMeta.setLore(lore);
+            output.setItemMeta(outputItemMeta);
         }
 
         for (int line = 0; line < output.getItemMeta().getLore().size(); line++) {
