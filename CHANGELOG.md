@@ -36,12 +36,18 @@
 ## Release Candidate 32 (TBD)
 
 #### Additions
+* Added Organic Food for Seagrass
+* Added Organic Fertilizer for Seagrass
 
 #### Changes
+* Removed support for ChestTerminal
 
 #### Fixes
 * Fixed #3445
 * Fixed #3504
+* Fixed #3534
+* Fixed #3538
+* Fixed #3548
 
 ## Release Candidate 31 (14 Mar 2022)
 https://thebusybiscuit.github.io/builds/TheBusyBiscuit/Slimefun4/stable/#31

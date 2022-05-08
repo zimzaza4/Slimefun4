@@ -1,15 +1,13 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines;
 
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.items.misc.OrganicFood;
-
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 public class FoodFabricator extends AContainer {
 
@@ -29,6 +27,7 @@ public class FoodFabricator extends AContainer {
         registerRecipe(12, new ItemStack[] { SlimefunItems.TIN_CAN, new ItemStack(Material.DRIED_KELP) }, new ItemStack[] { new SlimefunItemStack(SlimefunItems.KELP_ORGANIC_FOOD, OrganicFood.OUTPUT) });
         registerRecipe(12, new ItemStack[] { SlimefunItems.TIN_CAN, new ItemStack(Material.COCOA_BEANS) }, new ItemStack[] { new SlimefunItemStack(SlimefunItems.COCOA_ORGANIC_FOOD, OrganicFood.OUTPUT) });
         registerRecipe(12, new ItemStack[] { SlimefunItems.TIN_CAN, new ItemStack(Material.SWEET_BERRIES) }, new ItemStack[] { new SlimefunItemStack(SlimefunItems.SWEET_BERRIES_ORGANIC_FOOD, OrganicFood.OUTPUT) });
+        registerRecipe(12, new ItemStack[] { SlimefunItems.TIN_CAN, new ItemStack(Material.SEAGRASS) }, new ItemStack[] { new SlimefunItemStack(SlimefunItems.SEAGRASS_ORGANIC_FOOD, OrganicFood.OUTPUT) });
     }
 
     @Override

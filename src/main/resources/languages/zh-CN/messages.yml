@@ -143,6 +143,7 @@ messages:
   not-online: '&4%player% &c不在线'
   invalid-item: '&4%item% &c不是一个有效的物品名!'
   invalid-amount: '&4%amount% &ci不是一个有效的数字 : 它必须大于 0!'
+  invalid-item-in-hand: '&e你手中拿的不是粘液科技的物品!'
   given-item: '&b你获得了 &a%amount% &7"%item%&7"'
   give-item: '&b成功给予玩家 %player% &a%amount% &7"%item%&7"'
   invalid-research: '&4%research% &c不是一个有效的研究名!'
