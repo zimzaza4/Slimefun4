@@ -34,6 +34,7 @@ public class CargoNet extends AbstractItemNetwork implements HologramOwner {
 
     private static final int RANGE = 5;
     private static final int TICK_DELAY = Slimefun.getCfg().getInt("networks.cargo-ticker-delay");
+    private int delay = 0;
 
     private final Set<Location> inputNodes = new HashSet<>();
     private final Set<Location> outputNodes = new HashSet<>();
@@ -159,8 +160,15 @@ public class CargoNet extends AbstractItemNetwork implements HologramOwner {
 
             Slimefun.getProfiler().scheduleEntries(inputs.size() + 1);
 
+            long now = System.currentTimeMillis();
             CargoNetworkTask runnable = new CargoNetworkTask(this, inputs, outputs);
             Slimefun.runSync(runnable);
+            long lag = System.currentTimeMillis() - now;
+            if (lag > 700 && delay < TICK_DELAY) {
+                delay++;
+            } else if (delay > 0){
+                delay--;
+            }
         }
     }
 
