@@ -143,7 +143,7 @@ public class CargoNet extends AbstractItemNetwork implements HologramOwner {
 
             // Skip ticking if the threshold is not reached. The delay is not same as minecraft tick,
             // but it's based on 'custom-ticker-delay' config.
-            if (tickDelayThreshold < TICK_DELAY) {
+            if (tickDelayThreshold < delay) {
                 tickDelayThreshold++;
                 return;
             }
