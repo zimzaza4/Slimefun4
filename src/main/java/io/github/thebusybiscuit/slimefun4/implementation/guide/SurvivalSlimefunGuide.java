@@ -581,7 +581,7 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
         }
 
         menu.addItem(10, recipeType.getItem(p), (player, s, itemStack, action) -> {
-            if (recipeType.getMachine() != null) {
+            if (recipeType.getMachine() != null && recipeType.getItem(p).getType() != Material.BARRIER) {
                 displayItem(profile, recipeType.getMachine().getItem(), 0, true);
             }
             return false;
