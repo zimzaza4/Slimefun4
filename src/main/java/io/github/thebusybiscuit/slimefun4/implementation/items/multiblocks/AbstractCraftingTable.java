@@ -81,17 +81,19 @@ abstract class AbstractCraftingTable extends MultiBlockMachine {
 
 
         ItemMeta outputItemMeta = output.getItemMeta();
-        ItemMeta inputItemMeta = input.getItemMeta();
+        if (input != null) {
+            ItemMeta inputItemMeta = input.getItemMeta();
 
-        if (inputItemMeta != null && outputItemMeta != null && outputItemMeta.getLore().contains(ChatColors.color("&7ID: <ID>"))) {
-            PersistentDataContainer container = inputItemMeta.getPersistentDataContainer();
-            PersistentDataContainer items = container.get(BackpackListener.key, PersistentDataType.TAG_CONTAINER);
-            if (items != null) {
-                outputItemMeta.getPersistentDataContainer().set(BackpackListener.key, PersistentDataType.TAG_CONTAINER, items);
+            if (inputItemMeta != null && outputItemMeta != null && outputItemMeta.getLore().contains(ChatColors.color("&7ID: <ID>"))) {
+                PersistentDataContainer container = inputItemMeta.getPersistentDataContainer();
+                PersistentDataContainer items = container.get(BackpackListener.key, PersistentDataType.TAG_CONTAINER);
+                if (items != null) {
+                    outputItemMeta.getPersistentDataContainer().set(BackpackListener.key, PersistentDataType.TAG_CONTAINER, items);
+                }
+                List<String> lore = inputItemMeta.getLore();
+                outputItemMeta.setLore(lore);
+                output.setItemMeta(outputItemMeta);
             }
-            List<String> lore = inputItemMeta.getLore();
-            outputItemMeta.setLore(lore);
-            output.setItemMeta(outputItemMeta);
         }
 
         for (int line = 0; line < output.getItemMeta().getLore().size(); line++) {
