@@ -55,7 +55,6 @@ class CargoNetworkTask implements Runnable {
     @Override
     public void run() {
         long timestamp = System.nanoTime();
-
         try {
             /**
              * All operations happen here: Everything gets iterated from the Input Nodes.

@@ -1,20 +1,45 @@
 package io.github.thebusybiscuit.slimefun4.implementation;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.bakedlibs.dough.config.Config;
+import io.github.bakedlibs.dough.protection.ProtectionManager;
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
+import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
+import io.github.thebusybiscuit.slimefun4.api.exceptions.TagMisconfigurationException;
+import io.github.thebusybiscuit.slimefun4.api.geo.GEOResource;
+import io.github.thebusybiscuit.slimefun4.api.gps.GPSNetwork;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.core.SlimefunRegistry;
+import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
+import io.github.thebusybiscuit.slimefun4.core.networks.NetworkManager;
+import io.github.thebusybiscuit.slimefun4.core.services.*;
+import io.github.thebusybiscuit.slimefun4.core.services.github.GitHubService;
+import io.github.thebusybiscuit.slimefun4.core.services.holograms.HologramsService;
+import io.github.thebusybiscuit.slimefun4.core.services.profiler.SlimefunProfiler;
+import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAltar;
+import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientPedestal;
+import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.Cooler;
+import io.github.thebusybiscuit.slimefun4.implementation.items.magical.BeeWings;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.GrapplingHook;
+import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.SeismicAxe;
+import io.github.thebusybiscuit.slimefun4.implementation.listeners.*;
+import io.github.thebusybiscuit.slimefun4.implementation.listeners.crafting.*;
+import io.github.thebusybiscuit.slimefun4.implementation.listeners.entity.*;
+import io.github.thebusybiscuit.slimefun4.implementation.resources.GEOResourcesSetup;
+import io.github.thebusybiscuit.slimefun4.implementation.setup.PostSetup;
+import io.github.thebusybiscuit.slimefun4.implementation.setup.ResearchSetup;
+import io.github.thebusybiscuit.slimefun4.implementation.setup.SlimefunItemSetup;
+import io.github.thebusybiscuit.slimefun4.implementation.tasks.AncientPedestalTask;
+import io.github.thebusybiscuit.slimefun4.implementation.tasks.ArmorTask;
+import io.github.thebusybiscuit.slimefun4.implementation.tasks.SlimefunStartupTask;
+import io.github.thebusybiscuit.slimefun4.implementation.tasks.TickerTask;
+import io.github.thebusybiscuit.slimefun4.integrations.IntegrationsManager;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
+import io.papermc.lib.PaperLib;
+import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.MenuListener;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import me.mrCookieSlime.Slimefun.api.inventory.UniversalBlockMenu;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -28,105 +53,18 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitTask;
+import ren.natsuyuk1.slimefunextra.DeprecationChecker;
+import ren.natsuyuk1.slimefunextra.LangUtil;
+import ren.natsuyuk1.slimefunextra.SlimefunExtra;
 
-import io.github.bakedlibs.dough.config.Config;
-import io.github.bakedlibs.dough.protection.ProtectionManager;
-import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
-import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.api.exceptions.TagMisconfigurationException;
-import io.github.thebusybiscuit.slimefun4.api.geo.GEOResource;
-import io.github.thebusybiscuit.slimefun4.api.gps.GPSNetwork;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.core.SlimefunRegistry;
-import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
-import io.github.thebusybiscuit.slimefun4.core.networks.NetworkManager;
-import io.github.thebusybiscuit.slimefun4.core.services.AutoSavingService;
-import io.github.thebusybiscuit.slimefun4.core.services.BackupService;
-import io.github.thebusybiscuit.slimefun4.core.services.BlockDataService;
-import io.github.thebusybiscuit.slimefun4.core.services.CustomItemDataService;
-import io.github.thebusybiscuit.slimefun4.core.services.CustomTextureService;
-import io.github.thebusybiscuit.slimefun4.core.services.LocalizationService;
-import io.github.thebusybiscuit.slimefun4.core.services.MetricsService;
-import io.github.thebusybiscuit.slimefun4.core.services.MinecraftRecipeService;
-import io.github.thebusybiscuit.slimefun4.core.services.PerWorldSettingsService;
-import io.github.thebusybiscuit.slimefun4.core.services.PermissionsService;
-import io.github.thebusybiscuit.slimefun4.core.services.UpdaterService;
-import io.github.thebusybiscuit.slimefun4.core.services.github.GitHubService;
-import io.github.thebusybiscuit.slimefun4.core.services.holograms.HologramsService;
-import io.github.thebusybiscuit.slimefun4.core.services.profiler.SlimefunProfiler;
-import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAltar;
-import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientPedestal;
-import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.Cooler;
-import io.github.thebusybiscuit.slimefun4.implementation.items.magical.BeeWings;
-import io.github.thebusybiscuit.slimefun4.implementation.items.tools.GrapplingHook;
-import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.SeismicAxe;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.AncientAltarListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.AutoCrafterListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.BackpackListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.BeeWingsListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.BlockListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.BlockPhysicsListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.ButcherAndroidListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.CargoNodeListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.CoolerListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.DeathpointListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.DebugFishListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.DispenserListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.ElytraImpactListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.EnhancedFurnaceListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.ExplosionsListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.GadgetsListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.GrapplingHookListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.HopperListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.ItemDropListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.ItemPickupListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.MiddleClickListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.MiningAndroidListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.MultiBlockListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.NetworkListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.PlayerProfileListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.SeismicAxeListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunBootsListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunBowListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunItemConsumeListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunItemHitListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunItemInteractListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.SoulboundListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.TalismanListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.VillagerTradingListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.crafting.AnvilListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.crafting.BrewingStandListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.crafting.CartographyTableListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.crafting.CauldronListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.crafting.CraftingTableListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.crafting.GrindstoneListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.crafting.SmithingTableListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.entity.BeeListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.entity.EntityInteractionListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.entity.FireworksListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.entity.IronGolemListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.entity.MobDropListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.entity.PiglinListener;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.entity.WitherListener;
-import io.github.thebusybiscuit.slimefun4.implementation.resources.GEOResourcesSetup;
-import io.github.thebusybiscuit.slimefun4.implementation.setup.PostSetup;
-import io.github.thebusybiscuit.slimefun4.implementation.setup.ResearchSetup;
-import io.github.thebusybiscuit.slimefun4.implementation.setup.SlimefunItemSetup;
-import io.github.thebusybiscuit.slimefun4.implementation.tasks.ArmorTask;
-import io.github.thebusybiscuit.slimefun4.implementation.tasks.SlimefunStartupTask;
-import io.github.thebusybiscuit.slimefun4.implementation.tasks.TickerTask;
-import io.github.thebusybiscuit.slimefun4.implementation.tasks.AncientPedestalTask;
-import io.github.thebusybiscuit.slimefun4.integrations.IntegrationsManager;
-import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
-import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
-import io.papermc.lib.PaperLib;
-
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.MenuListener;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.inventory.UniversalBlockMenu;
-import ren.natsuyuk1.slimefunextra.*;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.File;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * This is the main class of Slimefun.
@@ -172,6 +110,7 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon {
     private final PerWorldSettingsService worldSettingsService = new PerWorldSettingsService(this);
     private final MinecraftRecipeService recipeService = new MinecraftRecipeService(this);
     private final HologramsService hologramsService = new HologramsService(this);
+    private final RedisService redisService = new RedisService(this);
 
     // Some other things we need
     private final IntegrationsManager integrations = new IntegrationsManager(this);
@@ -186,6 +125,7 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon {
     private final Config config = new Config(this);
     private final Config items = new Config(this, "Items.yml");
     private final Config researches = new Config(this, "Researches.yml");
+    private Config redisConfig;
 
     // Listeners that need to be accessed elsewhere
     private final GrapplingHookListener grapplingHookListener = new GrapplingHookListener();
@@ -272,6 +212,11 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon {
         if (NumberUtils.getJavaVersion() < RECOMMENDED_JAVA_VERSION) {
             StartupWarnings.oldJavaVersion(logger, RECOMMENDED_JAVA_VERSION);
         }
+
+        // redis
+        saveResource("redis.yml", false);
+        redisConfig = new Config(this, "redis.yml");
+        redisService.load(redisConfig);
 
         // If the server has no "data-storage" folder, it's _probably_ a new install. So mark it for metrics.
         isNewlyInstalled = !new File("data-storage/Slimefun").exists();
@@ -422,6 +367,11 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon {
                 getLogger().log(Level.SEVERE, x, () -> "An Error occurred while saving Slimefun-Blocks in World '" + entry.getKey() + "' for Slimefun " + getVersion());
             }
         }
+
+        // stop redis
+        RedisService.getSubscriber().unsubscribe();
+        RedisService.getPool().destroy();
+
 
         // Save all "universal" inventories (ender chests for example)
         for (UniversalBlockMenu menu : registry.getUniversalInventories().values()) {

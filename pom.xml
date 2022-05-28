@@ -460,10 +460,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.jeff_media</groupId>
-            <artifactId>MorePersistentDataTypes</artifactId>
-            <version>2.0.0</version>
-            <scope>compile</scope>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>4.1.1</version>
         </dependency>
     </dependencies>
 </project>
