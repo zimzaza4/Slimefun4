@@ -857,6 +857,11 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon {
         return instance.networkManager;
     }
 
+    public static @Nonnull RedisService getRedisService() {
+        validateInstance();
+        return instance.redisService;
+    }
+
     public static @Nonnull SlimefunRegistry getRegistry() {
         validateInstance();
         return instance.registry;
