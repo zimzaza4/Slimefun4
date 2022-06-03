@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.core.redis;
 
-import io.github.thebusybiscuit.slimefun4.api.events.RedisReceiveEvent;
+import io.github.thebusybiscuit.slimefun4.api.events.AsyncRedisReceiveEvent;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import redis.clients.jedis.JedisPubSub;
 
@@ -14,7 +14,7 @@ public class Subscriber extends JedisPubSub {
     @Override
     public void onMessage(final String channel, final String msg) {
         Slimefun.runSync(() -> {
-            plugin.getServer().getPluginManager().callEvent(new RedisReceiveEvent(channel, msg));
+            plugin.getServer().getPluginManager().callEvent(new AsyncRedisReceiveEvent(channel, msg));
         });
     }
 

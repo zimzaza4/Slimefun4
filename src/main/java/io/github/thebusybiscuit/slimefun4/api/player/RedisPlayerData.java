@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class RedisPlayerData {
-
+    public final static String MESSAGE = "ASK_FOR_ASYNC_DATA";
     public static void savePlayerResearchData(PlayerProfile profile) {
         new BukkitRunnable() {
             @Override
@@ -24,13 +24,14 @@ public class RedisPlayerData {
                     }
                 }
                 jedis.close();
+                Slimefun.getRedisService().sendMessage("Slimefun", RedisService.serverId + ":" + MESSAGE + ":" + profile.getUUID());
             }
         }.runTaskAsynchronously(Slimefun.instance());
 
     }
 
     public static List<Research> getPlayerResearchData(PlayerProfile profile) {
-        Jedis jedis = RedisService.getPool().getResource();;
+        Jedis jedis = RedisService.getPool().getResource();
         List<Research> researches = new ArrayList<>();
         for (String id : jedis.smembers("ResearchData:" + profile.getUUID())) {
             Optional<Research> research = Research.getResearch(NamespacedKey.fromString(id));

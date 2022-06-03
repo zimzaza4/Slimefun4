@@ -5,12 +5,13 @@ import org.bukkit.event.HandlerList;
 
 import javax.annotation.Nonnull;
 
-public class RedisReceiveEvent extends Event {
+public class AsyncRedisReceiveEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private final String channel;
     private final String msg;
 
-    public RedisReceiveEvent(String ch, String ms) {
+    public AsyncRedisReceiveEvent(String ch, String ms) {
+        super(true);
         this.channel = ch;
         this.msg = ms;
     }

@@ -355,6 +355,7 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon {
         // Save all Player Profiles that are still in memory
         PlayerProfile.iterator().forEachRemaining(profile -> {
             if (profile.isDirty()) {
+
                 profile.save();
             }
         });
