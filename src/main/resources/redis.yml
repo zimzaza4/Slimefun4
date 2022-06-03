@@ -5,5 +5,5 @@ server: "lobby" # 你服务器的ID 尽量和代理服务器上的保持一致
 channels:
   - "Slimefun"
   - "research_data"
-
+  - "teleport"
 

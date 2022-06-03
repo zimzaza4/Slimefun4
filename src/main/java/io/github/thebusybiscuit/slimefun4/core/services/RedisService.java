@@ -49,6 +49,7 @@ public class RedisService {
             public void run() {
                 subscriber = new Subscriber(plugin);
                 Jedis jedis = pool.getResource();
+
                 try {
                     connected = true;
                     jedis.subscribe(subscriber, channels);
@@ -59,6 +60,7 @@ public class RedisService {
                     connected = false;
                     Bukkit.getServer().shutdown();
                 }
+                jedis.close();
             }
         }.runTaskAsynchronously(plugin);
     }

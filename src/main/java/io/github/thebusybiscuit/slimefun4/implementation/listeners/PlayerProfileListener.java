@@ -1,18 +1,19 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.api.player.RedisPlayerUtils;
+import io.github.thebusybiscuit.slimefun4.api.researches.Research;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import javax.annotation.Nonnull;
+import java.util.Optional;
 
 /**
  * This {@link Listener} removes a {@link PlayerProfile} from memory if the corresponding {@link Player}
@@ -29,11 +30,26 @@ public class PlayerProfileListener implements Listener {
     }
 
     @EventHandler
+    public void onJoin(PlayerJoinEvent e) {
+        Slimefun.runSync(()-> {
+            Optional<PlayerProfile> profile = PlayerProfile.find(e.getPlayer());
+            if (profile.isPresent()) {
+                for (Research r : RedisPlayerUtils.getPlayerResearchData(profile.get())) {
+                    r.unlock(e.getPlayer(), true);
+                }
+            }
+        }, 5);
+    }
+
+
+    @EventHandler
     public void onDisconnect(PlayerQuitEvent e) {
         Optional<PlayerProfile> profile = PlayerProfile.find(e.getPlayer());
 
         // if we still have a profile of this Player in memory, delete it
+        profile.ifPresent(RedisPlayerUtils::savePlayerResearchData);
         profile.ifPresent(PlayerProfile::markForDeletion);
+
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -41,7 +57,9 @@ public class PlayerProfileListener implements Listener {
         Optional<PlayerProfile> profile = PlayerProfile.find(e.getPlayer());
 
         // if we still have a profile of this Player in memory, delete it
+        profile.ifPresent(RedisPlayerUtils::savePlayerResearchData);
         profile.ifPresent(PlayerProfile::markForDeletion);
+
     }
 
 }
