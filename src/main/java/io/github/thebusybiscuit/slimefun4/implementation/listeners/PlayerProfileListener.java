@@ -36,14 +36,9 @@ public class PlayerProfileListener implements Listener {
             Optional<PlayerProfile> profile = PlayerProfile.find(e.getPlayer());
             if (profile.isPresent()) {
                 List<Research> researches = RedisPlayerData.getPlayerResearchData(profile.get());
-
-
                 for (Research r : researches) {
                     profile.get().setResearched(r, true);
                 }
-
-
-
             }
         }, 3);
     }
