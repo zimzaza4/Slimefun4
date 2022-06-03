@@ -1,5 +1,7 @@
 # Slimefun
 
+* 如果你不打算开新周目 请不要用这个fork
+
 Looking for English (or Original) Version? [**Click here**](https://github.com/Slimefun/Slimefun4/)
 
 想要直接下载吗? [**单击此处**](https://github.com/StarWishsama/Slimefun4/blob/master/README.md#%e4%b8%8b%e8%bd%bd-Slimefun4)
@@ -22,7 +24,7 @@ QQ 交流群：807302496
 * Redis 同步研究数据
 * Redis API
 * 使用pdc存储背包物品(破坏性更改)(因为这个 不要随意换成这个fork)
-* 增强版便携式传送器
+
 * 粘液机器支持领地保护
 * 粘液方块支持领地/地皮保护
 * 支持使用游戏币解锁研究项目
