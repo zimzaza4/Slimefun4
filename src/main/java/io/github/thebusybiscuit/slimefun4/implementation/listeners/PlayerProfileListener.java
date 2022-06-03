@@ -1,12 +1,9 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import io.github.thebusybiscuit.slimefun4.api.events.AsyncRedisReceiveEvent;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.api.player.RedisPlayerData;
 import io.github.thebusybiscuit.slimefun4.api.researches.Research;
-import io.github.thebusybiscuit.slimefun4.core.services.RedisService;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,7 +15,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * This {@link Listener} removes a {@link PlayerProfile} from memory if the corresponding {@link Player}
@@ -41,19 +37,11 @@ public class PlayerProfileListener implements Listener {
             if (profile.isPresent()) {
                 List<Research> researches = RedisPlayerData.getPlayerResearchData(profile.get());
 
-                if (researches.size() > 0) {
-                    for (Research r : profile.get().getResearches()) {
-                        if (!researches.contains(r)) {
-                            profile.get().setResearched(r, false);
-                        }
-                    }
 
-                    for (Research r : researches) {
-                        profile.get().setResearched(r, true);
-                    }
-                } else {
-                    RedisPlayerData.savePlayerResearchData(profile.get());
+                for (Research r : researches) {
+                    profile.get().setResearched(r, true);
                 }
+
 
 
             }
@@ -61,33 +49,7 @@ public class PlayerProfileListener implements Listener {
     }
 
 
-    @EventHandler
-    public void onRedisMessage(AsyncRedisReceiveEvent e) {
-        if (!e.getChannel().equals("Slimefun")) return;
-        String[] values = e.getMsg().split(":");
-        if (values[0].equals(RedisService.serverId)) return;
-        if (values[1].equals(RedisPlayerData.MESSAGE)) {
-            UUID uuid = UUID.fromString(values[2]);
-            PlayerProfile.get(Bukkit.getOfflinePlayer(uuid), (profile) -> {
-                List<Research> researches = RedisPlayerData.getPlayerResearchData(profile);
 
-                if (researches.size() > 0) {
-                    for (Research r : profile.getResearches()) {
-                        if (!researches.contains(r)) {
-                            profile.setResearched(r, false);
-                        }
-                    }
-
-                    for (Research r : researches) {
-                        profile.setResearched(r, true);
-                    }
-                } else {
-                    RedisPlayerData.savePlayerResearchData(profile);
-                }
-            });
-
-        }
-    }
 
     @EventHandler
     public void onDisconnect(PlayerQuitEvent e) {

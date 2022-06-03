@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public class RedisPlayerData {
-    public final static String MESSAGE = "ASK_FOR_ASYNC_DATA";
+
     public static void savePlayerResearchData(PlayerProfile profile) {
         new BukkitRunnable() {
             @Override
@@ -25,16 +25,8 @@ public class RedisPlayerData {
                         jedis.sadd("ResearchData:" + profile.getUUID(), r.getKey().toString());
                     }
                 }
-                for (String s : data) {
-                    Optional<Research> research = Research.getResearch(NamespacedKey.fromString(s));
-                    if (research.isPresent()) {
-                        if (!profile.getResearches().contains(research.get())) {
-                            jedis.srem("ResearchData:" + profile.getUUID(), s);
-                        }
-                    }
-                }
+
                 jedis.close();
-                Slimefun.getRedisService().sendMessage("Slimefun", RedisService.serverId + ":" + MESSAGE + ":" + profile.getUUID());
             }
         }.runTaskAsynchronously(Slimefun.instance());
 
