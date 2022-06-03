@@ -1,7 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.api.player.RedisPlayerUtils;
+import io.github.thebusybiscuit.slimefun4.api.player.RedisPlayerData;
 import io.github.thebusybiscuit.slimefun4.api.researches.Research;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import org.bukkit.Server;
@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -34,11 +35,25 @@ public class PlayerProfileListener implements Listener {
         Slimefun.runSync(()-> {
             Optional<PlayerProfile> profile = PlayerProfile.find(e.getPlayer());
             if (profile.isPresent()) {
-                for (Research r : RedisPlayerUtils.getPlayerResearchData(profile.get())) {
-                    r.unlock(e.getPlayer(), true);
+                List<Research> researches = RedisPlayerData.getPlayerResearchData(profile.get());
+
+                if (researches.size() > 0) {
+                    for (Research r : profile.get().getResearches()) {
+                        if (!researches.contains(r)) {
+                            profile.get().setResearched(r, false);
+                        }
+                    }
+
+                    for (Research r : researches) {
+                        profile.get().setResearched(r, true);
+                    }
+                } else {
+                    RedisPlayerData.savePlayerResearchData(profile.get());
                 }
+
+
             }
-        }, 5);
+        }, 3);
     }
 
 
@@ -47,7 +62,7 @@ public class PlayerProfileListener implements Listener {
         Optional<PlayerProfile> profile = PlayerProfile.find(e.getPlayer());
 
         // if we still have a profile of this Player in memory, delete it
-        profile.ifPresent(RedisPlayerUtils::savePlayerResearchData);
+        profile.ifPresent(RedisPlayerData::savePlayerResearchData);
         profile.ifPresent(PlayerProfile::markForDeletion);
 
     }
@@ -57,7 +72,7 @@ public class PlayerProfileListener implements Listener {
         Optional<PlayerProfile> profile = PlayerProfile.find(e.getPlayer());
 
         // if we still have a profile of this Player in memory, delete it
-        profile.ifPresent(RedisPlayerUtils::savePlayerResearchData);
+        profile.ifPresent(RedisPlayerData::savePlayerResearchData);
         profile.ifPresent(PlayerProfile::markForDeletion);
 
     }

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class RedisPlayerUtils {
+public class RedisPlayerData {
 
     public static void savePlayerResearchData(PlayerProfile profile) {
         new BukkitRunnable() {
