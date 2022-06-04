@@ -39,6 +39,7 @@ public class RedisPlayerData {
             Optional<Research> research = Research.getResearch(NamespacedKey.fromString(id));
             research.ifPresent(researches::add);
         }
+        jedis.close();
         return researches;
     }
 }
