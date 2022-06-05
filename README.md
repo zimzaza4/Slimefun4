@@ -1,6 +1,7 @@
 # Slimefun
 
 * 如果你不打算开新周目 请不要用这个fork
+* 不稳定
 
 Looking for English (or Original) Version? [**Click here**](https://github.com/Slimefun/Slimefun4/)
 
