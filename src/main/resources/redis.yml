@@ -3,7 +3,7 @@ port: 6379
 password: ""
 server: "lobby" # 你服务器的ID 尽量和代理服务器上的保持一致
 channels:
-  - "Slimefun"
+  - "Slimefun" # 这个千万别删
   - "research_data"
   - "teleport"
 
