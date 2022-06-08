@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
+import net.guizhanss.slimefun4.utils.WikiUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -41,22 +42,9 @@ public final class PostSetup {
     private PostSetup() {}
 
     public static void setupWiki() {
-        Slimefun.logger().log(Level.INFO, "Loading Wiki pages...");
+        Slimefun.logger().log(Level.INFO, "加载 Wiki 页面...");
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Slimefun.class.getResourceAsStream("/wiki.json"), StandardCharsets.UTF_8))) {
-            JsonElement element = JsonUtils.parseString(reader.lines().collect(Collectors.joining("")));
-            JsonObject json = element.getAsJsonObject();
-
-            for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-                SlimefunItem item = SlimefunItem.getById(entry.getKey());
-
-                if (item != null) {
-                    item.addOfficialWikipage(entry.getValue().getAsString());
-                }
-            }
-        } catch (IOException e) {
-            Slimefun.logger().log(Level.SEVERE, "Failed to load wiki.json file", e);
-        }
+        WikiUtils.setup(Slimefun.instance(), (page) -> page.replace("#", "?id="));
     }
 
     public static void loadItems() {
