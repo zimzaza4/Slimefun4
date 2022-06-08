@@ -41,7 +41,7 @@ placeholderapi:
 guide:
   locked: '已锁定'
   work-in-progress: '该功能暂未推出!'
-  locked-category:
+  locked-itemgroup:
     - '为了解锁这一类别'
     - '你需要先解锁以下'
     - '类别里的所有物品'
