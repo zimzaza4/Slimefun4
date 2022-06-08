@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.api.items;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -871,15 +872,32 @@ public class SlimefunItem implements Placeable {
      * This method will assign the given wiki page to this Item.
      * Note that you only need to provide the page name itself,
      * the URL to our wiki is prepended automatically.
+     *
+     * 返回非官方中文Wiki地址
+     * 下游应使用 {@link SlimefunItem#addWikiPage(String)} 来添加Wiki页面
      * 
      * @param page
      *            The associated wiki page
      */
+    @Deprecated
     public final void addOfficialWikipage(@Nonnull String page) {
         Validate.notNull(page, "Wiki page cannot be null.");
         // 转换链接
         page = page.replace("#", "?id=");
         wikiURL = Optional.of("https://slimefun-wiki.guizhanss.cn/" + page);
+    }
+
+    /**
+     * 指定该物品的 Wiki 页面
+     *
+     * @param page 物品的 Wiki 页面
+     */
+    public final void addWikiPage(@Nonnull String page) {
+        Validate.notNull(page, "Wiki page cannot be null.");
+
+        if (addon.getWikiURL() != null) {
+            wikiURL = Optional.of(MessageFormat.format(addon.getWikiURL(), page));
+        }
     }
 
     /**
