@@ -1,17 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.implementation.setup;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
@@ -21,9 +15,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
@@ -31,32 +22,20 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.Grind
 import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.MakeshiftSmeltery;
 import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.OreCrusher;
 import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.Smeltery;
-import io.github.thebusybiscuit.slimefun4.utils.JsonUtils;
 
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
+
+import net.guizhanss.slimefun4.utils.WikiUtils;
 
 public final class PostSetup {
 
     private PostSetup() {}
 
     public static void setupWiki() {
-        Slimefun.logger().log(Level.INFO, "Loading Wiki pages...");
+        Slimefun.logger().log(Level.INFO, "加载 Wiki 页面...");
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Slimefun.class.getResourceAsStream("/wiki.json"), StandardCharsets.UTF_8))) {
-            JsonElement element = JsonUtils.parseString(reader.lines().collect(Collectors.joining("")));
-            JsonObject json = element.getAsJsonObject();
-
-            for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-                SlimefunItem item = SlimefunItem.getById(entry.getKey());
-
-                if (item != null) {
-                    item.addOfficialWikipage(entry.getValue().getAsString());
-                }
-            }
-        } catch (IOException e) {
-            Slimefun.logger().log(Level.SEVERE, "Failed to load wiki.json file", e);
-        }
+        WikiUtils.setupJson(Slimefun.instance(), (page) -> page.replace("#", "?id="));
     }
 
     public static void loadItems() {
