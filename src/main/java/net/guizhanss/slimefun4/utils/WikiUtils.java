@@ -9,7 +9,6 @@ import net.guizhanss.slimefun4.interfaces.WikiPageFormatter;
 import org.bukkit.plugin.Plugin;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
@@ -32,25 +31,26 @@ public final class WikiUtils {
      *
      * @param addon 附属 {@link SlimefunAddon} 实例
      */
-    public static void setup(Plugin addon) {
-        setup(addon, (page) -> page);
+    public static void setupJson(Plugin addon) {
+        setupJson(addon, (page) -> page);
     }
 
     /**
      * 读取附属的 wiki.json 并设置物品的 Wiki 按钮
      * 可对页面地址进行更改
      *
-     * @param addon 附属 {@link SlimefunAddon} 实例
+     * @param plugin 附属 {@link SlimefunAddon} 实例
      * @param formatter 对页面地址进行更改
      */
-    public static void setup(Plugin addon, WikiPageFormatter formatter) {
-        if (!(addon instanceof SlimefunAddon)) {
+    public static void setupJson(Plugin plugin, WikiPageFormatter formatter) {
+        if (!(plugin instanceof SlimefunAddon)) {
             throw new IllegalArgumentException("该插件不是 Slimefun 附属");
         }
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(addon.getClass().getResourceAsStream("/wiki.json"), StandardCharsets.UTF_8))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(plugin.getClass().getResourceAsStream("/wiki.json"), StandardCharsets.UTF_8))) {
             JsonElement element = JsonUtils.parseString(reader.lines().collect(Collectors.joining("")));
             JsonObject json = element.getAsJsonObject();
+
+            int count = 0;
 
             for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
                 SlimefunItem item = SlimefunItem.getById(entry.getKey());
@@ -59,10 +59,13 @@ public final class WikiUtils {
                     String page = entry.getValue().getAsString();
                     page = formatter.format(page);
                     item.addWikiPage(page);
+                    count++;
                 }
             }
-        } catch (IOException e) {
-            addon.getLogger().log(Level.SEVERE, MessageFormat.format("无法加载 {0} 的 wiki.json", addon.getName()), e);
+
+            plugin.getLogger().log(Level.INFO, MessageFormat.format("加载了 {0} 中 {1} 个物品的 Wiki 页面", plugin.getName(), count));
+        } catch (Exception e) {
+            plugin.getLogger().log(Level.SEVERE, MessageFormat.format("无法加载 {0} 的 wiki.json", plugin.getName()), e);
         }
     }
 }
