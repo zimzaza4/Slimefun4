@@ -190,7 +190,7 @@ public final class AndroidShareMenu {
         String replacedText = value.replace("[", "").replace("]", "");
 
         if (replacedText.isEmpty()) {
-            return Collections.emptyList();
+            return new ArrayList<>();
         } else {
             return Arrays.asList(replacedText.split(", "));
         }
@@ -209,8 +209,9 @@ public final class AndroidShareMenu {
 
         // Checks for old Android
         if (!trustUsers.isPresent()) {
-            setValue(b.getState(), Collections.emptyList().toString());
-            return Collections.emptyList();
+            List<String> emptyUsers = new ArrayList<>();
+            setValue(b.getState(), String.valueOf(emptyUsers));
+            return emptyUsers;
         }
 
         return parseBlockInfoToList(trustUsers.get());
