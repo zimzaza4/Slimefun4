@@ -895,6 +895,10 @@ public class SlimefunItem implements Placeable {
     public final void addWikiPage(@Nonnull String page) {
         Validate.notNull(page, "Wiki page cannot be null.");
 
+        if (addon == null) {
+            Slimefun.logger().warning("该物品\"" + getId() + "\"暂未注册, 请在物品注册后再添加Wiki页面");
+            return;
+        }
         if (addon.getWikiURL() != null) {
             wikiURL = Optional.of(MessageFormat.format(addon.getWikiURL(), page));
         }
@@ -904,7 +908,7 @@ public class SlimefunItem implements Placeable {
      * This method returns the wiki page that has been assigned to this item.
      * It will return null, if no wiki page was found.
      * 
-     * @see SlimefunItem#addOfficialWikipage(String)
+     * @see SlimefunItem#addWikiPage(String)
      * 
      * @return This item's wiki page
      */
