@@ -157,7 +157,7 @@ public final class AndroidShareMenu {
             users.add(p.getUniqueId().toString());
             Slimefun.getLocalization().sendMessage(owner, "android.access-manager.messages.add-success", msg -> msg.replace("%player%", p.getName()));
 
-            setValue(android.getState(), users.toString());
+            setSharedUserData(android.getState(), users.toString());
         }
     }
 
@@ -172,7 +172,7 @@ public final class AndroidShareMenu {
             users.remove(p.getUniqueId().toString());
             Slimefun.getLocalization().sendMessage(owner, "android.access-manager.messages.delete-success", msg -> msg.replace("%player%", p.getName()));
 
-            setValue(android.getState(), users.toString());
+            setSharedUserData(android.getState(), users.toString());
         } else {
             Slimefun.getLocalization().sendMessage(owner, "android.access-manager.messages.is-not-trusted-player", msg -> msg.replace("%player%", p.getName()));
         }
@@ -182,7 +182,7 @@ public final class AndroidShareMenu {
      * Parse trusted player list raw string to List.
      *
      * @param value list raw string
-     * @return trusted player list
+     * @return parse trusted player list
      */
     private @Nonnull static List<String> parseBlockInfoToList(@Nonnull String value) {
         Validate.notNull(value, "The trusted player list cannot be null!");
@@ -199,18 +199,18 @@ public final class AndroidShareMenu {
     /**
      * Get a trusted users list of specific android.
      *
-     * @param b the block of a Android
-     * @return Trusted users
+     * @param b the block of android
+     * @return trusted users list
      */
     public @Nonnull static List<String> getTrustedUsers(@Nonnull Block b) {
         Validate.notNull(b, "The android block cannot be null!");
 
-        Optional<String> trustUsers = getValue(b.getState());
+        Optional<String> trustUsers = getSharedUserData(b.getState());
 
         // Checks for old Android
         if (!trustUsers.isPresent()) {
             List<String> emptyUsers = new ArrayList<>();
-            setValue(b.getState(), String.valueOf(emptyUsers));
+            setSharedUserData(b.getState(), String.valueOf(emptyUsers));
             return emptyUsers;
         }
 
@@ -220,21 +220,21 @@ public final class AndroidShareMenu {
     /**
      * Checks user is in trusted users list.
      *
-     * @param b the block of a Android
+     * @param b the block of Android
      * @param uuid user's UUID
-     * @return whether is the trusted user of android or not
+     * @return user trusted status
      */
     @ParametersAreNonnullByDefault
     public static boolean isTrustedUser(Block b, UUID uuid) {
         Validate.notNull(b, "The android block cannot be null!");
         Validate.notNull(uuid, "The UUID of player to check cannot be null!");
 
-        Optional<String> trustUsers = getValue(b.getState());
+        Optional<String> trustUsers = getSharedUserData(b.getState());
 
         return trustUsers.map(s -> s.contains(uuid.toString())).orElse(false);
     }
 
-    private static void setValue(@Nonnull BlockState state, @Nonnull String value) {
+    private static void setSharedUserData(@Nonnull BlockState state, @Nonnull String value) {
         Validate.notNull(state, "The android block state cannot be null!");
         Validate.notNull(value, "The data value cannot be null!");
 
@@ -252,11 +252,11 @@ public final class AndroidShareMenu {
             String serverSoftware = PaperLib.isSpigot() && !PaperLib.isPaper() ? "Spigot" : Bukkit.getName();
             Slimefun.logger().log(Level.SEVERE, () -> serverSoftware + " | " + Bukkit.getVersion() + " | " + Bukkit.getBukkitVersion());
 
-            Slimefun.logger().log(Level.SEVERE, "An Exception was thrown while trying to set Persistent Data for a Block", x);
+            Slimefun.logger().log(Level.SEVERE, "An Exception was thrown while trying to set Persistent Data for a Android", x);
         }
     }
 
-    private @Nonnull static Optional<String> getValue(@Nonnull BlockState state) {
+    private @Nonnull static Optional<String> getSharedUserData(@Nonnull BlockState state) {
         Validate.notNull(state, "The android block state cannot be null!");
 
         if (!(state instanceof TileState)) {
