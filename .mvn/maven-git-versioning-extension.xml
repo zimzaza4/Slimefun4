@@ -13,6 +13,10 @@
            <pattern>test/(.+)</pattern>
            <version>${1}-${commit.short}</version>
        </ref>
+       <ref type="branch">
+           <pattern>feature/(.+)</pattern>
+           <version>${1}-${commit.short}</version>
+       </ref>
        <ref type = "tag">
            <pattern>([0-9].*)></pattern>
            <version>${1}</version>
