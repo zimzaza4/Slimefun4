@@ -144,7 +144,15 @@ public class EnchantmentRune extends SimpleSlimefunItem<ItemDropHandler> {
                         l.getWorld().playSound(l, Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 1F, 1F);
 
                         item.remove();
-                        rune.remove();
+
+                        // When multiple runes have been merged, reduce one rune.
+                        if (rune.getItemStack().getAmount() > 1) {
+                            ItemStack runeCopy = rune.getItemStack();
+                            runeCopy.setAmount(runeCopy.getAmount() - 1);
+                            rune.setItemStack(runeCopy);
+                        } else {
+                            rune.remove();
+                        }
 
                         if (enchantment.canEnchantItem(itemStack)) {
                             itemStack.addEnchantment(enchantment, level);
