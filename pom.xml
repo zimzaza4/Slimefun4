@@ -142,6 +142,10 @@
                             <pattern>kong.unirest</pattern>
                             <shadedPattern>io.github.thebusybiscuit.slimefun4.libraries.unirest</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>org.apache.commons.lang</pattern>
+                            <shadedPattern>io.github.thebusybiscuit.slimefun4.libraries.commons.lang</shadedPattern>
+                        </relocation>
                     </relocations>
 
                     <!-- Exclude unneeded metadata files from shaded dependencies -->
@@ -231,9 +235,9 @@
 
         <!-- Shaded packages -->
         <dependency>
-            <groupId>com.github.starwishsama.dough</groupId>
+            <groupId>io.github.baked-libs</groupId>
             <artifactId>dough-api</artifactId>
-            <version>aae4c7306e</version>
+            <version>1.2.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -318,7 +322,7 @@
         <dependency>
             <groupId>com.gmail.nossr50.mcMMO</groupId>
             <artifactId>mcMMO</artifactId>
-            <version>2.1.213</version>
+            <version>2.1.214</version>
             <scope>provided</scope>
 
             <exclusions>
@@ -425,11 +429,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- Todo remove this dependency -->
+        <!-- TODO: Remove this dependency -->
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
