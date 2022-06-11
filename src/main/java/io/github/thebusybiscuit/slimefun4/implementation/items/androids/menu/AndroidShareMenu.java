@@ -28,16 +28,16 @@ import java.util.*;
 import java.util.logging.Level;
 
 /**
- * The {@link AndroidShareMenu} is responsibility to handle trusted user using the {@link
- * ProgrammableAndroid}
+ * The {@link AndroidShareMenu} is responsibility to modify trusted users
+ * in {@link ProgrammableAndroid}.
  *
  * @author StarWishsama
  * @see ProgrammableAndroid
  */
 public final class AndroidShareMenu {
     private static final int DISPLAY_START_SLOT = 9;
-    private static final int DISPLAY_END_SLOT = 45;
     private static final NamespacedKey BLOCK_INFO_KEY = new NamespacedKey(Slimefun.instance(), "share-users");
+    private static final int SHARED_USERS_LIMIT = 15;
 
     private AndroidShareMenu() {}
 
@@ -60,8 +60,6 @@ public final class AndroidShareMenu {
 
         List<String> users = getTrustedUsers(b);
 
-        int pages = Math.max(1, users.size() / 36);
-
         // Draw background start
         for (int i = 0; i < 9; i++) {
             menu.addItem(i, ChestMenuUtils.getBackground());
@@ -79,6 +77,11 @@ public final class AndroidShareMenu {
         menu.addMenuClickHandler(0, (p1, slot, item, action) -> {
             p1.closeInventory();
 
+            if (users.size() >= SHARED_USERS_LIMIT) {
+                Slimefun.getLocalization().sendMessage(p1, "android.access-manager.messages.reach-limit");
+                return false;
+            }
+
             Slimefun.getLocalization().sendMessage(p1, "android.access-manager.messages.input");
 
             ChatUtils.awaitInput(p1, message -> {
@@ -95,11 +98,9 @@ public final class AndroidShareMenu {
 
         // Display added trusted player(s)
         if (!users.isEmpty()) {
-            List<String> displayUsers = users.subList(page - 1, Math.min(users.size() - 1, DISPLAY_END_SLOT));
-
-            for (int index = 0; index < displayUsers.size(); index++) {
+            for (int index = 0; index < users.size(); index++) {
                 int slot = index + DISPLAY_START_SLOT;
-                OfflinePlayer current = Bukkit.getOfflinePlayer(UUID.fromString(displayUsers.get(index)));
+                OfflinePlayer current = Bukkit.getOfflinePlayer(UUID.fromString(users.get(index)));
                 menu.addItem(slot, new CustomItemStack(PlayerHead.getItemStack(current), "&b" + current.getName(), Slimefun.getLocalization().getMessage("android.access-manager.menu.delete-player")));
                 menu.addMenuClickHandler(slot, (p1, slot1, item, action) -> {
                     if (!action.isRightClicked() && !action.isShiftClicked()) {
@@ -108,35 +109,6 @@ public final class AndroidShareMenu {
                     return false;
                 });
             }
-        }
-
-        if (pages > 1) {
-            menu.addItem(47, ChestMenuUtils.getPreviousButton(p, page, pages));
-            menu.addMenuClickHandler(46, (pl, slot, item, action) -> {
-                int previousPage = page - 1;
-                if (previousPage < 1) {
-                    previousPage = pages;
-                }
-
-                if (previousPage != page) {
-                    openShareMenu(p, b, previousPage);
-                }
-                return false;
-            });
-
-            menu.addItem(51, ChestMenuUtils.getNextButton(p, page, pages));
-            menu.addMenuClickHandler(50, (pl, slot, item, action) -> {
-                int nextPage = page + 1;
-
-                if (nextPage > pages) {
-                    nextPage = 1;
-                }
-
-                if (nextPage != page) {
-                    openShareMenu(p, b, nextPage);
-                }
-                return false;
-            });
         }
 
         menu.open(p);
