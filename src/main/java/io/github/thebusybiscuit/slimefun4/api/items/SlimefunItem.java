@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.api.items;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -871,10 +872,14 @@ public class SlimefunItem implements Placeable {
      * This method will assign the given wiki page to this Item.
      * Note that you only need to provide the page name itself,
      * the URL to our wiki is prepended automatically.
+     *
+     * 返回非官方中文Wiki地址
+     * 下游应使用 {@link SlimefunItem#addWikiPage(String)} 来添加Wiki页面
      * 
      * @param page
      *            The associated wiki page
      */
+    @Deprecated
     public final void addOfficialWikipage(@Nonnull String page) {
         Validate.notNull(page, "Wiki page cannot be null.");
         // 转换链接
@@ -883,10 +888,27 @@ public class SlimefunItem implements Placeable {
     }
 
     /**
+     * 指定该物品的 Wiki 页面
+     *
+     * @param page 物品的 Wiki 页面
+     */
+    public final void addWikiPage(@Nonnull String page) {
+        Validate.notNull(page, "Wiki page cannot be null.");
+
+        if (addon == null) {
+            Slimefun.logger().warning("该物品\"" + getId() + "\"暂未注册, 请在物品注册后再添加Wiki页面");
+            return;
+        }
+        if (addon.getWikiURL() != null) {
+            wikiURL = Optional.of(MessageFormat.format(addon.getWikiURL(), page));
+        }
+    }
+
+    /**
      * This method returns the wiki page that has been assigned to this item.
      * It will return null, if no wiki page was found.
      * 
-     * @see SlimefunItem#addOfficialWikipage(String)
+     * @see SlimefunItem#addWikiPage(String)
      * 
      * @return This item's wiki page
      */

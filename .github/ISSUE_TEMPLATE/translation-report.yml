@@ -1,0 +1,49 @@
+name: 汉化反馈
+description: 反馈 Slimefun 4 汉化版的汉化问题
+labels:
+- "📜 Translation | 汉化问题"
+
+body:
+- type: markdown
+  attributes:
+  value: |
+  感谢你使用 Slimefun 问题反馈系统！
+
+      在反馈前, 请确认你已经做了下面这些事情
+      - 查看 [Releases](https://github.com/StarWishsama/Slimefun4/releases) 中最新版是否已修复你所遇到的问题
+      - 搜索了已有的 [issues](https://github.com/StarWishsama/Slimefun4/issues) 列表中是否有相似问题
+      
+      如果此问题反馈不符合模板，将会被管理员无条件关闭。
+
+- type: textarea
+  id: issue-description
+  attributes:
+  label: 汉化问题描述
+  description: 在此详细描述你遇到的问题
+  validations:
+  required: true
+
+- type: textarea
+  id: reproduce
+  attributes:
+  label: 汉化错误/缺失的位置
+  description: 在这里简略说明汉化错误/缺失的位置
+  validations:
+  required: true
+
+- type: textarea
+  id: slimefun-version
+  validations:
+  required: true
+  attributes:
+  label: Slimefun 版本
+  description: |
+  **"最新版" 不是版本号，请填写一个确切的版本号！**
+  如果你不太确定，可以截图 "/sf versions" 的输出内容并截图，记得截全。
+  placeholder: Slimefun 2022.05
+
+- type: textarea
+  id: additional
+  attributes:
+  label: 补充信息
+  description: 如有必要，你可以在下文继续添加其他信息

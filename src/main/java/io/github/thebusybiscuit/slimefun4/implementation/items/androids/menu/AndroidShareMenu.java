@@ -28,16 +28,16 @@ import java.util.*;
 import java.util.logging.Level;
 
 /**
- * The {@link AndroidShareMenu} is responsibility to handle trusted user using the {@link
- * ProgrammableAndroid}
+ * The {@link AndroidShareMenu} is responsibility to modify trusted users
+ * in {@link ProgrammableAndroid}.
  *
  * @author StarWishsama
  * @see ProgrammableAndroid
  */
 public final class AndroidShareMenu {
     private static final int DISPLAY_START_SLOT = 9;
-    private static final int DISPLAY_END_SLOT = 45;
     private static final NamespacedKey BLOCK_INFO_KEY = new NamespacedKey(Slimefun.instance(), "share-users");
+    private static final int SHARED_USERS_LIMIT = 15;
 
     private AndroidShareMenu() {}
 
@@ -60,8 +60,6 @@ public final class AndroidShareMenu {
 
         List<String> users = getTrustedUsers(b);
 
-        int pages = Math.max(1, users.size() / 36);
-
         // Draw background start
         for (int i = 0; i < 9; i++) {
             menu.addItem(i, ChestMenuUtils.getBackground());
@@ -79,6 +77,11 @@ public final class AndroidShareMenu {
         menu.addMenuClickHandler(0, (p1, slot, item, action) -> {
             p1.closeInventory();
 
+            if (users.size() >= SHARED_USERS_LIMIT) {
+                Slimefun.getLocalization().sendMessage(p1, "android.access-manager.messages.reach-limit");
+                return false;
+            }
+
             Slimefun.getLocalization().sendMessage(p1, "android.access-manager.messages.input");
 
             ChatUtils.awaitInput(p1, message -> {
@@ -95,11 +98,9 @@ public final class AndroidShareMenu {
 
         // Display added trusted player(s)
         if (!users.isEmpty()) {
-            List<String> displayUsers = users.subList(page - 1, Math.min(users.size() - 1, DISPLAY_END_SLOT));
-
-            for (int index = 0; index < displayUsers.size(); index++) {
+            for (int index = 0; index < users.size(); index++) {
                 int slot = index + DISPLAY_START_SLOT;
-                OfflinePlayer current = Bukkit.getOfflinePlayer(UUID.fromString(displayUsers.get(index)));
+                OfflinePlayer current = Bukkit.getOfflinePlayer(UUID.fromString(users.get(index)));
                 menu.addItem(slot, new CustomItemStack(PlayerHead.getItemStack(current), "&b" + current.getName(), Slimefun.getLocalization().getMessage("android.access-manager.menu.delete-player")));
                 menu.addMenuClickHandler(slot, (p1, slot1, item, action) -> {
                     if (!action.isRightClicked() && !action.isShiftClicked()) {
@@ -108,35 +109,6 @@ public final class AndroidShareMenu {
                     return false;
                 });
             }
-        }
-
-        if (pages > 1) {
-            menu.addItem(47, ChestMenuUtils.getPreviousButton(p, page, pages));
-            menu.addMenuClickHandler(46, (pl, slot, item, action) -> {
-                int previousPage = page - 1;
-                if (previousPage < 1) {
-                    previousPage = pages;
-                }
-
-                if (previousPage != page) {
-                    openShareMenu(p, b, previousPage);
-                }
-                return false;
-            });
-
-            menu.addItem(51, ChestMenuUtils.getNextButton(p, page, pages));
-            menu.addMenuClickHandler(50, (pl, slot, item, action) -> {
-                int nextPage = page + 1;
-
-                if (nextPage > pages) {
-                    nextPage = 1;
-                }
-
-                if (nextPage != page) {
-                    openShareMenu(p, b, nextPage);
-                }
-                return false;
-            });
         }
 
         menu.open(p);
@@ -157,7 +129,7 @@ public final class AndroidShareMenu {
             users.add(p.getUniqueId().toString());
             Slimefun.getLocalization().sendMessage(owner, "android.access-manager.messages.add-success", msg -> msg.replace("%player%", p.getName()));
 
-            setValue(android.getState(), users.toString());
+            setSharedUserData(android.getState(), users.toString());
         }
     }
 
@@ -172,7 +144,7 @@ public final class AndroidShareMenu {
             users.remove(p.getUniqueId().toString());
             Slimefun.getLocalization().sendMessage(owner, "android.access-manager.messages.delete-success", msg -> msg.replace("%player%", p.getName()));
 
-            setValue(android.getState(), users.toString());
+            setSharedUserData(android.getState(), users.toString());
         } else {
             Slimefun.getLocalization().sendMessage(owner, "android.access-manager.messages.is-not-trusted-player", msg -> msg.replace("%player%", p.getName()));
         }
@@ -182,7 +154,7 @@ public final class AndroidShareMenu {
      * Parse trusted player list raw string to List.
      *
      * @param value list raw string
-     * @return trusted player list
+     * @return parse trusted player list
      */
     private @Nonnull static List<String> parseBlockInfoToList(@Nonnull String value) {
         Validate.notNull(value, "The trusted player list cannot be null!");
@@ -190,7 +162,7 @@ public final class AndroidShareMenu {
         String replacedText = value.replace("[", "").replace("]", "");
 
         if (replacedText.isEmpty()) {
-            return Collections.emptyList();
+            return new ArrayList<>();
         } else {
             return Arrays.asList(replacedText.split(", "));
         }
@@ -199,18 +171,19 @@ public final class AndroidShareMenu {
     /**
      * Get a trusted users list of specific android.
      *
-     * @param b the block of a Android
-     * @return Trusted users
+     * @param b the block of android
+     * @return trusted users list
      */
     public @Nonnull static List<String> getTrustedUsers(@Nonnull Block b) {
         Validate.notNull(b, "The android block cannot be null!");
 
-        Optional<String> trustUsers = getValue(b.getState());
+        Optional<String> trustUsers = getSharedUserData(b.getState());
 
         // Checks for old Android
         if (!trustUsers.isPresent()) {
-            setValue(b.getState(), Collections.emptyList().toString());
-            return Collections.emptyList();
+            List<String> emptyUsers = new ArrayList<>();
+            setSharedUserData(b.getState(), String.valueOf(emptyUsers));
+            return emptyUsers;
         }
 
         return parseBlockInfoToList(trustUsers.get());
@@ -219,21 +192,21 @@ public final class AndroidShareMenu {
     /**
      * Checks user is in trusted users list.
      *
-     * @param b the block of a Android
+     * @param b the block of Android
      * @param uuid user's UUID
-     * @return whether is the trusted user of android or not
+     * @return user trusted status
      */
     @ParametersAreNonnullByDefault
     public static boolean isTrustedUser(Block b, UUID uuid) {
         Validate.notNull(b, "The android block cannot be null!");
         Validate.notNull(uuid, "The UUID of player to check cannot be null!");
 
-        Optional<String> trustUsers = getValue(b.getState());
+        Optional<String> trustUsers = getSharedUserData(b.getState());
 
         return trustUsers.map(s -> s.contains(uuid.toString())).orElse(false);
     }
 
-    private static void setValue(@Nonnull BlockState state, @Nonnull String value) {
+    private static void setSharedUserData(@Nonnull BlockState state, @Nonnull String value) {
         Validate.notNull(state, "The android block state cannot be null!");
         Validate.notNull(value, "The data value cannot be null!");
 
@@ -251,11 +224,11 @@ public final class AndroidShareMenu {
             String serverSoftware = PaperLib.isSpigot() && !PaperLib.isPaper() ? "Spigot" : Bukkit.getName();
             Slimefun.logger().log(Level.SEVERE, () -> serverSoftware + " | " + Bukkit.getVersion() + " | " + Bukkit.getBukkitVersion());
 
-            Slimefun.logger().log(Level.SEVERE, "An Exception was thrown while trying to set Persistent Data for a Block", x);
+            Slimefun.logger().log(Level.SEVERE, "An Exception was thrown while trying to set Persistent Data for a Android", x);
         }
     }
 
-    private @Nonnull static Optional<String> getValue(@Nonnull BlockState state) {
+    private @Nonnull static Optional<String> getSharedUserData(@Nonnull BlockState state) {
         Validate.notNull(state, "The android block state cannot be null!");
 
         if (!(state instanceof TileState)) {

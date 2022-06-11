@@ -105,8 +105,6 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
     protected AbstractAutoCrafter(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
 
-        addOfficialWikipage(WIKI_PAGE);
-
         recipeStorageKey = new NamespacedKey(Slimefun.instance(), "recipe_key");
         recipeEnabledKey = new NamespacedKey(Slimefun.instance(), "recipe_enabled");
 
@@ -137,6 +135,11 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
                 }
             }
         });
+    }
+
+    @Override
+    public void postRegister() {
+        addWikiPage(WIKI_PAGE);
     }
 
     /**

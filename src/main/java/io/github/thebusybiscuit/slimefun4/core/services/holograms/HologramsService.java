@@ -40,7 +40,7 @@ public class HologramsService {
     /**
      * The radius in which we scan for holograms
      */
-    private static final double RADIUS = 0.45;
+    private static final double RADIUS = 0.46;
 
     /**
      * The frequency at which to purge.

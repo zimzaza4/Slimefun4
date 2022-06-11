@@ -41,7 +41,7 @@ placeholderapi:
 guide:
   locked: '已锁定'
   work-in-progress: '该功能暂未推出!'
-  locked-category:
+  locked-itemgroup:
     - '为了解锁这一类别'
     - '你需要先解锁以下'
     - '类别里的所有物品'
@@ -386,6 +386,7 @@ android:
       cannot-add-yourself: '&c你不能信任你自己!'
       add-success: '&a成功添加信任玩家 %player%.'
       delete-success: '&a成功删除信任玩家 %player%.'
+      reach-limit: '&c信任玩家个数已达上限 (10), 请先删除已有玩家再添加!'
 languages:
   default: '服务器默认语言'
   en: '英语'

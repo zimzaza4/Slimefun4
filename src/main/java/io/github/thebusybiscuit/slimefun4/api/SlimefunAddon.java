@@ -23,6 +23,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
  * an Addon.
  * 
  * @author TheBusyBiscuit
+ * @author ybw0014
  *
  */
 public interface SlimefunAddon {
@@ -95,6 +96,15 @@ public interface SlimefunAddon {
 
         PluginDescriptionFile description = getJavaPlugin().getDescription();
         return description.getDepend().contains(dependency) || description.getSoftDepend().contains(dependency);
+    }
+
+    /**
+     * 获取 Wiki URL格式
+     *
+     * @return Wiki 的 URL格式，使用{0}作为替换
+     */
+    default @Nullable String getWikiURL() {
+        return null;
     }
 
 }

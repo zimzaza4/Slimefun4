@@ -8,7 +8,6 @@ public class SlimefunExtra {
     public static void register(@Nonnull Slimefun sf) {
         IntegrationHelper.register(sf);
         VaultHelper.register(sf);
-        UpdateChecker.checkUpdate();
     }
 
     public static void shutdown() {
