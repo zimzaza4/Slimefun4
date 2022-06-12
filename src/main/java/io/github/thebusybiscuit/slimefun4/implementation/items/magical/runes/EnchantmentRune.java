@@ -147,8 +147,9 @@ public class EnchantmentRune extends SimpleSlimefunItem<ItemDropHandler> {
 
                         // When multiple runes have been merged, reduce one rune.
                         if (rune.getItemStack().getAmount() > 1) {
-                            runeStack.setAmount(runeStack.getAmount() - 1);
-                            rune.setItemStack(runeStack);
+                            ItemStack runeCopy = rune.getItemStack();
+                            runeCopy.setAmount(runeCopy.getAmount() - 1);
+                            rune.setItemStack(runeCopy);
                         } else {
                             rune.remove();
                         }
