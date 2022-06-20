@@ -16,8 +16,9 @@ QQ 交流群：807302496
 ![目前版本](https://img.shields.io/github/v/release/StarWishSama/Slimefun4?include_prereleases)
 ![编译状态](https://github.com/StarWishsama/Slimefun4/workflows/Java%20CI/badge.svg)
 [![Issues](https://img.shields.io/github/issues/StarWishsama/Slimefun4.svg?style=popout)](https://github.com/StarWishsama/Slimefun4/issues)
+![下载数](https://img.shields.io/github/downloads/StarWishsama/Slimefun4/total)
 
-使用汉化版之后, **禁止** 在官方问题追踪器创建新问题!<br>
+使用汉化版之后, **禁止** 在官方问题追踪器创建新问题!  
 如果你执意要这么做, 请在反馈时使用**官方**开发版并且使用**英语** 提交问题.<br>
 否则, 请在此处创建问题或加群讨论.
 
@@ -62,7 +63,7 @@ Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 
 | | 开发版 (最新更新) | "稳定版"                                                                                 |
 | ------------------ | -------- |---------------------------------------------------------------------------------------|
-| **支持的 Minecraft 版本** | :video_game: 1.14.X - 1.18.X | :video_game: 1.14.X - 1.18.X                                                          |
+| **支持的 Minecraft 版本** | :video_game: 1.14.X - 1.19.X | :video_game: 1.14.X - 1.18.X                                                          |
 | **自动更新系统** | :heavy_check_mark: | :heavy_check_mark:                                                                    |
 | **频繁更新** | :heavy_check_mark: | :x:                                                                                   |
 | **享有最新内容** | :heavy_check_mark: | :x:                                                                                   |

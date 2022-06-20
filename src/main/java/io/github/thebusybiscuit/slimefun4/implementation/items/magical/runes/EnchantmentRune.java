@@ -1,17 +1,12 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.magical.runes;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.handlers.ItemDropHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -22,13 +17,10 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.core.handlers.ItemDropHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * This {@link SlimefunItem} allows you to enchant any enchantable {@link ItemStack} with a random
@@ -144,7 +136,15 @@ public class EnchantmentRune extends SimpleSlimefunItem<ItemDropHandler> {
                         l.getWorld().playSound(l, Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 1F, 1F);
 
                         item.remove();
-                        rune.remove();
+
+                        // When multiple runes have been merged, reduce one rune.
+                        if (rune.getItemStack().getAmount() > 1) {
+                            ItemStack runeCopy = rune.getItemStack();
+                            runeCopy.setAmount(runeCopy.getAmount() - 1);
+                            rune.setItemStack(runeCopy);
+                        } else {
+                            rune.remove();
+                        }
 
                         if (enchantment.canEnchantItem(itemStack)) {
                             itemStack.addEnchantment(enchantment, level);

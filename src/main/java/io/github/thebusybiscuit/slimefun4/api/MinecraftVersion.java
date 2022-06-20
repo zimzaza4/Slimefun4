@@ -1,12 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.api;
 
-import javax.annotation.Nonnull;
-
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.papermc.lib.PaperLib;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Server;
 
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.papermc.lib.PaperLib;
+import javax.annotation.Nonnull;
 
 /**
  * This enum holds all versions of Minecraft that we currently support.
@@ -48,6 +47,12 @@ public enum MinecraftVersion {
      * (The "Caves and Cliffs: Part II" Update)
      */
     MINECRAFT_1_18(18, "1.18.x"),
+
+    /**
+     * This constant represents Minecraft (Java Edition) Version 1.19
+     * ("The Wild Update")
+     */
+    MINECRAFT_1_19(19, "1.19.x"),
 
     /**
      * This constant represents an exceptional state in which we were unable

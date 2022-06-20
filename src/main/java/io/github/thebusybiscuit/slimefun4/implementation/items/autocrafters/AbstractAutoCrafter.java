@@ -31,30 +31,21 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 
 /**
  * This is the abstract super class for our auto crafters.
@@ -649,7 +640,14 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
         if (recipe instanceof SlimefunItemRecipe) {
             // Recipe is for slimefun item
             List<ItemStackWrapper> itemInRecipe = new ArrayList<>();
-            for (ItemStack each : SlimefunItem.getByItem(recipe.getResult()).getRecipe()) {
+            SlimefunItem recipeResult = SlimefunItem.getByItem(recipe.getResult());
+
+            if (recipeResult == null) {
+                Slimefun.logger().log(Level.WARNING, "在处理合成配方 " + recipe + " 的结果 " + recipe.getResult() + " 时出现了问题, 合成结果非 Slimefun 物品");
+                return 0;
+            }
+
+            for (ItemStack each : recipeResult.getRecipe()) {
                 if (each == null) continue;
                 ItemStackWrapper wrapper = ItemStackWrapper.wrap(each);
                 boolean found = false;
@@ -663,6 +661,7 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
                     itemInRecipe.add(wrapper);
                 }
             }
+
             return itemInRecipe.size();
         }
 
@@ -671,16 +670,16 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
         Recipe vanillaRecipe = ((VanillaRecipe) recipe).getRecipe();
 
         if (vanillaRecipe instanceof ShapelessRecipe) {
-            return ((ShapelessRecipe)vanillaRecipe).getIngredientList().size();
+            return ((ShapelessRecipe) vanillaRecipe).getIngredientList().size();
         }
 
         // Not shape less recipe, do check the shape.
         Set<ItemStack> itemInRecipe = new HashSet<>();
         // Loop to read each recipe shape char
-        for (String row : ((ShapedRecipe)vanillaRecipe).getShape()) {
+        for (String row : ((ShapedRecipe) vanillaRecipe).getShape()) {
             for (char each : row.toCharArray()) {
                 // Get MaterialChoice from char
-                RecipeChoice.MaterialChoice materialChoice= (RecipeChoice.MaterialChoice) ((ShapedRecipe)vanillaRecipe).getChoiceMap().get(each);
+                RecipeChoice.MaterialChoice materialChoice = (RecipeChoice.MaterialChoice) ((ShapedRecipe) vanillaRecipe).getChoiceMap().get(each);
                 if (materialChoice != null) {
                     ItemStack itemInChoice = materialChoice.getItemStack();
                     boolean found = false;
