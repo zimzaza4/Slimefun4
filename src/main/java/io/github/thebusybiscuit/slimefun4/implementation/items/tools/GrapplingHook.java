@@ -1,21 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.tools;
 
-import java.util.UUID;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Bat;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
-
 import io.github.bakedlibs.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
@@ -27,6 +11,20 @@ import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.GrapplingHookListener;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Bat;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.UUID;
 
 /**
  * The {@link GrapplingHook} is a simple {@link SlimefunItem} which allows a {@link Player}
@@ -73,7 +71,7 @@ public class GrapplingHook extends SimpleSlimefunItem<ItemUseHandler> {
                     ItemUtils.consumeItem(item, false);
                 }
 
-                Vector direction = p.getEyeLocation().getDirection().multiply(2.0);
+                Vector direction = p.getEyeLocation().getDirection().multiply(2.5);
                 Arrow arrow = p.getWorld().spawn(p.getEyeLocation().add(direction.getX(), direction.getY(), direction.getZ()), Arrow.class);
                 arrow.setShooter(p);
                 arrow.setVelocity(direction);

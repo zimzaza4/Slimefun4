@@ -1,14 +1,13 @@
 package io.github.thebusybiscuit.slimefun4.core.commands.subcommands;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This class holds the implementations of every {@link SubCommand}.
@@ -44,7 +43,7 @@ public final class SlimefunSubCommands {
         commands.add(new DebugCommand(plugin, cmd));
         commands.add(new ItemIdCommand(plugin, cmd));
         commands.add(new TransformCommand(plugin, cmd));
-
+        commands.add(new LagCommand(plugin, cmd));
         return commands;
     }
 }

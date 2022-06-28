@@ -1,9 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.api.network;
 
+import cn.zimzaza4.slimefun4.PlayerLag;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
+import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 
@@ -50,7 +52,11 @@ class NetworkVisualizer implements Runnable {
      * @param l The {@link Location} of our node
      */
     private void spawnParticles(@Nonnull Location l) {
-        l.getWorld().spawnParticle(Particle.REDSTONE, l.getX() + 0.5, l.getY() + 0.5, l.getZ() + 0.5, 1, 0, 0, 0, 1, options);
+        for (Player p : l.getWorld().getPlayers()) {
+            if (!PlayerLag.isLowPerformanceMode(p)) {
+                p.spawnParticle(Particle.REDSTONE, l.getX() + 0.5, l.getY() + 0.5, l.getZ() + 0.5, 1, 0, 0, 0, 1, options);
+            }
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation;
 
+import cn.zimzaza4.slimefun4.PlayerLag;
 import io.github.bakedlibs.dough.config.Config;
 import io.github.bakedlibs.dough.protection.ProtectionManager;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
@@ -614,6 +615,10 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon {
 
         // Clear the Slimefun Guide History upon Player Leaving
         new PlayerProfileListener(this);
+
+
+
+        Bukkit.getPluginManager().registerEvents(new PlayerLag(), this);
     }
 
     /**
