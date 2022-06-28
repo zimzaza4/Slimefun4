@@ -52,13 +52,21 @@ public class PlayerLag implements Listener {
                         LowPerformanceModePlayers.add(p);
                     }
                 }
+                jedis.close();
             }
         }
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Slimefun.getRedisService().sendMessage("Slimefun", MESSAGE);
+        Jedis jedis = RedisService.getPool().getResource();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                jedis.publish("Slimefun", MESSAGE);
+                jedis.close();
+            }
+        }.runTaskAsynchronously(Slimefun.instance());
     }
 
 }
