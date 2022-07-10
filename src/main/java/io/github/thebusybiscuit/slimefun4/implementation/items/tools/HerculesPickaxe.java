@@ -18,6 +18,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 
+@Deprecated
 public class HerculesPickaxe extends SimpleSlimefunItem<ToolUseHandler> {
 
     @ParametersAreNonnullByDefault
@@ -28,6 +29,9 @@ public class HerculesPickaxe extends SimpleSlimefunItem<ToolUseHandler> {
     @Override
     public @Nonnull ToolUseHandler getItemHandler() {
         return (e, tool, fortune, drops) -> {
+
+            sendDeprecationWarning(e.getPlayer());
+
             Material mat = e.getBlock().getType();
 
             if (SlimefunTag.ORES.isTagged(mat)) {
