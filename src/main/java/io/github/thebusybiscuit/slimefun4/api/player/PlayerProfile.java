@@ -345,7 +345,7 @@ public class PlayerProfile {
         sender.sendMessage("");
         sender.sendMessage(ChatColors.color("&7研究等级: " + ChatColor.AQUA + getTitle()));
         sender.sendMessage(ChatColors.color("&7研究进度: " + NumberUtils.getColorFromPercentage(progress) + progress + " &r% " + ChatColor.YELLOW + '(' + unlockedResearches.size() + " / " + allResearches + ')'));
-        sender.sendMessage(ChatColors.color("&7总经验等级耗费: " + ChatColor.AQUA + levels));
+        sender.sendMessage(ChatColors.color("&7总花费经验等级: " + ChatColor.AQUA + levels));
     }
 
     /**
