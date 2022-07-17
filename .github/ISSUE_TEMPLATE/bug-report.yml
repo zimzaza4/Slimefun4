@@ -23,6 +23,19 @@ body:
     validations:
       required: true
 
+  - type: dropdown
+    id: reproducibility
+    attributes:
+       label: 问题复现率
+       description: 选择问题发生的概率
+       options:
+         - 无法复现
+         - 低偶发
+         - 高偶发
+         - 必现
+    validations:
+      required: true
+
   - type: textarea
     id: reproduce
     attributes:
