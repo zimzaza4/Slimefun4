@@ -177,7 +177,7 @@ public class GPSNetwork {
             if (sfi instanceof GPSTransmitter transmitter) {
                 int slot = inventory[index];
 
-                menu.addItem(slot, new CustomItemStack(SlimefunItems.GPS_TRANSMITTER, "&bGPS Transmitter", "&8\u21E8 &7World: &f" + l.getWorld().getName(), "&8\u21E8 &7X: &f" + l.getX(), "&8\u21E8 &7Y: &f" + l.getY(), "&8\u21E8 &7Z: &f" + l.getZ(), "", "&8\u21E8 &7Signal Strength: &f" + transmitter.getMultiplier(l.getBlockY()), "&8\u21E8 &7Ping: &f" + NumberUtils.roundDecimalNumber(1000D / l.getY()) + "ms"));
+                menu.addItem(slot, new CustomItemStack(SlimefunItems.GPS_TRANSMITTER, "&bGPS 发射器", "&8\u21E8 &7世界: &f" + l.getWorld().getName(), "&8\u21E8 &7X: &f" + l.getX(), "&8\u21E8 &7Y: &f" + l.getY(), "&8\u21E8 &7Z: &f" + l.getZ(), "", "&8\u21E8 &7信号强度: &f" + transmitter.getMultiplier(l.getBlockY()), "&8\u21E8 &7延迟: &f" + NumberUtils.roundDecimalNumber(1000D / l.getY()) + "ms"));
                 menu.addMenuClickHandler(slot, ChestMenuUtils.getEmptyClickHandler());
 
                 index++;
