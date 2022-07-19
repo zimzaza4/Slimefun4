@@ -7,6 +7,8 @@ import io.github.bakedlibs.dough.protection.Interaction;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.ArmorStand;
@@ -25,6 +27,7 @@ public class ButcherAndroid extends ProgrammableAndroid {
 
     private static final String METADATA_KEY = "android_killer";
 
+    @ParametersAreNonnullByDefault
     public ButcherAndroid(ItemGroup itemGroup, int tier, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, tier, item, recipeType, recipe);
     }
@@ -39,27 +42,17 @@ public class ButcherAndroid extends ProgrammableAndroid {
         double damage = getTier() >= 3 ? 20D : 4D * getTier();
         double radius = 4.0 + getTier();
 
-        for (Entity n : b.getWorld().getNearbyEntities(b.getLocation(), radius, radius, radius, n -> n instanceof LivingEntity && !(n instanceof ArmorStand) && !(n instanceof Player) && n.isValid() && predicate.test((LivingEntity) n))) {
-            boolean attack = false;
+        for (Entity n : b.getWorld().getNearbyEntities(b.getLocation(), radius, radius, radius, n -> n instanceof LivingEntity livingEntity && !(n instanceof ArmorStand) && !(n instanceof Player) && n.isValid() && predicate.test(livingEntity))) {
+            // Check if our android is facing this entity.
+            boolean willAttack = switch (face) {
+                case NORTH -> n.getLocation().getZ() < b.getZ();
+                case EAST -> n.getLocation().getX() > b.getX();
+                case SOUTH -> n.getLocation().getZ() > b.getZ();
+                case WEST -> n.getLocation().getX() < b.getX();
+                default -> false;
+            };
 
-            switch (face) {
-                case NORTH:
-                    attack = n.getLocation().getZ() < b.getZ();
-                    break;
-                case EAST:
-                    attack = n.getLocation().getX() > b.getX();
-                    break;
-                case SOUTH:
-                    attack = n.getLocation().getZ() > b.getZ();
-                    break;
-                case WEST:
-                    attack = n.getLocation().getX() < b.getX();
-                    break;
-                default:
-                    break;
-            }
-
-            if (attack) {
+            if (willAttack) {
                 if (n.hasMetadata(METADATA_KEY)) {
                     n.removeMetadata(METADATA_KEY, Slimefun.instance());
                 }

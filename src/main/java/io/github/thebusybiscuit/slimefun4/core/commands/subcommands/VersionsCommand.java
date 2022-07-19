@@ -154,7 +154,7 @@ class VersionsCommand extends SubCommand {
                 secondaryColor = ChatColor.DARK_GREEN;
                 String authors = String.join(", ", plugin.getDescription().getAuthors());
 
-                if (plugin instanceof SlimefunAddon && ((SlimefunAddon) plugin).getBugTrackerURL() != null) {
+                if (plugin instanceof SlimefunAddon addon && addon.getBugTrackerURL() != null) {
                     // @formatter:off
                     hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent(new ComponentBuilder()
                             .append("作者: ")
@@ -166,7 +166,7 @@ class VersionsCommand extends SubCommand {
                     )});
                     // @formatter:on
 
-                    clickEvent = new ClickEvent(ClickEvent.Action.OPEN_URL, ((SlimefunAddon) plugin).getBugTrackerURL());
+                    clickEvent = new ClickEvent(ClickEvent.Action.OPEN_URL, addon.getBugTrackerURL());
                 } else {
                     // @formatter:off
                     hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent(new ComponentBuilder()
@@ -181,7 +181,7 @@ class VersionsCommand extends SubCommand {
                 primaryColor = ChatColor.RED;
                 secondaryColor = ChatColor.DARK_RED;
 
-                if (plugin instanceof SlimefunAddon && ((SlimefunAddon) plugin).getBugTrackerURL() != null) {
+                if (plugin instanceof SlimefunAddon addon && addon.getBugTrackerURL() != null) {
                     // @formatter:off
                     hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent(new ComponentBuilder()
                             .append("此插件已被禁用.\n检查后台是否有报错.")
@@ -191,8 +191,6 @@ class VersionsCommand extends SubCommand {
                             .create()
                     )});
                     // @formatter:on
-
-                    SlimefunAddon addon = (SlimefunAddon) plugin;
 
                     if (addon.getBugTrackerURL() != null) {
                         clickEvent = new ClickEvent(ClickEvent.Action.OPEN_URL, addon.getBugTrackerURL());

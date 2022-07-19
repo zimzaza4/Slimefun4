@@ -136,6 +136,11 @@ import ren.natsuyuk1.slimefunextra.*;
  */
 public final class Slimefun extends JavaPlugin implements SlimefunAddon {
 
+    /**
+     * This is the Java version we recommend server owners to use.
+     * This does not necessarily mean that it's the minimum version
+     * required to run Slimefun.
+     */
     private static final int RECOMMENDED_JAVA_VERSION = 17;
 
     /**

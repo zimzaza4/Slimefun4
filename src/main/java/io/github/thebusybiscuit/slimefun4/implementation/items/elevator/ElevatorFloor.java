@@ -51,8 +51,7 @@ class ElevatorFloor {
      *
      * @return The name of this floor
      */
-    @Nonnull
-    public String getName() {
+    public @Nonnull String getName() {
         return name;
     }
 
@@ -61,8 +60,7 @@ class ElevatorFloor {
      *
      * @return The {@link Location} of this floor
      */
-    @Nonnull
-    public Location getLocation() {
+    public @Nonnull Location getLocation() {
         return location;
     }
 

@@ -301,14 +301,13 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
 
         Material type = block.getType();
 
-        switch (type) {
-            case CHEST:
-            case TRAPPED_CHEST:
-            case BARREL:
-                return true;
-            default:
-                return SlimefunTag.SHULKER_BOXES.isTagged(type);
-        }
+        // TODO: Add designated SlimefunTag
+        return switch (type) {
+            case CHEST,
+                TRAPPED_CHEST,
+                BARREL -> true;
+            default -> SlimefunTag.SHULKER_BOXES.isTagged(type);
+        };
     }
 
     /**
@@ -350,16 +349,16 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
         BlockStateSnapshotResult result = PaperLib.getBlockState(b, false);
         BlockState state = result.getState();
 
-        if (state instanceof Skull) {
+        if (state instanceof Skull skull) {
             if (recipe == null) {
                 // Clear the value from persistent data storage
-                PersistentDataAPI.remove((Skull) state, recipeStorageKey);
+                PersistentDataAPI.remove(skull, recipeStorageKey);
 
                 // Also remove the "enabled" state since this should be per-recipe.
-                PersistentDataAPI.remove((Skull) state, recipeEnabledKey);
+                PersistentDataAPI.remove(skull, recipeEnabledKey);
             } else {
                 // Store the value to persistent data storage
-                PersistentDataAPI.setString((Skull) state, recipeStorageKey, recipe.toString());
+                PersistentDataAPI.setString(skull, recipeStorageKey, recipe.toString());
             }
 
             // Fixes #2899 - Update the BlockState if necessary
@@ -436,12 +435,12 @@ public abstract class AbstractAutoCrafter extends SlimefunItem implements Energy
         BlockState state = PaperLib.getBlockState(b, false).getState();
 
         // Make sure the block is still a Skull
-        if (state instanceof Skull) {
+        if (state instanceof Skull skull) {
             if (enabled) {
-                PersistentDataAPI.remove((Skull) state, recipeEnabledKey);
+                PersistentDataAPI.remove(skull, recipeEnabledKey);
                 Slimefun.getLocalization().sendMessage(p, "messages.auto-crafting.re-enabled");
             } else {
-                PersistentDataAPI.setByte((Skull) state, recipeEnabledKey, (byte) 1);
+                PersistentDataAPI.setByte(skull, recipeEnabledKey, (byte) 1);
                 Slimefun.getLocalization().sendMessage(p, "messages.auto-crafting.temporarily-disabled");
             }
         }
