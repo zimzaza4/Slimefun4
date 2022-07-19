@@ -46,7 +46,7 @@ import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
  * @author Redemption198
  * @author TheBusyBiscuit
  * @author StarWishsama
- * 
+ *
  * @see AncientAltar
  * @see AncientAltarListener
  * @see AncientAltarTask
@@ -116,8 +116,7 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
     }
 
     private boolean testItem(@Nullable Entity n) {
-        if (n instanceof Item && n.isValid()) {
-            Item item = (Item) n;
+        if (n instanceof Item item && n.isValid()) {
             ItemMeta meta = item.getItemStack().getItemMeta();
 
             return meta.hasDisplayName() && meta.getDisplayName().startsWith(ITEM_PREFIX);
