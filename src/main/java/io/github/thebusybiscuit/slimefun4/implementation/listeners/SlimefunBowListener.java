@@ -1,11 +1,9 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.annotation.Nonnull;
-
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BowShootHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.SlimefunBow;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -17,10 +15,10 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BowShootHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.items.weapons.SlimefunBow;
+import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * This {@link Listener} is responsible for tracking {@link Arrow Arrows} fired from a
@@ -55,8 +53,8 @@ public class SlimefunBowListener implements Listener {
         if (e.getEntity() instanceof Player && e.getProjectile() instanceof Arrow) {
             SlimefunItem bow = SlimefunItem.getByItem(e.getBow());
 
-            if (bow instanceof SlimefunBow) {
-                projectiles.put(e.getProjectile().getUniqueId(), (SlimefunBow) bow);
+            if (bow instanceof SlimefunBow slimefunBow) {
+                projectiles.put(e.getProjectile().getUniqueId(), slimefunBow);
             }
         }
     }

@@ -1,35 +1,28 @@
 package io.github.thebusybiscuit.slimefun4.core.networks.cargo;
 
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import ren.natsuyuk1.slimefunextra.IntegrationHelper;
+import io.github.bakedlibs.dough.inventory.InvUtils;
 import io.github.thebusybiscuit.slimefun4.core.debug.Debug;
 import io.github.thebusybiscuit.slimefun4.core.debug.TestCase;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Tag;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.inventory.BrewerInventory;
-import org.bukkit.inventory.FurnaceInventory;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
-
-import io.github.bakedlibs.dough.inventory.InvUtils;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import io.papermc.lib.PaperLib;
-
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Tag;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.inventory.*;
+import ren.natsuyuk1.slimefunextra.IntegrationHelper;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Map;
 
 /**
  * This is a helper class for the {@link CargoNet} which provides
@@ -71,21 +64,20 @@ final class CargoUtils {
 
         Material type = block.getType();
 
-        switch (type) {
-            case CHEST:
-            case TRAPPED_CHEST:
-            case FURNACE:
-            case DISPENSER:
-            case DROPPER:
-            case HOPPER:
-            case BREWING_STAND:
-            case BARREL:
-            case BLAST_FURNACE:
-            case SMOKER:
-                return true;
-            default:
-                return SlimefunTag.SHULKER_BOXES.isTagged(type);
-        }
+        // TODO: Add designated SlimefunTag
+        return switch (type) {
+            case CHEST,
+                TRAPPED_CHEST,
+                FURNACE,
+                DISPENSER,
+                DROPPER,
+                HOPPER,
+                BREWING_STAND,
+                BARREL,
+                BLAST_FURNACE,
+                SMOKER -> true;
+            default -> SlimefunTag.SHULKER_BOXES.isTagged(type);
+        };
     }
 
     @Nonnull
@@ -146,8 +138,8 @@ final class CargoUtils {
 
                 BlockState state = PaperLib.getBlockState(target, false).getState();
 
-                if (state instanceof InventoryHolder) {
-                    inventory = ((InventoryHolder) state).getInventory();
+                if (state instanceof InventoryHolder inventoryHolder) {
+                    inventory = inventoryHolder.getInventory();
                     inventories.put(target.getLocation(), inventory);
                     return withdrawFromVanillaInventory(network, node, template, inventory);
                 }
@@ -235,8 +227,8 @@ final class CargoUtils {
 
             BlockState state = PaperLib.getBlockState(target, false).getState();
 
-            if (state instanceof InventoryHolder) {
-                inventory = ((InventoryHolder) state).getInventory();
+            if (state instanceof InventoryHolder inventoryHolder) {
+                inventory = inventoryHolder.getInventory();
                 inventories.put(target.getLocation(), inventory);
                 return withdrawFromVanillaInventory(network, node, inventory);
             }
@@ -283,8 +275,8 @@ final class CargoUtils {
 
                 BlockState state = PaperLib.getBlockState(target, false).getState();
 
-                if (state instanceof InventoryHolder) {
-                    inventory = ((InventoryHolder) state).getInventory();
+                if (state instanceof InventoryHolder inventoryHolder) {
+                    inventory = inventoryHolder.getInventory();
                     inventories.put(target.getLocation(), inventory);
                     return insertIntoVanillaInventory(stack, wrapper, smartFill, inventory);
                 }

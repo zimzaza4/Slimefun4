@@ -1,7 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import javax.annotation.Nonnull;
-
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.armor.*;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -16,13 +17,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.items.armor.EnderBoots;
-import io.github.thebusybiscuit.slimefun4.implementation.items.armor.FarmerShoes;
-import io.github.thebusybiscuit.slimefun4.implementation.items.armor.LongFallBoots;
-import io.github.thebusybiscuit.slimefun4.implementation.items.armor.SlimefunArmorPiece;
-import io.github.thebusybiscuit.slimefun4.implementation.items.armor.StomperBoots;
+import javax.annotation.Nonnull;
 
 /**
  * This {@link Listener} is responsible for handling all boots provided by
@@ -68,9 +63,9 @@ public class SlimefunBootsListener implements Listener {
                 return;
             }
 
-            if (boots instanceof StomperBoots) {
+            if (boots instanceof StomperBoots stomperBoots) {
                 e.setCancelled(true);
-                ((StomperBoots) boots).stomp(e);
+                stomperBoots.stomp(e);
             } else if (boots instanceof LongFallBoots) {
                 e.setCancelled(true);
 

@@ -1,10 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners.entity;
 
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-
-import javax.annotation.Nonnull;
-
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.core.attributes.PiglinBarterDrop;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Piglin;
@@ -17,9 +15,9 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.core.attributes.PiglinBarterDrop;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import javax.annotation.Nonnull;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * This {@link Listener} prevents a {@link Piglin} from bartering with a
@@ -90,8 +88,8 @@ public class PiglinListener implements Listener {
                 SlimefunItem sfi = SlimefunItem.getByItem(is);
                 // Check the getBarteringLootChance and compare against a random number 0-100,
                 // if the random number is greater then replace the item.
-                if (sfi instanceof PiglinBarterDrop) {
-                    int chance = ((PiglinBarterDrop) sfi).getBarteringLootChance();
+                if (sfi instanceof PiglinBarterDrop piglinBarterDrop) {
+                    int chance = piglinBarterDrop.getBarteringLootChance();
 
                     if (chance < 1 || chance >= 100) {
                         sfi.warn("The Piglin Bartering chance must be between 1-99% on item: " + sfi.getId());

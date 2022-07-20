@@ -1,26 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.api.recipes;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.function.BiConsumer;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Keyed;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.bakedlibs.dough.items.CustomItemStack;
 import io.github.bakedlibs.dough.recipes.MinecraftRecipe;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
@@ -31,6 +10,19 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AltarRecipe;
 import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAltar;
+import org.bukkit.ChatColor;
+import org.bukkit.Keyed;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.*;
+import java.util.function.BiConsumer;
 
 // TODO: Remove this class and rewrite the recipe system
 public class RecipeType implements Keyed {
@@ -99,8 +91,8 @@ public class RecipeType implements Keyed {
         this.key = key;
         this.consumer = callback;
 
-        if (item instanceof SlimefunItemStack) {
-            this.machine = ((SlimefunItemStack) item).getItemId();
+        if (item instanceof SlimefunItemStack slimefunItemStack) {
+            this.machine = slimefunItemStack.getItemId();
         } else {
             this.machine = "";
         }
@@ -109,7 +101,7 @@ public class RecipeType implements Keyed {
     public RecipeType(NamespacedKey key, ItemStack item) {
         this.key = key;
         this.item = item;
-        this.machine = item instanceof SlimefunItemStack ? ((SlimefunItemStack) item).getItemId() : "";
+        this.machine = item instanceof SlimefunItemStack slimefunItemStack ? slimefunItemStack.getItemId() : "";
     }
 
     public RecipeType(MinecraftRecipe<?> recipe) {
@@ -124,8 +116,8 @@ public class RecipeType implements Keyed {
         } else {
             SlimefunItem slimefunItem = SlimefunItem.getById(this.machine);
 
-            if (slimefunItem instanceof MultiBlockMachine) {
-                ((MultiBlockMachine) slimefunItem).addRecipe(recipe, result);
+            if (slimefunItem instanceof MultiBlockMachine mbm) {
+                mbm.addRecipe(recipe, result);
             }
         }
     }
@@ -149,8 +141,8 @@ public class RecipeType implements Keyed {
 
     @Override
     public final boolean equals(Object obj) {
-        if (obj instanceof RecipeType) {
-            return ((RecipeType) obj).getKey().equals(this.getKey());
+        if (obj instanceof RecipeType recipeType) {
+            return recipeType.getKey().equals(this.getKey());
         } else {
             return false;
         }

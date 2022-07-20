@@ -1,19 +1,16 @@
 package io.github.thebusybiscuit.slimefun4.integrations;
 
-import java.util.Iterator;
-
-import javax.annotation.Nonnull;
-
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import me.minebuilders.clearlag.Clearlag;
+import me.minebuilders.clearlag.events.EntityRemoveEvent;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-
-import me.minebuilders.clearlag.Clearlag;
-import me.minebuilders.clearlag.events.EntityRemoveEvent;
+import javax.annotation.Nonnull;
+import java.util.Iterator;
 
 /**
  * This handles all integrations with {@link Clearlag}.
@@ -41,7 +38,7 @@ class ClearLagIntegration implements Listener {
         while (iterator.hasNext()) {
             Entity n = iterator.next();
 
-            if (n instanceof Item && SlimefunUtils.hasNoPickupFlag((Item) n)) {
+            if (n instanceof Item item && SlimefunUtils.hasNoPickupFlag(item)) {
                 iterator.remove();
             }
         }

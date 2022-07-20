@@ -1,16 +1,14 @@
 package io.github.thebusybiscuit.slimefun4.api.items.settings;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 
-import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This variation of {@link ItemSetting} allows you to define a default {@link Tag}.
@@ -40,14 +38,12 @@ public class MaterialTagSetting extends ItemSetting<List<String>> {
      * 
      * @return The default {@link Tag}
      */
-    @Nonnull
-    public Tag<Material> getDefaultTag() {
+    public @Nonnull Tag<Material> getDefaultTag() {
         return defaultTag;
     }
 
-    @Nonnull
     @Override
-    protected String getErrorMessage() {
+    protected @Nonnull String getErrorMessage() {
         return "This List can only contain Materials in the format of e.g. REDSTONE_BLOCK";
     }
 
@@ -74,10 +70,10 @@ public class MaterialTagSetting extends ItemSetting<List<String>> {
      * 
      * @param tag
      *            Our {@link Tag}
+     * 
      * @return The {@link String} {@link List}
      */
-    @Nonnull
-    private static List<String> getAsStringList(@Nonnull Tag<Material> tag) {
+    private static @Nonnull List<String> getAsStringList(@Nonnull Tag<Material> tag) {
         return tag.getValues().stream().map(Material::name).collect(Collectors.toList());
     }
 

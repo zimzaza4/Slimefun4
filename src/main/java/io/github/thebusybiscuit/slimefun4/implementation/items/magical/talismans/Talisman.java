@@ -1,14 +1,15 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemUtils;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.api.researches.Research;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -25,16 +26,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
-import io.github.bakedlibs.dough.items.CustomItemStack;
-import io.github.bakedlibs.dough.items.ItemUtils;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.api.researches.Research;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Talisman extends SlimefunItem {
 
@@ -166,11 +164,9 @@ public class Talisman extends SlimefunItem {
 
     @ParametersAreNonnullByDefault
     public static boolean trigger(Event e, SlimefunItem item, boolean sendMessage) {
-        if (!(item instanceof Talisman)) {
+        if (!(item instanceof Talisman talisman)) {
             return false;
         }
-
-        Talisman talisman = (Talisman) item;
 
         if (ThreadLocalRandom.current().nextInt(100) > talisman.getChance()) {
             return false;
@@ -243,8 +239,8 @@ public class Talisman extends SlimefunItem {
 
     @ParametersAreNonnullByDefault
     private static void cancelEvent(Event e, Talisman talisman) {
-        if (e instanceof Cancellable && talisman.isEventCancelled()) {
-            ((Cancellable) e).setCancelled(true);
+        if (e instanceof Cancellable cancellable && talisman.isEventCancelled()) {
+            cancellable.setCancelled(true);
         }
     }
 
@@ -305,18 +301,18 @@ public class Talisman extends SlimefunItem {
 
     @Nullable
     private static Player getPlayerByEventType(@Nonnull Event e) {
-        if (e instanceof EntityDeathEvent) {
-            return ((EntityDeathEvent) e).getEntity().getKiller();
-        } else if (e instanceof BlockBreakEvent) {
-            return ((BlockBreakEvent) e).getPlayer();
-        } else if (e instanceof BlockDropItemEvent) {
-            return ((BlockDropItemEvent) e).getPlayer();
-        } else if (e instanceof PlayerEvent) {
-            return ((PlayerEvent) e).getPlayer();
-        } else if (e instanceof EntityEvent) {
-            return (Player) ((EntityEvent) e).getEntity();
-        } else if (e instanceof EnchantItemEvent) {
-            return ((EnchantItemEvent) e).getEnchanter();
+        if (e instanceof EntityDeathEvent entityDeathEvent) {
+            return entityDeathEvent.getEntity().getKiller();
+        } else if (e instanceof BlockBreakEvent blockBreakEvent) {
+            return blockBreakEvent.getPlayer();
+        } else if (e instanceof BlockDropItemEvent blockDropItemEvent) {
+            return blockDropItemEvent.getPlayer();
+        } else if (e instanceof PlayerEvent playerEvent) {
+            return playerEvent.getPlayer();
+        } else if (e instanceof EntityEvent entityEvent) {
+            return (Player) entityEvent.getEntity();
+        } else if (e instanceof EnchantItemEvent enchantItemEvent) {
+            return enchantItemEvent.getEnchanter();
         }
 
         return null;

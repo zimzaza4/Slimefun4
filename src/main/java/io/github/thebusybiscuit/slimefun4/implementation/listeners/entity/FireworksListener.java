@@ -1,7 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners.entity;
 
-import javax.annotation.Nonnull;
-
+import io.github.thebusybiscuit.slimefun4.api.researches.Research;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -10,8 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 
-import io.github.thebusybiscuit.slimefun4.api.researches.Research;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import javax.annotation.Nonnull;
 
 /**
  * This {@link Listener} makes sure that any {@link Firework} caused by a {@link Player}
@@ -28,15 +27,14 @@ public class FireworksListener implements Listener {
 
     @EventHandler
     public void onResearchFireworkDamage(EntityDamageByEntityEvent e) {
-        if (e.getDamager() instanceof Firework) {
-            Firework firework = (Firework) e.getDamager();
+        if (e.getDamager() instanceof Firework firework) {
             FireworkMeta meta = firework.getFireworkMeta();
 
-            /**
-             * We could use Peristent Data for this in the future, but ItemMeta display names
-             * work pretty reliably too and they don't cause any memory leaks like metadata.
-             * 
-             * Entity display names do not work either as Firework cannot be named.
+            /*
+              We could use Peristent Data for this in the future, but ItemMeta display names
+              work pretty reliably too and they don't cause any memory leaks like metadata.
+
+              Entity display names do not work either as Firework cannot be named.
              */
             if (meta.hasDisplayName() && meta.getDisplayName().equals(ChatColor.GREEN + "Slimefun Research")) {
                 e.setCancelled(true);

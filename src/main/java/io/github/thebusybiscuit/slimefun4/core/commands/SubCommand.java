@@ -1,17 +1,15 @@
 package io.github.thebusybiscuit.slimefun4.core.commands;
 
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.thebusybiscuit.slimefun4.core.services.localization.Language;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.HelpCommand;
 import org.bukkit.entity.Player;
 
-import io.github.thebusybiscuit.slimefun4.core.services.localization.Language;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Map;
 
 /**
  * This class represents a {@link SubCommand}, it is a {@link Command} that starts with
@@ -80,10 +78,9 @@ public abstract class SubCommand {
      * 
      * @return A possibly localized description of this {@link SubCommand}
      */
-    @Nonnull
-    public String getDescription(@Nonnull CommandSender sender) {
-        if (sender instanceof Player) {
-            return Slimefun.getLocalization().getMessage((Player) sender, getDescription());
+    public @Nonnull String getDescription(@Nonnull CommandSender sender) {
+        if (sender instanceof Player player) {
+            return Slimefun.getLocalization().getMessage(player, getDescription());
         } else {
             return Slimefun.getLocalization().getMessage(getDescription());
         }

@@ -1,14 +1,13 @@
 package io.github.thebusybiscuit.slimefun4.core.commands.subcommands;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 class CheatCommand extends SubCommand {
 
@@ -19,9 +18,9 @@ class CheatCommand extends SubCommand {
 
     @Override
     public void onExecute(CommandSender sender, String[] args) {
-        if (sender instanceof Player) {
+        if (sender instanceof Player player) {
             if (sender.hasPermission("slimefun.cheat.items")) {
-                SlimefunGuide.openCheatMenu((Player) sender);
+                SlimefunGuide.openCheatMenu(player);
             } else {
                 Slimefun.getLocalization().sendMessage(sender, "messages.no-permission", true);
             }

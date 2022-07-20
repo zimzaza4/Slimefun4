@@ -1,26 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.altar;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.util.Vector;
-
 import io.github.bakedlibs.dough.blocks.BlockPosition;
 import io.github.bakedlibs.dough.common.ChatColors;
 import io.github.bakedlibs.dough.items.CustomItemStack;
@@ -37,6 +16,25 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunIte
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.AncientAltarListener;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.AncientAltarTask;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.Vector;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The {@link AncientPedestal} is a part of the {@link AncientAltar}.
@@ -46,7 +44,7 @@ import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
  * @author Redemption198
  * @author TheBusyBiscuit
  * @author StarWishsama
- * 
+ *
  * @see AncientAltar
  * @see AncientAltarListener
  * @see AncientAltarTask
@@ -116,8 +114,7 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
     }
 
     private boolean testItem(@Nullable Entity n) {
-        if (n instanceof Item && n.isValid()) {
-            Item item = (Item) n;
+        if (n instanceof Item item && n.isValid()) {
             ItemMeta meta = item.getItemStack().getItemMeta();
 
             return meta.hasDisplayName() && meta.getDisplayName().startsWith(ITEM_PREFIX);

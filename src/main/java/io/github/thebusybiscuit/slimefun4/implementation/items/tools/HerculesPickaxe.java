@@ -1,12 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.tools;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.bakedlibs.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -17,7 +10,14 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@Deprecated
 public class HerculesPickaxe extends SimpleSlimefunItem<ToolUseHandler> {
 
     @ParametersAreNonnullByDefault
@@ -28,6 +28,9 @@ public class HerculesPickaxe extends SimpleSlimefunItem<ToolUseHandler> {
     @Override
     public @Nonnull ToolUseHandler getItemHandler() {
         return (e, tool, fortune, drops) -> {
+
+            sendDeprecationWarning(e.getPlayer());
+
             Material mat = e.getBlock().getType();
 
             if (SlimefunTag.ORES.isTagged(mat)) {

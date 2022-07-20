@@ -1,16 +1,15 @@
 package io.github.thebusybiscuit.slimefun4.core.commands.subcommands;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.attributes.Rechargeable;
 import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * {@link ChargeCommand} adds an in game command which charges any {@link Rechargeable}
@@ -33,14 +32,12 @@ class ChargeCommand extends SubCommand {
 
     @Override
     public void onExecute(CommandSender sender, String[] args) {
-        if (sender instanceof Player) {
+        if (sender instanceof Player player) {
             if (sender.hasPermission("slimefun.command.charge")) {
-                Player p = (Player) sender;
-                ItemStack item = p.getInventory().getItemInMainHand();
+                ItemStack item = player.getInventory().getItemInMainHand();
                 SlimefunItem slimefunItem = SlimefunItem.getByItem(item);
 
-                if (slimefunItem instanceof Rechargeable) {
-                    Rechargeable rechargeableItem = (Rechargeable) slimefunItem;
+                if (slimefunItem instanceof Rechargeable rechargeableItem) {
                     rechargeableItem.setItemCharge(item, rechargeableItem.getMaxItemCharge(item));
                     Slimefun.getLocalization().sendMessage(sender, "commands.charge.charge-success", true);
                 } else {

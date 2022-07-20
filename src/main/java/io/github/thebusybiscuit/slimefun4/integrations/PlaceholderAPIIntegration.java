@@ -1,21 +1,18 @@
 package io.github.thebusybiscuit.slimefun4.integrations;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.api.researches.Research;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * This is our integration for {@link PlaceholderAPI}.
@@ -82,8 +79,8 @@ class PlaceholderAPIIntegration extends PlaceholderExpansion {
             if (profile.isPresent()) {
                 Stream<Research> stream = profile.get().getResearches().stream();
                 return String.valueOf(stream.mapToInt(Research::getCost).sum());
-            } else if (p instanceof Player) {
-                return getProfilePlaceholder((Player) p);
+            } else if (p instanceof Player player) {
+                return getProfilePlaceholder(player);
             }
         }
 
@@ -93,8 +90,8 @@ class PlaceholderAPIIntegration extends PlaceholderExpansion {
             if (profile.isPresent()) {
                 Set<Research> set = profile.get().getResearches();
                 return String.valueOf(set.size());
-            } else if (p instanceof Player) {
-                return getProfilePlaceholder((Player) p);
+            } else if (p instanceof Player player) {
+                return getProfilePlaceholder(player);
             }
         }
 
@@ -108,8 +105,8 @@ class PlaceholderAPIIntegration extends PlaceholderExpansion {
             if (profile.isPresent()) {
                 Set<Research> set = profile.get().getResearches();
                 return String.valueOf(Math.round(((set.size() * 100.0F) / Slimefun.getRegistry().getResearches().size()) * 100.0F) / 100.0F);
-            } else if (p instanceof Player) {
-                return getProfilePlaceholder((Player) p);
+            } else if (p instanceof Player player) {
+                return getProfilePlaceholder(player);
             }
         }
 
@@ -118,8 +115,8 @@ class PlaceholderAPIIntegration extends PlaceholderExpansion {
 
             if (profile.isPresent()) {
                 return profile.get().getTitle();
-            } else if (p instanceof Player) {
-                return getProfilePlaceholder((Player) p);
+            } else if (p instanceof Player player) {
+                return getProfilePlaceholder(player);
             }
         }
 
@@ -131,8 +128,7 @@ class PlaceholderAPIIntegration extends PlaceholderExpansion {
             return Slimefun.getProfiler().getTime();
         }
 
-        if (isPlaceholder(p, false, params, "language") && p instanceof Player) {
-            Player player = (Player) p;
+        if (isPlaceholder(p, false, params, "language") && p instanceof Player player) {
             return Slimefun.getLocalization().getLanguage(player).getName(player);
         }
 

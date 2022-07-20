@@ -1,5 +1,17 @@
 package io.github.thebusybiscuit.slimefun4.core.services.profiler;
 
+import io.github.bakedlibs.dough.common.ChatColors;
+import io.github.thebusybiscuit.slimefun4.core.services.profiler.inspectors.PlayerPerformanceInspector;
+import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Content;
+import net.md_5.bungee.api.chat.hover.content.Text;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -7,20 +19,6 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import io.github.bakedlibs.dough.common.ChatColors;
-import io.github.thebusybiscuit.slimefun4.core.services.profiler.inspectors.PlayerPerformanceInspector;
-import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
-import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
-
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Content;
-import net.md_5.bungee.api.chat.hover.content.Text;
 
 class PerformanceSummary {
 
@@ -95,9 +93,9 @@ class PerformanceSummary {
         List<Entry<String, Long>> results = stream.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).collect(Collectors.toList());
         String prefix = count + " " + name + (count != 1 ? 's' : "");
 
-        if (inspector instanceof PlayerPerformanceInspector) {
+        if (inspector instanceof PlayerPerformanceInspector playerPerformanceInspector) {
             TextComponent component = summarizeAsTextComponent(count, prefix, results, formatter);
-            ((PlayerPerformanceInspector) inspector).sendMessage(component);
+            playerPerformanceInspector.sendMessage(component);
         } else {
             String text = summarizeAsString(inspector, count, prefix, results, formatter);
             inspector.sendMessage(text);

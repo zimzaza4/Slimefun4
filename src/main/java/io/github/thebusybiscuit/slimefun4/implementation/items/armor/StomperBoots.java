@@ -1,8 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.armor;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.bakedlibs.dough.protection.Interaction;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -18,12 +21,8 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import io.github.bakedlibs.dough.protection.Interaction;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * The Boots of the Stomper are boots which damage nearby enemies whenever the {@link Player}
@@ -51,7 +50,7 @@ public class StomperBoots extends SlimefunItem {
         player.setVelocity(new Vector(0, 0.7, 0));
 
         for (Entity entity : player.getNearbyEntities(4, 4, 4)) {
-            if (entity instanceof LivingEntity && canPush(player, (LivingEntity) entity)) {
+            if (entity instanceof LivingEntity livingEntity && canPush(player, livingEntity)) {
                 Vector velocity = getShockwave(player.getLocation(), entity.getLocation());
                 entity.setVelocity(velocity);
 
@@ -61,7 +60,7 @@ public class StomperBoots extends SlimefunItem {
                     Bukkit.getPluginManager().callEvent(event);
 
                     if (!event.isCancelled()) {
-                        ((LivingEntity) entity).damage(event.getDamage());
+                        livingEntity.damage(event.getDamage());
                     }
                 }
             }

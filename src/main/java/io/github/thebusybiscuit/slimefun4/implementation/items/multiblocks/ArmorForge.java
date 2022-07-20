@@ -1,9 +1,13 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks;
 
-import java.util.List;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemUtils;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.papermc.lib.PaperLib;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -14,14 +18,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.bakedlibs.dough.items.CustomItemStack;
-import io.github.bakedlibs.dough.items.ItemUtils;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import io.papermc.lib.PaperLib;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 public class ArmorForge extends AbstractCraftingTable {
 
@@ -31,12 +29,11 @@ public class ArmorForge extends AbstractCraftingTable {
 
     @Override
     public void onInteract(Player p, Block b) {
-        Block dispenser = b.getRelative(BlockFace.DOWN);
-        BlockState state = PaperLib.getBlockState(dispenser, false).getState();
+        Block possibleDispenser = b.getRelative(BlockFace.DOWN);
+        BlockState state = PaperLib.getBlockState(possibleDispenser, false).getState();
 
-        if (state instanceof Dispenser) {
-            Dispenser disp = (Dispenser) state;
-            Inventory inv = disp.getInventory();
+        if (state instanceof Dispenser dispenser) {
+            Inventory inv = dispenser.getInventory();
             List<ItemStack[]> inputs = RecipeType.getRecipeInputList(this);
 
             for (int i = 0; i < inputs.size(); i++) {
@@ -44,7 +41,7 @@ public class ArmorForge extends AbstractCraftingTable {
                     ItemStack output = RecipeType.getRecipeOutputList(this, inputs.get(i)).clone();
 
                     if (SlimefunUtils.canPlayerUseItem(p, output, true)) {
-                        craft(p, output, inv, dispenser);
+                        craft(p, output, inv, possibleDispenser);
                     }
 
                     return;

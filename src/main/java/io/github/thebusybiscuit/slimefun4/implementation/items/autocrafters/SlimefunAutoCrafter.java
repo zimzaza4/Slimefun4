@@ -1,9 +1,15 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.autocrafters;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.tasks.AsyncRecipeChoiceTask;
+import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import io.papermc.lib.PaperLib;
+import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,17 +22,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import io.github.bakedlibs.dough.items.CustomItemStack;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.tasks.AsyncRecipeChoiceTask;
-import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
-import io.papermc.lib.PaperLib;
-
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * This extension of the {@link AbstractAutoCrafter} allows you to implement any
@@ -60,9 +58,9 @@ public class SlimefunAutoCrafter extends AbstractAutoCrafter {
 
         BlockState state = PaperLib.getBlockState(b, false).getState();
 
-        if (state instanceof Skull) {
+        if (state instanceof Skull skull) {
             // Read the stored value from persistent data storage
-            PersistentDataContainer container = ((Skull) state).getPersistentDataContainer();
+            PersistentDataContainer container = skull.getPersistentDataContainer();
             String value = container.get(recipeStorageKey, PersistentDataType.STRING);
             SlimefunItem item = SlimefunItem.getById(value);
 

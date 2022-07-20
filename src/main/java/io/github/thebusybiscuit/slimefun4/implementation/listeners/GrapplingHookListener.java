@@ -1,36 +1,26 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.tools.GrapplingHook;
 import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityPortalEnterEvent;
-import org.bukkit.event.entity.PlayerLeashEntityEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.items.tools.GrapplingHook;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.*;
 
 /**
  * This {@link Listener} is responsible for the mechanics behind the {@link GrapplingHook}.
@@ -61,8 +51,8 @@ public class GrapplingHookListener implements Listener {
             return;
         }
 
-        if (e.getDamager() instanceof Arrow) {
-            handleGrapplingHook((Arrow) e.getDamager());
+        if (e.getDamager() instanceof Arrow arrow) {
+            handleGrapplingHook(arrow);
         }
     }
 
@@ -73,8 +63,8 @@ public class GrapplingHookListener implements Listener {
         }
 
         Slimefun.runSync(() -> {
-            if (e.getEntity() instanceof Arrow) {
-                handleGrapplingHook((Arrow) e.getEntity());
+            if (e.getEntity() instanceof Arrow arrow) {
+                handleGrapplingHook(arrow);
             }
         }, 2L);
     }
@@ -86,8 +76,8 @@ public class GrapplingHookListener implements Listener {
         }
 
         // This is called when the arrow shoots off a painting or an item frame
-        if (e.getRemover() instanceof Arrow) {
-            handleGrapplingHook((Arrow) e.getRemover());
+        if (e.getRemover() instanceof Arrow arrow) {
+            handleGrapplingHook(arrow);
         }
     }
 
@@ -130,8 +120,8 @@ public class GrapplingHookListener implements Listener {
             return;
         }
 
-        if (e.getEntity() instanceof Arrow) {
-            handleGrapplingHook((Arrow) e.getEntity());
+        if (e.getEntity() instanceof Arrow arrow) {
+            handleGrapplingHook(arrow);
         }
     }
 
@@ -153,9 +143,8 @@ public class GrapplingHookListener implements Listener {
     }
 
     private void handleGrapplingHook(@Nullable Arrow arrow) {
-        if (arrow != null && arrow.isValid() && arrow.getShooter() instanceof Player) {
-            Player p = (Player) arrow.getShooter();
-            GrapplingHookEntity hook = activeHooks.get(p.getUniqueId());
+        if (arrow != null && arrow.isValid() && arrow.getShooter() instanceof Player player) {
+            GrapplingHookEntity hook = activeHooks.get(player.getUniqueId());
 
             if (hook != null) {
                 Location target = arrow.getLocation();
@@ -163,14 +152,14 @@ public class GrapplingHookListener implements Listener {
 
                 Vector velocity = new Vector(0.0, 0.2, 0.0);
 
-                if (p.getLocation().distance(target) < 3.0) {
-                    if (target.getY() <= p.getLocation().getY()) {
-                        velocity = target.toVector().subtract(p.getLocation().toVector());
+                if (player.getLocation().distance(target) < 3.0) {
+                    if (target.getY() <= player.getLocation().getY()) {
+                        velocity = target.toVector().subtract(player.getLocation().toVector());
                     }
                 } else {
-                    Location l = p.getLocation();
+                    Location l = player.getLocation();
                     l.setY(l.getY() + 0.5);
-                    p.teleport(l);
+                    player.teleport(l);
 
                     double g = -0.08;
                     double d = target.distance(l);
@@ -179,16 +168,16 @@ public class GrapplingHookListener implements Listener {
                     double vY = (1.0 + 0.04 * t) * (target.getY() - l.getY()) / t - 0.5D * g * t;
                     double vZ = (1.0 + 0.08 * t) * (target.getZ() - l.getZ()) / t;
 
-                    velocity = p.getVelocity();
+                    velocity = player.getVelocity();
                     velocity.setX(vX);
                     velocity.setY(vY);
                     velocity.setZ(vZ);
                 }
 
-                p.setVelocity(velocity);
+                player.setVelocity(velocity);
 
                 hook.remove();
-                Slimefun.runSync(() -> activeHooks.remove(p.getUniqueId()), 20L);
+                Slimefun.runSync(() -> activeHooks.remove(player.getUniqueId()), 20L);
             }
         }
     }

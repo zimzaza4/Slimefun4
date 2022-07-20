@@ -1,24 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.blocks;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.Tag;
-import org.bukkit.World.Environment;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.Levelled;
-import org.bukkit.block.data.Waterlogged;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.bakedlibs.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -31,8 +12,24 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
-
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.Tag;
+import org.bukkit.World.Environment;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Levelled;
+import org.bukkit.block.data.Waterlogged;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * The {@link Crucible} is a machine which turns blocks into liquids.
@@ -203,10 +200,9 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
             // Fixes #2903 - Cancel physics update to resolve weird overlapping
             block.setType(water ? Material.WATER : Material.LAVA, false);
         } else {
-            if (water && block.getBlockData() instanceof Waterlogged) {
-                Waterlogged wl = (Waterlogged) block.getBlockData();
-                wl.setWaterlogged(true);
-                block.setBlockData(wl, false);
+            if (water && block.getBlockData() instanceof Waterlogged waterlogged) {
+                waterlogged.setWaterlogged(true);
+                block.setBlockData(waterlogged, false);
                 block.getWorld().playSound(block.getLocation(), Sound.ENTITY_PLAYER_SPLASH, 1F, 1F);
                 return;
             }

@@ -65,41 +65,41 @@ metrics:
   auto-update: false
 
 research-ranks:
-  - Chicken
-  - Cow
-  - Spider
-  - Villager
-  - Beginner
-  - Clumsy Student
-  - Unskilled Student
-  - Incompetent Student
-  - Student
-  - Clumsy Apprentice
-  - Apprentice
-  - Skilled Apprentice
-  - Upcoming Mage
-  - Excellent Mage
-  - Young Magician
-  - Incompetent Magician
-  - Common Magician
-  - Magician
-  - Proficient Magician
-  - Skilled Magician
-  - Accustomed Magician
-  - Great Magician
-  - Clumsy Wizard
-  - Wizard
-  - Common Wizard
-  - Skilled Wizard
-  - Great Wizard
-  - Impressive Wizard
-  - Young Master
-  - Clumsy Master
-  - Upcoming Master
-  - Competent Master
-  - Master
-  - Skilled Master
-  - Excellent Master
-  - Great Master
-  - Proficient Master
-  - The chosen One
+  - 小鸡
+  - 牛牛君
+  - 蜘蛛
+  - 村民
+  - 开拓者
+  - 童生
+  - 实习生
+  - 合格生
+  - 学生
+  - 笨拙学徒
+  - 学徒
+  - 熟练学徒
+  - 法师学徒
+  - 杰出法师
+  - 年轻魔术师
+  - 笨拙魔术师
+  - 普通魔术师
+  - 魔术师
+  - 熟练魔术师
+  - 特技魔术师
+  - 惯用魔术师
+  - 杰出魔术师
+  - 笨拙巫师
+  - 巫师
+  - 普通巫师 
+  - 特技巫师
+  - 杰出巫师
+  - 卓越巫师
+  - 年轻大师
+  - 笨拙大师
+  - 实习大师
+  - 合格大师
+  - 大师
+  - 特技大师
+  - 杰出大师
+  - 卓越大师
+  - 精通大师
+  - 天选之子

@@ -1,19 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.food;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -23,6 +9,18 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunIte
 import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.Cooler;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.CoolerListener;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents a {@link SlimefunItem} that can be stored inside
@@ -49,8 +47,8 @@ public class Juice extends SimpleSlimefunItem<ItemConsumptionHandler> {
 
         ItemMeta meta = item.getItemMeta();
 
-        if (meta instanceof PotionMeta) {
-            effects = ((PotionMeta) meta).getCustomEffects();
+        if (meta instanceof PotionMeta potionMeta) {
+            effects = potionMeta.getCustomEffects();
         } else {
             effects = new ArrayList<>();
         }

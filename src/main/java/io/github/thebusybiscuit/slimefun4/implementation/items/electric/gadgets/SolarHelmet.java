@@ -1,13 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -16,6 +8,13 @@ import io.github.thebusybiscuit.slimefun4.api.items.settings.DoubleRangeSetting;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.Rechargeable;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.ArmorTask;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * The {@link SolarHelmet} can be worn by {@link Player}.
@@ -67,8 +66,8 @@ public class SolarHelmet extends SlimefunItem {
     private void recharge(@Nullable ItemStack item) {
         SlimefunItem sfItem = SlimefunItem.getByItem(item);
 
-        if (sfItem instanceof Rechargeable) {
-            ((Rechargeable) sfItem).addItemCharge(item, charge.getValue().floatValue());
+        if (sfItem instanceof Rechargeable rechargeable) {
+            rechargeable.addItemCharge(item, charge.getValue().floatValue());
         }
     }
 

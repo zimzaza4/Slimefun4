@@ -1,5 +1,16 @@
 package io.github.thebusybiscuit.slimefun4.utils.tags;
 
+import com.google.gson.*;
+import io.github.bakedlibs.dough.common.CommonPatterns;
+import io.github.thebusybiscuit.slimefun4.api.exceptions.TagMisconfigurationException;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.JsonUtils;
+import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
+import org.apache.commons.lang.Validate;
+import org.bukkit.*;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,28 +21,6 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
-import org.bukkit.Keyed;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Tag;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-
-import io.github.bakedlibs.dough.common.CommonPatterns;
-import io.github.thebusybiscuit.slimefun4.api.exceptions.TagMisconfigurationException;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.utils.JsonUtils;
-import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
 
 /**
  * The {@link TagParser} is responsible for parsing a JSON input into a {@link SlimefunTag}.
@@ -106,7 +95,7 @@ public class TagParser implements Keyed {
                 JsonArray values = child.getAsJsonArray();
 
                 for (JsonElement element : values) {
-                    if (element instanceof JsonPrimitive && ((JsonPrimitive) element).isString()) {
+                    if (element instanceof JsonPrimitive primitive && primitive.isString()) {
                         // Strings will be parsed directly
                         parsePrimitiveValue(element.getAsString(), materials, tags, true);
                     } else if (element instanceof JsonObject) {
@@ -182,7 +171,7 @@ public class TagParser implements Keyed {
         JsonElement required = entry.get("required");
 
         // Check if the entry contains elements of the correct type
-        if (id instanceof JsonPrimitive && ((JsonPrimitive) id).isString() && required instanceof JsonPrimitive && ((JsonPrimitive) required).isBoolean()) {
+        if (id instanceof JsonPrimitive idJson && idJson.isString() && required instanceof JsonPrimitive requiredJson && requiredJson.isBoolean()) {
             boolean isRequired = required.getAsBoolean();
 
             /**

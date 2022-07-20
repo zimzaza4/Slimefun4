@@ -1,9 +1,14 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks;
 
-import java.util.List;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.papermc.lib.PaperLib;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -15,15 +20,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.bakedlibs.dough.items.CustomItemStack;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import io.papermc.lib.PaperLib;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 public class MagicWorkbench extends AbstractCraftingTable {
 
@@ -34,18 +32,17 @@ public class MagicWorkbench extends AbstractCraftingTable {
 
     @Override
     public void onInteract(Player p, Block b) {
-        Block dispenser = locateDispenser(b);
+        Block possibleDispener = locateDispenser(b);
 
-        if (dispenser == null) {
+        if (possibleDispener == null) {
             // How even...
             return;
         }
 
-        BlockState state = PaperLib.getBlockState(dispenser, false).getState();
+        BlockState state = PaperLib.getBlockState(possibleDispener, false).getState();
 
-        if (state instanceof Dispenser) {
-            Dispenser disp = (Dispenser) state;
-            Inventory inv = disp.getInventory();
+        if (state instanceof Dispenser dispenser) {
+            Inventory inv = dispenser.getInventory();
             List<ItemStack[]> inputs = RecipeType.getRecipeInputList(this);
 
             for (int i = 0; i < inputs.size(); i++) {
@@ -53,7 +50,7 @@ public class MagicWorkbench extends AbstractCraftingTable {
                     ItemStack output = RecipeType.getRecipeOutputList(this, inputs.get(i)).clone();
 
                     if (SlimefunUtils.canPlayerUseItem(p, output, true)) {
-                        craft(inv, dispenser, p, b, output);
+                        craft(inv, possibleDispener, p, b, output);
                     }
 
                     return;
@@ -76,8 +73,8 @@ public class MagicWorkbench extends AbstractCraftingTable {
         if (outputInv != null) {
             SlimefunItem sfItem = SlimefunItem.getByItem(output);
 
-            if (sfItem instanceof SlimefunBackpack) {
-                upgradeBackpack(p, inv, (SlimefunBackpack) sfItem, output);
+            if (sfItem instanceof SlimefunBackpack backpack) {
+                upgradeBackpack(p, inv, backpack, output);
             }
 
             for (int j = 0; j < 9; j++) {

@@ -1,10 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import javax.annotation.Nonnull;
-
-import io.github.bakedlibs.dough.data.persistent.PersistentDataAPI;
+import io.github.thebusybiscuit.slimefun4.api.events.CoolerFeedPlayerEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.Cooler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
+import io.github.thebusybiscuit.slimefun4.implementation.items.food.Juice;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -16,16 +17,10 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 
-import io.github.thebusybiscuit.slimefun4.api.events.CoolerFeedPlayerEvent;
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.Cooler;
-import io.github.thebusybiscuit.slimefun4.implementation.items.food.Juice;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * This {@link Listener} listens for a {@link FoodLevelChangeEvent} or an {@link EntityDamageEvent} for starvation
@@ -45,7 +40,8 @@ public class CoolerListener implements Listener {
     private final Slimefun plugin;
     private final Cooler cooler;
 
-    public CoolerListener(@Nonnull Slimefun plugin, @Nonnull Cooler cooler) {
+    @ParametersAreNonnullByDefault
+    public CoolerListener(Slimefun plugin, Cooler cooler) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
         this.plugin = plugin;
@@ -54,19 +50,15 @@ public class CoolerListener implements Listener {
 
     @EventHandler
     public void onHungerLoss(FoodLevelChangeEvent e) {
-        if (e.getEntity() instanceof Player) {
-            Player p = (Player) e.getEntity();
-
-            if (e.getFoodLevel() < p.getFoodLevel()) {
-                checkAndConsume(p);
-            }
+        if (e.getEntity() instanceof Player player && e.getFoodLevel() < player.getFoodLevel()) {
+            checkAndConsume(player);
         }
     }
 
     @EventHandler
     public void onHungerDamage(EntityDamageEvent e) {
-        if (e.getEntity() instanceof Player && e.getCause() == DamageCause.STARVATION) {
-            checkAndConsume((Player) e.getEntity());
+        if (e.getEntity() instanceof Player player && e.getCause() == DamageCause.STARVATION) {
+            checkAndConsume(player);
         }
     }
 

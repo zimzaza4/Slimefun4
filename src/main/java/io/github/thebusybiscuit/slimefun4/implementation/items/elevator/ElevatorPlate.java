@@ -1,23 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.elevator;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.bakedlibs.dough.common.ChatColors;
 import io.github.bakedlibs.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -31,9 +13,20 @@ import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.WorldUtils;
 import io.papermc.lib.PaperLib;
-
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.*;
 
 /**
  * The {@link ElevatorPlate} is a quick way of teleportation.
@@ -68,8 +61,7 @@ public class ElevatorPlate extends SimpleSlimefunItem<BlockUseHandler> {
         addItemHandler(onPlace());
     }
 
-    @Nonnull
-    private BlockPlaceHandler onPlace() {
+    private @Nonnull BlockPlaceHandler onPlace() {
         return new BlockPlaceHandler(false) {
 
             @Override
@@ -81,9 +73,8 @@ public class ElevatorPlate extends SimpleSlimefunItem<BlockUseHandler> {
         };
     }
 
-    @Nonnull
     @Override
-    public BlockUseHandler getItemHandler() {
+    public @Nonnull BlockUseHandler getItemHandler() {
         return e -> {
             Block b = e.getClickedBlock().get();
 
@@ -93,8 +84,7 @@ public class ElevatorPlate extends SimpleSlimefunItem<BlockUseHandler> {
         };
     }
 
-    @Nonnull
-    public List<ElevatorFloor> getFloors(@Nonnull Block b) {
+    public @Nonnull List<ElevatorFloor> getFloors(@Nonnull Block b) {
         LinkedList<ElevatorFloor> floors = new LinkedList<>();
         int index = 0;
 
@@ -209,7 +199,7 @@ public class ElevatorPlate extends SimpleSlimefunItem<BlockUseHandler> {
 
     @ParametersAreNonnullByDefault
     public void openEditor(Player p, Block b) {
-        ChestMenu menu = new ChestMenu("电梯设置");
+        ChestMenu menu = new ChestMenu(Slimefun.getLocalization().getMessage(p, "machines.ELEVATOR.editor-title"));
 
         menu.addItem(4, new CustomItemStack(Material.NAME_TAG, "&7楼层名 &e(单击编辑)", "", ChatColor.WHITE + ChatColors.color(BlockStorage.getLocationInfo(b.getLocation(), DATA_KEY))));
         menu.addMenuClickHandler(4, (pl, slot, item, action) -> {

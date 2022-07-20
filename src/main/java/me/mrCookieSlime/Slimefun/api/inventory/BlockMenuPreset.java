@@ -1,11 +1,10 @@
 package me.mrCookieSlime.Slimefun.api.inventory;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
+import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -14,12 +13,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
-
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashSet;
+import java.util.Set;
 
 // This class will be deprecated, relocated and rewritten in a future version.
 public abstract class BlockMenuPreset extends ChestMenu {
@@ -233,8 +230,7 @@ public abstract class BlockMenuPreset extends ChestMenu {
             menu.addItem(size - 1, null);
         }
 
-        if (menu instanceof BlockMenu) {
-            BlockMenu blockMenu = (BlockMenu) menu;
+        if (menu instanceof BlockMenu blockMenu) {
             newInstance(blockMenu, blockMenu.getLocation());
         }
 

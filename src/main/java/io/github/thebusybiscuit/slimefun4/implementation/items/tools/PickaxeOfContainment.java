@@ -1,15 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.tools;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.CreatureSpawner;
-import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSpawnReason;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -22,8 +12,16 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.BrokenSpaw
 import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.RepairedSpawner;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.papermc.lib.PaperLib;
-
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.CreatureSpawner;
+import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * The {@link PickaxeOfContainment} is a Pickaxe that allows you to break Spawners.
@@ -61,9 +59,9 @@ public class PickaxeOfContainment extends SimpleSlimefunItem<ToolUseHandler> {
     private @Nonnull ItemStack breakSpawner(@Nonnull Block b) {
         AbstractMonsterSpawner spawner;
 
-        /**
-         * If the spawner's BlockStorage has BlockInfo, then it's not a vanilla spawner
-         * and should not give a broken spawner but a repaired one instead.
+        /*
+          If the spawner's BlockStorage has BlockInfo, then it's not a vanilla spawner
+          and should not give a broken spawner but a repaired one instead.
          */
         if (BlockStorage.hasBlockInfo(b)) {
             spawner = (AbstractMonsterSpawner) SlimefunItems.REPAIRED_SPAWNER.getItem();
@@ -73,8 +71,8 @@ public class PickaxeOfContainment extends SimpleSlimefunItem<ToolUseHandler> {
 
         BlockState state = PaperLib.getBlockState(b, false).getState();
 
-        if (state instanceof CreatureSpawner) {
-            EntityType entityType = ((CreatureSpawner) state).getSpawnedType();
+        if (state instanceof CreatureSpawner creatureSpawner) {
+            EntityType entityType = creatureSpawner.getSpawnedType();
             return spawner.getItemForEntityType(entityType);
         }
 

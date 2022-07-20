@@ -1,9 +1,14 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.blocks;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.handlers.VanillaInventoryDropHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.Smeltery;
+import io.papermc.lib.PaperLib;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -18,16 +23,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.handlers.VanillaInventoryDropHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.Smeltery;
-import io.papermc.lib.PaperLib;
-
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * The {@link IgnitionChamber} is used to re-ignite a {@link Smeltery}.
@@ -116,8 +114,8 @@ public class IgnitionChamber extends SlimefunItem {
             if (block.getType() == Material.DROPPER && BlockStorage.check(block) instanceof IgnitionChamber) {
                 BlockState state = PaperLib.getBlockState(b.getRelative(face), false).getState();
 
-                if (state instanceof Dropper) {
-                    return ((Dropper) state).getInventory();
+                if (state instanceof Dropper dropper) {
+                    return dropper.getInventory();
                 }
             }
         }

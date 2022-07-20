@@ -1,11 +1,13 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.enchanting;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.bakedlibs.dough.inventory.InvUtils;
+import io.github.thebusybiscuit.slimefun4.api.events.AutoDisenchantEvent;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -14,15 +16,10 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 
-import io.github.bakedlibs.dough.inventory.InvUtils;
-import io.github.thebusybiscuit.slimefun4.api.events.AutoDisenchantEvent;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
-import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The {@link AutoDisenchanter}, in contrast to the {@link AutoEnchanter}, removes
@@ -128,12 +125,13 @@ public class AutoDisenchanter extends AbstractEnchantmentMachine {
         book.setItemMeta(bookMeta);
 
         EnchantmentStorageMeta meta = (EnchantmentStorageMeta) book.getItemMeta();
-
+        
+        ItemMeta tempItemMeta = item.getItemMeta();
         for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
-            item.removeEnchantment(entry.getKey());
+            tempItemMeta.removeEnchant(entry.getKey());
             meta.addStoredEnchant(entry.getKey(), entry.getValue(), true);
         }
-
+        item.setItemMeta(tempItemMeta);
         book.setItemMeta(meta);
     }
 

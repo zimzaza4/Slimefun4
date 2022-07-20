@@ -295,11 +295,11 @@ public class PlayerProfile {
         float progress = Math.round(((unlockedResearches.size() * 100.0F) / allResearches) * 100.0F) / 100.0F;
 
         sender.sendMessage("");
-        sender.sendMessage(ChatColors.color("&7Statistics for Player: &b" + name));
+        sender.sendMessage(ChatColors.color("&7玩家研究统计: &b" + name));
         sender.sendMessage("");
-        sender.sendMessage(ChatColors.color("&7Title: " + ChatColor.AQUA + getTitle()));
-        sender.sendMessage(ChatColors.color("&7Research Progress: " + NumberUtils.getColorFromPercentage(progress) + progress + " &r% " + ChatColor.YELLOW + '(' + unlockedResearches.size() + " / " + allResearches + ')'));
-        sender.sendMessage(ChatColors.color("&7Total XP Levels spent: " + ChatColor.AQUA + levels));
+        sender.sendMessage(ChatColors.color("&7研究等级: " + ChatColor.AQUA + getTitle()));
+        sender.sendMessage(ChatColors.color("&7研究进度: " + NumberUtils.getColorFromPercentage(progress) + progress + " &r% " + ChatColor.YELLOW + '(' + unlockedResearches.size() + " / " + allResearches + ')'));
+        sender.sendMessage(ChatColors.color("&7总花费经验等级: " + ChatColor.AQUA + levels));
     }
 
     /**
@@ -413,9 +413,7 @@ public class PlayerProfile {
 
             if (!armorPiece.isPresent()) {
                 setId = null;
-            } else if (armorPiece.get() instanceof ProtectiveArmor) {
-                ProtectiveArmor protectedArmor = (ProtectiveArmor) armorPiece.get();
-
+            } else if (armorPiece.get() instanceof ProtectiveArmor protectedArmor) {
                 if (setId == null && protectedArmor.isFullSetRequired()) {
                     setId = protectedArmor.getArmorSetId();
                 }
@@ -443,7 +441,7 @@ public class PlayerProfile {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof PlayerProfile && uuid.equals(((PlayerProfile) obj).uuid);
+        return obj instanceof PlayerProfile profile && uuid.equals(profile.uuid);
     }
 
     @Override

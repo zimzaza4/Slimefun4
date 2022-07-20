@@ -1,13 +1,9 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.androids.AndroidInstance;
+import io.github.thebusybiscuit.slimefun4.implementation.items.androids.ButcherAndroid;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -19,10 +15,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.items.androids.AndroidInstance;
-import io.github.thebusybiscuit.slimefun4.implementation.items.androids.ButcherAndroid;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * This {@link Listener} handles the collection of drops from an {@link Entity} that was
@@ -49,8 +47,8 @@ public class ButcherAndroidListener implements Listener {
 
                 // Collect any nearby dropped items
                 for (Entity n : e.getEntity().getNearbyEntities(0.5D, 0.5D, 0.5D)) {
-                    if (n instanceof Item && n.isValid() && !SlimefunUtils.hasNoPickupFlag((Item) n)) {
-                        items.add(((Item) n).getItemStack());
+                    if (n instanceof Item item && n.isValid() && !SlimefunUtils.hasNoPickupFlag(item)) {
+                        items.add(item.getItemStack());
                         n.remove();
                     }
                 }

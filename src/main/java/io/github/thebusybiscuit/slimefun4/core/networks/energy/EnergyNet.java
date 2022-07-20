@@ -1,20 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.core.networks.energy;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.LongConsumer;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-
 import io.github.thebusybiscuit.slimefun4.api.ErrorReport;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.network.Network;
@@ -25,9 +10,17 @@ import io.github.thebusybiscuit.slimefun4.core.attributes.HologramOwner;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
-
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.LongConsumer;
 
 /**
  * The {@link EnergyNet} is an implementation of {@link Network} that deals with
@@ -75,16 +68,13 @@ public class EnergyNet extends Network implements HologramOwner {
         if (component == null) {
             return null;
         } else {
-            switch (component.getEnergyComponentType()) {
-                case CONNECTOR:
-                case CAPACITOR:
-                    return NetworkComponent.CONNECTOR;
-                case CONSUMER:
-                case GENERATOR:
-                    return NetworkComponent.TERMINUS;
-                default:
-                    return null;
-            }
+            return switch (component.getEnergyComponentType()) {
+                case CONNECTOR,
+                    CAPACITOR -> NetworkComponent.CONNECTOR;
+                case CONSUMER,
+                    GENERATOR -> NetworkComponent.TERMINUS;
+                default -> null;
+            };
         }
     }
 
@@ -106,10 +96,10 @@ public class EnergyNet extends Network implements HologramOwner {
                     consumers.put(l, component);
                     break;
                 case GENERATOR:
-                    if (component instanceof EnergyNetProvider) {
-                        generators.put(l, (EnergyNetProvider) component);
-                    } else if (component instanceof SlimefunItem) {
-                        ((SlimefunItem) component).warn("This Item is marked as a GENERATOR but does not implement the interface EnergyNetProvider!");
+                    if (component instanceof EnergyNetProvider provider) {
+                        generators.put(l, provider);
+                    } else if (component instanceof SlimefunItem item) {
+                        item.warn("This Item is marked as a GENERATOR but does not implement the interface EnergyNetProvider!");
                     }
                     break;
                 default:
@@ -275,8 +265,8 @@ public class EnergyNet extends Network implements HologramOwner {
     private static EnergyNetComponent getComponent(@Nonnull Location l) {
         SlimefunItem item = BlockStorage.check(l);
 
-        if (item instanceof EnergyNetComponent) {
-            return ((EnergyNetComponent) item);
+        if (item instanceof EnergyNetComponent component) {
+            return component;
         }
 
         return null;

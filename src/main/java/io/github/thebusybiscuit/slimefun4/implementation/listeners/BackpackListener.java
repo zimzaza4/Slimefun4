@@ -128,7 +128,7 @@ public class BackpackListener implements Listener {
                     if (!isAllowed((SlimefunBackpack) backpack, offHandItem)) {
                         e.setCancelled(true);
                     }
-                } else if (!isAllowed((SlimefunBackpack) backpack, e.getCurrentItem())) {
+                } else if (!isAllowed((SlimefunBackpack)backpack, e.getCurrentItem())) {
                     e.setCancelled(true);
                 }
             }

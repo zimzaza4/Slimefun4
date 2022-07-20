@@ -1,11 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.core.services;
 
-import java.util.Optional;
-import java.util.logging.Level;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.papermc.lib.PaperLib;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -19,8 +15,10 @@ import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.papermc.lib.PaperLib;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.logging.Level;
 
 /**
  * The {@link BlockDataService} is similar to the {@link CustomItemDataService},
@@ -72,9 +70,9 @@ public class BlockDataService implements Keyed {
          */
         BlockState state = b.getState();
 
-        if (state instanceof TileState) {
+        if (state instanceof TileState tileState) {
             try {
-                PersistentDataContainer container = ((TileState) state).getPersistentDataContainer();
+                PersistentDataContainer container = tileState.getPersistentDataContainer();
                 container.set(namespacedKey, PersistentDataType.STRING, value);
                 state.update();
             } catch (Exception x) {
@@ -111,8 +109,8 @@ public class BlockDataService implements Keyed {
 
     @Nullable
     private PersistentDataContainer getPersistentDataContainer(@Nonnull BlockState state) {
-        if (state instanceof TileState) {
-            return ((TileState) state).getPersistentDataContainer();
+        if (state instanceof TileState tileState) {
+            return tileState.getPersistentDataContainer();
         } else {
             return null;
         }
@@ -137,31 +135,32 @@ public class BlockDataService implements Keyed {
             return false;
         }
 
-        switch (type) {
-            case PLAYER_HEAD:
-            case PLAYER_WALL_HEAD:
-            case CHEST:
-            case DISPENSER:
-            case BREWING_STAND:
-            case DROPPER:
-            case FURNACE:
-            case BLAST_FURNACE:
-            case HOPPER:
-            case LECTERN:
-            case JUKEBOX:
-            case ENDER_CHEST:
-            case ENCHANTING_TABLE:
-            case DAYLIGHT_DETECTOR:
-            case SMOKER:
-            case BARREL:
-            case SPAWNER:
-            case BEACON:
+        // TODO: Add designated SlimefunTag
+        return switch (type) {
+            case PLAYER_HEAD,
+                PLAYER_WALL_HEAD,
+                CHEST,
+                DISPENSER,
+                BREWING_STAND,
+                DROPPER,
+                FURNACE,
+                BLAST_FURNACE,
+                HOPPER,
+                LECTERN,
+                JUKEBOX,
+                ENDER_CHEST,
+                ENCHANTING_TABLE,
+                DAYLIGHT_DETECTOR,
+                SMOKER,
+                BARREL,
+                SPAWNER,
+                BEACON ->
                 // All of the above Materials are Tile Entities
-                return true;
-            default:
+                true;
+            default ->
                 // Otherwise we assume they're not Tile Entities
-                return false;
-        }
+                false;
+        };
     }
 
 }

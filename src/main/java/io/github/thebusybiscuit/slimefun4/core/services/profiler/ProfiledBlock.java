@@ -1,16 +1,14 @@
 package io.github.thebusybiscuit.slimefun4.core.services.profiler;
 
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
+import io.github.bakedlibs.dough.blocks.BlockPosition;
+import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import io.github.bakedlibs.dough.blocks.BlockPosition;
-import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import javax.annotation.Nonnull;
+import java.util.Objects;
 
 /**
  * This represents an entry in our {@link SlimefunProfiler}.
@@ -143,9 +141,8 @@ final class ProfiledBlock {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof ProfiledBlock) {
-            ProfiledBlock block = (ProfiledBlock) obj;
-            return position == block.position && Objects.equals(world, block.world);
+        if (obj instanceof ProfiledBlock profiledBlock) {
+            return position == profiledBlock.position && Objects.equals(world, profiledBlock.world);
         }
 
         return false;

@@ -1,21 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Dispenser;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.bakedlibs.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -26,6 +10,20 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.papermc.lib.PaperLib;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Dispenser;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class GrindStone extends MultiBlockMachine {
 
@@ -106,18 +104,17 @@ public class GrindStone extends MultiBlockMachine {
 
     @Override
     public void onInteract(Player p, Block b) {
-        Block dispBlock = b.getRelative(BlockFace.DOWN);
-        BlockState state = PaperLib.getBlockState(dispBlock, false).getState();
+        Block possibleDispenser = b.getRelative(BlockFace.DOWN);
+        BlockState state = PaperLib.getBlockState(possibleDispenser, false).getState();
 
-        if (state instanceof Dispenser) {
-            Dispenser disp = (Dispenser) state;
-            Inventory inv = disp.getInventory();
+        if (state instanceof Dispenser dispenser) {
+            Inventory inv = dispenser.getInventory();
 
             for (ItemStack current : inv.getContents()) {
                 for (ItemStack convert : RecipeType.getRecipeInputs(this)) {
                     if (convert != null && SlimefunUtils.isItemSimilar(current, convert, true)) {
                         ItemStack output = RecipeType.getRecipeOutput(this, convert);
-                        Inventory outputInv = findOutputInventory(output, dispBlock, inv);
+                        Inventory outputInv = findOutputInventory(output, possibleDispenser, inv);
 
                         if (outputInv != null) {
                             ItemStack removing = current.clone();

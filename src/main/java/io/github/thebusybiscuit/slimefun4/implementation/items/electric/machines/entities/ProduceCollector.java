@@ -1,26 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.entities;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Predicate;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.apache.commons.lang.Validate;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Ageable;
-import org.bukkit.entity.Cow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Goat;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.MushroomCow;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.bakedlibs.dough.inventory.InvUtils;
 import io.github.bakedlibs.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
@@ -33,12 +12,25 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+import org.apache.commons.lang.Validate;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * The {@link ProduceCollector} allows you to collect produce from animals.
@@ -75,8 +67,8 @@ public class ProduceCollector extends AContainer implements RecipeDisplayItem {
 
         // Mushroom Stew from Mooshrooms
         addProduce(new AnimalProduce(new ItemStack(Material.BOWL), new ItemStack(Material.MUSHROOM_STEW), n -> {
-            if (n instanceof MushroomCow) {
-                return ((MushroomCow) n).isAdult();
+            if (n instanceof MushroomCow mushroomCow) {
+                return mushroomCow.isAdult();
             } else {
                 return false;
             }
@@ -158,8 +150,8 @@ public class ProduceCollector extends AContainer implements RecipeDisplayItem {
 
     @ParametersAreNonnullByDefault
     private boolean isValidAnimal(Entity n, Predicate<LivingEntity> predicate) {
-        if (n instanceof LivingEntity) {
-            return predicate.test((LivingEntity) n);
+        if (n instanceof LivingEntity livingEntity) {
+            return predicate.test(livingEntity);
         } else {
             return false;
         }

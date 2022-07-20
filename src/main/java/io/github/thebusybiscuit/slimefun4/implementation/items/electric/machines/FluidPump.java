@@ -1,22 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines;
 
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Levelled;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.bakedlibs.dough.blocks.Vein;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -30,7 +13,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunIte
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
-
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu.AdvancedMenuClickHandler;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
@@ -39,9 +21,24 @@ import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Levelled;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * This machine collects liquids from the {@link World} and puts them
@@ -227,16 +224,14 @@ public class FluidPump extends SimpleSlimefunItem<BlockTicker> implements Invent
     }
 
     private @Nonnull ItemStack getFilledBucket(@Nonnull Block fluid) {
-        switch (fluid.getType()) {
-            case LAVA:
-                return new ItemStack(Material.LAVA_BUCKET);
-            case WATER:
-            case BUBBLE_COLUMN:
-                return new ItemStack(Material.WATER_BUCKET);
-            default:
+        return switch (fluid.getType()) {
+            case LAVA -> new ItemStack(Material.LAVA_BUCKET);
+            case WATER,
+                BUBBLE_COLUMN -> new ItemStack(Material.WATER_BUCKET);
+            default ->
                 // Fallback for any new liquids
-                return new ItemStack(Material.BUCKET);
-        }
+                new ItemStack(Material.BUCKET);
+        };
     }
 
     /**
@@ -251,9 +246,8 @@ public class FluidPump extends SimpleSlimefunItem<BlockTicker> implements Invent
         if (block.isLiquid()) {
             BlockData data = block.getBlockData();
 
-            if (data instanceof Levelled) {
+            if (data instanceof Levelled levelled) {
                 // Check if this is a full block.
-                Levelled levelled = (Levelled) data;
                 return levelled.getLevel() == 0;
             }
         }

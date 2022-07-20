@@ -1,16 +1,14 @@
 package io.github.thebusybiscuit.slimefun4.api.items;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.function.Consumer;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import io.github.bakedlibs.dough.common.CommonPatterns;
+import io.github.bakedlibs.dough.items.ItemMetaSnapshot;
+import io.github.bakedlibs.dough.skins.PlayerHead;
+import io.github.bakedlibs.dough.skins.PlayerSkin;
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
+import io.github.thebusybiscuit.slimefun4.api.exceptions.PrematureCodeException;
+import io.github.thebusybiscuit.slimefun4.api.exceptions.WrongItemStackException;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -23,15 +21,11 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import io.github.bakedlibs.dough.common.CommonPatterns;
-import io.github.bakedlibs.dough.items.ItemMetaSnapshot;
-import io.github.bakedlibs.dough.skins.PlayerHead;
-import io.github.bakedlibs.dough.skins.PlayerSkin;
-import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
-import io.github.thebusybiscuit.slimefun4.api.exceptions.PrematureCodeException;
-import io.github.thebusybiscuit.slimefun4.api.exceptions.WrongItemStackException;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * The {@link SlimefunItemStack} functions as the base for any
@@ -128,12 +122,12 @@ public class SlimefunItemStack extends ItemStack {
                 im.setLore(lines);
             }
 
-            if (im instanceof LeatherArmorMeta) {
-                ((LeatherArmorMeta) im).setColor(color);
+            if (im instanceof LeatherArmorMeta leatherArmorMeta) {
+                leatherArmorMeta.setColor(color);
             }
 
-            if (im instanceof PotionMeta) {
-                ((PotionMeta) im).setColor(color);
+            if (im instanceof PotionMeta potionMeta) {
+                potionMeta.setColor(color);
             }
         });
     }
@@ -154,9 +148,9 @@ public class SlimefunItemStack extends ItemStack {
                 im.setLore(lines);
             }
 
-            if (im instanceof PotionMeta) {
-                ((PotionMeta) im).setColor(color);
-                ((PotionMeta) im).addCustomEffect(effect, true);
+            if (im instanceof PotionMeta potionMeta) {
+                potionMeta.setColor(color);
+                potionMeta.addCustomEffect(effect, true);
 
                 if (effect.getType().equals(PotionEffectType.SATURATION)) {
                     im.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);

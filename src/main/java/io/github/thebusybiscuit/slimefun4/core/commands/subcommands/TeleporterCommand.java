@@ -1,16 +1,15 @@
 package io.github.thebusybiscuit.slimefun4.core.commands.subcommands;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
+import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
-import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 class TeleporterCommand extends SubCommand {
 
@@ -21,18 +20,17 @@ class TeleporterCommand extends SubCommand {
 
     @Override
     public void onExecute(CommandSender sender, String[] args) {
-        if (sender instanceof Player) {
+        if (sender instanceof Player player) {
             if (sender.hasPermission("slimefun.command.teleporter")) {
                 if (args.length == 1) {
-                    Player p = (Player) sender;
-                    Slimefun.getGPSNetwork().getTeleportationManager().openTeleporterGUI(p, p.getUniqueId(), p.getLocation().getBlock().getRelative(BlockFace.DOWN), 999999999);
+                    Slimefun.getGPSNetwork().getTeleportationManager().openTeleporterGUI(player, player.getUniqueId(), player.getLocation().getBlock().getRelative(BlockFace.DOWN), 999999999);
                 } else if (args.length == 2) {
 
                     @SuppressWarnings("deprecation")
-                    OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
+                    OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(args[1]);
 
-                    if (player.getName() != null) {
-                        Slimefun.getGPSNetwork().getTeleportationManager().openTeleporterGUI((Player) sender, player.getUniqueId(), ((Player) sender).getLocation().getBlock().getRelative(BlockFace.DOWN), 999999999);
+                    if (targetPlayer.getName() != null) {
+                        Slimefun.getGPSNetwork().getTeleportationManager().openTeleporterGUI(player, targetPlayer.getUniqueId(), player.getLocation().getBlock().getRelative(BlockFace.DOWN), 999999999);
                     } else {
                         Slimefun.getLocalization().sendMessage(sender, "messages.unknown-player", msg -> msg.replace("%player%", args[1]));
                     }

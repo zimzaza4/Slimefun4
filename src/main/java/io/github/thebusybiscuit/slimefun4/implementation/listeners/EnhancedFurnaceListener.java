@@ -1,9 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.EnhancedFurnace;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
+import io.papermc.lib.PaperLib;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
@@ -15,13 +17,8 @@ import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.EnhancedFurnace;
-import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
-import io.papermc.lib.PaperLib;
-
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import javax.annotation.Nonnull;
+import java.util.Optional;
 
 /**
  * This {@link Listener} is responsible for enforcing the "fuel efficiency" and "fortune" policies
@@ -47,9 +44,9 @@ public class EnhancedFurnaceListener implements Listener {
 
         SlimefunItem furnace = BlockStorage.check(e.getBlock());
 
-        if (furnace instanceof EnhancedFurnace && ((EnhancedFurnace) furnace).getFuelEfficiency() > 0) {
+        if (furnace instanceof EnhancedFurnace enhancedFurnace && enhancedFurnace.getFuelEfficiency() > 0) {
             int burnTime = e.getBurnTime();
-            int newBurnTime = ((EnhancedFurnace) furnace).getFuelEfficiency() * burnTime;
+            int newBurnTime = enhancedFurnace.getFuelEfficiency() * burnTime;
 
             e.setBurnTime(Math.min(newBurnTime, Short.MAX_VALUE - 1));
         }
@@ -64,14 +61,14 @@ public class EnhancedFurnaceListener implements Listener {
 
         SlimefunItem sfItem = BlockStorage.check(e.getBlock());
 
-        if (sfItem instanceof EnhancedFurnace) {
+        if (sfItem instanceof EnhancedFurnace enhancedFurnace) {
             BlockState state = PaperLib.getBlockState(e.getBlock(), false).getState();
 
-            if (state instanceof Furnace) {
-                FurnaceInventory inventory = ((Furnace) state).getInventory();
+            if (state instanceof Furnace furnace) {
+                FurnaceInventory inventory = furnace.getInventory();
 
                 boolean multiplier = SlimefunTag.ENHANCED_FURNACE_LUCK_MATERIALS.isTagged(inventory.getSmelting().getType());
-                int amount = multiplier ? ((EnhancedFurnace) sfItem).getRandomOutputAmount() : 1;
+                int amount = multiplier ? enhancedFurnace.getRandomOutputAmount() : 1;
                 Optional<ItemStack> result = Slimefun.getMinecraftRecipeService().getFurnaceOutput(inventory.getSmelting());
 
                 if (result.isPresent()) {

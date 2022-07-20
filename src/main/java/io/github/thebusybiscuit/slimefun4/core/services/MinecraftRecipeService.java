@@ -1,30 +1,20 @@
 package io.github.thebusybiscuit.slimefun4.core.services;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import io.github.bakedlibs.dough.recipes.MinecraftRecipe;
+import io.github.bakedlibs.dough.recipes.RecipeSnapshot;
+import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
-import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.*;
 import org.bukkit.plugin.Plugin;
 
-import io.github.bakedlibs.dough.recipes.MinecraftRecipe;
-import io.github.bakedlibs.dough.recipes.RecipeSnapshot;
-import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * This Service is responsible for accessing a {@link RecipeSnapshot}.
@@ -99,8 +89,7 @@ public class MinecraftRecipeService {
      *
      * @return An {@link Optional} describing the furnace output of the given {@link ItemStack}
      */
-    @Nonnull
-    public Optional<ItemStack> getFurnaceOutput(@Nullable ItemStack input) {
+    public @Nonnull Optional<ItemStack> getFurnaceOutput(@Nullable ItemStack input) {
         if (snapshot == null || input == null) {
             return Optional.empty();
         }
@@ -132,18 +121,17 @@ public class MinecraftRecipeService {
      *
      * @return An Array of {@link RecipeChoice} representing the shape of this {@link Recipe}
      */
-    @Nonnull
-    public RecipeChoice[] getRecipeShape(@Nonnull Recipe recipe) {
+    public @Nonnull RecipeChoice[] getRecipeShape(@Nonnull Recipe recipe) {
         Validate.notNull(recipe, "Recipe must not be null!");
 
-        if (recipe instanceof ShapedRecipe) {
+        if (recipe instanceof ShapedRecipe shapedRecipe) {
             List<RecipeChoice> choices = new LinkedList<>();
 
-            for (String row : ((ShapedRecipe) recipe).getShape()) {
+            for (String row : shapedRecipe.getShape()) {
                 int columns = row.toCharArray().length;
 
                 for (char key : row.toCharArray()) {
-                    choices.add(((ShapedRecipe) recipe).getChoiceMap().get(key));
+                    choices.add(shapedRecipe.getChoiceMap().get(key));
                 }
 
                 while (columns < 3) {
@@ -167,8 +155,7 @@ public class MinecraftRecipeService {
      *
      * @return An array of {@link Recipe Recipes} to craft the given {@link ItemStack}
      */
-    @Nonnull
-    public Recipe[] getRecipesFor(@Nullable ItemStack item) {
+    public @Nonnull Recipe[] getRecipesFor(@Nullable ItemStack item) {
         if (snapshot == null || item == null) {
             return new Recipe[0];
         } else {
@@ -187,8 +174,7 @@ public class MinecraftRecipeService {
      *
      * @return The corresponding {@link Recipe} or null
      */
-    @Nullable
-    public Recipe getRecipe(@Nonnull NamespacedKey key) {
+    public @Nullable Recipe getRecipe(@Nonnull NamespacedKey key) {
         Validate.notNull(key, "The NamespacedKey should not be null");
 
         if (snapshot != null) {

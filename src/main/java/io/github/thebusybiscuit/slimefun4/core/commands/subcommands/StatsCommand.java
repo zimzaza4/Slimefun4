@@ -1,18 +1,16 @@
 package io.github.thebusybiscuit.slimefun4.core.commands.subcommands;
 
-import java.util.Optional;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
-
 import io.github.bakedlibs.dough.common.PlayerList;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Optional;
 
 class StatsCommand extends SubCommand {
 
@@ -23,6 +21,12 @@ class StatsCommand extends SubCommand {
 
     @Override
     public void onExecute(CommandSender sender, String[] args) {
+        // Check if researching is even enabled
+        if (!Slimefun.getRegistry().isResearchingEnabled()) {
+            Slimefun.getLocalization().sendMessage(sender, "messages.researching-is-disabled");
+            return;
+        }
+
         if (args.length > 1) {
             if (sender.hasPermission("slimefun.stats.others") || sender instanceof ConsoleCommandSender) {
                 Optional<Player> player = PlayerList.findByName(args[1]);
@@ -35,8 +39,8 @@ class StatsCommand extends SubCommand {
             } else {
                 Slimefun.getLocalization().sendMessage(sender, "messages.no-permission", true);
             }
-        } else if (sender instanceof Player) {
-            PlayerProfile.get((Player) sender, profile -> profile.sendStats(sender));
+        } else if (sender instanceof Player player) {
+            PlayerProfile.get(player, profile -> profile.sendStats(sender));
         } else {
             Slimefun.getLocalization().sendMessage(sender, "messages.only-players", true);
         }

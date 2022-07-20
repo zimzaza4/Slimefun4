@@ -1,10 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners.entity;
 
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-
-import javax.annotation.Nonnull;
-
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.attributes.RandomMobDrop;
+import io.github.thebusybiscuit.slimefun4.core.handlers.EntityKillHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.misc.BasicCircuitBoard;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,12 +13,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.core.attributes.RandomMobDrop;
-import io.github.thebusybiscuit.slimefun4.core.handlers.EntityKillHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.items.misc.BasicCircuitBoard;
+import javax.annotation.Nonnull;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * This {@link Listener} is responsible for handling any custom mob drops.
@@ -67,16 +65,16 @@ public class MobDropListener implements Listener {
         if (sfItem == null) {
             return true;
         } else if (sfItem.canUse(p, true)) {
-            if (sfItem instanceof RandomMobDrop) {
+            if (sfItem instanceof RandomMobDrop randomMobDrop) {
                 int random = ThreadLocalRandom.current().nextInt(100);
 
-                if (((RandomMobDrop) sfItem).getMobDropChance() <= random) {
+                if (randomMobDrop.getMobDropChance() <= random) {
                     return false;
                 }
             }
 
-            if (sfItem instanceof BasicCircuitBoard) {
-                return ((BasicCircuitBoard) sfItem).isDroppedFromGolems();
+            if (sfItem instanceof BasicCircuitBoard basicCircuitBoard) {
+                return basicCircuitBoard.isDroppedFromGolems();
             }
 
             return true;

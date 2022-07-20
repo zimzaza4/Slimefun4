@@ -1,10 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation.handlers;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
+import io.papermc.lib.PaperLib;
 import org.apache.commons.lang.Validate;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -14,9 +12,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
-import io.papermc.lib.PaperLib;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 /**
  * This is an implementation of {@link BlockBreakHandler} which is suited for any {@link SlimefunItem}
@@ -78,8 +76,8 @@ public class VanillaInventoryDropHandler<T extends BlockState & InventoryHolder>
 
     @Nonnull
     protected Inventory getInventory(@Nonnull T inventoryHolder) {
-        if (inventoryHolder instanceof Chest) {
-            return ((Chest) inventoryHolder).getBlockInventory();
+        if (inventoryHolder instanceof Chest chest) {
+            return chest.getBlockInventory();
         } else {
             return inventoryHolder.getInventory();
         }

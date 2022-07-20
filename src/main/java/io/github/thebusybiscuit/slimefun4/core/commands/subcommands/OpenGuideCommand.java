@@ -1,15 +1,14 @@
 package io.github.thebusybiscuit.slimefun4.core.commands.subcommands;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 class OpenGuideCommand extends SubCommand {
 
@@ -21,9 +20,9 @@ class OpenGuideCommand extends SubCommand {
     @Override
     @ParametersAreNonnullByDefault
     public void onExecute(CommandSender sender, String[] args) {
-        if (sender instanceof Player) {
+        if (sender instanceof Player player) {
             if (sender.hasPermission("slimefun.command.open_guide")) {
-                SlimefunGuide.openGuide((Player) sender, SlimefunGuideMode.SURVIVAL_MODE);
+                SlimefunGuide.openGuide(player, SlimefunGuideMode.SURVIVAL_MODE);
             } else {
                 Slimefun.getLocalization().sendMessage(sender, "messages.no-permission", true);
             }

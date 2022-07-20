@@ -1,21 +1,19 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.accelerators;
 
-import org.bukkit.Particle;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Ageable;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
-
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+import org.bukkit.Particle;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Ageable;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.ItemStack;
 
 public class AnimalGrowthAccelerator extends AbstractGrowthAccelerator {
 
@@ -62,7 +60,7 @@ public class AnimalGrowthAccelerator extends AbstractGrowthAccelerator {
     }
 
     private boolean isReadyToGrow(Entity n) {
-        return n instanceof Ageable && n.isValid() && !((Ageable) n).isAdult();
+        return n instanceof Ageable ageable && n.isValid() && !ageable.isAdult();
     }
 
 }

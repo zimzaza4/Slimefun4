@@ -1,19 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.magical;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.PigZombie;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
-import org.bukkit.entity.ZombieVillager;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.bakedlibs.dough.items.ItemUtils;
 import io.github.bakedlibs.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
@@ -27,6 +13,14 @@ import io.github.thebusybiscuit.slimefun4.core.handlers.EntityInteractHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * This {@link SlimefunItem} allows you to convert any {@link ZombieVillager} to
@@ -61,12 +55,12 @@ public class MagicalZombiePills extends SimpleSlimefunItem<EntityInteractHandler
 
             Player p = e.getPlayer();
 
-            if (entity instanceof ZombieVillager) {
+            if (entity instanceof ZombieVillager zombieVillager) {
                 useItem(p, item);
-                healZombieVillager((ZombieVillager) entity, p);
-            } else if (Slimefun.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_16) && entity instanceof PigZombie) {
+                healZombieVillager(zombieVillager, p);
+            } else if (Slimefun.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_16) && entity instanceof PigZombie pigZombie) {
                 useItem(p, item);
-                healZombifiedPiglin((PigZombie) entity);
+                healZombifiedPiglin(pigZombie);
             }
         };
     }

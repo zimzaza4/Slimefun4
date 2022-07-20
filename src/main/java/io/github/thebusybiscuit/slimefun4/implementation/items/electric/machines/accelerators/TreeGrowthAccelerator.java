@@ -1,20 +1,25 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.accelerators;
 
-import org.bukkit.Particle;
-import org.bukkit.Tag;
-import org.bukkit.block.Block;
-import org.bukkit.block.data.type.Sapling;
-import org.bukkit.inventory.ItemStack;
-
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
-
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+import org.bukkit.Particle;
+import org.bukkit.Tag;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.type.Sapling;
+import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * The {@link TreeGrowthAccelerator} is an electrical machine that works similar to
@@ -34,6 +39,7 @@ public class TreeGrowthAccelerator extends AbstractGrowthAccelerator {
     // We wanna strip the Slimefun Item id here
     private static final ItemStack organicFertilizer = ItemStackWrapper.wrap(SlimefunItems.FERTILIZER);
 
+    @ParametersAreNonnullByDefault
     public TreeGrowthAccelerator(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
     }
@@ -44,7 +50,7 @@ public class TreeGrowthAccelerator extends AbstractGrowthAccelerator {
     }
 
     @Override
-    protected void tick(Block b) {
+    protected void tick(@Nonnull Block b) {
         BlockMenu inv = BlockStorage.getInventory(b);
 
         if (getCharge(b.getLocation()) >= ENERGY_CONSUMPTION) {
@@ -53,9 +59,10 @@ public class TreeGrowthAccelerator extends AbstractGrowthAccelerator {
                     Block block = b.getRelative(x, 0, z);
 
                     if (Tag.SAPLINGS.isTagged(block.getType())) {
-                        Sapling sapling = (Sapling) block.getBlockData();
+                        boolean isGrowthBoosted = tryToBoostGrowth(b, inv, block);
 
-                        if (sapling.getStage() < sapling.getMaximumStage() && growSapling(b, block, inv, sapling)) {
+                        if (isGrowthBoosted) {
+                            // Finish this tick and wait for the next.
                             return;
                         }
                     }
@@ -64,9 +71,38 @@ public class TreeGrowthAccelerator extends AbstractGrowthAccelerator {
         }
     }
 
-    private boolean growSapling(Block machine, Block block, BlockMenu inv, Sapling sapling) {
+    @ParametersAreNonnullByDefault
+    private boolean tryToBoostGrowth(Block machine, BlockMenu inv, Block sapling) {
+        if (Slimefun.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_17)) {
+            // On 1.17+ we can actually simulate bonemeal :O
+            return applyBoneMeal(machine, sapling, inv);
+        } else {
+            Sapling saplingData = (Sapling) sapling.getBlockData();
+            return saplingData.getStage() < saplingData.getMaximumStage() && updateSaplingData(machine, sapling, inv, saplingData);
+        }
+    }
+
+    @ParametersAreNonnullByDefault
+    private boolean applyBoneMeal(Block machine, Block sapling, BlockMenu inv) {
         for (int slot : getInputSlots()) {
-            if (SlimefunUtils.isItemSimilar(inv.getItemInSlot(slot), organicFertilizer, false, false)) {
+            if (isFertilizer(inv.getItemInSlot(slot))) {
+                removeCharge(machine.getLocation(), ENERGY_CONSUMPTION);
+
+                sapling.applyBoneMeal(BlockFace.UP);
+
+                inv.consumeItem(slot);
+                sapling.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, sapling.getLocation().add(0.5D, 0.5D, 0.5D), 4, 0.1F, 0.1F, 0.1F);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @ParametersAreNonnullByDefault
+    private boolean updateSaplingData(Block machine, Block block, BlockMenu inv, Sapling sapling) {
+        for (int slot : getInputSlots()) {
+            if (isFertilizer(inv.getItemInSlot(slot))) {
                 removeCharge(machine.getLocation(), ENERGY_CONSUMPTION);
 
                 sapling.setStage(sapling.getStage() + 1);
@@ -79,6 +115,10 @@ public class TreeGrowthAccelerator extends AbstractGrowthAccelerator {
         }
 
         return false;
+    }
+
+    protected boolean isFertilizer(@Nullable ItemStack item) {
+        return SlimefunUtils.isItemSimilar(item, organicFertilizer, false, false);
     }
 
 }

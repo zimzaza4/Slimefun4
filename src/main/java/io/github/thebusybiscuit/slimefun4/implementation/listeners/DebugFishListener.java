@@ -1,12 +1,16 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import java.util.EnumSet;
-import java.util.Set;
-import java.util.logging.Level;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
+import io.github.bakedlibs.dough.common.ChatColors;
+import io.github.bakedlibs.dough.skins.PlayerHead;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
+import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -21,18 +25,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
-import io.github.bakedlibs.dough.common.ChatColors;
-import io.github.bakedlibs.dough.skins.PlayerHead;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
-import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
-
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.EnumSet;
+import java.util.Set;
+import java.util.logging.Level;
 
 /**
  * This {@link Listener} is responsible for handling our debugging tool, the debug fish.
@@ -168,8 +165,7 @@ public class DebugFishListener implements Listener {
             p.sendMessage(ChatColors.color("  &dChunk Timings: &e" + Slimefun.getProfiler().getTime(b.getChunk())));
         }
 
-        if (item instanceof EnergyNetComponent) {
-            EnergyNetComponent component = (EnergyNetComponent) item;
+        if (item instanceof EnergyNetComponent component) {
             p.sendMessage(ChatColors.color("&dEnergyNet Component"));
             p.sendMessage(ChatColors.color("  &dType: &e" + component.getEnergyComponentType()));
 

@@ -1,5 +1,12 @@
 package io.github.thebusybiscuit.slimefun4.core.services.github;
 
+import io.github.bakedlibs.dough.skins.PlayerSkin;
+import io.github.bakedlibs.dough.skins.UUIDLookup;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import org.bukkit.Bukkit;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,15 +17,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.bukkit.Bukkit;
-
-import io.github.bakedlibs.dough.skins.PlayerSkin;
-import io.github.bakedlibs.dough.skins.UUIDLookup;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
 /**
  * This {@link GitHubTask} represents a {@link Runnable} that is run every X minutes.
@@ -82,7 +80,7 @@ class GitHubTask implements Runnable {
         }
 
         for (GitHubConnector connector : gitHubService.getConnectors()) {
-            if (connector instanceof ContributionsConnector && !((ContributionsConnector) connector).hasFinished()) {
+            if (connector instanceof ContributionsConnector contributionsConnector && !contributionsConnector.hasFinished()) {
                 return;
             }
         }

@@ -1,22 +1,21 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.Material;
-import org.bukkit.Tag;
-import org.bukkit.inventory.ItemStack;
-
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.NotHopperable;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
+import org.bukkit.Material;
+import org.bukkit.Tag;
+import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The {@link AutoDrier} is an implementation of {@link AContainer} that features recipes
@@ -79,6 +78,11 @@ public class AutoDrier extends AContainer implements RecipeDisplayItem, NotHoppe
 
         recipeList.add(new ItemStack(Material.COOKED_SALMON));
         recipeList.add(SlimefunItems.FISH_JERKY);
+
+        if (Slimefun.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_19)) {
+            recipeList.add(new ItemStack(Material.MUD));
+            recipeList.add(new ItemStack(Material.CLAY));
+        }
 
         for (Material sapling : Tag.SAPLINGS.getValues()) {
             recipeList.add(new ItemStack(sapling));

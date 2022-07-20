@@ -1,27 +1,24 @@
 package io.github.thebusybiscuit.slimefun4.core.commands.subcommands;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.plugin.Plugin;
-
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import io.papermc.lib.PaperLib;
-
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.plugin.Plugin;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Collection;
 
 /**
  * This is our class for the /sf versions subcommand.
@@ -154,7 +151,7 @@ class VersionsCommand extends SubCommand {
                 secondaryColor = ChatColor.DARK_GREEN;
                 String authors = String.join(", ", plugin.getDescription().getAuthors());
 
-                if (plugin instanceof SlimefunAddon && ((SlimefunAddon) plugin).getBugTrackerURL() != null) {
+                if (plugin instanceof SlimefunAddon addon && addon.getBugTrackerURL() != null) {
                     // @formatter:off
                     hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent(new ComponentBuilder()
                             .append("作者: ")
@@ -166,7 +163,7 @@ class VersionsCommand extends SubCommand {
                     )});
                     // @formatter:on
 
-                    clickEvent = new ClickEvent(ClickEvent.Action.OPEN_URL, ((SlimefunAddon) plugin).getBugTrackerURL());
+                    clickEvent = new ClickEvent(ClickEvent.Action.OPEN_URL, addon.getBugTrackerURL());
                 } else {
                     // @formatter:off
                     hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent(new ComponentBuilder()
@@ -181,7 +178,7 @@ class VersionsCommand extends SubCommand {
                 primaryColor = ChatColor.RED;
                 secondaryColor = ChatColor.DARK_RED;
 
-                if (plugin instanceof SlimefunAddon && ((SlimefunAddon) plugin).getBugTrackerURL() != null) {
+                if (plugin instanceof SlimefunAddon addon && addon.getBugTrackerURL() != null) {
                     // @formatter:off
                     hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent(new ComponentBuilder()
                             .append("此插件已被禁用.\n检查后台是否有报错.")
@@ -191,8 +188,6 @@ class VersionsCommand extends SubCommand {
                             .create()
                     )});
                     // @formatter:on
-
-                    SlimefunAddon addon = (SlimefunAddon) plugin;
 
                     if (addon.getBugTrackerURL() != null) {
                         clickEvent = new ClickEvent(ClickEvent.Action.OPEN_URL, addon.getBugTrackerURL());

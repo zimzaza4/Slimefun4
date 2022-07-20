@@ -1,15 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.blocks;
 
-import java.util.concurrent.ThreadLocalRandom;
-
-import javax.annotation.Nonnull;
-
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Furnace;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -18,10 +8,17 @@ import io.github.thebusybiscuit.slimefun4.implementation.handlers.VanillaInvento
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.papermc.lib.PaperLib;
 import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
-
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Furnace;
+import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The {@link EnhancedFurnace} is an upgraded version of a {@link Furnace}.
@@ -87,8 +84,8 @@ public class EnhancedFurnace extends SimpleSlimefunItem<BlockTicker> {
                     BlockState state = result.getState();
 
                     // Check if the BlockState is a Furnace and cooking something
-                    if (state instanceof Furnace && ((Furnace) state).getCookTime() > 0) {
-                        setProgress((Furnace) state);
+                    if (state instanceof Furnace furnace && furnace.getCookTime() > 0) {
+                        setProgress(furnace);
 
                         // Only update if necessary
                         if (result.isSnapshot()) {
