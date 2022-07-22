@@ -117,7 +117,7 @@ public class IntegrationHelper implements Listener {
      *
      * 领地已支持 Slimefun
      *
-     * 详见: https://github.com/Zrips/Residence/blob/master/src/com/bekvon/bukkit/residence/slimeFun/SlimeFunResidenceModule.java
+     * 详见: <a href="https://github.com/Zrips/Residence/blob/master/src/com/bekvon/bukkit/residence/slimeFun/SlimeFunResidenceModule.java">...</a>
      *
      * @param p      玩家
      * @param block  被破坏的方块

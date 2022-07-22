@@ -32,6 +32,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunIte
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import ren.natsuyuk1.slimefunextra.IntegrationHelper;
 
 /**
  * This {@link SlimefunItem} is a super class for items like the {@link ExplosivePickaxe} or {@link ExplosiveShovel}.
@@ -137,6 +138,10 @@ public class ExplosiveTool extends SimpleSlimefunItem<ToolUseHandler> implements
         } else if (!b.getWorld().getWorldBorder().isInside(b.getLocation())) {
             return false;
         } else if (Slimefun.getIntegrations().isCustomBlock(b)) {
+            return false;
+        } else if (IntegrationHelper.checkForQuickShop(b.getLocation())) {
+            return false;
+        } else if (!IntegrationHelper.checkPermission(p, b, Interaction.BREAK_BLOCK)) {
             return false;
         } else {
             return Slimefun.getProtectionManager().hasPermission(p, b.getLocation(), Interaction.BREAK_BLOCK);
