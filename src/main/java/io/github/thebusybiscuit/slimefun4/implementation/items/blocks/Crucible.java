@@ -127,6 +127,9 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
                     ItemStack input = e.getItem();
                     Block block = b.getRelative(BlockFace.UP);
 
+                    if (BlockStorage.hasBlockInfo(b))
+                        return;
+
                     if (craft(p, input)) {
                         boolean water = Tag.LEAVES.isTagged(input.getType());
                         generateLiquid(block, water);
@@ -199,7 +202,7 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
     }
 
     private void placeLiquid(@Nonnull Block block, boolean water) {
-        if (block.getType() == Material.AIR || block.getType() == Material.CAVE_AIR || block.getType() == Material.VOID_AIR) {
+        if (block.getType() == Material.AIR || block.getType() == Material.CAVE_AIR || block.getType() == Material.VOID_AIR || block.getType().isAir()) {
             // Fixes #2903 - Cancel physics update to resolve weird overlapping
             block.setType(water ? Material.WATER : Material.LAVA, false);
         } else {
@@ -209,10 +212,6 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
                 block.getWorld().playSound(block.getLocation(), Sound.ENTITY_PLAYER_SPLASH, 1F, 1F);
                 return;
             }
-
-            if (BlockStorage.hasBlockInfo(block)) {
-                BlockStorage.clearBlockInfo(block);
-            }
         }
 
         runPostTask(block, water ? Sound.ENTITY_PLAYER_SPLASH : Sound.BLOCK_LAVA_POP, 1);
@@ -220,14 +219,13 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
 
     @ParametersAreNonnullByDefault
     private void runPostTask(Block block, Sound sound, int times) {
-        if (!(block.getBlockData() instanceof Levelled)) {
+        if (!(block.getBlockData() instanceof Levelled le)) {
             block.getWorld().playSound(block.getLocation(), Sound.BLOCK_METAL_BREAK, 1F, 1F);
             return;
         }
 
         block.getWorld().playSound(block.getLocation(), sound, 1F, 1F);
         int level = 8 - times;
-        Levelled le = (Levelled) block.getBlockData();
         le.setLevel(level);
         block.setBlockData(le, false);
 
