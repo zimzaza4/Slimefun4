@@ -128,7 +128,7 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
                     Block block = b.getRelative(BlockFace.UP);
 
                     // Just ignore slimefun block above.
-                    if (BlockStorage.hasBlockInfo(b))
+                    if (BlockStorage.hasBlockInfo(block))
                         return;
 
                     if (craft(p, input)) {
