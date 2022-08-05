@@ -18,7 +18,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunIte
 /**
  * The {@link KnowledgeFlask} is a magical {@link SlimefunItem} which allows you to store
  * experience levels in a bottle when you right click.
- *
+ * 
  * @author TheBusyBiscuit
  *
  */
@@ -32,12 +32,11 @@ public class KnowledgeFlask extends SimpleSlimefunItem<ItemUseHandler> {
     @Override
     public ItemUseHandler getItemHandler() {
         return e -> {
+            e.cancel();
             Player p = e.getPlayer();
 
             if (p.getLevel() >= 1 && (!e.getClickedBlock().isPresent() || !(e.getClickedBlock().get().getType().isInteractable()))) {
                 p.setLevel(p.getLevel() - 1);
-
-                ItemUtils.consumeItem(e.getItem(), false);
 
                 ItemStack item = SlimefunItems.FILLED_FLASK_OF_KNOWLEDGE.clone();
 
@@ -48,7 +47,7 @@ public class KnowledgeFlask extends SimpleSlimefunItem<ItemUseHandler> {
 
                 p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0.5F);
 
-                e.cancel();
+                ItemUtils.consumeItem(e.getItem(), false);
             }
         };
     }
