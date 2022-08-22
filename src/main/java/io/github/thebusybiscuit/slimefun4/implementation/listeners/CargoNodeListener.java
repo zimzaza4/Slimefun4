@@ -29,7 +29,7 @@ public class CargoNodeListener implements Listener {
     public void onCargoNodePlace(BlockPlaceEvent e) {
         Block b = e.getBlock();
 
-        if ((b.getY() != e.getBlockAgainst().getY() || !e.getBlockReplacedState().getType().isAir()) && isCargoNode(e.getItemInHand())) {
+        if (isCargoNode(e.getItemInHand()) && (b.getY() != e.getBlockAgainst().getY() || !e.getBlockReplacedState().getType().isAir())) {
             Slimefun.getLocalization().sendMessage(e.getPlayer(), "machines.CARGO_NODES.must-be-placed", true);
             e.setCancelled(true);
         }
