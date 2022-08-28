@@ -113,12 +113,28 @@ public class PlayerBackpack {
 
     /**
      * This method returns the {@link Inventory} of this {@link PlayerBackpack}
-     * 
+     *
      * @return The {@link Inventory} of this {@link PlayerBackpack}
      */
     @Nonnull
     public Inventory getInventory() {
         return inventory;
+    }
+
+    /**
+     * This will open the {@link Inventory} of this backpack to every {@link Player}
+     * that was passed onto this method.
+     * <p>
+     * 二进制兼容
+     *
+     * @param players The player who this Backpack will be shown to
+     */
+    public void open(Player... players) {
+        Slimefun.runSync(() -> {
+            for (Player p : players) {
+                p.openInventory(inventory);
+            }
+        });
     }
 
     /**
