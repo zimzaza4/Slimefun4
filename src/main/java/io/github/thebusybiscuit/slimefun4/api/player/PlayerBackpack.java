@@ -1,18 +1,18 @@
 package io.github.thebusybiscuit.slimefun4.api.player;
 
-import java.io.File;
-
-import javax.annotation.Nonnull;
-
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.bakedlibs.dough.config.Config;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.BackpackListener;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import ren.natsuyuk1.slimefunextra.InventoryUtil;
+import ren.natsuyuk1.slimefunextra.inventoryholder.SlimefunBackpackHolder;
+
+import javax.annotation.Nonnull;
+import java.io.File;
 
 /**
  * This class represents the instance of a {@link SlimefunBackpack} that is ready to
@@ -76,7 +76,11 @@ public class PlayerBackpack {
         cfg.setValue(CONFIG_PREFIX + id + ".size", size);
         markDirty();
 
-        inventory = Bukkit.createInventory(null, size, "背包 [大小 " + size + "]");
+        var holder = new SlimefunBackpackHolder();
+        inventory = Bukkit.createInventory(holder, size, "背包 [大小 " + size + "]");
+
+        holder.setBackpack(this);
+        holder.setInventory(inventory);
     }
 
     /**
@@ -120,16 +124,13 @@ public class PlayerBackpack {
     /**
      * This will open the {@link Inventory} of this backpack to every {@link Player}
      * that was passed onto this method.
-     * 
-     * @param players
-     *            The players who this Backpack will be shown to
+     *
+     * @param player   The player who this Backpack will be shown to
+     * @param callback The operation after backpack was open
      */
-    public void open(Player... players) {
-        Slimefun.runSync(() -> {
-            for (Player p : players) {
-                p.openInventory(inventory);
-            }
-        });
+    public void open(Player player, Runnable callback) {
+        Slimefun.runSync(() -> player.openInventory(inventory));
+        Slimefun.runSync(callback);
     }
 
     /**
@@ -146,7 +147,14 @@ public class PlayerBackpack {
         this.size = size;
         cfg.setValue(CONFIG_PREFIX + id + ".size", size);
 
-        Inventory inv = Bukkit.createInventory(null, size, "背包 [大小 " + size + "]");
+        var holder = new SlimefunBackpackHolder();
+
+        Inventory inv = Bukkit.createInventory(holder, size, "背包 [大小 " + size + "]");
+
+        holder.setInventory(inv);
+        holder.setBackpack(this);
+
+        InventoryUtil.closeInventory(inventory);
 
         for (int slot = 0; slot < this.inventory.getSize(); slot++) {
             inv.setItem(slot, this.inventory.getItem(slot));
