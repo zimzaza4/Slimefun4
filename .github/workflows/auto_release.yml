@@ -2,7 +2,7 @@ name: Slimefun 正式版发布
 
 on:
   push:
-    branches:
+    tags:
       - *
 
 jobs:
