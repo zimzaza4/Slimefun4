@@ -43,7 +43,7 @@ jobs:
         if: github.event_name != 'pull_request' && steps.check-tag.outputs.match == 'true'
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          title: "Slimefun ${{ steps.<step-id>.outputs.automatic_releases_tag }}"
+          title: "Slimefun $GITHUB_REF_NAME"
           prerelease: false
           files: |
             target/Slimefun-*.jar
