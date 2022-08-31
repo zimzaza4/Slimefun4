@@ -3,7 +3,7 @@ name: Slimefun 正式版发布
 on:
   push:
     tags:
-      - "^\d+(\.\d+)?$"
+      - "*.*"
 
 jobs:
   build:
