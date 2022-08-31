@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - '*'
+    paths:
+      - 'src/**'
+      - 'pom.xml'
 
 jobs:
   build:
