@@ -64,7 +64,7 @@ body:
       required: true
 
   - type: dropdown
-    id: bot-protocol
+    id: minecraft-version
     attributes:
       label: Minecraft 版本
       options:
