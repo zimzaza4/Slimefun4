@@ -7,7 +7,6 @@ import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import com.bekvon.bukkit.residence.protection.ResidencePermissions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import io.github.bakedlibs.dough.protection.ActionType;
 import io.github.bakedlibs.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.api.events.AndroidFarmEvent;
@@ -217,42 +216,49 @@ public class IntegrationHelper implements Listener {
     private static void registerQuickShop(@Nonnull Slimefun plugin) {
         String version = plugin.getServer().getPluginManager().getPlugin(QUICKSHOP).getDescription().getVersion();
         String[] splitVersion = version.split("-")[0].split("\\.");
-        int major = Integer.parseInt(splitVersion[0]);
-        int sub = Integer.parseInt(splitVersion[2]);
-        int last = Integer.parseInt(splitVersion[3]);
 
-        if (major < 5) {
-            logger.warning("QuickShop 版本过低, 建议你更新到 5.0.0+!");
+        try {
+            int major = Integer.parseInt(splitVersion[0]);
+            int sub = Integer.parseInt(splitVersion[2]);
+            int last = Integer.parseInt(splitVersion[3]);
 
-            try {
-                Method shopAPIMethod = Class.forName("org.maxgamer.quickshop.QuickShopAPI").getDeclaredMethod("getShopAPI");
-                shopAPIMethod.setAccessible(true);
-                shopAPI = shopAPIMethod.invoke(null);
+            if (major < 5) {
+                logger.warning("QuickShop 版本过低, 建议你更新到 5.0.0+!");
 
-            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
-                logger.log(Level.INFO, "无法接入 Quickshop-Reremake " + version + " , 请更新到最新版, 相关功能将自动关闭");
-                qsInstalled = false;
-            }
-
-            if (sub >= 8 && last >= 2) {
-                // For 5.0.0-
                 try {
-                    qsMethod = Class.forName("org.maxgamer.quickshop.api.ShopAPI").getDeclaredMethod("getShop", Location.class);
-                    qsMethod.setAccessible(true);
-                } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+                    Method shopAPIMethod = Class.forName("org.maxgamer.quickshop.QuickShopAPI").getDeclaredMethod("getShopAPI");
+                    shopAPIMethod.setAccessible(true);
+                    shopAPI = shopAPIMethod.invoke(null);
+
+                } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
+                         InvocationTargetException ignored) {
                     logger.log(Level.INFO, "无法接入 Quickshop-Reremake " + version + " , 请更新到最新版, 相关功能将自动关闭");
                     qsInstalled = false;
                 }
-            } else {
-                // For 4.0.8-
-                try {
-                    qsMethod = Class.forName("org.maxgamer.quickshop.api.ShopAPI").getDeclaredMethod("getShopWithCaching", Location.class);
-                    qsMethod.setAccessible(true);
-                } catch (ClassNotFoundException | NoSuchMethodException ignored) {
-                    logger.log(Level.INFO, "无法接入 Quickshop-Reremake " + version + " , 请更新到最新版, 相关功能将自动关闭");
-                    qsInstalled = false;
+
+                if (sub >= 8 && last >= 2) {
+                    // For 5.0.0-
+                    try {
+                        qsMethod = Class.forName("org.maxgamer.quickshop.api.ShopAPI").getDeclaredMethod("getShop", Location.class);
+                        qsMethod.setAccessible(true);
+                    } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+                        logger.log(Level.INFO, "无法接入 Quickshop-Reremake " + version + " , 请更新到最新版, 相关功能将自动关闭");
+                        qsInstalled = false;
+                    }
+                } else {
+                    // For 4.0.8-
+                    try {
+                        qsMethod = Class.forName("org.maxgamer.quickshop.api.ShopAPI").getDeclaredMethod("getShopWithCaching", Location.class);
+                        qsMethod.setAccessible(true);
+                    } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+                        logger.log(Level.INFO, "无法接入 Quickshop-Reremake " + version + " , 请更新到最新版, 相关功能将自动关闭");
+                        qsInstalled = false;
+                    }
                 }
             }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            logger.log(Level.WARNING, "无法解析 Quickshop-Reremake 版本, 实际为 " + version + ".");
+            qsInstalled = false;
         }
     }
 }
