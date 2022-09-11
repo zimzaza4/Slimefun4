@@ -2,7 +2,6 @@ package ren.natsuyuk1.slimefunextra;
 
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 import javax.annotation.Nonnull;
 import java.util.logging.Level;
@@ -15,7 +14,7 @@ public class VaultHelper {
 
     public static void register(@Nonnull Slimefun plugin) {
         if (plugin.getServer().getPluginManager().isPluginEnabled("Vault")) {
-            RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
+            var rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
             if (rsp != null) {
                 econ = rsp.getProvider();
                 plugin.getLogger().log(Level.INFO, "成功接入 Vault");
