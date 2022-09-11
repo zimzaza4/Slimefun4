@@ -105,6 +105,14 @@ public class MinerAndroid extends ProgrammableAndroid {
             OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(BlockStorage.getLocationInfo(b.getLocation(), "owner")));
 
             if (Slimefun.getProtectionManager().hasPermission(owner, block.getLocation(), Interaction.BREAK_BLOCK)) {
+                if (IntegrationHelper.checkQuickShop(block.getLocation())) {
+                    return;
+                }
+
+                if (!IntegrationHelper.checkResidence(owner, block, Interaction.BREAK_BLOCK)) {
+                    return;
+                }
+
                 AndroidMineEvent event = new AndroidMineEvent(block, new AndroidInstance(this, b));
                 Bukkit.getPluginManager().callEvent(event);
 
