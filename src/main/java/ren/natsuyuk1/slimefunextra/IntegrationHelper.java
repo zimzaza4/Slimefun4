@@ -100,7 +100,7 @@ public class IntegrationHelper implements Listener {
         try {
             OfflinePlayer p = Bukkit.getOfflinePlayer(getOwnerFromJson(BlockStorage.getBlockInfoAsJson(android)));
 
-            if (!checkPermission(p, android, Interaction.BREAK_BLOCK)) {
+            if (!checkResidence(p, android, Interaction.BREAK_BLOCK)) {
                 event.setCancelled(true);
                 if (p.isOnline() && p.getPlayer() != null) {
                     Slimefun.getLocalization().sendMessage(p.getPlayer(), "android.no-permission");
@@ -123,7 +123,7 @@ public class IntegrationHelper implements Listener {
      * @param action 交互类型
      * @return 是否可以破坏
      */
-    public static boolean checkPermission(OfflinePlayer p, Block block, Interaction action) {
+    public static boolean checkResidence(OfflinePlayer p, Block block, Interaction action) {
         if (!resInstalled || block == null || p == null || !p.isOnline() || p.isOp()) {
             return true;
         }
@@ -179,7 +179,7 @@ public class IntegrationHelper implements Listener {
         return null;
     }
 
-    public static boolean checkForQuickShop(@Nonnull Location l) {
+    public static boolean checkQuickShop(@Nonnull Location l) {
         if (!qsInstalled) {
             return false;
         }
