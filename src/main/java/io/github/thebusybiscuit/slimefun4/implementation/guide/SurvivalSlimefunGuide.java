@@ -338,7 +338,7 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
                         Slimefun.getLocalization().sendMessage(pl, "messages.no-permission", true);
                     }
                 } catch (Exception | LinkageError x) {
-                    printErrorMessage(pl, x);
+                    printErrorMessage(pl, sfitem, x);
                 }
 
                 return false;
@@ -389,7 +389,7 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
                             displayItem(profile, slimefunItem, true);
                         }
                     } catch (Exception | LinkageError x) {
-                        printErrorMessage(pl, x);
+                        printErrorMessage(pl, slimefunItem, x);
                     }
 
                     return false;
@@ -767,6 +767,12 @@ public class SurvivalSlimefunGuide implements SlimefunGuideImplementation {
     private void printErrorMessage(Player p, Throwable x) {
         p.sendMessage(ChatColor.DARK_RED + "服务器发生了一个内部错误. 请联系管理员处理.");
         Slimefun.logger().log(Level.SEVERE, "在打开指南书里的 Slimefun 物品时发生了意外!", x);
+    }
+
+    @ParametersAreNonnullByDefault
+    private void printErrorMessage(Player p, SlimefunItem item, Throwable x) {
+        p.sendMessage(ChatColor.DARK_RED + "An internal server error has occurred. Please inform an admin, check the console for further info.");
+        item.error("This item has caused an error message to be thrown while viewing it in the Slimefun guide.", x);
     }
 
 }
