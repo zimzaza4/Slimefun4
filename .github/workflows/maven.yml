@@ -15,10 +15,10 @@ on:
       - '.github/workflows/**'
       - 'src/**'
       - 'pom.xml'
+  workflow_dispatch:
 
 jobs:
   build:
-    if: contains(github.event.head_commit.message, '✨') == true
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
