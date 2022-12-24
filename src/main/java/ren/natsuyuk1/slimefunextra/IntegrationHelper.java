@@ -2,12 +2,7 @@ package ren.natsuyuk1.slimefunextra;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.containers.Flags;
-import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
-import com.bekvon.bukkit.residence.protection.ResidencePermissions;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 import io.github.bakedlibs.dough.protection.ActionType;
 import io.github.bakedlibs.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.api.events.AndroidFarmEvent;
@@ -19,11 +14,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
 import org.maxgamer.quickshop.api.QuickShopAPI;
 
 import javax.annotation.Nonnull;
@@ -99,9 +92,9 @@ public class IntegrationHelper implements Listener {
      */
     private void handleAndroidBreak(@Nonnull Block android, @Nonnull Cancellable event) {
         try {
-            OfflinePlayer p = Bukkit.getOfflinePlayer(getOwnerFromJson(BlockStorage.getBlockInfoAsJson(android)));
+            var p = Bukkit.getOfflinePlayer(getOwnerFromJson(BlockStorage.getBlockInfoAsJson(android)));
 
-            if (!checkPermission(p, android, Interaction.BREAK_BLOCK)) {
+            if (!checkResidence(p, android, Interaction.BREAK_BLOCK)) {
                 event.setCancelled(true);
                 if (p.isOnline() && p.getPlayer() != null) {
                     Slimefun.getLocalization().sendMessage(p.getPlayer(), "android.no-permission");
@@ -117,26 +110,26 @@ public class IntegrationHelper implements Listener {
      *
      * 领地已支持 Slimefun
      *
-     * 详见: https://github.com/Zrips/Residence/blob/master/src/com/bekvon/bukkit/residence/slimeFun/SlimeFunResidenceModule.java
+     * 详见: <a href="https://github.com/Zrips/Residence/blob/master/src/com/bekvon/bukkit/residence/slimeFun/SlimeFunResidenceModule.java">...</a>
      *
      * @param p      玩家
      * @param block  被破坏的方块
      * @param action 交互类型
      * @return 是否可以破坏
      */
-    public static boolean checkPermission(OfflinePlayer p, Block block, Interaction action) {
+    public static boolean checkResidence(OfflinePlayer p, Block block, Interaction action) {
         if (!resInstalled || block == null || p == null || !p.isOnline() || p.isOp()) {
             return true;
         }
 
-        ClaimedResidence res = Residence.getInstance().getResidenceManager().getByLoc(block.getLocation());
+        var res = Residence.getInstance().getResidenceManager().getByLoc(block.getLocation());
 
         if (res != null) {
             if (res.getOwnerUUID() == p.getUniqueId()) {
                 return true;
             }
 
-            Player onlinePlayer = p.getPlayer();
+            var onlinePlayer = p.getPlayer();
 
             if (onlinePlayer == null) {
                 return false;
@@ -146,7 +139,7 @@ public class IntegrationHelper implements Listener {
                 return true;
             }
 
-            ResidencePermissions perms = res.getPermissions();
+            var perms = res.getPermissions();
 
             if (perms != null) {
                 if (action.getType() == ActionType.BLOCK && perms.playerHas(onlinePlayer, Flags.admin, FlagPermissions.FlagCombo.OnlyTrue)) {
@@ -171,16 +164,16 @@ public class IntegrationHelper implements Listener {
 
     public static UUID getOwnerFromJson(String json) {
         if (json != null) {
-            JsonElement element = JsonUtils.parseString(json);
+            var element = JsonUtils.parseString(json);
             if (!element.isJsonNull()) {
-                JsonObject object = element.getAsJsonObject();
+                var object = element.getAsJsonObject();
                 return UUID.fromString(object.get("owner").getAsString());
             }
         }
         return null;
     }
 
-    public static boolean checkForQuickShop(@Nonnull Location l) {
+    public static boolean checkQuickShop(@Nonnull Location l) {
         if (!qsInstalled) {
             return false;
         }
@@ -191,7 +184,7 @@ public class IntegrationHelper implements Listener {
                     return false;
                 }
 
-                Object result = qsMethod.invoke(shopAPI, l);
+                var result = qsMethod.invoke(shopAPI, l);
 
                 if (result instanceof Optional) {
                     return ((Optional<?>) result).isPresent();
@@ -204,7 +197,7 @@ public class IntegrationHelper implements Listener {
             }
         }
 
-        Plugin qsPlugin = Bukkit.getPluginManager().getPlugin("QuickShop");
+        var qsPlugin = Bukkit.getPluginManager().getPlugin("QuickShop");
 
         if (qsPlugin instanceof QuickShopAPI) {
             return ((QuickShopAPI) qsPlugin).getShopManager().getShop(l) != null;
@@ -215,44 +208,51 @@ public class IntegrationHelper implements Listener {
     }
 
     private static void registerQuickShop(@Nonnull Slimefun plugin) {
-        String version = plugin.getServer().getPluginManager().getPlugin(QUICKSHOP).getDescription().getVersion();
-        String[] splitVersion = version.split("-")[0].split("\\.");
-        int major = Integer.parseInt(splitVersion[0]);
-        int sub = Integer.parseInt(splitVersion[2]);
-        int last = Integer.parseInt(splitVersion[3]);
+        var version = plugin.getServer().getPluginManager().getPlugin(QUICKSHOP).getDescription().getVersion();
+        var splitVersion = version.split("-")[0].split("\\.");
 
-        if (major < 5) {
-            logger.warning("QuickShop 版本过低, 建议你更新到 5.0.0+!");
+        try {
+            var major = Integer.parseInt(splitVersion[0]);
+            var sub = Integer.parseInt(splitVersion[2]);
+            var last = Integer.parseInt(splitVersion[3]);
 
-            try {
-                Method shopAPIMethod = Class.forName("org.maxgamer.quickshop.QuickShopAPI").getDeclaredMethod("getShopAPI");
-                shopAPIMethod.setAccessible(true);
-                shopAPI = shopAPIMethod.invoke(null);
+            if (major < 5) {
+                logger.warning("QuickShop 版本过低, 建议你更新到 5.0.0+!");
 
-            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
-                logger.log(Level.INFO, "无法接入 Quickshop-Reremake " + version + " , 请更新到最新版, 相关功能将自动关闭");
-                qsInstalled = false;
-            }
-
-            if (sub >= 8 && last >= 2) {
-                // For 5.0.0-
                 try {
-                    qsMethod = Class.forName("org.maxgamer.quickshop.api.ShopAPI").getDeclaredMethod("getShop", Location.class);
-                    qsMethod.setAccessible(true);
-                } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+                    var shopAPIMethod = Class.forName("org.maxgamer.quickshop.QuickShopAPI").getDeclaredMethod("getShopAPI");
+                    shopAPIMethod.setAccessible(true);
+                    shopAPI = shopAPIMethod.invoke(null);
+
+                } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
+                         InvocationTargetException ignored) {
                     logger.log(Level.INFO, "无法接入 Quickshop-Reremake " + version + " , 请更新到最新版, 相关功能将自动关闭");
                     qsInstalled = false;
                 }
-            } else {
-                // For 4.0.8-
-                try {
-                    qsMethod = Class.forName("org.maxgamer.quickshop.api.ShopAPI").getDeclaredMethod("getShopWithCaching", Location.class);
-                    qsMethod.setAccessible(true);
-                } catch (ClassNotFoundException | NoSuchMethodException ignored) {
-                    logger.log(Level.INFO, "无法接入 Quickshop-Reremake " + version + " , 请更新到最新版, 相关功能将自动关闭");
-                    qsInstalled = false;
+
+                if (sub >= 8 && last >= 2) {
+                    // For 5.0.0-
+                    try {
+                        qsMethod = Class.forName("org.maxgamer.quickshop.api.ShopAPI").getDeclaredMethod("getShop", Location.class);
+                        qsMethod.setAccessible(true);
+                    } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+                        logger.log(Level.INFO, "无法接入 Quickshop-Reremake " + version + " , 请更新到最新版, 相关功能将自动关闭");
+                        qsInstalled = false;
+                    }
+                } else {
+                    // For 4.0.8-
+                    try {
+                        qsMethod = Class.forName("org.maxgamer.quickshop.api.ShopAPI").getDeclaredMethod("getShopWithCaching", Location.class);
+                        qsMethod.setAccessible(true);
+                    } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+                        logger.log(Level.INFO, "无法接入 Quickshop-Reremake " + version + " , 请更新到最新版, 相关功能将自动关闭");
+                        qsInstalled = false;
+                    }
                 }
             }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            logger.log(Level.WARNING, "无法解析 Quickshop-Reremake 版本, 实际为 " + version + ".");
+            qsInstalled = false;
         }
     }
 }

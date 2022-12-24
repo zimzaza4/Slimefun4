@@ -61,8 +61,8 @@ import java.util.logging.Level;
 public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock, RecipeDisplayItem {
 
     private static final List<BlockFace> POSSIBLE_ROTATIONS = Arrays.asList(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST);
-    private static final int[] BORDER = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 18, 24, 25, 26, 27, 33, 35, 36, 42, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53 };
-    private static final int[] OUTPUT_BORDER = { 10, 11, 12, 13, 14, 19, 23, 28, 32, 37, 38, 39, 40, 41 };
+    private static final int[] BORDER = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 18, 24, 25, 26, 27, 33, 35, 36, 42, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53};
+    private static final int[] OUTPUT_BORDER = {10, 11, 12, 13, 14, 19, 23, 28, 32, 37, 38, 39, 40, 41};
     private static final String DEFAULT_SCRIPT = "START-TURN_LEFT-REPEAT";
     private static final int MAX_SCRIPT_LENGTH = 54;
 
@@ -888,7 +888,7 @@ public class ProgrammableAndroid extends SlimefunItem implements InventoryBlock,
                 return;
             }
 
-            if (!IntegrationHelper.checkPermission(p, block, Interaction.PLACE_BLOCK)) {
+            if (!IntegrationHelper.checkResidence(p, block, Interaction.PLACE_BLOCK)) {
                 BlockStorage.addBlockInfo(b, "paused", "false");
                 Slimefun.getLocalization().sendMessage(p, "messages.android-no-permission", true);
                 return;

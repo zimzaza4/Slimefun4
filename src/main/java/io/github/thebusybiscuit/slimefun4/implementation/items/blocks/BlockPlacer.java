@@ -38,9 +38,9 @@ import java.util.UUID;
  * would suggest.
  * It really just is a special type of {@link Dispenser} which places items instead of
  * shooting them.
- * 
+ *
  * @author TheBusyBiscuit
- * 
+ *
  * @see BlockPlacerPlaceEvent
  *
  */
@@ -134,7 +134,7 @@ public class BlockPlacer extends SlimefunItem {
 
         // Get the corresponding OfflinePlayer
         OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(owner));
-        return Slimefun.getProtectionManager().hasPermission(player, target, Interaction.PLACE_BLOCK) && IntegrationHelper.checkPermission(player, target, Interaction.PLACE_BLOCK);
+        return Slimefun.getProtectionManager().hasPermission(player, target, Interaction.PLACE_BLOCK) && IntegrationHelper.checkResidence(player, target, Interaction.PLACE_BLOCK);
     }
 
     /**

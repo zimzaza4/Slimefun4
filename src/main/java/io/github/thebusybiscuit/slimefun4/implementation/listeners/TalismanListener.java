@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
 import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
@@ -27,6 +28,7 @@ import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.LlamaInventory;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -151,6 +153,13 @@ public class TalismanListener implements Listener {
         }
 
         /*
+         * Return because allay is so cute, DO NOT KILL THEM.
+         */
+        if (Slimefun.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_19) && entity instanceof Allay) {
+            return;
+        }
+
+        /*
          * We are also excluding entities which can pickup items,
          * this is not perfect but it at least prevents dupes
          * by tossing items to zombies.
@@ -207,6 +216,21 @@ public class TalismanListener implements Listener {
 
             items.remove(equipment.getItemInMainHand());
             items.remove(equipment.getItemInOffHand());
+        }
+
+        if (entity instanceof AbstractHorse abstractHorse) {
+            var inventory = abstractHorse.getInventory();
+            items.remove(inventory.getSaddle());
+
+            if (inventory instanceof LlamaInventory llamaInventory) {
+                items.remove(llamaInventory.getDecor());
+            } else if (inventory.getItem(1) != null) {
+                items.remove(inventory.getItem(1));
+            }
+        }
+
+        if (entity instanceof Steerable steerable && steerable.hasSaddle()) {
+            items.remove(new ItemStack(Material.SADDLE));
         }
 
         return items;

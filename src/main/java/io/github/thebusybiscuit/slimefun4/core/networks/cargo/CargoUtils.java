@@ -386,7 +386,7 @@ final class CargoUtils {
     }
 
     static boolean matchesFilter(@Nonnull AbstractItemNetwork network, @Nonnull Block node, @Nullable ItemStack item) {
-        if (item == null || item.getType() == Material.AIR || IntegrationHelper.checkForQuickShop(node.getLocation())) {
+        if (item == null || item.getType() == Material.AIR || IntegrationHelper.checkQuickShop(node.getLocation())) {
             return false;
         }
 

@@ -4,7 +4,6 @@ import io.papermc.lib.PaperLib;
 import org.bukkit.plugin.Plugin;
 
 import javax.annotation.Nonnull;
-import java.util.logging.Logger;
 
 /**
  * LangUtil
@@ -23,9 +22,9 @@ public class LangUtil {
         if (PaperLib.isPaper()) {
             return;
         }
-        final String benefitsProperty = "paperlib.shown-benefits";
-        final String pluginName = plugin.getDescription().getName();
-        final Logger logger = plugin.getLogger();
+        final var benefitsProperty = "paperlib.shown-benefits";
+        final var pluginName = plugin.getDescription().getName();
+        final var logger = plugin.getLogger();
         logger.warning("====================================================");
         logger.warning(" " + pluginName + " 在 Paper 上会工作地更好 ");
         logger.warning(" 推荐你使用 Paper 运行" + pluginName + " ");

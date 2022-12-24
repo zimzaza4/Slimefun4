@@ -8,10 +8,8 @@ import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import io.papermc.lib.PaperLib;
-
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.apache.commons.lang.Validate;
-
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
@@ -164,7 +162,7 @@ public final class AndroidShareMenu {
         if (replacedText.isEmpty()) {
             return new ArrayList<>();
         } else {
-            return Arrays.asList(replacedText.split(", "));
+            return new ArrayList<>(Arrays.asList(replacedText.split(", ")));
         }
     }
 

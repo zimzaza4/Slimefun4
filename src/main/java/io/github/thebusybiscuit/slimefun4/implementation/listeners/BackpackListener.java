@@ -122,11 +122,19 @@ public class BackpackListener implements Listener {
                             e.setCancelled(true);
                         }
                     }
-                } else if (e.getClick() == ClickType.SWAP_OFFHAND && e.getClickedInventory().getType() != InventoryType.PLAYER) {
-                    // Fixes #3265
-                    ItemStack offHandItem = e.getWhoClicked().getInventory().getItemInOffHand();
-                    if (!isAllowed((SlimefunBackpack) backpack, offHandItem)) {
-                        e.setCancelled(true);
+                } else if (e.getClick() == ClickType.SWAP_OFFHAND) {
+                    if (e.getClickedInventory() != null && e.getClickedInventory().getType() != InventoryType.PLAYER) {
+                        // Fixes #3265 - Don't move disallowed items using the off hand.
+                        ItemStack offHandItem = e.getWhoClicked().getInventory().getItemInOffHand();
+
+                        if (!isAllowed((SlimefunBackpack) backpack, offHandItem)) {
+                            e.setCancelled(true);
+                        }
+                    } else {
+                        // Fixes #3664 - Do not swap the backpack to your off hand.
+                        if (e.getCurrentItem() != null && e.getCurrentItem().isSimilar(item)) {
+                            e.setCancelled(true);
+                        }
                     }
                 } else if (!isAllowed((SlimefunBackpack)backpack, e.getCurrentItem())) {
                     e.setCancelled(true);

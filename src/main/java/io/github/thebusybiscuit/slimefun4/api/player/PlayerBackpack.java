@@ -1,12 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.api.player;
 
+import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
+import io.github.thebusybiscuit.slimefun4.implementation.listeners.BackpackListener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.BackpackListener;
 
 /**
  * This class represents the instance of a {@link SlimefunBackpack} that is ready to
@@ -31,7 +30,7 @@ public class PlayerBackpack {
 
     /**
      * This constructor creates a new Backpack
-     * 
+     *
      * @param id
      *            The id of this Backpack
      * @param size
@@ -81,16 +80,17 @@ public class PlayerBackpack {
 
     /**
      * This method returns the {@link Inventory} of this {@link PlayerBackpack}
-     * 
+     *
      * @return The {@link Inventory} of this {@link PlayerBackpack}
      */
 
     /**
      * This will open the {@link Inventory} of this backpack to every {@link Player}
      * that was passed onto this method.
-     * 
-     * @param players
-     *            The players who this Backpack will be shown to
+     * <p>
+     * 二进制兼容
+     *
+     * @param players The player who this Backpack will be shown to
      */
 
 

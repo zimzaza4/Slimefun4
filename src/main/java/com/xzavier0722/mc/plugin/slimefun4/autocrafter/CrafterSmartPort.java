@@ -63,7 +63,7 @@ public class CrafterSmartPort extends SlimefunItem {
             @Override
             public boolean canOpen(@Nonnull Block b, @Nonnull Player p) {
                 return p.hasPermission("slimefun.inventory.bypass")
-                        || (Slimefun.getProtectionManager().hasPermission(p,b.getLocation(), Interaction.INTERACT_BLOCK) && IntegrationHelper.checkPermission(p, b, Interaction.INTERACT_BLOCK));
+                        || (Slimefun.getProtectionManager().hasPermission(p, b.getLocation(), Interaction.INTERACT_BLOCK) && IntegrationHelper.checkResidence(p, b, Interaction.INTERACT_BLOCK));
             }
 
             @Override

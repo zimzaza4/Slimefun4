@@ -64,10 +64,11 @@ body:
       required: true
 
   - type: dropdown
-    id: bot-protocol
+    id: minecraft-version
     attributes:
       label: Minecraft 版本
       options:
+        - 1.19.x
         - 1.18.x
         - 1.17.x
         - 1.16.x
@@ -85,7 +86,7 @@ body:
       description: |
         **"最新版" 不是版本号，请填写一个确切的版本号！**
         如果你不太确定，可以截图 "/sf versions" 的输出内容并截图，记得截全。
-      placeholder: Slimefun 2022.05
+      placeholder: Slimefun 2022.07
 
   - type: textarea
     id: other-plugin

@@ -1,0 +1,52 @@
+name: Slimefun 正式版发布
+
+on:
+  push:
+    tags:
+      - '*'
+    paths:
+      - 'src/**'
+      - 'pom.xml'
+
+jobs:
+  build:
+    if: contains(github.event.head_commit.message, '[build skip]') == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Tag
+        id: check-tag
+        run: |
+          if [[ ${{ github.event.ref }} =~ ^refs/tags/\d+(\.\d+)?$ ]]; then
+              echo ::set-output name=match::true
+          fi
+      - uses: actions/checkout@v2
+        if: steps.check-tag.outputs.match == 'true'
+      - uses: actions/setup-java@v2
+        if: steps.check-tag.outputs.match == 'true'
+        with:
+          distribution: 'zulu'
+          java-version: 17
+          java-package: jdk
+          architecture: x64
+      - run: mvn -B package --file pom.xml --errors
+      - run: mkdir staging && cp target/*.jar staging
+      - uses: actions/cache@v2
+        if: github.event_name != 'pull_request' && steps.check-tag.outputs.match == 'true'
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - uses: actions/upload-artifact@v2
+        if: github.event_name != 'pull_request' && steps.check-tag.outputs.match == 'true'
+        with:
+          name: Slimefun.jar
+          path: staging
+      - name: Automatic Releases
+        uses: marvinpinto/action-automatic-releases@v1.2.1
+        if: github.event_name != 'pull_request' && steps.check-tag.outputs.match == 'true'
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          title: "Slimefun $GITHUB_REF_NAME"
+          prerelease: false
+          files: |
+            target/Slimefun-*.jar
