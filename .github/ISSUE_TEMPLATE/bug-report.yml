@@ -52,7 +52,9 @@ body:
     id: server-platform-type
     attributes:
       label: 服务端类型
-      description: "选择你正在使用的服务端，如 `Spigot`"
+      description: |
+        选择你正在使用的服务端，如 `Spigot`
+        注意：汉化版仓库不对**混合端** (例如 Arclight、CatServer) 做任何支持，请自己设法解决
       options:
         - Spigot
         - Paper
